@@ -29,15 +29,42 @@ class CCBOrderController {
 			return false;
 		}
 
-		$calc_fields = get_post_meta( $calc_id, 'stm-fields', true );
-		/** get file field settings */
-		$file_field_index = array_search( $field_id, array_column( $calc_fields, 'alias' ), true );
+		$file_upload_field = null;
+		$calc_fields       = get_post_meta( $calc_id, 'stm-fields', true );
+		preg_match( '/(_\d+)$/', $field_id, $key );
 
+		foreach ( $calc_fields as $field ) {
+			if ( ! empty( $field['alias'] ) && $field_id === $field['alias'] ) {
+				$file_upload_field = $field;
+			} elseif ( ! empty( $field['alias'] ) && ! empty( $field['groupElements'] ) ) {
+				foreach ( $field['groupElements'] as $_field ) {
+					if ( ! empty( $_field['alias'] ) ) {
+						$possible_aliases = array( $_field['alias'], $_field['alias'] . $key[0] );
+						if ( in_array( $field_id, $possible_aliases, true ) ) {
+							$file_upload_field = $_field;
+						}
+					}
+
+					if ( ! empty( $_field['groupElements'] ) ) {
+						foreach ( $_field['groupElements'] as $__field ) {
+							if ( ! empty( $__field['alias'] ) ) {
+								$possible_aliases = array( $__field['alias'], $__field['alias'] . $key[0] );
+								if ( in_array( $field_id, $possible_aliases, true ) ) {
+									$file_upload_field = $__field;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+		/** get file field settings */
 		$extension       = strtolower( pathinfo( $file['name'], PATHINFO_EXTENSION ) );
 		$allowed_formats = array();
 
-		if ( isset( $calc_fields[ $file_field_index ]['fileFormats'] ) ) {
-			foreach ( $calc_fields[ $file_field_index ]['fileFormats'] as $format ) {
+		if ( isset( $file_upload_field['fileFormats'] ) ) {
+			foreach ( $file_upload_field['fileFormats'] as $format ) {
 				$allowed_formats = array_merge( $allowed_formats, explode( '/', $format ) );
 			}
 		}
@@ -48,7 +75,7 @@ class CCBOrderController {
 		}
 
 		/** check file size */
-		if ( $calc_fields[ $file_field_index ]['max_file_size'] < round( $file['size'] / 1024 / 1024, 1 ) ) {
+		if ( $file_upload_field['max_file_size'] < round( $file['size'] / 1024 / 1024, 1 ) ) {
 			return false;
 		}
 
@@ -131,16 +158,37 @@ class CCBOrderController {
 					require_once ABSPATH . 'wp-admin/includes/file.php';
 				}
 
-				$order_details = $data['orderDetails'];
+				$order_details = array();
 				$file_url      = array();
+
+				foreach ( $data['orderDetails'] as $detail ) {
+					if ( ! empty( $detail['alias'] ) && str_contains( $detail['alias'], 'repeater' ) ) {
+						foreach ( $detail['groupElements'] as $item ) {
+							$order_details[] = $item;
+						}
+					} else {
+						$order_details[] = $detail;
+					}
+				}
 
 				/** upload all files, create array for fields */
 				foreach ( $_FILES as $file_key => $file ) {
-					$field_id    = preg_replace( '/_ccb_.*/', '', $file_key );
-					$field_index = array_search( $field_id, array_column( $order_details, 'alias' ), true );
+					$field_id          = preg_replace( '/_ccb_.*/', '', $file_key );
+					$file_upload_field = null;
+					preg_match( '/(_\d+)$/', $field_id, $key );
+
+					foreach ( $order_details as $field ) {
+						if ( isset( $field['alias'] ) && ! empty( $field['alias'] ) ) {
+							$possible_aliases = array( $field['alias'], $field['alias'] . $key[0] );
+
+							if ( in_array( $field_id, $possible_aliases, true ) ) {
+								$file_upload_field = $field;
+							}
+						}
+					}
 
 					/** if field not found continue */
-					if ( false === $field_index ) {
+					if ( is_null( $file_upload_field ) ) {
 						continue;
 					}
 
@@ -170,10 +218,19 @@ class CCBOrderController {
 				}
 
 				foreach ( $order_details as $field_key => $field ) {
-					if ( ! empty( $field['alias'] ) && isset( $file_url[ $field['alias'] ] ) && preg_replace( '/_field_id.*/', '', $field['alias'] ) === 'file_upload' ) {
-						$order_details[ $field_key ]['options'] = wp_json_encode( $file_url[ $field['alias'] ] );
+					if ( ! empty( $field['alias'] ) && preg_replace( '/_field_id.*/', '', $field['alias'] ) === 'file_upload' ) {
+						$file_key = isset( $file_url[ $field['alias'] ] )
+							? $field['alias']
+							: ( isset( $file_url[ $field['alias'] . '_' . $field_key ] )
+								? $field['alias'] . '_' . $field_key
+								: null );
+
+						if ( $file_key ) {
+							$order_details[ $field_key ]['options'] = wp_json_encode( $file_url[ $file_key ] );
+						}
 					}
 				}
+
 				$data['orderDetails'] = $order_details;
 			}
 
@@ -253,12 +310,7 @@ class CCBOrderController {
 	public static function update() {
 		check_ajax_referer( 'ccb_update_order', 'nonce' );
 
-		$data = null;
-		if ( isset( $_POST['data'] ) ) {
-			$data = ccb_convert_from_btoa( $_POST['data'], true );
-		}
-
-		if ( ! empty( $_POST['data'] ) && empty( $data ) ) {
+		if ( empty( $_POST['data'] ) ) {
 			wp_send_json(
 				array(
 					'status'  => 'error',
@@ -266,6 +318,11 @@ class CCBOrderController {
 					'message' => 'Invalid data',
 				)
 			);
+		}
+
+		$data = null;
+		if ( isset( $_POST['data'] ) ) {
+			$data = ccb_convert_from_btoa( $_POST['data'], true );
 		}
 
 		if ( ! empty( $data['ids'] ) ) {
