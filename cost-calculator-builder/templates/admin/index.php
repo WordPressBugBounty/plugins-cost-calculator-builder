@@ -12,6 +12,7 @@ wp_localize_script(
 		'language'          => substr( get_bloginfo( 'language' ), 0, 2 ),
 		'plugin_url'        => CALC_URL,
 		'templates'         => \cBuilder\Helpers\CCBFieldsHelper::get_fields_templates(),
+		'order_templates'   => \cBuilder\Helpers\CCBFieldsHelper::get_order_fields_templates(),
 		'translations'      => array_merge( \cBuilder\Classes\CCBTranslations::get_frontend_translations(), \cBuilder\Classes\CCBTranslations::get_backend_translations() ),
 		'pro_active'        => ccb_pro_active(),
 		'edit_pencil'       => CALC_URL . '/frontend/dist/img/edit_pencil.svg',

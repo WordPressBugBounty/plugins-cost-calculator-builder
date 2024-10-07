@@ -83,6 +83,8 @@ class CCBSettingsData {
 				'fields'               => array(),
 				'emailSubject'         => '',
 				'contactFormId'        => '',
+				'formType'             => 'cost-calculator',
+				'applyFormId'          => '',
 				'accessEmail'          => false,
 				'adminEmailAddress'    => '',
 				'formulas'             => array(),
@@ -423,11 +425,17 @@ class CCBSettingsData {
 				'icon'  => 'ccb-icon-sticky-calc',
 			),
 			array(
-				'type'         => 'pro',
+				'type'         => 'basic',
 				'title'        => __( 'Order Form', 'cost-calculator-builder' ),
 				'slug'         => 'send-form',
 				'icon'         => 'ccb-icon-XMLID_426',
 				'icon-warning' => 'ccb-error-icon',
+			),
+			array(
+				'type'  => 'basic',
+				'title' => __( 'Form Manager', 'cost-calculator-builder' ),
+				'slug'  => 'form-manager',
+				'icon'  => '',
 			),
 			array(
 				'type'  => 'pro',
@@ -435,7 +443,6 @@ class CCBSettingsData {
 				'slug'  => 'woo-products',
 				'icon'  => 'ccb-icon-Union-17',
 			),
-
 			array(
 				'type'  => 'pro',
 				'title' => __( 'Woo Checkout', 'cost-calculator-builder' ),

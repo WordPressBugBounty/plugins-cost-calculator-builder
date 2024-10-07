@@ -13,11 +13,14 @@ register_activation_hook(
 			add_option( 'ccb__redirect_active', true );
 
 			ccb_set_admin_url();
+			\cBuilder\Classes\Database\Forms::create_table();
 			\cBuilder\Classes\Database\Orders::create_table();
 			\cBuilder\Classes\Database\Payments::create_table();
 			\cBuilder\Classes\Database\Discounts::create_table();
 			\cBuilder\Classes\Database\Promocodes::create_table();
 			\cBuilder\Classes\Database\Condition::create_table();
+			\cBuilder\Classes\Database\FormFields::create_table();
+			\cBuilder\Classes\Database\FormFieldsAttributes::create_table();
 			\cBuilder\Classes\CCBCalculatorTemplates::render_templates();
 		}
 

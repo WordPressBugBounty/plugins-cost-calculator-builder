@@ -8,7 +8,7 @@
  * License: GNU General Public License v2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: cost-calculator-builder
- * Version: 3.2.32
+ * Version: 3.2.33
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -17,9 +17,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 define( 'CALC_DIR', __DIR__ );
 define( 'CALC_FILE', __FILE__ );
-define( 'CALC_VERSION', '3.2.32' );
+define( 'CALC_VERSION', '3.2.33' );
 define( 'CALC_WP_TESTED_UP', '6.6.1' );
-define( 'CALC_DB_VERSION', '3.2.26' );
+define( 'CALC_DB_VERSION', '3.2.33' );
 define( 'CALC_PATH', dirname( CALC_FILE ) );
 define( 'CALC_URL', plugins_url( '', CALC_FILE ) );
 
@@ -91,8 +91,12 @@ require_once CALC_PATH . '/includes/classes/CCBDiscountController.php';
 require_once CALC_PATH . '/includes/classes/CCBOrderController.php';
 require_once CALC_PATH . '/includes/classes/CCBAdminActions.php';
 require_once CALC_PATH . '/includes/classes/CCBEmbedCalculator.php';
+require_once CALC_PATH . '/includes/classes/CCBForms.php';
 require_once CALC_PATH . '/includes/classes/vendor/DataBaseModel.php';
 require_once CALC_PATH . '/includes/classes/models/Orders.php';
+require_once CALC_PATH . '/includes/classes/models/Forms.php';
+require_once CALC_PATH . '/includes/classes/models/FormFields.php';
+require_once CALC_PATH . '/includes/classes/models/FormFieldsAttributes.php';
 require_once CALC_PATH . '/includes/classes/models/Payments.php';
 require_once CALC_PATH . '/includes/classes/models/Discounts.php';
 require_once CALC_PATH . '/includes/classes/models/Condition.php';
@@ -100,6 +104,7 @@ require_once CALC_PATH . '/includes/classes/models/Promocodes.php';
 require_once CALC_PATH . '/includes/helpers/CCBCleanHelper.php';
 require_once CALC_PATH . '/includes/helpers/CCBConditionsHelper.php';
 require_once CALC_PATH . '/includes/helpers/CCBFieldsHelper.php';
+require_once CALC_PATH . '/includes/helpers/CCBOrderFormFieldsHelper.php';
 require_once CALC_PATH . '/includes/classes/appearance/autoload.php';
 require_once CALC_PATH . '/widgets/CCB_VC.php';
 require_once CALC_PATH . '/includes/widget.php';

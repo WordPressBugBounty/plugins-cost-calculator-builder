@@ -8,17 +8,28 @@ class DataBaseModel {
 
 	/**
 	 * Generate Table Name from Called Class
+	 *
 	 * @return string
 	 */
-	public static function _table() { //phpcs:ignore
+	public static function _table() {
 		global $wpdb;
-		$classname = explode( '\\', strtolower( get_called_class() ) );
-		$tablename = self::$table_prefix . end( $classname );
+		$classname = get_called_class();
+
+		// Get only the class name part
+		$classname_parts = explode( '\\', $classname );
+		$classname       = end( $classname_parts );
+
+		// Convert class name to snake_case
+		$classname = preg_replace( '/(?<!^)[A-Z]/', '_$0', $classname );
+		$classname = strtolower( $classname );
+
+		$tablename = self::$table_prefix . $classname;
 		return $wpdb->prefix . $tablename;
 	}
 
 	/**
 	 * Insert data to Table
+	 *
 	 * @param $data
 	 */
 	public static function insert( $data ) {
@@ -47,6 +58,7 @@ class DataBaseModel {
 
 	/**
 	 * Update data in Table with $where clouse
+	 *
 	 * @param $data
 	 * @param $where
 	 */
@@ -75,6 +87,7 @@ class DataBaseModel {
 
 	/**
 	 * Delete data from Table by ID
+	 *
 	 * @param $id
 	 * @return mixed
 	 */
@@ -87,6 +100,7 @@ class DataBaseModel {
 
 	/**
 	 * Get inserted data ID
+	 *
 	 * @return int
 	 */
 	public static function insert_id() {
@@ -96,6 +110,7 @@ class DataBaseModel {
 
 	/**
 	 * Replace the 'NULL' string with NULL
+	 *
 	 * @param string $query
 	 * @return string $query
 	 */
@@ -105,6 +120,7 @@ class DataBaseModel {
 
 	/**
 	 * SQL Fetch from Table
+	 *
 	 * @param $key
 	 * @param $value
 	 * @return mixed
@@ -117,6 +133,7 @@ class DataBaseModel {
 
 	/**
 	 * Get Row by ID
+	 *
 	 * @param $key
 	 * @param $value
 	 * @return mixed

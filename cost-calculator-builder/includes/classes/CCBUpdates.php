@@ -109,6 +109,9 @@ class CCBUpdates {
 		'3.2.26' => array(
 			'ccb_sync_general_settings',
 		),
+		'3.2.33' => array(
+			'ccb_order_form_fields_database_tables_create',
+		),
 	);
 
 	public static function init() {

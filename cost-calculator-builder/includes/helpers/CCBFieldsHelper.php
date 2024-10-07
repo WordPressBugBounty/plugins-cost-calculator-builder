@@ -62,6 +62,26 @@ class CCBFieldsHelper {
 		return $templates;
 	}
 
+	public static function get_order_fields_templates( $settings = array(), $general_settings = array(), $calc_id = null ) {
+		$templates = array();
+
+		if ( ccb_pro_active() ) {
+			$templates['order-name']           = CCBProTemplate::load( 'frontend/order-fields/order-name' );
+			$templates['order-email']          = CCBProTemplate::load( 'frontend/order-fields/order-email' );
+			$templates['order-phone']          = CCBProTemplate::load( 'frontend/order-fields/order-phone' );
+			$templates['order-input-textbox']  = CCBProTemplate::load( 'frontend/order-fields/order-input-textbox' );
+			$templates['order-textarea']       = CCBProTemplate::load( 'frontend/order-fields/order-textarea' );
+			$templates['order-number']         = CCBProTemplate::load( 'frontend/order-fields/order-number' );
+			$templates['order-dropdown']       = CCBProTemplate::load( 'frontend/order-fields/order-dropdown' );
+			$templates['order-radio']          = CCBProTemplate::load( 'frontend/order-fields/order-radio' );
+			$templates['order-checkbox']       = CCBProTemplate::load( 'frontend/order-fields/order-checkbox' );
+			$templates['order-formatted-text'] = CCBProTemplate::load( 'frontend/order-fields/order-formatted-text' );
+			$templates['order-space']          = CCBProTemplate::load( 'frontend/order-fields/order-space' );
+		}
+
+		return $templates;
+	}
+
 	/**
 	 * Get all possible fields
 	 *

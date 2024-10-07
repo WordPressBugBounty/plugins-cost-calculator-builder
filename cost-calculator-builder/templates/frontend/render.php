@@ -78,9 +78,7 @@ if ( ! empty( $settings['thankYouPage']['page_id'] ) ) {
 	$settings['thankYouPage']['page_url'] = get_permalink( $settings['thankYouPage']['page_id'] );
 }
 
-if ( ! empty( $settings['sendFormFields'] ) && ! empty( $settings['formFields'] ) && ! empty( $settings['sendFormRequires'] ) && ! empty( $settings['texts']['form_fields'] ) ) {
-	$settings['sendFormFields']       = apply_filters( 'ccb_contact_form_add_sendform_fields', $settings['sendFormFields'] );
-	$settings['sendFormRequires']     = apply_filters( 'ccb_contact_form_add_requires', $settings['sendFormRequires'] );
+if ( ! empty( $settings['formFields'] ) && ! empty( $settings['texts']['form_fields'] ) ) {
 	$settings['texts']['form_fields'] = apply_filters( 'ccb_contact_form_add_text_form_fields', $settings['texts']['form_fields'] );
 }
 
@@ -118,6 +116,18 @@ if ( ! empty( $fields ) ) {
 	);
 }
 
+$form_id     = get_post_meta( $calc_id, 'form_id', true );
+$form_fields = array();
+$form_data   = array();
+if ( '' !== $form_id ) {
+	$form_fields = \cBuilder\Classes\Database\FormFields::get_active_fields( $form_id );
+	$form_data   = array(
+		'form_id'   => $form_id,
+		'form_name' => \cBuilder\Classes\Database\Forms::get_form_name( $form_id ),
+	);
+}
+
+
 $geolocation = isset( $general_settings['geolocation'] ) ? $general_settings['geolocation'] : array();
 
 if ( isset( $general_settings['invoice'] ) ) {
@@ -133,6 +143,8 @@ $data = array(
 	'currency'      => ccb_parse_settings( $settings ),
 	'geolocation'   => $geolocation,
 	'fields'        => $fields,
+	'form_fields'   => $form_fields,
+	'form_data'     => $form_data,
 	'formula'       => get_post_meta( $calc_id, 'stm-formula', true ),
 	'conditions'    => apply_filters( 'calc-render-conditions', array(), $calc_id ), // phpcs:ignore WordPress.NamingConventions.ValidHookName.UseUnderscores
 	'language'      => $language,

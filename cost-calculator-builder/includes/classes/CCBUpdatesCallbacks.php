@@ -5,6 +5,10 @@ namespace cBuilder\Classes;
 use cBuilder\Classes\Appearance\Presets\CCBPresetGenerator;
 use cBuilder\Classes\Database\Orders;
 use cBuilder\Classes\Database\Payments;
+use cBuilder\Classes\Database\Forms;
+use cBuilder\Classes\Database\FormCalcs;
+use cBuilder\Classes\Database\FormFields;
+use cBuilder\Classes\Database\FormFieldsAttributes;
 
 class CCBUpdatesCallbacks {
 
@@ -1049,6 +1053,24 @@ class CCBUpdatesCallbacks {
 
 			update_post_meta( $calculator->ID, 'stm-fields', (array) $fields );
 		}
+	}
+
+	public static function ccb_order_form_fields_database_tables_create() {
+		global $wpdb;
+		Forms::create_table();
+		FormFields::create_table();
+		FormFieldsAttributes::create_table();
+		$orders_table = Orders::_table();
+		// phpcs:disable
+		$wpdb->query(
+			$wpdb->prepare(
+				"ALTER TABLE {$orders_table}
+				ADD COLUMN form_id INT UNSIGNED NULL AFTER form_details;"
+			)
+		);
+		// phpcs:enable
+
+		Forms::create_default_forms();
 	}
 
 	public static function ccb_update_paypal_data() {

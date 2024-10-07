@@ -21,6 +21,8 @@ class Orders extends DataBaseModel {
 
 		$table_name  = self::_table();
 		$primary_key = self::$primary_key;
+		$forms_table = Forms::_table();
+		$form_id     = Forms::$primary_key;
 
 		$sql = "CREATE TABLE IF NOT EXISTS {$table_name} (
 			id INT UNSIGNED NOT NULL AUTO_INCREMENT,

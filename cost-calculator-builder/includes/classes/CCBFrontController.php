@@ -257,8 +257,9 @@ class CCBFrontController {
 			$custom_sticky = is_null( $sticky ) ? $custom : $sticky;
 			self::ccb_add_custom_data( $calc_id, $custom_sticky, $settings, $general_settings, $custom_action );
 
-			$templates = \cBuilder\Helpers\CCBFieldsHelper::get_fields_templates( $settings, $general_settings );
-			$payments  = array();
+			$templates       = \cBuilder\Helpers\CCBFieldsHelper::get_fields_templates( $settings, $general_settings );
+			$order_templates = \cBuilder\Helpers\CCBFieldsHelper::get_order_fields_templates( $settings, $general_settings );
+			$payments        = array();
 
 			if ( ccb_pro_active() ) {
 				$payments = \cBuilder\Classes\CCBProSettings::get_payments();
@@ -272,6 +273,7 @@ class CCBFrontController {
 					'ajax_url'         => admin_url( 'admin-ajax.php' ),
 					'language'         => $language,
 					'templates'        => $templates,
+					'order_templates'  => $order_templates,
 					'pro_active'       => ccb_pro_active(),
 					'the_id'           => get_the_ID(),
 					'payments'         => $payments,

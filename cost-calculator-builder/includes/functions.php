@@ -48,6 +48,12 @@ function ccb_update_calc_new_values( $data ) {
 		}
 
 		$woo_products_enabled = isset( $data['settings']['woo_products']['enable'] ) && filter_var( $data['settings']['woo_products']['enable'], FILTER_VALIDATE_BOOLEAN );
+
+		if ( $data['settings']['formFields']['applyFormId'] && intval( $data['settings']['formFields']['applyFormId'] ) > 0 ) {
+			$form_id = $data['settings']['formFields']['applyFormId'];
+			update_post_meta( $data['id'], 'form_id', $form_id );
+		}
+
 		ccb_update_woocommerce_calcs( $data['id'], ! $woo_products_enabled );
 		return true;
 	}

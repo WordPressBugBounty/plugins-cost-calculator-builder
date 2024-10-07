@@ -8,15 +8,15 @@ use cBuilder\Classes\CCBEmbedCalculator;
 class CCBAjaxAction {
 
 	/**
-	 * @param string $tag The name of the action to which the $function_to_add is hooked.
+	 * @param string   $tag The name of the action to which the $function_to_add is hooked.
 	 * @param callable $function_to_add The name of the function you wish to be called.
-	 * @param boolean $nonpriv Optional. Boolean argument for adding wp_ajax_nopriv_action. Default false.
-	 * @param int $priority Optional. Used to specify the order in which the functions
-	 *                                  associated with a particular action are executed. Default 10.
-	 *                                  Lower numbers correspond with earlier execution,
-	 *                                  and functions with the same priority are executed
-	 *                                  in the order in which they were added to the action.
-	 * @param int $accepted_args Optional. The number of arguments the function accepts. Default 1.
+	 * @param boolean  $nonpriv Optional. Boolean argument for adding wp_ajax_nopriv_action. Default false.
+	 * @param int      $priority Optional. Used to specify the order in which the functions
+	 *                                       associated with a particular action are executed. Default 10.
+	 *                                       Lower numbers correspond with earlier execution,
+	 *                                       and functions with the same priority are executed
+	 *                                       in the order in which they were added to the action.
+	 * @param int      $accepted_args Optional. The number of arguments the function accepts. Default 1.
 	 * @return true Will always return true.
 	 */
 
@@ -99,5 +99,14 @@ class CCBAjaxAction {
 
 		self::addAction( 'save_pickup_icon', array( CCBAdminActions::class, 'upload_pickup_icon' ) );
 		self::addAction( 'save_marker_icon', array( CCBAdminActions::class, 'upload_marker_icon' ) );
+
+		/** Form Manager actions */
+		self::addAction( 'calc_forms_list', array( CCBForms::class, 'get_all_forms' ) );
+		self::addAction( 'calc_active_form_fields', array( CCBForms::class, 'get_active_form_fields' ) );
+		self::addAction( 'calc_apply_form_id', array( CCBForms::class, 'apply_form_id' ) );
+		self::addAction( 'calc_create_default_form', array( CCBForms::class, 'create_default_form' ) );
+		self::addAction( 'calc_update_form', array( CCBForms::class, 'update_form' ) );
+		self::addAction( 'calc_duplicate_form', array( CCBForms::class, 'duplicate_form' ) );
+		self::addAction( 'calc_delete_form', array( CCBForms::class, 'delete_form' ) );
 	}
 }

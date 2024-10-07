@@ -5,7 +5,10 @@ namespace cBuilder\Classes;
 use cBuilder\Classes\Appearance\CCBAppearanceHelper;
 use cBuilder\Classes\Appearance\Presets\CCBPresetGenerator;
 use cBuilder\Classes\Database\Discounts;
+use cBuilder\Classes\Database\FormFields;
+use cBuilder\Classes\Database\Forms;
 use cBuilder\Helpers\CCBFieldsHelper;
+use cBuilder\Helpers\CCBOrderFormFieldsHelper;
 
 class CCBCalculators {
 
@@ -98,11 +101,15 @@ class CCBCalculators {
 		if ( ! empty( $params['calc_id'] ) ) {
 			$calc_id = (int) sanitize_text_field( $params['calc_id'] );
 
-			$result['id']         = $calc_id;
-			$result['title']      = get_post_meta( $calc_id, 'stm-name', true );
-			$result['fields']     = CCBFieldsHelper::fields();
-			$result['formula']    = get_post_meta( $calc_id, 'stm-formula', true );
-			$result['conditions'] = get_post_meta( $calc_id, 'stm-conditions', true );
+			$result['id']                = $calc_id;
+			$result['title']             = get_post_meta( $calc_id, 'stm-name', true );
+			$result['fields']            = CCBFieldsHelper::fields();
+			$result['order_form_fields'] = CCBOrderFormFieldsHelper::order_form_fields();
+			$result['activeFormId']      = CCBOrderFormFieldsHelper::get_active_form_id( $calc_id );
+			$result['order_forms']       = Forms::get_all_forms();
+			$result['order_active_form_fields'] = FormFields::get_active_fields( $result['activeFormId'] );
+			$result['formula']           = get_post_meta( $calc_id, 'stm-formula', true );
+			$result['conditions']        = get_post_meta( $calc_id, 'stm-conditions', true );
 
 			$result['saved']  = get_post_meta( $calc_id, 'calc_saved', true );
 			$general_settings = CCBSettingsData::get_calc_global_settings();
@@ -330,6 +337,7 @@ class CCBCalculators {
 
 	/**
 	 * Duplicate target calc
+	 *
 	 * @param $calc_id
 	 * @return array
 	 */
@@ -379,14 +387,15 @@ class CCBCalculators {
 		);
 
 		$result = array(
-			'id'           => $id,
-			'url'          => admin_url( 'admin.php' ) . '?page=cost_calculator_builder&action=edit&id=' . $id,
-			'success'      => true,
-			'forms'        => ccb_contact_forms(),
-			'products'     => ccb_woo_products(),
-			'categories'   => ccb_woo_categories(),
-			'fields'       => CCBFieldsHelper::fields(),
-			'desc_options' => array(
+			'id'                => $id,
+			'url'               => admin_url( 'admin.php' ) . '?page=cost_calculator_builder&action=edit&id=' . $id,
+			'success'           => true,
+			'forms'             => ccb_contact_forms(),
+			'products'          => ccb_woo_products(),
+			'categories'        => ccb_woo_categories(),
+			'fields'            => CCBFieldsHelper::fields(),
+			'order_form_fields' => CCBOrderFormFieldsHelper::order_form_fields(),
+			'desc_options'      => array(
 				self::DESC_POSITION_BEFORE => __( 'Show before field', 'cost-calculator-builder' ),
 				self::DESC_POSITION_AFTER  => __( 'Show after field', 'cost-calculator-builder' ),
 			),
@@ -780,6 +789,7 @@ class CCBCalculators {
 
 	/**
 	 * Return ready array for response
+	 *
 	 * @return array
 	 */
 	public static function get_calculator_list( $params = array() ) {
