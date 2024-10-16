@@ -98,7 +98,10 @@ class CCBTranslations {
 			'affects_by_other_field'         => esc_html__( 'Affected by other fields', 'cost-calculator-builder' ),
 			'format_error'                   => sprintf( '%s <br> %s', __( 'File format is not supported.', 'cost-calculator-builder' ), __( 'Supported file formats: JPG, PNG', 'cost-calculator-builder' ) ),
 			'primary_means_of_communication' => esc_html__( 'Primary mean of communication', 'cost-calculator-builder' ),
-
+			'order_no_payment'               => esc_html__( 'No Payment', 'cost-calculator-builder' ),
+			'order_cash_payment'             => esc_html__( 'Cash Payment', 'cost-calculator-builder' ),
+			'order_status_pending'           => esc_html__( 'Pending', 'cost-calculator-builder' ),
+			'order_status_complete'          => esc_html__( 'Complete', 'cost-calculator-builder' ),
 		);
 
 		return $translations;

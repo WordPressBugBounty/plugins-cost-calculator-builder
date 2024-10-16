@@ -6,7 +6,7 @@ Tags: cost calculator, calculator, calculator form builder, cost estimation, shi
 Requires at least: 4.6
 Requires PHP: 5.6
 Tested up to: 6.6.1
-Stable tag: 3.2.33
+Stable tag: 3.2.34
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -163,8 +163,17 @@ Demo sample XML file included in plugin archive.
 
 == Changelog ==
 
+= 3.2.34 =
+ - Enhancement: Upgraded Range and Multi-Range fields with an option to display Range Value or Summary Value in the subtotal above the slider. (Pro)
+ - Enhancement: Added an option to manage the visibility of min-max descriptions on Quantity fields.
+ - Enhancement: Added 6 new elements on Pro Features page: Group Element, Discounts, Geolocation Element, Validated Form, Sticky Calculator, and Page Breaker.
+ - Enhancement: Added multilingual support with new translations for Spanish, Portuguese, German, French, and Italian.
+ - Enhancement: Updated the HTML field, allowing users to change or add a name.
+ - Enhancement: Introduced Page Breaker element to the Upgrade Page.
+ - Fix: Resolved the issue with unclickable checkboxes in both the dropdown menu of Embed Calculator and the WooProducts dropdown.
+
 = 3.2.33 =
-Enhancement: Added Order Form Manager with 8 new fields: Input textbox, Text area, Number, Dropdown, Radio, Checkbox, Formatted text, Space (Pro).
+- Enhancement: Added Order Form Manager with 8 new fields: Input textbox, Text area, Number, Dropdown, Radio, Checkbox, Formatted text, Space (Pro).
 
 = 3.2.32 =
 - Fix: When clicking on the hint, the checkbox hint window extends beyond the calculator container in mobile view:

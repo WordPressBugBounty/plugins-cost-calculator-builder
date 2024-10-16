@@ -141,6 +141,25 @@
 						</div>
 					</div>
 				</div>
+				<div class="row ccb-p-t-15" v-if="rangeField.multiply">
+					<div class="col-12">
+						<div class="list-header">
+							<div class="ccb-switch">
+								<input type="checkbox" v-model="rangeField.multipliedTotal"/>
+								<label></label>
+							</div>
+							<h6 class="ccb-heading-5"><?php esc_html_e( 'Show multiplied value instead of subtotal', 'cost-calculator-builder' ); ?></h6>
+							<span class="ccb-help-tip-block" style="margin-top: 2px;">
+								<span class="ccb-help-label ccb-help-label-range" ><?php esc_html_e( 'Preview', 'cost-calculator-builder' ); ?></span>
+								<span class="ccb-help ccb-help-settings" style="left: -50%; bottom: 20px;">
+									<span class="ccb-help-content">
+										<img src="<?php echo esc_url( CALC_URL . '/frontend/dist/img/preview/range.png' ); ?>" alt="Show multiplied value instead of subtotal">
+									</span>
+								</span>
+							</span>
+						</div>
+					</div>
+				</div>
 				<div class="row ccb-p-t-15" v-if="errorsCount > 0">
 					<div class="col-12">
 						<div class="ccb-notice ccb-error">

@@ -50,6 +50,11 @@ if ( is_admin() ) {
 	add_action(
 		'init',
 		function () {
+			if ( ! is_textdomain_loaded( 'cost-calculator-builder' ) ) {
+				$mo_file_path = CALC_PATH . '/languages/cost-calculator-builder-' . determine_locale() . '.mo';
+				load_textdomain( 'cost-calculator-builder', $mo_file_path );
+			}
+
 			\cBuilder\Classes\CCBAjaxCallbacks::register_calc_hooks();
 		}
 	);

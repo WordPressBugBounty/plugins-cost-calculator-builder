@@ -221,6 +221,11 @@ $featuresCCB = array(
 		'free'    => false,
 		'pro'     => true,
 	),
+	array(
+		'feature' => 'Page Breaker (Step-by-Step calculator)',
+		'free'    => false,
+		'pro'     => true,
+	),
 );
 
 ?>

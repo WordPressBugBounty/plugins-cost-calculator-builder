@@ -30,7 +30,7 @@
 			<i class="ccb-icon-Path-3485"></i>
 		</span>
 	</div>
-	<div v-if="quantityField.hasOwnProperty('min') || quantityField.hasOwnProperty('max')" class="calc-item__description after">
+	<div v-if="(quantityField.hasOwnProperty('min') || quantityField.hasOwnProperty('max')) && !quantityField.hideMinMax" class="calc-item__description after">
 		<span v-if="quantityField.hasOwnProperty('min') && quantityField.min.length > 0">
 			<?php esc_html_e( 'Min', 'cost-calculator-builder' ); ?>: {{ minText }}
 		</span>

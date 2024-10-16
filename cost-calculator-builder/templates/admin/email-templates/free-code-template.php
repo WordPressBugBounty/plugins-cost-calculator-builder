@@ -7,10 +7,8 @@
 	<meta name="x-apple-disable-message-reformatting">
 	<title>Cost Calculator Free Templates</title>
 
-	<link rel="preconnect" href="https://stijndv.com"> <?php // phpcs:ignore?>
-	<link rel="stylesheet" href="https://stijndv.com/fonts/Eudoxus-Sans.css"> <?php // phpcs:ignore?>
-
 	<style>
+		@import url('https://fonts.googleapis.com/css2?family=Eudoxus+Sans:wght@400;500;700&display=swap');
 		html,
 		body {
 			margin: 0 auto !important;

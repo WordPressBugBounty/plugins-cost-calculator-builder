@@ -552,7 +552,7 @@ class CCBOrderController {
 				$order['num_after_integer']   = '';
 
 				$order['wc_link']           = '';
-				$order['paymentMethodType'] = 'No Payment';
+				$order['paymentMethodType'] = esc_html__( 'No Payment', 'cost-calculator-builder' );
 
 				if ( 'stripe' === $order['paymentMethod'] ) {
 					$order['paymentMethodType'] = '<img class="ccb-logo ccb-logo-stripe" src="' . esc_url( CALC_URL . '/frontend/dist/img/stripe.svg' ) . '">';
@@ -571,7 +571,7 @@ class CCBOrderController {
 				}
 
 				if ( 'cash_payment' === $order['paymentMethod'] ) {
-					$order['paymentMethodType'] = 'Cash Payment';
+					$order['paymentMethodType'] = esc_html__( 'Cash Payment', 'cost-calculator-builder' );
 				}
 
 				if ( 'woocommerce' === $order['paymentMethod'] && ! empty( $order['transaction'] ) ) {
@@ -694,7 +694,7 @@ class CCBOrderController {
 			$order['num_after_integer']   = '';
 
 			$order['wc_link']           = '';
-			$order['paymentMethodType'] = 'No Payment';
+			$order['paymentMethodType'] = esc_html__( 'No Payment', 'cost-calculator-builder' );
 
 			if ( 'stripe' === $order['paymentMethod'] ) {
 				$order['paymentMethodType'] = '<img class="ccb-logo ccb-logo-stripe" src="' . esc_url( CALC_URL . '/frontend/dist/img/stripe.svg' ) . '">';
@@ -713,7 +713,7 @@ class CCBOrderController {
 			}
 
 			if ( 'cash_payment' === $order['paymentMethod'] ) {
-				$order['paymentMethodType'] = 'Cash Payment';
+				$order['paymentMethodType'] = esc_html__( 'Cash Payment', 'cost-calculator-builder' );
 			}
 
 			if ( 'woocommerce' === $order['paymentMethod'] && ! empty( $order['transaction'] ) ) {

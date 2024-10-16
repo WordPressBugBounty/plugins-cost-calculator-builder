@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'ccb-fonts';
-  src:  url('fonts/ccb-fonts.eot?m2fbd9');
-  src:  url('fonts/ccb-fonts.eot?m2fbd9#iefix') format('embedded-opentype'),
-    url('fonts/ccb-fonts.ttf?m2fbd9') format('truetype'),
-    url('fonts/ccb-fonts.woff?m2fbd9') format('woff'),
-    url('fonts/ccb-fonts.svg?m2fbd9#ccb-fonts') format('svg');
+  src:  url('fonts/ccb-fonts.eot?94pbo3');
+  src:  url('fonts/ccb-fonts.eot?94pbo3#iefix') format('embedded-opentype'),
+    url('fonts/ccb-fonts.ttf?94pbo3') format('truetype'),
+    url('fonts/ccb-fonts.woff?94pbo3') format('woff'),
+    url('fonts/ccb-fonts.svg?94pbo3#ccb-fonts') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -531,9 +531,6 @@
   content: "\e972";
   color: #d94141;
 }
-.ccb-icon-Trash-outlined:before {
-  content: "\e973";
-}
 .ccb-icon-Trucking:before {
   content: "\e974";
 }
@@ -856,4 +853,7 @@
 }
 .ccb-icon-multi-step:before {
   content: "\ea11";
+}
+.ccb-icon-phone-solid:before {
+  content: "\ea12";
 }

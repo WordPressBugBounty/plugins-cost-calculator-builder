@@ -126,6 +126,15 @@
 						<h6 class="ccb-heading-5"><?php esc_html_e( 'Multiply (cost per value)', 'cost-calculator-builder' ); ?></h6>
 					</div>
 				</div>
+				<div class="col-6">
+					<div class="list-header">
+						<div class="ccb-switch">
+							<input type="checkbox" v-model="quantityField.hideMinMax"/>
+							<label></label>
+						</div>
+						<h6 class="ccb-heading-5"><?php esc_html_e( 'Hide Min/Max Values', 'cost-calculator-builder' ); ?></h6>
+					</div>
+				</div>
 			</div>
 			<div class="row ccb-p-t-15" v-if="quantityField.multiply">
 				<div class="col-12">
