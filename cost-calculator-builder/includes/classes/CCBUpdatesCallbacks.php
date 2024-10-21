@@ -1057,20 +1057,25 @@ class CCBUpdatesCallbacks {
 
 	public static function ccb_order_form_fields_database_tables_create() {
 		global $wpdb;
-		Forms::create_table();
-		FormFields::create_table();
-		FormFieldsAttributes::create_table();
 		$orders_table = Orders::_table();
-		// phpcs:disable
-		$wpdb->query(
-			$wpdb->prepare(
-				"ALTER TABLE {$orders_table}
-				ADD COLUMN form_id INT UNSIGNED NULL AFTER form_details;"
-			)
-		);
-		// phpcs:enable
 
-		Forms::create_default_forms();
+		if ( ! $wpdb->get_var( $wpdb->prepare( 'SHOW COLUMNS FROM `%1s` LIKE %s;', $orders_table, 'form_id' ) ) ) { // phpcs:ignore
+			Forms::create_table();
+			FormFields::create_table();
+			FormFieldsAttributes::create_table();
+
+			// phpcs:disable
+			$wpdb->query(
+				$wpdb->prepare(
+					"ALTER TABLE `%1s`
+				ADD COLUMN form_id INT UNSIGNED NULL AFTER form_details;",
+					$orders_table
+				)
+			);
+			// phpcs:enable
+
+			Forms::create_default_forms();
+		}
 	}
 
 	public static function ccb_update_paypal_data() {

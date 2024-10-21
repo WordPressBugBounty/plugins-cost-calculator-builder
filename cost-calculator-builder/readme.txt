@@ -6,7 +6,7 @@ Tags: cost calculator, calculator, calculator form builder, cost estimation, shi
 Requires at least: 4.6
 Requires PHP: 5.6
 Tested up to: 6.6.1
-Stable tag: 3.2.34
+Stable tag: 3.2.35
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -162,6 +162,10 @@ Also, you can import the demo sample using Tools -> Import -> WordPress Import.
 Demo sample XML file included in plugin archive.
 
 == Changelog ==
+
+= 3.2.35 =
+- Fix: Fixed Price manipulation vulnerability for enhanced security and integrity in calculations.
+- Fix: Corrected an issue where fields with ‘Show in Grand total’ setting disabled were not included in the order calculations.
 
 = 3.2.34 =
  - Enhancement: Upgraded Range and Multi-Range fields with an option to display Range Value or Summary Value in the subtotal above the slider. (Pro)

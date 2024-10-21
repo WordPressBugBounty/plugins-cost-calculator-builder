@@ -106,11 +106,28 @@ class CCBOrderController {
 
 		self::validate( $data );
 
+		if ( empty( $data['id'] ) && empty( $data['totals'] ) && empty( $data['orderDetails'] ) ) {
+			wp_send_json( $result );
+		}
+
+		if ( ccb_pro_active() ) {
+			$data = CCBCalculator::validate_totals( $data );
+		}
+
 		/**
 		 *  if  order Id exist not create new one.
 		 *  Used just for stripe if card error was found
 		 */
 		if ( ! empty( $data['orderId'] ) ) {
+
+			$meta_data = array(
+				'converted'   => $data['converted'] ?? array(),
+				'totals'      => isset( $data['totals'] ) ? wp_json_encode( $data['totals'] ) : array(),
+				'otherTotals' => isset( $data['otherTotals'] ) ? wp_json_encode( $data['otherTotals'] ) : array(),
+			);
+
+			update_option( 'calc_meta_data_order_' . $data['orderId'], $meta_data );
+
 			$order = Orders::get( 'id', $data['orderId'] );
 			if ( null !== $order ) {
 				wp_send_json_success(
