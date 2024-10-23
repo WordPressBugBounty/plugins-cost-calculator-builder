@@ -6,12 +6,12 @@
 ?>
 
 
-<div :class="[totalField?.additionalStyles, 'sub-list-item total']" :id="field?.alias" v-show="!(field && field.hidden)" :style="getWrapperStyles">
-	<template v-if="field && !field.hasDiscount">
+<div :class="[totalField?.additionalStyles, 'sub-list-item total']" :id="field?.alias" v-show="isFieldVisible(field)" :style="getWrapperStyles">
+	<template v-if="isFieldWithoutDiscount(field)">
 		<span class="sub-item-title">{{ field.label === 'Total' ? '<?php esc_html_e( 'Total', 'cost-calculator-builder' ); ?>' : field.label }}</span>
 		<span class="sub-item-value" style="white-space: nowrap">{{ field.converted }}</span>
 	</template>
-	<template v-else-if="field && discount">
+	<template v-else-if="shouldApplyDiscount(field, discount)">
 		<template v-if="getDiscountViewType === 'show_without_title'">
 			<span class="sub-item-title">
 				<span class="ccb-discount-label">{{ field.label === 'Total' ? '<?php esc_html_e( 'Total', 'cost-calculator-builder' ); ?>' : field.label }}:</span>

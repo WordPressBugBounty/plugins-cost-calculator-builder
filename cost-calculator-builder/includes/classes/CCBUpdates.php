@@ -112,6 +112,9 @@ class CCBUpdates {
 		'3.2.33' => array(
 			'ccb_order_form_fields_database_tables_create',
 		),
+		'3.2.36' => array(
+			'ccb_order_off_autoload_for_meta_values',
+		),
 	);
 
 	public static function init() {

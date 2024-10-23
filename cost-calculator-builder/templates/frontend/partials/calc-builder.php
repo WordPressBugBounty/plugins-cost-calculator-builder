@@ -68,7 +68,7 @@ $styles = array(
 			</div>
 		</div>
 
-		<div class="calc-multi-step-title" v-if="showMultiStepCalcTitle && !loader && pageBreakEnabled" v-text="getTheTitle"></div>
+		<div class="calc-multi-step-title" v-if="showMultiStepTitle" v-text="getTheTitle"></div>
 
 		<div class="calc-fields calc-list calc-list__indexed" :class="{loaded: !loader, 'payment' : getHideCalc}">
 			<?php if ( is_user_logged_in() && current_user_can( 'administrator' ) ) : ?>
@@ -101,7 +101,7 @@ $styles = array(
 								<cost-total :value="item.total" :discount="item.discount" :field="item.data" :id="calc_data.id" @condition-apply="renderCondition"></cost-total>
 							</template>
 							<template v-for="item in pageBreakTotals">
-								<div v-if="formulaConst.length === 1 && typeof formulaConst[0].alias === 'undefined'" style="display: flex" class="sub-list-item total">
+								<div v-if="showFormulaConst" style="display: flex" class="sub-list-item total">
 									<span class="sub-item-title"><?php esc_html_e( 'Total', 'cost-calculator-builder' ); ?></span>
 									<span class="sub-item-value" style="white-space: nowrap">{{ item.data.converted }}</span>
 								</div>
@@ -127,7 +127,7 @@ $styles = array(
 			</div>
 		</div>
 		<div class="calc-subtotal calc-list" :id="getTotalStickyId" :class="{loaded: !loader}" v-if="!summaryInLastPage || !pageBreakEnabled">
-			<div class="calc-subtotal-wrapper" :class="{ 'calc-page-break-subtotal-wrapper': !checkLastPage && pageBreakEnabled}">
+			<div class="calc-subtotal-wrapper" :class="{ 'calc-page-break-subtotal-wrapper': isPageBreakAllowed}">
 				<div class="calc-list-inner">
 					<div class="calc-item-title calc-accordion" v-show="!summaryDisplay || showAfterSubmit">
 						<div class="ccb-calc-heading">
@@ -140,7 +140,7 @@ $styles = array(
 						<?php endif; ?>
 					</div>
 
-					<div class="calc-item-title calc-accordion" style="margin: 0 !important;" v-show="summaryDisplay && !showAfterSubmit">
+					<div class="calc-item-title calc-accordion" style="margin: 0 !important;" v-show="shouldDisplaySummary">
 						<div class="ccb-calc-heading" style="text-transform: none !important; padding-bottom: 15px; word-break: break-word;" v-text="summaryDisplaySettings?.form_title"></div>
 					</div>
 
@@ -152,7 +152,7 @@ $styles = array(
 									<span class="calc-subtotal-list-header__value"><?php esc_html_e( 'Total', 'cost-calculator-builder' ); ?></span>
 								</div>
 
-								<template v-for="(field) in getTotalSummaryFields" v-if="(!field.inRepeater || field.alias.includes('repeater')) && field.alias.indexOf('total') === -1 && settings && settings.general.descriptions">
+								<template v-for="(field) in getTotalSummaryFields" v-if="shouldProcessFieldWithSettings(field)">
 									<template v-if="field.alias.includes('repeater')">
 										<div class="calc-repeater-subtotal" v-for="(f, idx) in Object.values(field?.resultGrouped)">
 											<template v-if="getRepeaterFields(f)?.length">
@@ -165,7 +165,7 @@ $styles = array(
 													<template v-for="(innerField) in getRepeaterFields(f)">
 														<calc-total-summary :field="innerField" :style="{'padding-top': '6px'}"></calc-total-summary>
 														<calc-total-summary :field="innerField" :unit="true" v-if="innerField.option_unit" :style="{'padding-top': '5px'}"></calc-total-summary>
-														<calc-total-summary :field="innerField" :style="{'padding-top': '5px'}" :multi="true" v-if="['checkbox', 'toggle', 'checkbox_with_img'].includes(innerField.alias.replace(/\_field_id.*/,'')) && innerField.options?.length"></calc-total-summary>
+														<calc-total-summary :field="innerField" :style="{'padding-top': '5px'}" :multi="true" v-if="isCheckableFieldWithOptions(innerField)"></calc-total-summary>
 													</template>
 												</div>
 											</template>
@@ -181,19 +181,19 @@ $styles = array(
 												<calc-total-summary :field="field" :unit="true"></calc-total-summary>
 											</template>
 										</template>
-										<calc-total-summary :field="field" :multi="true" v-if="['checkbox', 'toggle', 'checkbox_with_img'].includes(field.alias.replace(/\_field_id.*/,'')) && field.options?.length"></calc-total-summary>
+										<calc-total-summary :field="field" :multi="true" v-if="isCheckableFieldWithOptions(field)"></calc-total-summary>
 									</template>
 								</template>
 							</div>
 						</transition>
 					</div>
 
-					<div class="calc-subtotal-list totals" style="margin-top: 20px; padding-top: 10px;" ref="calcTotals" :class="{'unit-enable': showUnitInSummary}" v-show="(!summaryDisplay || showAfterSubmit) && notHiddenTotalsList?.length">
+					<div class="calc-subtotal-list totals" style="margin-top: 20px; padding-top: 10px;" ref="calcTotals" :class="{'unit-enable': showUnitInSummary}" v-show="shouldShowSummaryOrTotals">
 						<template v-for="item in getRepeaterTotals">
 							<cost-total :value="item.total" :discount="item.discount" :field="item.data" :id="calc_data.id" @condition-apply="renderCondition"></cost-total>
 						</template>
 						<template v-for="item in formulaConst">
-							<div v-if="formulaConst.length === 1 && typeof formulaConst[0].alias === 'undefined'" style="display: flex" class="sub-list-item total">
+							<div v-if="isFormulaConstInvalid" style="display: flex" class="sub-list-item total">
 								<span class="sub-item-title"><?php esc_html_e( 'Total', 'cost-calculator-builder' ); ?></span>
 								<span class="sub-item-value" style="white-space: nowrap">{{ item.data.converted }}</span>
 							</div>
@@ -217,22 +217,26 @@ $styles = array(
 
 					<div class="calc-promocode-wrapper" v-if="hasPromocode" v-show="!summaryDisplay || showAfterSubmit">
 						<div class="promocode-header"></div>
-						<div class="promocode-body">
+						<div class="promocode-body ccb-promo-body">
 							<div class="calc-have-promocode">
-								<span><?php esc_html_e( 'Have a promocode?', 'cost-calculator-builder' ); ?></span>
+								<span><?php esc_html_e( 'Have a promo code?', 'cost-calculator-builder' ); ?></span>
 							</div>
 							<div class="calc-item ccb-field ccb-field-quantity">
 								<div class="calc-item__title" style="display: flex; align-items: center; column-gap: 10px">
-									<span><?php esc_html_e( 'Promocode', 'cost-calculator-builder' ); ?></span>
-									<span class="ccb-promocode-hint" v-if="showPromocode" @click.stop="showPromocode = !showPromocode"><?php esc_html_e( 'Hide', 'cost-calculator-builder' ); ?></span>
-									<span class="ccb-promocode-hint" v-if="!showPromocode" @click.stop="showPromocode = !showPromocode"><?php esc_html_e( 'Show', 'cost-calculator-builder' ); ?></span>
+									<div class="promocode-error-tip" v-if="showPromocode" :class="{active: discountError !== ''}">
+										<span v-if="discountError === 'invalid'" :class="{active: discountError !== ''}" class="ccb-error-tip front default"><?php esc_html_e( 'Invalid promo code', 'cost-calculator-builder' ); ?></span>
+										<span v-if="discountError === 'not_exist'" :class="{active: discountError !== ''}" class="ccb-error-tip front default"><?php esc_html_e( 'Promo code does not exist', 'cost-calculator-builder' ); ?></span>
+										<span v-if="discountError === 'used'" :class="{active: discountError !== ''}" class="ccb-error-tip front default"><?php esc_html_e( 'Promo code is already applied', 'cost-calculator-builder' ); ?></span>
+									</div>
+									<div class="promocode-label">
+										<span><?php esc_html_e( 'Promo code', 'cost-calculator-builder' ); ?></span>
+										<span class="ccb-promocode-hint" v-if="showPromocode" @click.stop="showPromocode = !showPromocode"><?php esc_html_e( 'Hide', 'cost-calculator-builder' ); ?></span>
+										<span class="ccb-promocode-hint" v-if="!showPromocode" @click.stop="showPromocode = !showPromocode"><?php esc_html_e( 'Show', 'cost-calculator-builder' ); ?></span>
+									</div>
 								</div>
 								<template v-if="showPromocode">
 									<div class="calc-promocode-container">
 										<div class="calc-input-wrapper ccb-field" :class="{required: discountError !== ''}">
-											<span v-if="discountError === 'invalid'" :class="{active: discountError !== ''}" class="ccb-error-tip front default"><?php esc_html_e( 'Invalid promocode', 'cost-calculator-builder' ); ?></span>
-											<span v-if="discountError === 'not_exist'" :class="{active: discountError !== ''}" class="ccb-error-tip front default"><?php esc_html_e( 'Promocode not exists', 'cost-calculator-builder' ); ?></span>
-											<span v-if="discountError === 'used'" :class="{active: discountError !== ''}" class="ccb-error-tip front default"><?php esc_html_e( 'Promo code is already applied', 'cost-calculator-builder' ); ?></span>
 											<input type="text" v-model="promocode" @input="discountError = ''" class="calc-input ccb-field ccb-appearance-field">
 										</div>
 										<button class="calc-btn-action ispro-wrapper success" @click.stop="applyPromocode">
@@ -241,7 +245,7 @@ $styles = array(
 									</div>
 
 									<div class="calc-applied" v-if="usedPromocodes?.length">
-										<span class="calc-applied-title"><?php esc_html_e( 'Applied promocodes:', 'cost-calculator-builder' ); ?></span>
+										<span class="calc-applied-title"><?php esc_html_e( 'Applied promo codes:', 'cost-calculator-builder' ); ?></span>
 										<div class="ccb-promocodes-list">
 											<span v-for="promocode in usedPromocodes" class="ccb-promocode">
 												{{ promocode }}
@@ -261,7 +265,7 @@ $styles = array(
 					</div>
 				</div>
 
-				<div class="calc-list-inner calc-notice" :class="noticeData.type" v-show="getStep === 'notice' || (getStep === 'finish' && !hideThankYouPage)" style="margin-top: 10px !important;">
+				<div class="calc-list-inner calc-notice" :class="noticeData.type" v-show="shouldHideThankYouPage" style="margin-top: 10px !important;">
 					<calc-notices :notice="noticeData"/>
 				</div>
 			</div>

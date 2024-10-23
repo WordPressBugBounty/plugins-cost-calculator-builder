@@ -198,7 +198,7 @@
 							<h6 class="ccb-heading-5"><?php esc_html_e( 'Hidden by Default', 'cost-calculator-builder' ); ?></h6>
 						</div>
 					</div>
-					<div class="col-6 ccb-p-t-10">
+					<div class="col-6 ccb-p-t-10" v-if="!disableFieldHiddenByDefault(rangeField)">
 						<div class="list-header">
 							<div class="ccb-switch">
 								<input type="checkbox" v-model="rangeField.calculateHidden"/>

@@ -6,11 +6,11 @@
 	</div>
 	<div v-if="calc_data" class="calc-fields-container">
 		<template v-for="field in calc_data.fields">
-			<template v-if="field && field.alias && field.type !== 'Total' && !field.alias.includes( 'group' )">
+			<template v-if="shouldDisplayField(field)">
 				<component
 						format="<?php esc_attr( $get_date_format ); ?>"
 						text-days="<?php esc_attr_e( 'days', 'cost-calculator-builder' ); ?>"
-						v-if="fields[field.alias] && !field.group_id"
+						v-if="checkField(field)"
 						:is="field._tag"
 						:id="calc_data.id"
 						:field="field"
@@ -26,11 +26,11 @@
 				>
 				</component>
 			</template>
-			<template v-if="field.alias && field.alias.includes('group')">
+			<template v-if="isGroupField(field)">
 				<component
 						format="<?php esc_attr( $get_date_format ); ?>"
 						text-days="<?php esc_attr_e( 'days', 'cost-calculator-builder' ); ?>"
-						v-if="fields[field.alias] && !field.group_id"
+						v-if="checkField(field)"
 						:is="field._tag"
 						:id="calc_data.id"
 						:field="field"
@@ -49,7 +49,7 @@
 							<component
 									format="<?php esc_attr( $get_date_format ); ?>"
 									text-days="<?php esc_attr_e( 'days', 'cost-calculator-builder' ); ?>"
-									v-if="fields[element.alias] && element.group_id === field.alias"
+									v-if="isFieldInGroup(element, field)"
 									:is="element._tag"
 									:id="calc_data.id"
 									:field="element"
@@ -68,7 +68,7 @@
 					</slot>
 				</component>
 			</template>
-			<template v-else-if="field && !field.alias && field.type !== 'Total'">
+			<template v-else-if="isValidField(field)">
 				<component
 						:id="calc_data.id"
 						style="boxStyle"

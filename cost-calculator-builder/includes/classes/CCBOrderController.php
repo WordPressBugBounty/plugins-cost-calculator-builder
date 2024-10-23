@@ -309,7 +309,7 @@ class CCBOrderController {
 				'otherTotals' => isset( $data['otherTotals'] ) ? wp_json_encode( $data['otherTotals'] ) : array(),
 			);
 
-			update_option( 'calc_meta_data_order_' . $id, $meta_data );
+			update_option( 'calc_meta_data_order_' . $id, $meta_data, false );
 
 			do_action( 'ccb_order_created', $order_data, $payment_data );
 

@@ -9,11 +9,11 @@
 			<div class="calc-page" v-for="( page, index ) in getPages" v-show="index == activePageIndex"
 				 :class="page.boxStyle">
 				<template v-for="field in page.groupElements">
-					<template v-if="field && field.alias && field.type !== 'Total' && !field.alias.includes('group')">
+					<template v-if="shouldDisplayField(field)">
 						<component
 								format="<?php esc_attr( $get_date_format ); ?>"
 								text-days="<?php esc_attr_e( 'days', 'cost-calculator-builder' ); ?>"
-								v-if="fields[field.alias] && !field.group_id"
+								v-if="checkField(field)"
 								:is="field._tag"
 								:id="calc_data.id"
 								:field="field"
@@ -29,11 +29,11 @@
 						>
 						</component>
 					</template>
-					<template v-if="field.alias && field.alias.includes( 'group' )">
+					<template v-if="isGroupField(field)">
 						<component
 								format="<?php esc_attr( $get_date_format ); ?>"
 								text-days="<?php esc_attr_e( 'days', 'cost-calculator-builder' ); ?>"
-								v-if="fields[field.alias] && !field.group_id"
+								v-if="checkField(field)"
 								:is="field._tag"
 								:id="calc_data.id"
 								:field="field"
@@ -52,7 +52,7 @@
 									<component
 											format="<?php esc_attr( $get_date_format ); ?>"
 											text-days="<?php esc_attr_e( 'days', 'cost-calculator-builder' ); ?>"
-											v-if="fields[element.alias] && !element.alias.includes('total')"
+											v-if="checkFieldElement(element)"
 											:is="element._tag"
 											:id="calc_data.id"
 											:field="element"
@@ -71,7 +71,7 @@
 							</slot>
 						</component>
 					</template>
-					<template v-else-if="field && !field.alias && field.type !== 'Total'">
+					<template v-else-if="isValidField(field)">
 						<component
 								:id="calc_data.id"
 								style="boxStyle"
@@ -82,7 +82,7 @@
 					</template>
 				</template>
 			</div>
-			<div class="calc-summary-page" v-if="summaryInLastPage && showSummaryPage">
+			<div class="calc-summary-page" v-if="shouldShowSummaryOnLastPage">
 				<div class="calc-subtotal calc-list" :id="getTotalStickyId" :class="{loaded: !loader}">
 					<div class="calc-subtotal-wrapper">
 						<div class="calc-list-inner">
@@ -96,7 +96,7 @@
 							</div>
 
 							<div class="calc-item-title calc-accordion" style="margin: 0 !important;"
-								 v-show="summaryDisplay && !showAfterSubmit">
+								 v-show="shouldDisplaySummary">
 								<div class="ccb-calc-heading"
 									 style="text-transform: none !important; padding-bottom: 15px"
 									 v-text="summaryDisplaySettings?.form_title"></div>
@@ -112,7 +112,7 @@
 										</div>
 
 										<template v-for="(field) in getTotalSummaryFields"
-												  v-if="(!field.inRepeater || field.alias.includes('repeater')) && field.alias.indexOf('total') === -1 && settings && settings.general.descriptions">
+												  v-if="shouldApplyDescriptionsToField(field)">
 											<template v-if="field.alias.includes('repeater')">
 												<div class="calc-repeater-subtotal"
 													 v-for="(f, idx) in Object.values(field?.resultGrouped)">
@@ -133,7 +133,7 @@
 																<calc-total-summary :field="innerField"
 																					:style="{'padding-top': '5px'}"
 																					:multi="true"
-																					v-if="['checkbox', 'toggle', 'checkbox_with_img'].includes(innerField.alias.replace(/\_field_id.*/,'')) && innerField.options?.length"></calc-total-summary>
+																					v-if="isCheckableFieldWithOptions(innerField)"></calc-total-summary>
 															</template>
 														</div>
 													</template>
@@ -149,12 +149,12 @@
 														<calc-total-summary :field="field" :unit="true"></calc-total-summary>
 													</template>
 												</template>
-												<calc-total-summary :field="field" :multi="true" v-if="['checkbox', 'toggle', 'checkbox_with_img'].includes(field.alias.replace(/\_field_id.*/,'')) && field.options?.length"></calc-total-summary>
+												<calc-total-summary :field="field" :multi="true" v-if="isCheckableFieldWithOptions(field)"></calc-total-summary>
 											</template>
 										</template>
 									</div>
 								</transition>
-							</div>
+							</div>f
 
 							<div class="calc-subtotal-list totals" style="margin-top: 20px; padding-top: 10px;"
 								 ref="calcTotals" :class="{'unit-enable': showUnitInSummary}"
@@ -164,7 +164,7 @@
 												:id="calc_data.id" @condition-apply="renderCondition"></cost-total>
 								</template>
 								<template v-for="item in formulaConst">
-									<div v-if="formulaConst.length === 1 && typeof formulaConst[0].alias === 'undefined'"
+									<div v-if="isFormulaConstInvalid"
 										 style="display: flex" class="sub-list-item total">
 										<span class="sub-item-title"><?php esc_html_e( 'Total', 'cost-calculator-builder' ); ?></span>
 										<span class="sub-item-value" style="white-space: nowrap">{{ item.data.converted }}</span>
@@ -249,7 +249,7 @@
 						</div>
 
 						<div class="calc-list-inner calc-notice" :class="noticeData.type"
-							 v-show="getStep === 'notice' || (getStep === 'finish' && !hideThankYouPage)"
+							 v-show="shouldHideThankYouPage"
 							 style="margin-top: 10px !important;">
 							<calc-notices :notice="noticeData"/>
 						</div>
@@ -283,7 +283,7 @@
 							</div>
 
 							<template v-for="(field) in getPageTotalSummaryFields"
-									  v-if="(!field.inRepeater || field.alias.includes('repeater')) && field.alias.indexOf('total') === -1 && settings && settings.general.descriptions">
+									  v-if="shouldProcessFieldWithSettings(field)">
 								<template v-if="field.alias.includes('repeater')">
 									<div class="calc-repeater-subtotal"
 										 v-for="(f, idx) in Object.values(field?.resultGrouped)">
@@ -303,7 +303,7 @@
 																		:style="{'padding-top': '5px'}"></calc-total-summary>
 													<calc-total-summary :field="innerField"
 																		:style="{'padding-top': '5px'}" :multi="true"
-																		v-if="['checkbox', 'toggle', 'checkbox_with_img'].includes(innerField.alias.replace(/\_field_id.*/,'')) && innerField.options?.length"></calc-total-summary>
+																		v-if="isCheckableFieldWithOptions(innerField)"></calc-total-summary>
 												</template>
 											</div>
 										</template>
@@ -321,7 +321,7 @@
 										</template>
 									</template>
 									<calc-total-summary :field="field" :multi="true"
-														v-if="['checkbox', 'toggle', 'checkbox_with_img'].includes(field.alias.replace(/\_field_id.*/,'')) && field.options?.length"></calc-total-summary>
+														v-if="isCheckableFieldWithOptions(field)"></calc-total-summary>
 								</template>
 							</template>
 						</div>
@@ -334,7 +334,7 @@
 									@condition-apply="renderCondition"></cost-total>
 					</template>
 					<template v-for="item in formulaConst">
-						<div v-if="formulaConst.length === 1 && typeof formulaConst[0].alias === 'undefined'" style="display: flex" class="sub-list-item total">
+						<div v-if="isFormulaConstInvalid" style="display: flex" class="sub-list-item total">
 							<span class="sub-item-title"><?php esc_html_e( 'Total', 'cost-calculator-builder' ); ?></span>
 							<span class="sub-item-value" style="white-space: nowrap">{{ item.data.converted }}</span>
 						</div>

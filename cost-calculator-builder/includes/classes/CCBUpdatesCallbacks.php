@@ -1133,4 +1133,20 @@ class CCBUpdatesCallbacks {
 			update_option( 'ccb_general_settings', apply_filters( 'calc_update_options', $general_settings ) );
 		}
 	}
+
+	public static function ccb_order_off_autoload_for_meta_values() {
+		global $wpdb;
+
+		$options = $wpdb->get_results( "SELECT option_name FROM {$wpdb->options} WHERE option_name LIKE 'calc_meta_data_order_%' AND autoload != 'off'" );
+
+		if ( 0 < count( $options ) ) {
+			foreach ( $options as $option ) {
+				$wpdb->update(
+					$wpdb->options,
+					array( 'autoload' => 'off' ),
+					array( 'option_name' => $option->option_name )
+				);
+			}
+		}
+	}
 }
