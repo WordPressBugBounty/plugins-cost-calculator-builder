@@ -28,11 +28,11 @@ class Forms extends DataBaseModel {
 
 	}
 
-	public static function create_default_form() {
+	public static function create_default_form( $forms_count ) {
 		global $wpdb;
 
 		$default_form = array(
-			'name' => 'Default Form',
+			'name' => 'Form ' . ( $forms_count + 1 ),
 		);
 
 		self::insert( $default_form );

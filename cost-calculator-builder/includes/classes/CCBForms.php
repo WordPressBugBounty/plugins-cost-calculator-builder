@@ -87,7 +87,8 @@ class CCBForms {
 			'data'    => array(),
 		);
 
-		$form_id = Forms::create_default_form();
+		$forms_count = ! empty( Forms::get_all_forms() ) ? count( Forms::get_all_forms() ) : 0;
+		$form_id     = Forms::create_default_form( $forms_count );
 
 		if ( isset( $form_id ) && $form_id > 0 ) {
 			$result['success']               = true;

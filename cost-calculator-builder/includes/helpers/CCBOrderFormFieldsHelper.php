@@ -18,7 +18,7 @@ class CCBOrderFormFieldsHelper {
 			array(
 				'name'        => __( 'Email', 'cost-calculator-builder-pro' ),
 				'type'        => 'email',
-				'icon'        => 'ccb-icon-XMLID_426',
+				'icon'        => 'ccb-icon-account-solid',
 				'field_width' => '12',
 				'attributes'  => array(
 					'required'                 => '1',
@@ -57,7 +57,7 @@ class CCBOrderFormFieldsHelper {
 			array(
 				'name'        => __( 'Text area', 'cost-calculator-builder-pro' ),
 				'type'        => 'textarea',
-				'icon'        => 'ccb-icon-Subtraction-7',
+				'icon'        => 'ccb-icon-textarea',
 				'field_width' => '12',
 				'attributes'  => array(
 					'required'        => '0',
@@ -157,7 +157,7 @@ class CCBOrderFormFieldsHelper {
 			array(
 				'name'        => __( 'Space', 'cost-calculator-builder-pro' ),
 				'type'        => 'space',
-				'icon'        => 'ccb-icon-Subtraction-7',
+				'icon'        => 'ccb-icon-space',
 				'field_width' => '12',
 				'attributes'  => array(
 					'label' => 'Space',

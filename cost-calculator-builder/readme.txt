@@ -6,7 +6,7 @@ Tags: cost calculator, calculator, calculator form builder, cost estimation, shi
 Requires at least: 4.6
 Requires PHP: 5.6
 Tested up to: 6.6.1
-Stable tag: 3.2.37
+Stable tag: 3.2.38
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -162,6 +162,11 @@ Also, you can import the demo sample using Tools -> Import -> WordPress Import.
 Demo sample XML file included in plugin archive.
 
 == Changelog ==
+
+= 3.2.38 =
+- Enhancement: Added validation for Phone field in Order form to improve data accuracy. (Pro)
+- Enhancement: Introduced Sticky functionality for field settings in the Form Manager, enhancing user navigation. (Pro)
+- Enhancement: Made improvements to user experience and usability in Order Form. (Pro)
 
 = 3.2.37 =
 - Fix: Resolved an issue with Repeater element not displaying third Item in Cart. (Pro)
