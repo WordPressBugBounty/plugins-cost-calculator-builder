@@ -110,8 +110,8 @@ class Forms extends DataBaseModel {
 	}
 
 	public static function create_default_forms() {
-
-		$form_id = self::create_default_form();
+		$forms_count = ! empty( self::get_all_forms() ) ? count( self::get_all_forms() ) : 0;
+		$form_id     = self::create_default_form( $forms_count );
 
 		$calculators = self::get_all_calculators();
 
@@ -121,7 +121,8 @@ class Forms extends DataBaseModel {
 	}
 
 	public static function create_default_form_for_calculator( $calc_id ) {
-		$form_id = self::create_default_form();
+		$forms_count = ! empty( self::get_all_forms() ) ? count( self::get_all_forms() ) : 0;
+		$form_id     = self::create_default_form( $forms_count );
 		add_post_meta( $calc_id, 'form_id', $form_id, true );
 	}
 

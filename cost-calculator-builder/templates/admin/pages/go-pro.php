@@ -94,13 +94,13 @@ function get_freemius_info() {
 $freemius_info = get_freemius_info();
 
 
-$deadline     = new DateTime( '10th May 2024' );
+$deadline     = new DateTime( '05th Nov 2024' );
 $is_promotion = time() < $deadline->format( 'U' );
 
 if ( $is_promotion ) {
-	$freemius_info['plan']['licenses_5000']->annual_price = 299;
-	$freemius_info['plan']['licenses_5']->annual_price    = 119;
-	$freemius_info['plan']['licenses_1']->annual_price    = 49;
+	$freemius_info['plan']['licenses_5000']->annual_price = 359;
+	$freemius_info['plan']['licenses_5']->annual_price    = 139;
+	$freemius_info['plan']['licenses_1']->annual_price    = 59;
 
 	$freemius_info['plan']['licenses_5000']->lifetime_price = 799;
 	$freemius_info['plan']['licenses_5']->lifetime_price    = 329;
@@ -133,14 +133,18 @@ if ( array_key_exists( 'from', $params_array ) && ! empty( $params_array['from']
 							<?php echo esc_html( nl2br( $freemius_info['info']->short_description ) ); ?>
 						<?php endif; ?>
 						<?php if ( $freemius_info['info']->url ) : ?>
-							<a href="<?php echo esc_html( $freemius_info['info']->url . '?utm_source=wpadmin&utm_medium=gopro&utm_campaign=2021' ); ?>">
+							<a href="<?php echo esc_html( $freemius_info['info']->url . '?utm_source=wpadmin&utm_medium=gopro&utm_campaign=2024' ); ?>">
 								<?php esc_html_e( 'Learn more.', 'cost-calculator-builder' ); ?>
 							</a>
 						<?php endif; ?>
 					<?php endif; ?>
 				</p>
 			</div>
-
+			<?php if ( $is_promotion ) : ?>
+				<div class="stm-discount">
+					<a href="https://stylemixthemes.com/cost-calculator-plugin/pricing/?utm_source=wpadmin&utm_medium=gopro&utm_campaign=2024" target="_blank"></a>
+				</div>
+			<?php endif; ?>
 			<?php if ( isset( $freemius_info['plan'] ) ) : ?>
 				<h2 class="pricing-section ccb-heading-1 ccb-bold" style="position: relative; left: -5px"><?php esc_html_e( 'Choose the pricing plan for your business', 'cost-calculator-builder' ); ?></h2>
 				<div class="stm-type-pricing">
