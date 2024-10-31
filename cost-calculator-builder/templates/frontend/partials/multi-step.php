@@ -154,7 +154,7 @@
 										</template>
 									</div>
 								</transition>
-							</div>f
+							</div>
 
 							<div class="calc-subtotal-list totals" style="margin-top: 20px; padding-top: 10px;"
 								 ref="calcTotals" :class="{'unit-enable': showUnitInSummary}"
