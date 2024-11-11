@@ -45,6 +45,14 @@ if ( empty( $settings['general'] ) ) {
 $settings['calc_id'] = $calc_id;
 $settings['title']   = get_post_meta( $calc_id, 'stm-name', true );
 
+if ( isset( $settings['sendFormFields'] ) ) {
+	foreach ( $settings['sendFormFields'] as $idx => $field ) {
+		if ( ! empty( $field['value'] ) ) {
+			$settings['sendFormFields'][ $idx ]['value'] = '';
+		}
+	}
+}
+
 if ( ! empty( $general_settings['payment_gateway']['cards']['use_in_all'] ) && ! empty( $general_settings['payment_gateway']['cards']['card_payments']['razorpay']['enable'] ) ) {
 	$settings['payment_gateway']['cards']['card_payments']['razorpay']['keyId']     = $general_settings['payment_gateway']['cards']['card_payments']['razorpay']['keyId'];
 	$settings['payment_gateway']['cards']['card_payments']['razorpay']['secretKey'] = $general_settings['payment_gateway']['cards']['card_payments']['razorpay']['secretKey'];

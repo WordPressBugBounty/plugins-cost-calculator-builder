@@ -6,7 +6,7 @@ Tags: cost calculator, calculator, calculator form builder, cost estimation, shi
 Requires at least: 4.6
 Requires PHP: 5.6
 Tested up to: 6.6.1
-Stable tag: 3.2.40
+Stable tag: 3.2.41
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -162,6 +162,11 @@ Also, you can import the demo sample using Tools -> Import -> WordPress Import.
 Demo sample XML file included in plugin archive.
 
 == Changelog ==
+
+= 3.2.41 =
+- Fix: Fixed an issue with characters duplicating in Formula when typed from the keyboard in Safari.
+- Fix: Corrected the problem where the old Formula was not visible with the new Formula until the new Formula was saved.
+- Fix: Resolved the issue where the formula result was rounded if the total ended in infinite nines after the decimal point.
 
 = 3.2.40 =
 - Fix: Minor bug fixes.
