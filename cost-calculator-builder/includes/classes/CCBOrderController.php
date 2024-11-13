@@ -564,9 +564,10 @@ class CCBOrderController {
 					$order['order_details']
 				);
 
-				$order['decimal_separator']   = '';
-				$order['thousands_separator'] = '';
-				$order['num_after_integer']   = '';
+				$order['decimal_separator']     = '';
+				$order['thousands_separator']   = '';
+				$order['num_after_integer']     = '';
+				$order['originalPaymentMethod'] = $order['paymentMethod'];
 
 				$order['wc_link']           = '';
 				$order['paymentMethodType'] = esc_html__( 'No Payment', 'cost-calculator-builder' );
@@ -592,7 +593,8 @@ class CCBOrderController {
 				}
 
 				if ( 'woocommerce' === $order['paymentMethod'] && ! empty( $order['transaction'] ) ) {
-					$order['wc_link'] = get_edit_post_link( $order['transaction'] );
+					$order['wc_link']           = get_edit_post_link( $order['transaction'] );
+					$order['paymentMethodType'] = esc_html__( 'Woocommerce', 'cost-calculator-builder' );
 				}
 
 				$settings         = CCBSettingsData::get_calc_single_settings( $order['calc_id'] );

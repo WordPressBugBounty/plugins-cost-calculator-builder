@@ -95,7 +95,7 @@ class CCBEmbedCalculator {
 		}
 
 		$data          = json_decode( stripslashes( $_POST['data'] ) );
-		$calculator_id = filter_var( $data->calculator_id, FILTER_SANITIZE_STRING );
+		$calculator_id = strval( $data->calculator_id );
 		$ids           = array_column( $data->pages, 'id' );
 
 		$test = array(

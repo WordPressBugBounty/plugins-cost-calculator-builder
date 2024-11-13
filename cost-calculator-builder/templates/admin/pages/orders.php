@@ -266,14 +266,16 @@ wp_localize_script(
 						admin-email="<?php echo esc_attr( get_option( 'admin_email' ) ); ?>"
 					>
 					</send-quote>
-					<invoice
+					<pdf-template
 						ref="invoice"
-						v-if="this.invoiceOrder"
+						v-if="pdf"
+						:pdf="pdf"
+						:key="updateOrderCount"
 						invoice-detail='<?php echo esc_attr( wp_json_encode( $invoice ) ); ?>'
 						invoice-texts="<?php echo esc_attr( wp_json_encode( $invoice_texts ) ); ?>"
-						:order="this.invoiceOrder"
+						:order="invoiceOrder"
 					>
-					</invoice>
+					</pdf-template>
 				</div>
 			</div>
 		</div>

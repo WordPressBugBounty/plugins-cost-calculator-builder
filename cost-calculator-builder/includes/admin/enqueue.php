@@ -11,6 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 function cBuilder_admin_enqueue() {
 	wp_enqueue_style( 'ccb-global-styles', CALC_URL . '/frontend/dist/css/global.css', array(), CALC_VERSION );
 	wp_enqueue_style( 'ccb-icons-list', CALC_URL . '/frontend/dist/css/icon/style.css', array(), CALC_VERSION );
+	wp_enqueue_style( 'ccb-pdf-template', CALC_URL . '/frontend/dist/css/pdf-template.css', array(), CALC_VERSION );
 
 	/** Loading wp media libraries **/
 	if ( isset( $_GET['page'] ) && ( $_GET['page'] === 'cost_calculator_builder' ) ) { //phpcs:ignore
@@ -43,6 +44,10 @@ function cBuilder_admin_enqueue() {
 		|| ( isset( $_GET['page'] ) && ( $_GET['page'] === 'cost_calculator_builder-contact' ) ) // phpcs:ignore
 	) {
 		wp_enqueue_style( 'ccb-calc-font', CALC_URL . '/frontend/dist/css/font/font.css', array(), CALC_VERSION );
+	}
+
+	if ( ! empty( $_GET['tab'] ) && isset( $_GET['page'] ) && 'cost_calculator_builder' === $_GET['page'] ) {
+		wp_enqueue_style( 'ccb-pdf-template', CALC_URL . '/frontend/dist/css/pdf-template.css', array(), CALC_VERSION );
 	}
 }
 

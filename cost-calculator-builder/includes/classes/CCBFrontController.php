@@ -278,6 +278,7 @@ class CCBFrontController {
 					'the_id'           => get_the_ID(),
 					'payments'         => $payments,
 					'general_settings' => $general_settings,
+					'plugin_url'       => CALC_URL,
 				)
 			);
 

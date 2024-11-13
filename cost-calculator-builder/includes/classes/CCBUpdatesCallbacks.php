@@ -9,6 +9,8 @@ use cBuilder\Classes\Database\Forms;
 use cBuilder\Classes\Database\FormCalcs;
 use cBuilder\Classes\Database\FormFields;
 use cBuilder\Classes\Database\FormFieldsAttributes;
+use cBuilder\Classes\pdfManager\CCBPdfManager;
+use cBuilder\Classes\pdfManager\CCBPdfManagerTemplates;
 
 class CCBUpdatesCallbacks {
 
@@ -1147,6 +1149,72 @@ class CCBUpdatesCallbacks {
 					array( 'option_name' => $option->option_name )
 				);
 			}
+		}
+	}
+
+	public static function ccb_new_pdf_manager_tool() {
+		$general_settings = CCBSettingsData::get_calc_global_settings();
+
+		if ( isset( $general_settings['invoice']['companyName'] ) ) {
+			if ( ! empty( $general_settings['invoice']['use_in_all'] ) && isset( $invoice['companyLogo'] ) ) {
+				$invoice  = $general_settings['invoice'];
+				$template = CCBPdfManagerTemplates::ccb_get_template_by_key();
+
+				$template['document']['sidebar']['layout'] = 'no_sidebar';
+
+				$blocks  = array( 'brand_block', 'order_id_and_date', 'order_block' );
+				$sort_id = 3;
+				foreach ( $template['sections'] as $key => $section ) {
+					if ( in_array( $key, $blocks, true ) ) {
+						$block_sort_id = 1;
+						$status        = true;
+						if ( 'order_id_and_date' === $key ) {
+							$block_sort_id                                        = 2;
+							$template['sections'][ $key ]['design']['text_align'] = 'right';
+						} elseif ( 'order_block' === $key ) {
+							$block_sort_id = 3;
+						}
+
+						if ( 'brand_block' === $key ) {
+							$status = false;
+							if ( ! empty( $invoice['companyLogo'] ) ) {
+								$status                                             = true;
+								$template['sections'][ $key ]['logo']['logo_image'] = $invoice['companyLogo'];
+							}
+
+							if ( ! empty( $invoice['companyName'] ) ) {
+								$status                                                    = true;
+								$template['sections'][ $key ]['name']['show_company_name'] = $invoice['companyName'];
+							}
+
+							if ( ! empty( $invoice['companyInfo'] ) ) {
+								$status                                                = true;
+								$template['sections'][ $key ]['slogan']['show_slogan'] = $invoice['companyInfo'];
+							}
+
+							$template['sections'][ $key ]['design']['text_align'] = 'left';
+						}
+
+						$template['sections'][ $key ]['enable']  = $status;
+						$template['sections'][ $key ]['sort_id'] = $block_sort_id;
+					} else {
+						$template['sections'][ $key ]['enable']   = false;
+						$template['sections'][ $key ][ $sort_id ] = $sort_id;
+
+						$sort_id++;
+					}
+				}
+
+				$key             = CCBPdfManagerTemplates::ccb_get_new_id_for_pdf_template();
+				$template['key'] = $key;
+				CCBPdfManager::ccb_add_or_update_pdf_tempalte( $key, $template );
+				CCBPdfManager::update_template_key( $key );
+			}
+
+			unset( $general_settings['invoice']['companyName'] );
+			unset( $general_settings['invoice']['companyInfo'] );
+			unset( $general_settings['invoice']['companyLogo'] );
+			unset( $general_settings['invoice']['dateFormat'] );
 		}
 	}
 }

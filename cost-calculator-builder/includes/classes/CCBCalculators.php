@@ -7,6 +7,9 @@ use cBuilder\Classes\Appearance\Presets\CCBPresetGenerator;
 use cBuilder\Classes\Database\Discounts;
 use cBuilder\Classes\Database\FormFields;
 use cBuilder\Classes\Database\Forms;
+use cBuilder\Classes\pdfManager\CCBPdfManager;
+use cBuilder\Classes\pdfManager\CCBPdfManagerHelper;
+use cBuilder\Classes\pdfManager\CCBPdfManagerTemplates;
 use cBuilder\Helpers\CCBFieldsHelper;
 use cBuilder\Helpers\CCBOrderFormFieldsHelper;
 
@@ -101,15 +104,15 @@ class CCBCalculators {
 		if ( ! empty( $params['calc_id'] ) ) {
 			$calc_id = (int) sanitize_text_field( $params['calc_id'] );
 
-			$result['id']                = $calc_id;
-			$result['title']             = get_post_meta( $calc_id, 'stm-name', true );
-			$result['fields']            = CCBFieldsHelper::fields();
-			$result['order_form_fields'] = CCBOrderFormFieldsHelper::order_form_fields();
-			$result['activeFormId']      = CCBOrderFormFieldsHelper::get_active_form_id( $calc_id );
-			$result['order_forms']       = Forms::get_all_forms();
+			$result['id']                       = $calc_id;
+			$result['title']                    = get_post_meta( $calc_id, 'stm-name', true );
+			$result['fields']                   = CCBFieldsHelper::fields();
+			$result['order_form_fields']        = CCBOrderFormFieldsHelper::order_form_fields();
+			$result['activeFormId']             = CCBOrderFormFieldsHelper::get_active_form_id( $calc_id );
+			$result['order_forms']              = Forms::get_all_forms();
 			$result['order_active_form_fields'] = FormFields::get_active_fields( $result['activeFormId'] );
-			$result['formula']           = get_post_meta( $calc_id, 'stm-formula', true );
-			$result['conditions']        = get_post_meta( $calc_id, 'stm-conditions', true );
+			$result['formula']                  = get_post_meta( $calc_id, 'stm-formula', true );
+			$result['conditions']               = get_post_meta( $calc_id, 'stm-conditions', true );
 
 			$result['saved']  = get_post_meta( $calc_id, 'calc_saved', true );
 			$general_settings = CCBSettingsData::get_calc_global_settings();
@@ -1297,6 +1300,203 @@ class CCBCalculators {
 
 			$result['success'] = true;
 			$result['message'] = 'Sticky banner updated';
+		}
+
+		wp_send_json( $result );
+	}
+
+	public static function ccb_save_pdf() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( __( 'You are not allowed to run this action', 'cost-calculator-builder' ) );
+		}
+
+		$result = array(
+			'success' => false,
+			'message' => 'Something went wrong',
+			'data'    => array(),
+		);
+
+		$request_body = file_get_contents( 'php://input' );
+		$request_data = json_decode( $request_body, true );
+		$data         = apply_filters( 'stm_ccb_sanitize_array', $request_data );
+
+		if ( ! empty( $data ) && isset( $data['pdf_manager'] ) ) {
+			$options          = $data['pdf_manager']['options'] ?? array();
+			$general_settings = CCBSettingsData::get_calc_global_settings();
+
+			foreach ( $options as $key => $value ) {
+				if ( isset( $general_settings['invoice'][ $key ] ) ) {
+					$general_settings['invoice'][ $key ] = $value;
+				}
+			}
+
+			CCBSettingsData::update_calc_global_settings( $general_settings );
+
+			$key       = $data['pdf_manager']['key'];
+			$templates = CCBPdfManagerTemplates::ccb_get_templates_list( true );
+
+			if ( ( ! empty( $templates[ $key ] ) && $templates[ $key ]['is_custom'] ) || ! isset( $templates[ $key ] ) ) {
+				$template = CCBPdfManagerTemplates::ccb_extract_template_data( $data['pdf_manager']['data'] );
+				CCBPdfManager::ccb_add_or_update_pdf_tempalte( $key, $template );
+				CCBPdfManager::update_template_key( $key );
+
+				$result['success']          = true;
+				$result['message']          = 'Templated updated successfully';
+				$result['data']['template'] = CCBPdfManagerTemplates::ccb_get_template_skeleton( $template );
+			} elseif ( ! empty( $templates[ $key ] ) && ! $templates[ $key ]['is_custom'] ) {
+				$new_template = CCBPdfManagerTemplates::ccb_extract_template_data( $data['pdf_manager']['data'] );
+				CCBPdfManager::ccb_add_or_update_pdf_tempalte( $new_template['key'], $new_template );
+				CCBPdfManager::update_template_key( $new_template['key'] );
+
+				$result['success']          = true;
+				$result['message']          = 'Templated created successfully';
+				$result['data']['template'] = CCBPdfManagerTemplates::ccb_get_template_skeleton( $new_template );
+			} else {
+				$result['success'] = false;
+				$result['message'] = 'Cannot save template';
+			}
+
+			$result['data']['templates'] = CCBPdfManagerTemplates::ccb_get_templates_list();
+		}
+
+		wp_send_json( $result );
+	}
+
+	public static function ccb_extend_pdf_template() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( __( 'You are not allowed to run this action', 'cost-calculator-builder' ) );
+		}
+
+		$result = array(
+			'success' => false,
+			'message' => 'Something went wrong',
+			'data'    => array(),
+		);
+
+		$request_body = file_get_contents( 'php://input' );
+		$request_data = json_decode( $request_body, true );
+		$data         = apply_filters( 'stm_ccb_sanitize_array', $request_data );
+
+		if ( ! empty( $data ) && isset( $data['key'] ) ) {
+			$key       = $data['key'];
+			$templates = CCBPdfManagerTemplates::ccb_get_templates();
+
+			if ( isset( $templates[ $key ] ) ) {
+				$new_key             = CCBPdfManagerTemplates::ccb_get_new_id_for_pdf_template();
+				$new_template        = CCBPdfManagerTemplates::ccb_get_template_skeleton( $templates[ $key ] );
+				$new_template['key'] = $new_key;
+
+				$result['success'] = true;
+				$result['message'] = 'Success';
+				$result['data']    = $new_template;
+			}
+		}
+
+		wp_send_json( $result );
+	}
+
+	public static function ccb_edit_pdf_template() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( __( 'You are not allowed to run this action', 'cost-calculator-builder' ) );
+		}
+
+		$result = array(
+			'success' => false,
+			'message' => 'Something went wrong',
+			'data'    => array(),
+		);
+
+		$request_body = file_get_contents( 'php://input' );
+		$request_data = json_decode( $request_body, true );
+		$data         = apply_filters( 'stm_ccb_sanitize_array', $request_data );
+
+		if ( ! empty( $data ) && isset( $data['key'] ) ) {
+			$key       = $data['key'];
+			$templates = CCBPdfManager::ccb_get_pdf_template();
+
+			if ( isset( $templates[ $key ] ) ) {
+				CCBPdfManager::update_template_key( $key );
+				$new_template = CCBPdfManagerTemplates::ccb_get_template_skeleton( $templates[ $key ] );
+
+				$result['success'] = true;
+				$result['message'] = 'Success';
+				$result['data']    = $new_template;
+			}
+		}
+
+		wp_send_json( $result );
+	}
+
+	public static function ccb_restore_pdf_template() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( __( 'You are not allowed to run this action', 'cost-calculator-builder' ) );
+		}
+
+		$result = array(
+			'success' => false,
+			'message' => 'Something went wrong',
+			'data'    => array(),
+		);
+
+		$request_body = file_get_contents( 'php://input' );
+		$request_data = json_decode( $request_body, true );
+		$data         = apply_filters( 'stm_ccb_sanitize_array', $request_data );
+
+		if ( ! empty( $data ) && isset( $data['key'] ) ) {
+			$key              = $data['key'];
+			$saved_templates  = CCBPdfManager::ccb_get_pdf_template();
+			$templates        = CCBPdfManagerTemplates::ccb_get_templates();
+			$default_template = $templates['default'];
+
+			$default_template['key'] = $key;
+			if ( isset( $saved_templates[ $key ] ) ) {
+				$new_template = CCBPdfManagerTemplates::ccb_get_template_skeleton( $default_template );
+
+				$result['success'] = true;
+				$result['message'] = 'Templated reset successfully';
+				$result['data']    = $new_template;
+			}
+		}
+
+		wp_send_json( $result );
+	}
+
+	public static function ccb_delete_pdf_template() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( __( 'You are not allowed to run this action', 'cost-calculator-builder' ) );
+		}
+
+		$result = array(
+			'success' => false,
+			'message' => 'Something went wrong',
+			'data'    => array(),
+		);
+
+		$request_body = file_get_contents( 'php://input' );
+		$request_data = json_decode( $request_body, true );
+		$data         = apply_filters( 'stm_ccb_sanitize_array', $request_data );
+
+		if ( ! empty( $data ) && isset( $data['key'] ) ) {
+			$key         = $data['key'];
+			$current_key = CCBPdfManager::get_template_key();
+
+			if ( $key === $current_key ) {
+				$result['message'] = 'Cannot delete current template';
+				wp_send_json( $result );
+			}
+
+			$templates = CCBPdfManager::ccb_get_pdf_template();
+			if ( ! isset( $templates[ $key ] ) ) {
+				$result['message'] = 'Template does not exists';
+				wp_send_json( $result );
+			}
+
+			unset( $templates[ $key ] );
+			CCBPdfManager::update_tempaltes( $templates );
+
+			$result['success']           = true;
+			$result['message']           = 'Template deleted successfully';
+			$result['data']['templates'] = CCBPdfManagerTemplates::ccb_get_templates_list();
 		}
 
 		wp_send_json( $result );

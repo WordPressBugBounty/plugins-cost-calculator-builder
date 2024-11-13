@@ -5,7 +5,7 @@ $ccb_pages = \cBuilder\Classes\CCBSettingsData::get_general_settings_pages();
 	<loader v-if="preloader"></loader>
 	<template v-else>
 		<div class="ccb-settings-tab" style="overflow: hidden; height: calc(100vh - 140px)">
-			<div class="ccb-settings-tab-sidebar" style="height: 100vh">
+			<div class="ccb-settings-tab-sidebar global-settings" style="height: 100vh">
 				<div class="ccb-settings-tab-wrapper border-bottom">
 					<span class="ccb-settings-tab-header"><?php esc_html_e( 'Basic', 'cost-calculator-builder' ); ?></span>
 					<span class="ccb-settings-tab-list">
@@ -70,8 +70,8 @@ $ccb_pages = \cBuilder\Classes\CCBSettingsData::get_general_settings_pages();
 					</div>
 				</template>
 			</div>
-			<div class="ccb-settings-tab-content ccb-settings-tab-content-mobile">
-				<div class="ccb-settings-container ccb-custom-scrollbar">
+			<div class="ccb-settings-tab-content global-settings ccb-settings-tab-content-mobile">
+				<div class="ccb-settings-container ccb-custom-scrollbar" style="padding: 0; margin: 0;">
 					<?php foreach ( $ccb_pages as $ccb_page ) : ?>
 						<component
 								inline-template

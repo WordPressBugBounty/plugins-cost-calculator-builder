@@ -115,6 +115,9 @@ class CCBUpdates {
 		'3.2.36' => array(
 			'ccb_order_off_autoload_for_meta_values',
 		),
+		'3.2.41' => array(
+			'ccb_new_pdf_manager_tool',
+		),
 	);
 
 	public static function init() {

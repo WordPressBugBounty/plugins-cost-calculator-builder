@@ -1,20 +1,11 @@
 <?php
+
 $invoice_texts = array(
-	'order'          => esc_html__( 'Order', 'cost-calculator-builder' ),
-	'total_title'    => esc_html__( 'Total Summary', 'cost-calculator-builder' ),
-	'payment_method' => esc_html__( 'Payment method:', 'cost-calculator-builder' ),
-	'contact_title'  => esc_html__( 'Contact Information', 'cost-calculator-builder' ),
-	'contact_form'   => array(
-		'name'    => esc_html__( 'Name', 'cost-calculator-builder' ),
-		'email'   => esc_html__( 'Email', 'cost-calculator-builder' ),
-		'phone'   => esc_html__( 'Phone', 'cost-calculator-builder' ),
-		'message' => esc_html__( 'Message', 'cost-calculator-builder' ),
-	),
-	'total_header'   => array(
-		'name'  => esc_html__( 'Name', 'cost-calculator-builder' ),
-		'unit'  => esc_html__( 'Composition', 'cost-calculator-builder' ),
-		'total' => esc_html__( 'Total', 'cost-calculator-builder' ),
-	),
+	'cash_payment'         => esc_html__( 'Cash Payment', 'cost-calculator-builder' ),
+	'stripe'               => esc_html__( 'Stripe', 'cost-calculator-builder' ),
+	'paypal'               => esc_html__( 'Paypal', 'cost-calculator-builder' ),
+	'woocommerce_checkout' => esc_html__( 'Woocommerce', 'cost-calculator-builder' ),
+	'no_payment'           => esc_html__( 'No Payment', 'cost-calculator-builder' ),
 );
 
 $send_pdf_texts = array(
@@ -48,6 +39,12 @@ $styles = array(
 		'key'   => 'horizontal',
 	),
 );
+
+if ( ! empty( $general_settings['invoice']['use_in_all'] ) ) {
+	wp_enqueue_style( 'ccb-pdf-template', CALC_URL . '/frontend/dist/css/pdf-template.css', array(), CALC_VERSION );
+}
+
+$pdf_data = \cBuilder\Classes\pdfManager\CCBPdfManager::ccb_get_pdf_manager_data();
 ?>
 
 <div class="calc-container-wrapper">
@@ -272,16 +269,11 @@ $styles = array(
 		</div>
 		<calc-invoice
 					ref="invoice"
-					company-name="<?php echo isset( $general_settings['invoice']['companyName'] ) ? esc_attr( $general_settings['invoice']['companyName'] ) : ''; ?>"
-					company-info="<?php echo isset( $general_settings['invoice']['companyInfo'] ) ? esc_attr( $general_settings['invoice']['companyInfo'] ) : ''; ?>"
-					company-logo='<?php echo esc_attr( $general_settings['invoice']['companyLogo'] ); ?>'
-					date-format="<?php echo isset( $general_settings['invoice']['dateFormat'] ) ? esc_attr( $general_settings['invoice']['dateFormat'] ) : ''; ?>"
+					:key="$store.getters.getPdfUpdateCounter"
+					:pdf="<?php echo esc_attr( wp_json_encode( $pdf_data ) ); ?>"
 					static-texts='<?php echo esc_attr( wp_json_encode( $invoice_texts ) ); ?>'
 					send-email-texts='<?php echo esc_attr( wp_json_encode( $send_pdf_texts ) ); ?>'
-					send-pdf-from="<?php echo isset( $general_settings['invoice']['fromEmail'] ) ? esc_attr( $general_settings['invoice']['fromEmail'] ) : ''; ?>"
-					send-pdf-fromname="<?php echo isset( $general_settings['invoice']['fromName'] ) ? esc_attr( $general_settings['invoice']['fromName'] ) : ''; ?>"
 					:summary-fields="getTotalSummaryFields"
-					site-lang="<?php echo esc_attr( get_bloginfo( 'language' ) ); ?>"
 			/>
 	</div>
 </div>

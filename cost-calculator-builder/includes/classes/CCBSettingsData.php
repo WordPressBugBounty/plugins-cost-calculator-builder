@@ -2,6 +2,9 @@
 
 namespace cBuilder\Classes;
 
+use cBuilder\Classes\pdfManager\CCBPdfManager;
+use cBuilder\Classes\pdfManager\CCBPdfManagerTemplates;
+
 class CCBSettingsData {
 	public static function get_tab_pages() {
 		return array( 'calculator', 'conditions', 'settings', 'customize' );
@@ -244,12 +247,7 @@ class CCBSettingsData {
 			),
 			'invoice'         => array(
 				'use_in_all'       => false,
-				'companyName'      => '',
-				'companyInfo'      => '',
-				'companyLogo'      => '',
 				'showAfterPayment' => true,
-				'fromEmail'        => '',
-				'fromName'         => '',
 				'emailButton'      => false,
 				'submitBtnText'    => 'Send',
 				'btnText'          => 'Send Quote',
@@ -257,7 +255,8 @@ class CCBSettingsData {
 				'errorText'        => 'Fill in the required fields correctly.',
 				'closeBtn'         => 'Close',
 				'buttonText'       => 'PDF Download',
-				'dateFormat'       => 'MM/DD/YYYY HH:mm',
+				'fromEmail'        => '',
+				'fromName'         => '',
 			),
 			'email_templates' => array(
 				'title'           => __( 'Calculation result', 'cost-calculator-builder' ),
@@ -634,6 +633,10 @@ class CCBSettingsData {
 		return false;
 	}
 
+	public static function update_calc_global_settings( $data ) {
+		update_option( 'ccb_general_settings', $data );
+	}
+
 	public static function get_calc_global_settings() {
 		$global_settings = get_option( 'ccb_general_settings', '' );
 		if ( empty( $global_settings ) ) {
@@ -642,6 +645,21 @@ class CCBSettingsData {
 
 		if ( has_filter( 'ccb_google_api' ) && isset( $global_settings['geolocation'] ) ) {
 			$global_settings['geolocation']['public_key'] = apply_filters( 'ccb_google_api', '' );
+		}
+
+		if ( ccb_pro_active() ) {
+			$options = array(
+				'use_in_all'       => $global_settings['invoice']['use_in_all'],
+				'showAfterPayment' => $global_settings['invoice']['showAfterPayment'],
+				'buttonText'       => $global_settings['invoice']['buttonText'],
+			);
+
+			$global_settings['pdf_manager'] = array(
+				'templates' => CCBPdfManagerTemplates::ccb_get_templates_list(),
+				'key'       => CCBPdfManager::get_template_key(),
+				'data'      => CCBPdfManager::ccb_get_pdf_manager_data(),
+				'options'   => $options,
+			);
 		}
 
 		return $global_settings;

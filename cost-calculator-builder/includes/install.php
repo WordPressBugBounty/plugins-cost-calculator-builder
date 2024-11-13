@@ -30,6 +30,7 @@ function ccb_add_admin_nonces() {
 		'calc_skip_hint'             => wp_create_nonce( 'calc_skip_hint' ),
 		'ccb_get_existing'           => wp_create_nonce( 'ccb_get_existing' ),
 		'ccb_get_discounts'          => wp_create_nonce( 'ccb_get_discounts' ),
+		'ccb_get_invoice'            => wp_create_nonce( 'ccb_get_invoice' ),
 		'ccb_get_preview_discounts'  => wp_create_nonce( 'ccb_get_preview_discounts' ),
 		'ccb_save_settings'          => wp_create_nonce( 'ccb_save_settings' ),
 		'ccb_save_ai_api_key'        => wp_create_nonce( 'ccb_save_ai_api_key' ),
@@ -82,6 +83,12 @@ function ccb_add_admin_nonces() {
 		'ccb_apply_form_id'          => wp_create_nonce( 'ccb_apply_form_id' ),
 		'ccb_update_form'            => wp_create_nonce( 'ccb_update_form' ),
 		'ccb_duplicate_form'         => wp_create_nonce( 'ccb_duplicate_form' ),
+		'ccb_save_pdf'               => wp_create_nonce( 'ccb_save_pdf' ),
+		'ccb_edit_pdf_template'      => wp_create_nonce( 'ccb_edit_pdf_template' ),
+		'ccb_delete_pdf_template'    => wp_create_nonce( 'ccb_delete_pdf_template' ),
+		'ccb_restore_pdf_template'   => wp_create_nonce( 'ccb_restore_pdf_template' ),
+		'ccb_extend_pdf_template'    => wp_create_nonce( 'ccb_extend_pdf_template' ),
+		'ccb_get_pdf_data'           => wp_create_nonce( 'ccb_get_pdf_data' ),
 	);
 
 	echo ( '<script type="text/javascript">window.ccb_nonces = ' . json_encode( $variables ) . ';</script>' ); //phpcs:ignore

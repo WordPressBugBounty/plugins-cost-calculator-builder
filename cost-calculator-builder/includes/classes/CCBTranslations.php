@@ -10,8 +10,7 @@ class CCBTranslations {
 	 * @return array
 	 */
 	public static function get_frontend_translations() {
-
-		$translations = array(
+		return array(
 			'empty_end_date_error'   => esc_html__( 'Please select the second date', 'cost-calculator-builder' ),
 			'wrong_date_range_error' => esc_html__( 'Please select correct date range values', 'cost-calculator-builder' ),
 			'empty_end_time_error'   => esc_html__( 'Please select the second time', 'cost-calculator-builder' ),
@@ -71,12 +70,10 @@ class CCBTranslations {
 			'invalid_url'            => esc_html__( 'Invalid url', 'cost-calculator-builder' ),
 			'invalid_phone'          => esc_html__( 'Invalid phone number', 'cost-calculator-builder' ),
 		);
-
-		return $translations;
 	}
 
 	public static function get_backend_translations() {
-		$translations = array(
+		return array(
 			'bulk_action_attention'          => esc_html__( 'Are you sure to "%s" choosen Calculators?', 'cost-calculator-builder' ),
 			'copied'                         => esc_html__( 'Copied', 'cost-calculator-builder' ),
 			'not_selected_calculators'       => esc_html__( 'No calculators were selected', 'cost-calculator-builder' ),
@@ -102,8 +99,12 @@ class CCBTranslations {
 			'order_cash_payment'             => esc_html__( 'Cash Payment', 'cost-calculator-builder' ),
 			'order_status_pending'           => esc_html__( 'Pending', 'cost-calculator-builder' ),
 			'order_status_complete'          => esc_html__( 'Complete', 'cost-calculator-builder' ),
+			'cash_payment'                   => esc_html__( 'Cash Payment', 'cost-calculator-builder' ),
+			'stripe'                         => esc_html__( 'Stripe', 'cost-calculator-builder' ),
+			'paypal'                         => esc_html__( 'PayPal', 'cost-calculator-builder' ),
+			'no_payment'                     => esc_html__( 'No Payment', 'cost-calculator-builder' ),
+			'no_payments'                    => esc_html__( 'No Payment', 'cost-calculator-builder' ),
+			'woocommerce'                    => esc_html__( 'WooCommerce', 'cost-calculator-builder' ),
 		);
-
-		return $translations;
 	}
 }

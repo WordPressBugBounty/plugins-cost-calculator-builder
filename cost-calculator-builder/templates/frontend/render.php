@@ -151,6 +151,7 @@ $data = array(
 	'currency'      => ccb_parse_settings( $settings ),
 	'geolocation'   => $geolocation,
 	'fields'        => $fields,
+	'pdf_status'    => ! empty( $general_settings['invoice']['use_in_all'] ),
 	'form_fields'   => $form_fields,
 	'form_data'     => $form_data,
 	'formula'       => get_post_meta( $calc_id, 'stm-formula', true ),
