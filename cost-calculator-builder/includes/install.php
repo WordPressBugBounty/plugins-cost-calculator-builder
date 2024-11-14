@@ -33,6 +33,7 @@ function ccb_add_admin_nonces() {
 		'ccb_get_invoice'            => wp_create_nonce( 'ccb_get_invoice' ),
 		'ccb_get_preview_discounts'  => wp_create_nonce( 'ccb_get_preview_discounts' ),
 		'ccb_save_settings'          => wp_create_nonce( 'ccb_save_settings' ),
+		'ccb_save_general_settings'  => wp_create_nonce( 'ccb_save_general_settings' ),
 		'ccb_save_ai_api_key'        => wp_create_nonce( 'ccb_save_ai_api_key' ),
 		'ccb_duplicate_calc'         => wp_create_nonce( 'ccb_duplicate_calc' ),
 		'ccb_update_preset_title'    => wp_create_nonce( 'ccb_update_preset_title' ),

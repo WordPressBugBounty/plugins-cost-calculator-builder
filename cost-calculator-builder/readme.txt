@@ -6,7 +6,7 @@ Tags: cost calculator, calculator, calculator form builder, cost estimation, shi
 Requires at least: 4.6
 Requires PHP: 5.6
 Tested up to: 6.7
-Stable tag: 3.2.42
+Stable tag: 3.2.43
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -88,7 +88,7 @@ There are groups of elements that have different appearance styles both vertical
 ○      Multi Range Slider Calculator Element - Use this one for defining the chunk of values on the slider range.
 ○      File Upload Calculator Element - Set a module where the users may attach any type of file onto the calculator.
 ○      Image Dropdown Calculator Element - Engage the users placing the select form with a set of images.
-○      PDF Entries - Your customers will be able to download, print, or send a PDF invoice via email.
+○      PDF Entries - Create custom professional PDF invoices or select from library of templates, enabling customers to download, print, or send invoices with ease.
 ○      Email Quotes - Save time and seamlessly send an automatically generated invoice/order (after calculations) to the recipient via email address with a click of a button.
 ○      Image Checkbox - Add colorful pictures to elements like Checkboxes. So, the variety of options will be accompanied by a visual appearance of the item.
 ○      Image Radio - Works exactly the same as the Image Checkbox, but with Radio Buttons.
@@ -162,6 +162,10 @@ Also, you can import the demo sample using Tools -> Import -> WordPress Import.
 Demo sample XML file included in plugin archive.
 
 == Changelog ==
+
+= 3.2.43 =
+- Fix: Corrected total calculation when multiple formulas with "Hidden by default" and "Calculate hidden by default" settings are used within a common formula. (Pro)
+- Fix: Resolved issue where PDF contents were displayed before the calculator fully loaded. (Pro)
 
 = 3.2.42 =
 - Enhancement: Introduced full customization options and new template designs for creating PDF entries. (Pro)

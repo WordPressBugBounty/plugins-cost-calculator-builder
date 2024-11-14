@@ -685,6 +685,7 @@ class CCBCalculators {
 	 * Save all calculator settings via calc id
 	 */
 	public static function save_settings() {
+		check_ajax_referer( 'ccb_save_settings', 'nonce' );
 
 		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_send_json_error( __( 'You are not allowed to run this action', 'cost-calculator-builder' ) );
@@ -764,6 +765,8 @@ class CCBCalculators {
 	 * Save general settings
 	 */
 	public static function save_general_settings() {
+		check_ajax_referer( 'ccb_save_general_settings', 'nonce' );
+
 		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_send_json_error( __( 'You are not allowed to run this action', 'cost-calculator-builder' ) );
 		}
