@@ -153,7 +153,7 @@ $pdf_data = \cBuilder\Classes\pdfManager\CCBPdfManager::ccb_get_pdf_manager_data
 									<template v-if="field.alias.includes('repeater')">
 										<div class="calc-repeater-subtotal" v-for="(f, idx) in Object.values(field?.resultGrouped)">
 											<template v-if="getRepeaterFields(f)?.length">
-												<div class="calc-repeater-subtotal-header" :data-index="idx" @click="toggleRepeater(idx)">
+												<div class="calc-repeater-subtotal-header" :data-index="idx" @click="toggleRepeater()">
 													<i class="ccb-icon-Path-3514"></i>
 													<span>{{field.label}}</span>
 													<span class="ccb-repeater-field-number">#{{idx + 1}}</span>

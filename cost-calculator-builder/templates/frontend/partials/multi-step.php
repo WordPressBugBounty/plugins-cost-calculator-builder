@@ -6,8 +6,8 @@
 	</div>
 	<div v-if="calc_data" class="calc-fields-container">
 		<div class="calc-pages">
-			<div class="calc-page" v-for="( page, index ) in getPages" v-show="index == activePageIndex"
-				 :class="page.boxStyle">
+			<div class="calc-page vertical" v-for="( page, index ) in getPages"
+				:class="{'hidden': index == activePageIndex}">
 				<template v-for="field in page.groupElements">
 					<template v-if="shouldDisplayField(field)">
 						<component
@@ -96,14 +96,14 @@
 							</div>
 
 							<div class="calc-item-title calc-accordion" style="margin: 0 !important;"
-								 v-show="shouldDisplaySummary">
+								v-show="shouldDisplaySummary">
 								<div class="ccb-calc-heading"
-									 style="text-transform: none !important; padding-bottom: 15px"
-									 v-text="summaryDisplaySettings?.form_title"></div>
+									style="text-transform: none !important; padding-bottom: 15px"
+									v-text="summaryDisplaySettings?.form_title"></div>
 							</div>
 
 							<div class="calc-subtotal-list" :class="{ 'show-unit': showUnitInSummary }"
-								 v-show="!summaryDisplay || showAfterSubmit">
+								v-show="!summaryDisplay || showAfterSubmit">
 								<transition>
 									<div class="calc-subtotal-list-accordion" :class="{hidden: !accordionState}">
 										<div class="calc-subtotal-list-header" v-if="showUnitInSummary">
@@ -112,13 +112,13 @@
 										</div>
 
 										<template v-for="(field) in getTotalSummaryFields"
-												  v-if="shouldApplyDescriptionsToField(field)">
+												v-if="shouldApplyDescriptionsToField(field)">
 											<template v-if="field.alias.includes('repeater')">
 												<div class="calc-repeater-subtotal"
-													 v-for="(f, idx) in Object.values(field?.resultGrouped)">
+													v-for="(f, idx) in Object.values(field?.resultGrouped)">
 													<template v-if="getRepeaterFields(f)?.length">
 														<div class="calc-repeater-subtotal-header" :data-index="idx"
-															 @click="toggleRepeater(idx)">
+															@click="toggleRepeater(idx)">
 															<i class="ccb-icon-Path-3514"></i>
 															<span>{{field.label}}</span>
 															<span class="ccb-repeater-field-number">#{{idx + 1}}</span>
@@ -157,15 +157,15 @@
 							</div>
 
 							<div class="calc-subtotal-list totals" style="margin-top: 20px; padding-top: 10px;"
-								 ref="calcTotals" :class="{'unit-enable': showUnitInSummary}"
-								 v-show="!summaryDisplay || showAfterSubmit">
+								ref="calcTotals" :class="{'unit-enable': showUnitInSummary}"
+								v-show="!summaryDisplay || showAfterSubmit">
 								<template v-for="item in getRepeaterTotals">
 									<cost-total :value="item.total" :discount="item.discount" :field="item.data"
 												:id="calc_data.id" @condition-apply="renderCondition"></cost-total>
 								</template>
 								<template v-for="item in formulaConst">
 									<div v-if="isFormulaConstInvalid"
-										 style="display: flex" class="sub-list-item total">
+										style="display: flex" class="sub-list-item total">
 										<span class="sub-item-title"><?php esc_html_e( 'Total', 'cost-calculator-builder' ); ?></span>
 										<span class="sub-item-value" style="white-space: nowrap">{{ item.data.converted }}</span>
 									</div>
@@ -176,7 +176,7 @@
 							</div>
 
 							<div class="calc-subtotal-list" v-if="getWooProductName"
-								 v-show="!summaryDisplay || showAfterSubmit">
+								v-show="!summaryDisplay || showAfterSubmit">
 								<div class="calc-woo-product">
 									<div class="calc-woo-product__info">
 										"{{getWooProductName}}"<?php echo esc_html__( ' has been added to your cart', 'cost-calculator-builder' ); ?>
@@ -190,7 +190,7 @@
 							</div>
 
 							<div class="calc-promocode-wrapper" v-if="hasPromocode"
-								 v-show="!summaryDisplay || showAfterSubmit">
+								v-show="!summaryDisplay || showAfterSubmit">
 								<div class="promocode-header"></div>
 								<div class="promocode-body">
 									<div class="calc-have-promocode">
@@ -198,17 +198,17 @@
 									</div>
 									<div class="calc-item ccb-field ccb-field-quantity">
 										<div class="calc-item__title"
-											 style="display: flex; align-items: center; column-gap: 10px">
+											style="display: flex; align-items: center; column-gap: 10px">
 											<span><?php esc_html_e( 'Promocode', 'cost-calculator-builder' ); ?></span>
 											<span class="ccb-promocode-hint" v-if="showPromocode"
-												  @click.stop="showPromocode = !showPromocode"><?php esc_html_e( 'Hide', 'cost-calculator-builder' ); ?></span>
+												@click.stop="showPromocode = !showPromocode"><?php esc_html_e( 'Hide', 'cost-calculator-builder' ); ?></span>
 											<span class="ccb-promocode-hint" v-if="!showPromocode"
-												  @click.stop="showPromocode = !showPromocode"><?php esc_html_e( 'Show', 'cost-calculator-builder' ); ?></span>
+												@click.stop="showPromocode = !showPromocode"><?php esc_html_e( 'Show', 'cost-calculator-builder' ); ?></span>
 										</div>
 										<template v-if="showPromocode">
 											<div class="calc-promocode-container">
 												<div class="calc-input-wrapper ccb-field"
-													 :class="{required: discountError !== ''}">
+													:class="{required: discountError !== ''}">
 													<span v-if="discountError === 'invalid'" :class="{active: discountError !== ''}" class="ccb-error-tip front default">
 														<?php esc_html_e( 'Invalid promocode', 'cost-calculator-builder' ); ?>
 													</span>
@@ -249,8 +249,8 @@
 						</div>
 
 						<div class="calc-list-inner calc-notice" :class="noticeData.type"
-							 v-show="shouldHideThankYouPage"
-							 style="margin-top: 10px !important;">
+							v-show="shouldHideThankYouPage"
+							style="margin-top: 10px !important;">
 							<calc-notices :notice="noticeData"/>
 						</div>
 					</div>
@@ -283,13 +283,13 @@
 							</div>
 
 							<template v-for="(field) in getPageTotalSummaryFields"
-									  v-if="shouldProcessFieldWithSettings(field)">
+									v-if="shouldProcessFieldWithSettings(field)">
 								<template v-if="field.alias.includes('repeater')">
 									<div class="calc-repeater-subtotal"
-										 v-for="(f, idx) in Object.values(field?.resultGrouped)">
+										v-for="(f, idx) in Object.values(field?.resultGrouped)">
 										<template v-if="getRepeaterFields(f)?.length">
 											<div class="calc-repeater-subtotal-header" :data-index="idx"
-												 @click="toggleRepeater(idx)">
+												@click="toggleRepeater(idx)">
 												<i class="ccb-icon-Path-3514"></i>
 												<span>{{field.label}}</span>
 												<span class="ccb-repeater-field-number">#{{idx + 1}}</span>
