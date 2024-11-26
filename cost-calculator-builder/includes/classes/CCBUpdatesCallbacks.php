@@ -3,12 +3,15 @@
 namespace cBuilder\Classes;
 
 use cBuilder\Classes\Appearance\Presets\CCBPresetGenerator;
+use cBuilder\Classes\Database\Condition;
+use cBuilder\Classes\Database\Discounts;
 use cBuilder\Classes\Database\Orders;
 use cBuilder\Classes\Database\Payments;
 use cBuilder\Classes\Database\Forms;
 use cBuilder\Classes\Database\FormCalcs;
 use cBuilder\Classes\Database\FormFields;
 use cBuilder\Classes\Database\FormFieldsAttributes;
+use cBuilder\Classes\Database\Promocodes;
 use cBuilder\Classes\pdfManager\CCBPdfManager;
 use cBuilder\Classes\pdfManager\CCBPdfManagerTemplates;
 
@@ -1178,17 +1181,20 @@ class CCBUpdatesCallbacks {
 						if ( 'brand_block' === $key ) {
 							$status = false;
 							if ( ! empty( $invoice['companyLogo'] ) ) {
-								$status                                             = true;
+								$status = true;
+
 								$template['sections'][ $key ]['logo']['logo_image'] = $invoice['companyLogo'];
 							}
 
 							if ( ! empty( $invoice['companyName'] ) ) {
-								$status                                                    = true;
+								$status = true;
+
 								$template['sections'][ $key ]['name']['show_company_name'] = $invoice['companyName'];
 							}
 
 							if ( ! empty( $invoice['companyInfo'] ) ) {
-								$status                                                = true;
+								$status = true;
+
 								$template['sections'][ $key ]['slogan']['show_slogan'] = $invoice['companyInfo'];
 							}
 
@@ -1216,5 +1222,64 @@ class CCBUpdatesCallbacks {
 			unset( $general_settings['invoice']['companyLogo'] );
 			unset( $general_settings['invoice']['dateFormat'] );
 		}
+	}
+
+	public static function ccb_update_pdf_data() {
+		$pdf_templates = CCBPdfManager::ccb_get_pdf_template();
+
+		foreach ( $pdf_templates as $key => $template ) {
+			if ( isset( $template['sections']['company_block']['contacts'] ) && ! isset( $template['sections']['company_block']['contacts']['phone_label'] ) ) {
+				$template['sections']['company_block']['contacts']['phone_label']     = 'Phone';
+				$template['sections']['company_block']['contacts']['email_label']     = 'Email';
+				$template['sections']['company_block']['contacts']['messenger_label'] = 'Messenger';
+				$template['sections']['company_block']['contacts']['site_url_label']  = 'Site';
+			}
+
+			if ( ! isset( $template['sections']['order_block']['content']['show_grand_total'] ) ) {
+				$template['sections']['order_block']['content']['show_grand_total'] = true;
+			}
+
+			if ( isset( $template['sections']['order_block']['content'] ) && ! isset( $template['sections']['order_block']['content']['show_heading'] ) ) {
+				$template['sections']['order_block']['content']['show_heading']  = true;
+				$template['sections']['order_block']['content']['heading_name']  = 'Name';
+				$template['sections']['order_block']['content']['heading_unit']  = 'Option/Unit';
+				$template['sections']['order_block']['content']['heading_value'] = 'Total';
+			}
+
+			$pdf_templates[ $key ] = $template;
+		}
+
+		CCBPdfManager::update_tempaltes( $pdf_templates );
+	}
+
+	public static function ccb_remove_foreign_keys() {
+		global $wpdb;
+
+		$tables = array( Discounts::_table(), Forms::_table(), FormFields::_table() );
+		foreach ( $tables as $table_name ) {
+			// phpcs:disable
+			$constraints = $wpdb->get_results(
+				"SELECT TABLE_NAME, CONSTRAINT_NAME
+						 FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE
+						 WHERE REFERENCED_TABLE_NAME = '$table_name'
+						 AND TABLE_SCHEMA = DATABASE();"
+			);
+			// phpcs:enable
+
+			if ( ! is_array( $constraints ) ) {
+				$constraints = array();
+			}
+
+			foreach ( $constraints as $constraint ) {
+				$table           = $constraint->TABLE_NAME;
+				$constraint_name = $constraint->CONSTRAINT_NAME;
+				$wpdb->query("ALTER TABLE {$table} DROP FOREIGN KEY {$constraint_name}"); // phpcs:ignore
+			}
+		}
+
+		Promocodes::maybe_create_trigger();
+		Condition::maybe_create_trigger();
+		FormFields::maybe_create_trigger();
+		FormFieldsAttributes::maybe_create_trigger();
 	}
 }

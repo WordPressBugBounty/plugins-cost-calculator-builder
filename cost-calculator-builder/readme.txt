@@ -5,8 +5,8 @@ Donate link: https://stylemixthemes.com
 Tags: cost calculator, calculator, calculator form builder, cost estimation, shipping calculator, taxi fare calculator, price calculator, tax calculation
 Requires at least: 4.6
 Requires PHP: 5.6
-Tested up to: 6.7
-Stable tag: 3.2.44
+Tested up to: 6.7.1
+Stable tag: 3.2.45
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -162,6 +162,20 @@ Also, you can import the demo sample using Tools -> Import -> WordPress Import.
 Demo sample XML file included in plugin archive.
 
 == Changelog ==
+
+= 3.2.45 =
+- Fix: Resolved an issue where the resetting the site did not delete existing forms.
+- Fix: Fixed duplication of file prices in the File Upload element when no Formula element is present.
+- Fix: Corrected translation for the "Show summary" text in the Page Breaker element.
+- Fix: Addressed errors with the Repeater in Page Breaker when no Formula element existed in the calculator.
+- Fix: Fixed warnings caused by discounts when the resetting the site.
+- Fix: Ensured fields hidden by Conditions are displayed correctly in the Summary.
+- Fix: Prevented hidden totals from being included in the PDF entries.
+- Fix: Fixed the issue where labels in Company Details and footer text did not update in PDF Entries.
+- Fix: Resolved a bug where elements within a hidden group were displayed in the PDF.
+- Fix: Made column names in Order Block of PDF templates editable.
+- Fix: Fixed an issue where the checkout displayed all hidden totals instead of the necessary one.
+- Fix: Corrected the calculator display in Preview/Appearance when Page Breaker is present.
 
 = 3.2.44 =
 - Fix: Resolved an issue where long numbers in placeholders in Appearance would overlap with arrow icons.

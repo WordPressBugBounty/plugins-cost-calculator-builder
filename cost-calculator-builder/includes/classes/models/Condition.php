@@ -6,7 +6,8 @@ use cBuilder\Classes\Vendor\DataBaseModel;
 
 
 class Condition extends DataBaseModel {
-	public static $primary_key = 'discount_condition_id';
+	public static $primary_key  = 'discount_condition_id';
+	public static $trigger_name = 'cascade_delete_conditions';
 	/**
 	 * Create Table
 	 */
@@ -15,10 +16,8 @@ class Condition extends DataBaseModel {
 
 		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
-		$table_name      = self::_table();
-		$primary_key     = self::$primary_key;
-		$discounts_table = Discounts::_table();
-		$discounts_id    = Discounts::$primary_key;
+		$table_name  = self::_table();
+		$primary_key = self::$primary_key;
 
 		$sql = "CREATE TABLE IF NOT EXISTS {$table_name} (
             {$primary_key} INT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -31,7 +30,6 @@ class Condition extends DataBaseModel {
             `created_at` DATETIME NOT NULL,
             `updated_at` DATETIME NOT NULL,
             PRIMARY KEY ({$primary_key}),
-            FOREIGN KEY (discount_id) REFERENCES {$discounts_table}($discounts_id) ON DELETE CASCADE,
             INDEX `idx_discount_id` (`discount_id`),
             INDEX `idx_field_alias` (`field_alias`)
 		) {$wpdb->get_charset_collate()};";
@@ -79,5 +77,45 @@ class Condition extends DataBaseModel {
 		);
 
 		return $wpdb->get_results( $sql, ARRAY_A ); // phpcs:ignore
+	}
+
+	private static function trigger_exists() {
+		global $wpdb;
+		$trigger_name = self::$trigger_name;
+        // phpcs:disable
+		return $wpdb->get_var(
+			$wpdb->prepare(
+				"SELECT COUNT(*)
+					   FROM INFORMATION_SCHEMA.TRIGGERS
+					   WHERE TRIGGER_NAME = %s
+					   AND TRIGGER_SCHEMA = DATABASE();",
+				$trigger_name
+			)
+		);
+        // phpcs:enable
+	}
+
+	private static function create_trigger() {
+		global $wpdb;
+		$trigger_name    = self::$trigger_name;
+		$table_name      = self::_table();
+		$discounts_table = Discounts::_table();
+
+        // phpcs:disable
+		$wpdb->query(
+			"CREATE TRIGGER $trigger_name
+                    AFTER DELETE ON $discounts_table
+                    FOR EACH ROW
+                    BEGIN
+                        DELETE FROM $table_name WHERE discount_id = OLD.discount_id;
+                    END;"
+		);
+        // phpcs:enable
+	}
+
+	public static function maybe_create_trigger() {
+		if ( ! self::trigger_exists() ) {
+			self::create_trigger();
+		}
 	}
 }

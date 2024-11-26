@@ -108,7 +108,7 @@ $pdf_data = \cBuilder\Classes\pdfManager\CCBPdfManager::ccb_get_pdf_manager_data
 						</div>
 					</div>
 					<div class="summary">
-						<span @click="showSummaryPopup">Show summary</span>
+						<span @click="showSummaryPopup"><?php esc_html_e( 'Show summary', 'cost-calculator-builder' ); ?></span>
 					</div>
 				</div>
 				<div class="calc-page-navigation__actions">

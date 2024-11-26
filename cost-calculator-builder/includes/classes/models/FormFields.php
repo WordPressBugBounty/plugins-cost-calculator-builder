@@ -5,6 +5,7 @@ namespace cBuilder\Classes\Database;
 use cBuilder\Classes\Vendor\DataBaseModel;
 
 class FormFields extends DataBaseModel {
+	public static $trigger_name = 'cascade_delete_form_fields';
 	/**
 	 * Create Table
 	 */
@@ -15,8 +16,6 @@ class FormFields extends DataBaseModel {
 
 		$table_name  = self::_table();
 		$primary_key = self::$primary_key;
-		$forms_table = Forms::_table();
-		$form_id     = Forms::$primary_key;
 
 		$sql = "CREATE TABLE IF NOT EXISTS {$table_name} (
 			{$primary_key} INT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -26,7 +25,6 @@ class FormFields extends DataBaseModel {
 			sort_id INT UNSIGNED NOT NULL,
 			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 			updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-			FOREIGN KEY(form_id) REFERENCES {$forms_table}($form_id) ON DELETE CASCADE,
 			PRIMARY KEY ({$primary_key})
 		) {$wpdb->get_charset_collate()};";
 
@@ -169,7 +167,7 @@ class FormFields extends DataBaseModel {
 				$placeholders
 			);
 
-		    $wpdb->query( $wpdb->prepare( $sql, array_merge( array( $form_id ), $field_list ) ) ); // phpcs:ignore
+			$wpdb->query( $wpdb->prepare( $sql, array_merge( array( $form_id ), $field_list ) ) ); // phpcs:ignore
 		}
 
 	}
@@ -191,7 +189,45 @@ class FormFields extends DataBaseModel {
 		$new_field_ids = $wpdb->get_col( $wpdb->prepare( "SELECT {$field_id} FROM {$form_fields_table} WHERE form_id = %d ORDER BY {$field_id}", $new_form_id ) );// phpcs:ignore
 
 		FormFieldsAttributes::duplicate_field_attributes( $new_field_ids, $old_field_ids );
-
 	}
 
+	private static function trigger_exists() {
+		global $wpdb;
+		$trigger_name = self::$trigger_name;
+		// phpcs:disable
+		return $wpdb->get_var(
+			$wpdb->prepare(
+				"SELECT COUNT(*)
+					   FROM INFORMATION_SCHEMA.TRIGGERS
+					   WHERE TRIGGER_NAME = %s
+					   AND TRIGGER_SCHEMA = DATABASE();",
+				$trigger_name
+			)
+		);
+		// phpcs:enable
+	}
+
+	private static function create_trigger() {
+		global $wpdb;
+		$trigger_name = self::$trigger_name;
+		$table_name   = self::_table();
+		$forms_table  = Forms::_table();
+
+		// phpcs:disable
+		$wpdb->query(
+			"CREATE TRIGGER $trigger_name
+					AFTER DELETE ON $forms_table
+					FOR EACH ROW
+					BEGIN
+						DELETE FROM $table_name WHERE form_id = OLD.id;
+					END;"
+		);
+		// phpcs:enable
+	}
+
+	public static function maybe_create_trigger() {
+		if ( ! self::trigger_exists() ) {
+			self::create_trigger();
+		}
+	}
 }

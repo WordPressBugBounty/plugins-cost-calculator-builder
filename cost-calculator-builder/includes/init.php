@@ -18,9 +18,13 @@ register_activation_hook(
 			\cBuilder\Classes\Database\Payments::create_table();
 			\cBuilder\Classes\Database\Discounts::create_table();
 			\cBuilder\Classes\Database\Promocodes::create_table();
+			\cBuilder\Classes\Database\Promocodes::maybe_create_trigger();
 			\cBuilder\Classes\Database\Condition::create_table();
+			\cBuilder\Classes\Database\Condition::maybe_create_trigger();
 			\cBuilder\Classes\Database\FormFields::create_table();
+			\cBuilder\Classes\Database\FormFields::maybe_create_trigger();
 			\cBuilder\Classes\Database\FormFieldsAttributes::create_table();
+			\cBuilder\Classes\Database\FormFieldsAttributes::maybe_create_trigger();
 			\cBuilder\Classes\CCBCalculatorTemplates::render_templates();
 		}
 

@@ -6,6 +6,7 @@ use cBuilder\Classes\Vendor\DataBaseModel;
 
 
 class FormFieldsAttributes extends DataBaseModel {
+	public static $trigger_name = 'cascade_delete_form_fields_attrs';
 	/**
 	 * Create Table
 	 */
@@ -14,19 +15,16 @@ class FormFieldsAttributes extends DataBaseModel {
 
 		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
-		$table_name        = self::_table();
-		$primary_key       = self::$primary_key;
-		$form_fields_table = FormFields::_table();
-		$field_id          = FormFields::$primary_key;
+		$table_name  = self::_table();
+		$primary_key = self::$primary_key;
 
 		$sql = "CREATE TABLE IF NOT EXISTS {$table_name} (
 			{$primary_key} INT UNSIGNED NOT NULL AUTO_INCREMENT,
 			field_id INT UNSIGNED NOT NULL,
 			type VARCHAR(255) NOT NULL,
-            text_data LONGTEXT,
+			text_data LONGTEXT,
 			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 			updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-			FOREIGN KEY(field_id) REFERENCES {$form_fields_table}($field_id) ON DELETE CASCADE,
 			PRIMARY KEY ({$primary_key})
 		) {$wpdb->get_charset_collate()};";
 
@@ -331,4 +329,43 @@ class FormFieldsAttributes extends DataBaseModel {
 		self::insert_field_attributes( $field_id, $attributes );
 	}
 
+	private static function trigger_exists() {
+		global $wpdb;
+		$trigger_name = self::$trigger_name;
+		// phpcs:disable
+		return $wpdb->get_var(
+			$wpdb->prepare(
+				"SELECT COUNT(*)
+					   FROM INFORMATION_SCHEMA.TRIGGERS
+					   WHERE TRIGGER_NAME = %s
+					   AND TRIGGER_SCHEMA = DATABASE();",
+				$trigger_name
+			)
+		);
+		// phpcs:enable
+	}
+
+	private static function create_trigger() {
+		global $wpdb;
+		$trigger_name       = self::$trigger_name;
+		$table_name         = self::_table();
+		$forms_fields_table = FormFields::_table();
+
+		// phpcs:disable
+		$wpdb->query(
+			"CREATE TRIGGER $trigger_name
+					AFTER DELETE ON $forms_fields_table
+					FOR EACH ROW
+					BEGIN
+						DELETE FROM $table_name WHERE field_id = OLD.id;
+					END;"
+		);
+		// phpcs:enable
+	}
+
+	public static function maybe_create_trigger() {
+		if ( ! self::trigger_exists() ) {
+			self::create_trigger();
+		}
+	}
 }

@@ -6,10 +6,10 @@ $get_date_format  = get_option( 'date_format' );
 
 <calc-builder-front :key="getFieldsKey" :custom="1" :content="{...preview_data, default_img: '<?php echo esc_attr( $default_img ); ?>'}" inline-template :id="getId">
 	<div :class="'ccb-wrapper-' + getId">
-		<div ref="calc" :class="['calc-container', 'calc-page', { 'vertical': !summaryInLastPage }]" :data-calc-id="getId">
+		<div ref="calc" :class="['calc-container']" :data-calc-id="getId">
 			<loader v-if="loader"></loader>
-			<template v-else>
-				<div>
+			<template>
+				<div v-show="!loader">
 					<calc-page-navigation
 							:count="totalPages"
 							:index="activePageIndex"
@@ -23,8 +23,8 @@ $get_date_format  = get_option( 'date_format' );
 						<div v-if="calc_data" class="calc-fields-container">
 
 							<div class="calc-pages">
-								<div class="calc-page" v-for="(page, index) in getPages" v-if="index == activePageIndex"
-									:class="page.boxStyle">
+								<div class="calc-page" v-for="(page, index) in getPages" 
+									:class="[{'visible': index == activePageIndex}, { 'horizontal': page.boxStyle === 'horizontal' } ]">
 									<template v-for="field in page.groupElements">
 										<template
 												v-if="field && field.alias && field.type !== 'Total' && !field.alias.includes('group')">
