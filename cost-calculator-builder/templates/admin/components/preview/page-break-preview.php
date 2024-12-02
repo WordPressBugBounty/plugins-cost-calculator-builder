@@ -6,9 +6,9 @@ $get_date_format  = get_option( 'date_format' );
 
 <calc-builder-front :key="getFieldsKey" :custom="1" :content="{...preview_data, default_img: '<?php echo esc_attr( $default_img ); ?>'}" inline-template :id="getId">
 	<div :class="'ccb-wrapper-' + getId">
-		<div ref="calc" :class="['calc-container']" :data-calc-id="getId">
+		<div ref="calc" :class="['calc-container', boxStyle, {demoSite: showDemoBoxStyle}, {'has-title': showMultiStepCalcTitle}]" :style="fullWithStepCalc" :data-calc-id="getId">
 			<loader v-if="loader"></loader>
-			<template>
+			<template v-else>
 				<div v-show="!loader">
 					<calc-page-navigation
 							:count="totalPages"

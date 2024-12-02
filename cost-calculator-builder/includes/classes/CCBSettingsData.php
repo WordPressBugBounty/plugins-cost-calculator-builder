@@ -84,7 +84,7 @@ class CCBSettingsData {
 			),
 			'formFields'      => array(
 				'fields'               => array(),
-				'emailSubject'         => '',
+				'emailSubject'         => __( 'New Order', 'cost-calculator-builder' ),
 				'contactFormId'        => '',
 				'formType'             => 'cost-calculator',
 				'applyFormId'          => '',
@@ -135,6 +135,7 @@ class CCBSettingsData {
 				'product_id'  => '',
 				'redirect_to' => 'cart',
 				'description' => '[ccb-total-0]',
+				'stock_links' => array(),
 				'formulas'    => array(),
 			),
 			'payment_gateway' => array(
@@ -259,43 +260,48 @@ class CCBSettingsData {
 				'fromName'         => '',
 			),
 			'email_templates' => array(
-				'title'           => __( 'Calculation result', 'cost-calculator-builder' ),
-				'description'     => 'This email is automatically generated and does not require a response. If you have a question, please contact: support@example.com',
-				'logo'            => '',
-				'logo_position'   => 'left',
-				'footer'          => true,
-				'template_color'  => array(
+				'title'            => __( 'Calculation result', 'cost-calculator-builder' ),
+				'description'      => 'This email is automatically generated and does not require a response. If you have a question, please contact: support@example.com',
+				'logo'             => '',
+				'logo_position'    => 'left',
+				'footer'           => true,
+				'template_color'   => array(
 					'value'   => '#EEF1F7',
 					'type'    => 'color',
 					'default' => '#EEF1F7',
 				),
-				'content_bg'      => array(
+				'content_bg'       => array(
 					'value'   => '#FFFFFF',
 					'type'    => 'color',
 					'default' => '#FFFFFF',
 				),
-				'main_text_color' => array(
+				'main_text_color'  => array(
 					'value'   => '#001931',
 					'type'    => 'color',
 					'default' => '#001931',
 				),
-				'border_color'    => array(
+				'border_color'     => array(
 					'value'   => '#ddd',
 					'type'    => 'color',
 					'default' => '#ddd',
 				),
-				'button_color'    => array(
+				'button_color'     => array(
 					'value'   => '#00B163',
 					'type'    => 'color',
 					'default' => '#00B163',
 				),
+				'button_text_color' => array(
+					'value'   => '#001931',
+					'type'    => 'color',
+					'default' => '#001931',
+				),
 			),
 			'form_fields'     => array(
 				'use_in_all'           => false,
-				'emailSubject'         => '',
+				'emailSubject'         => __( 'New order', 'cost-calculator-builder' ),
 				'adminEmailAddress'    => '',
-				'openModalBtnText'     => __( 'Submit order', 'cost-calculator-builder' ),
-				'submitBtnText'        => __( 'Make order', 'cost-calculator-builder' ),
+				'openModalBtnText'     => __( 'Make order', 'cost-calculator-builder' ),
+				'submitBtnText'        => __( 'Submit order', 'cost-calculator-builder' ),
 				'terms_use_in_all'     => false,
 				'order_id_in_subject'  => false,
 				'terms_and_conditions' => array(
@@ -477,6 +483,14 @@ class CCBSettingsData {
 				'title' => __( 'PDF Entries', 'cost-calculator-builder' ),
 				'slug'  => 'invoice',
 				'icon'  => 'ccb-icon-Path-3494',
+			),
+
+			array(
+				'type'         => 'basic',
+				'title'        => __( 'Share Quote Form', 'cost-calculator-builder' ),
+				'slug'         => 'share-quote-form',
+				'icon'         => 'ccb-icon-share-quote',
+				'icon-warning' => 'ccb-error-icon',
 			),
 
 			array(
