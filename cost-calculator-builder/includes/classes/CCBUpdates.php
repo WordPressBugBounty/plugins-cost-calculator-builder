@@ -118,9 +118,9 @@ class CCBUpdates {
 		'3.2.42' => array(
 			'ccb_new_pdf_manager_tool',
 		),
-		'3.2.45' => array(
-			'ccb_update_pdf_data',
-			'ccb_remove_foreign_keys',
+		'3.2.47' => array(
+			'ccb_add_date_picker_field',
+			'add_default_value_to_fields',
 		),
 	);
 

@@ -83,10 +83,11 @@ class CCBOrderFormFieldsHelper {
 				'icon'        => 'ccb-icon-dropdown-2',
 				'field_width' => '12',
 				'attributes'  => array(
-					'required'    => '0',
-					'label'       => 'Dropdown',
-					'placeholder' => 'Select an option',
-					'options'     => array(
+					'required'      => '0',
+					'label'         => 'Dropdown',
+					'placeholder'   => 'Select an option',
+					'default_value' => array(),
+					'options'       => array(
 						array(
 							'optionText' => 'Option 1',
 						),
@@ -97,7 +98,7 @@ class CCBOrderFormFieldsHelper {
 							'optionText' => 'Option 3',
 						),
 					),
-					'multiselect' => '1',
+					'multiselect'   => '1',
 				),
 			),
 			array(
@@ -106,9 +107,10 @@ class CCBOrderFormFieldsHelper {
 				'icon'        => 'ccb-icon-Path-3511',
 				'field_width' => '12',
 				'attributes'  => array(
-					'required' => '0',
-					'label'    => 'This is the title of radio group',
-					'options'  => array(
+					'required'      => '0',
+					'label'         => 'Radio group',
+					'default_value' => array(),
+					'options'       => array(
 						array(
 							'optionText' => 'Radio 1',
 						),
@@ -119,7 +121,7 @@ class CCBOrderFormFieldsHelper {
 							'optionText' => 'Radio 3',
 						),
 					),
-					'display'  => 'Vertical',
+					'display'       => 'Vertical',
 				),
 			),
 			array(
@@ -128,9 +130,10 @@ class CCBOrderFormFieldsHelper {
 				'icon'        => 'ccb-icon-Path-3512',
 				'field_width' => '12',
 				'attributes'  => array(
-					'required' => '0',
-					'label'    => 'This is the title of checkbox group',
-					'options'  => array(
+					'required'      => '0',
+					'label'         => 'Checkbox group',
+					'default_value' => array(),
+					'options'       => array(
 						array(
 							'optionText' => 'Checkbox 1',
 						),
@@ -141,7 +144,31 @@ class CCBOrderFormFieldsHelper {
 							'optionText' => 'Checkbox 3',
 						),
 					),
-					'display'  => 'Vertical',
+					'display'       => 'Vertical',
+				),
+			),
+			array(
+				'name'        => __( 'Time Picker', 'cost-calculator-builder-pro' ),
+				'type'        => 'time-picker',
+				'icon'        => 'ccb-icon-ccb_time_picker',
+				'field_width' => '12',
+				'attributes'  => array(
+					'required'    => '0',
+					'label'       => 'Time picker',
+					'format'    => false,
+					'range'       => false,
+				),
+			),
+			array(
+				'name'        => __( 'Date Picker', 'cost-calculator-builder-pro' ),
+				'type'        => 'date-picker',
+				'icon'        => 'ccb-icon-Union-19',
+				'field_width' => '12',
+				'attributes'  => array(
+					'required'    => '0',
+					'label'       => 'Date picker',
+					'placeholder' => 'Select Date',
+					'range'       => false,
 				),
 			),
 			array(

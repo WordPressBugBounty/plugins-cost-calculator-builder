@@ -7,7 +7,7 @@
 	<div v-if="calc_data" class="calc-fields-container">
 		<div class="calc-pages">
 			<div class="calc-page vertical" v-for="( page, index ) in getPages"
-				:class="[{'visible': index == activePageIndex}, { 'horizontal': page.boxStyle === 'horizontal' } ] ">
+				:class="[{'visible': index == activePageIndex}, { 'horizontal': page.boxStyle === 'horizontal' }]">
 				<template v-for="field in page.groupElements">
 					<template v-if="shouldDisplayField(field)">
 						<component

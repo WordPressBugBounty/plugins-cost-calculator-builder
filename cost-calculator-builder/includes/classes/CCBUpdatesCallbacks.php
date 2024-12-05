@@ -1282,4 +1282,67 @@ class CCBUpdatesCallbacks {
 		FormFields::maybe_create_trigger();
 		FormFieldsAttributes::maybe_create_trigger();
 	}
+
+	public static function add_default_value_to_fields() {
+		global $wpdb;
+
+		$fields_table     = esc_sql( $wpdb->prefix . 'cc_form_fields' );
+		$attributes_table = esc_sql( $wpdb->prefix . 'cc_form_fields_attributes' );
+
+		$field_ids = $wpdb->get_col(
+			$wpdb->prepare(
+				"SELECT id FROM `$fields_table` WHERE type IN (%s, %s, %s)", //phpcs:ignore
+				'checkbox',
+				'dropdown',
+				'radio'
+			)
+		);
+
+		if ( empty( $field_ids ) ) {
+			return;
+		}
+
+		foreach ( $field_ids as $field_id ) {
+			$exists = $wpdb->get_var(
+				$wpdb->prepare(
+					"SELECT COUNT(*) FROM `$attributes_table` WHERE field_id = %d AND type = %s", //phpcs:ignore
+					$field_id,
+					'default_value'
+				)
+			);
+
+			if ( ! $exists ) {
+				$wpdb->insert(
+					$attributes_table,
+					array(
+						'field_id'   => $field_id,
+						'type'       => 'default_value',
+						'text_data'  => '',
+						'created_at' => current_time( 'mysql' ),
+						'updated_at' => current_time( 'mysql' ),
+					),
+					array(
+						'%d',
+						'%s',
+						'%s',
+						'%s',
+						'%s',
+					)
+				);
+			}
+		}
+	}
+
+	public static function ccb_add_date_picker_field() {
+		global $wpdb;
+		$form_fields_table = FormFields::_table();
+		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW COLUMNS FROM `%1s` LIKE %s;', $form_fields_table, 'type' ) ) ) { // phpcs:ignore
+			$wpdb->query(
+				$wpdb->prepare(
+					"ALTER TABLE `%1s` MODIFY COLUMN `type` ENUM('name', 'email', 'phone', 'input-textbox', 'textarea', 'number', 'dropdown', 'radio', 'checkbox', 'formatted-text', 'space', 'button', 'date-picker', 'time-picker') NOT NULL", // phpcs:ignore
+					$form_fields_table
+				)
+			);
+		}
+	}
 }

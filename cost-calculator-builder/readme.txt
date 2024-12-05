@@ -6,7 +6,7 @@ Tags: cost calculator, calculator, calculator form builder, cost estimation, shi
 Requires at least: 4.6
 Requires PHP: 5.6
 Tested up to: 6.7.1
-Stable tag: 3.2.46
+Stable tag: 3.2.47
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -162,6 +162,10 @@ Also, you can import the demo sample using Tools -> Import -> WordPress Import.
 Demo sample XML file included in plugin archive.
 
 == Changelog ==
+
+= 3.2.47 =
+- Enhancement: Introduced the Default Values setting for Checkboxes, Dropdowns, and Radio buttons in Order Form. (Pro)
+- Enhancement: Added new fields to Order Form: Date Picker, Time Picker. (Pro)
 
 = 3.2.46 =
 - Fix: Fixed the "Description position: Before field" setting not displaying min-max values for Quantity element.

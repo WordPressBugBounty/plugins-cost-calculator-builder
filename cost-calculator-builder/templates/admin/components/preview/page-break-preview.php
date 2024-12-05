@@ -4,7 +4,7 @@ $general_settings = \cBuilder\Classes\CCBSettingsData::get_calc_global_settings(
 $get_date_format  = get_option( 'date_format' );
 ?>
 
-<calc-builder-front :key="getFieldsKey" :custom="1" :content="{...preview_data, default_img: '<?php echo esc_attr( $default_img ); ?>'}" inline-template :id="getId">
+<calc-builder-front :key="getFieldsKey" :custom="1" :preview="1" :content="{...preview_data, default_img: '<?php echo esc_attr( $default_img ); ?>'}" inline-template :id="getId">
 	<div :class="'ccb-wrapper-' + getId">
 		<div ref="calc" :class="['calc-container', boxStyle, {demoSite: showDemoBoxStyle}, {'has-title': showMultiStepCalcTitle}]" :style="fullWithStepCalc" :data-calc-id="getId">
 			<loader v-if="loader"></loader>
@@ -23,8 +23,7 @@ $get_date_format  = get_option( 'date_format' );
 						<div v-if="calc_data" class="calc-fields-container">
 
 							<div class="calc-pages">
-								<div class="calc-page" v-for="(page, index) in getPages" 
-									:class="[{'visible': index == activePageIndex}, { 'horizontal': page.boxStyle === 'horizontal' } ]">
+								<div class="calc-page" v-for="(page, index) in getPages" :class="[{'visible': index == activePageIndex}, { 'horizontal': page.boxStyle === 'horizontal' } ]">
 									<template v-for="field in page.groupElements">
 										<template
 												v-if="field && field.alias && field.type !== 'Total' && !field.alias.includes('group')">
@@ -41,7 +40,6 @@ $get_date_format  = get_option( 'date_format' );
 													v-on:change="change"
 													v-on:[field._event]="change"
 													v-on:condition-apply="renderCondition"
-													v-on:condition-apply="checkConditions"
 													@delete-repeater="deleteRepeater"
 													@add-repeater="deleteRepeater"
 													:key="!field.hasNextTick ? field.alias : field.alias + '_' + fields[field.alias].nextTickCount"

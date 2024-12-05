@@ -20,7 +20,7 @@ class FormFields extends DataBaseModel {
 		$sql = "CREATE TABLE IF NOT EXISTS {$table_name} (
 			{$primary_key} INT UNSIGNED NOT NULL AUTO_INCREMENT,
 			form_id INT UNSIGNED NOT NULL,
-			type ENUM('name', 'email', 'phone', 'input-textbox', 'textarea', 'number', 'dropdown', 'radio', 'checkbox', 'formatted-text', 'space', 'button') NOT NULL,
+			type ENUM('name', 'email', 'phone', 'input-textbox', 'textarea', 'number', 'dropdown', 'radio', 'checkbox', 'formatted-text', 'space', 'button', 'date-picker', 'time-picker') NOT NULL,
 			field_width INT UNSIGNED DEFAULT 10,
 			sort_id INT UNSIGNED NOT NULL,
 			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -108,9 +108,10 @@ class FormFields extends DataBaseModel {
 				$parts = explode( ':', $attr, 2 );
 				if ( count( $parts ) === 2 ) {
 					list($type, $value) = $parts;
-					if ( 'options' === $type ) {
+					if ( 'options' === $type || 'default_value' === $type ) {
 						$value = json_decode( $value );
 					}
+
 					$field['attributes'][ $type ] = $value;
 				}
 			}

@@ -77,6 +77,8 @@ class CCBFieldsHelper {
 			$templates['order-checkbox']       = CCBProTemplate::load( 'frontend/order-fields/order-checkbox' );
 			$templates['order-formatted-text'] = CCBProTemplate::load( 'frontend/order-fields/order-formatted-text' );
 			$templates['order-space']          = CCBProTemplate::load( 'frontend/order-fields/order-space' );
+			$templates['order-time-picker']    = CCBProTemplate::load( 'frontend/order-fields/order-time-picker' );
+			$templates['order-date-picker']    = CCBProTemplate::load( 'frontend/order-fields/order-date-picker' );
 		}
 
 		return $templates;
