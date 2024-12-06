@@ -180,7 +180,10 @@ class CCBOrderController {
 
 				foreach ( $data['orderDetails'] as $detail ) {
 					if ( ! empty( $detail['alias'] ) && str_contains( $detail['alias'], 'repeater' ) ) {
-						foreach ( $detail['groupElements'] as $item ) {
+						foreach ( $detail['groupElements'] as &$item ) {
+							if ( isset( $item['idx'] ) ) {
+								$item['alias'] .= '_' . $item['idx'];
+							}
 							$order_details[] = $item;
 						}
 					} else {
@@ -196,9 +199,13 @@ class CCBOrderController {
 
 					foreach ( $order_details as $field ) {
 						if ( isset( $field['alias'] ) && ! empty( $field['alias'] ) ) {
-							$possible_aliases = array( $field['alias'], $field['alias'] . $key[0] );
+							$single_alias   = $field['alias'];
+							$repeater_alias = $field['alias'] . $key[0];
 
-							if ( in_array( $field_id, $possible_aliases, true ) ) {
+							if ( $repeater_alias === $field_id ) {
+								$field['alias']    = $field_id;
+								$file_upload_field = $field;
+							} elseif ( $single_alias === $field_id ) {
 								$file_upload_field = $field;
 							}
 						}
@@ -216,35 +223,51 @@ class CCBOrderController {
 						continue;
 					}
 
-					if ( ! array_key_exists( $field_id, $file_url ) ) {
+					if ( empty( $file_url[ $field_id ] ) ) {
 						$file_url[ $field_id ] = array();
 					}
 
-					$file_info = wp_handle_upload( $file, array( 'test_form' => false ) );
+					if ( ! empty( $file['name'] ) ) {
+						$upload_dir = wp_upload_dir();
+						$file_path  = $upload_dir['path'] . '/' . $file['name']; // Path to the file
 
-					if ( ! empty( $file_info['file'] ) && str_contains( $file['type'], 'svg' ) ) {
-						$svg_sanitizer = new \enshrined\svgSanitize\Sanitizer();
-						$dirty_svg     = file_get_contents( $file_info['file'] ); //phpcs:ignore
-						$clean_svg     = $svg_sanitizer->sanitize( $dirty_svg );
-						file_put_contents( $file_info['file'], $clean_svg ); //phpcs:ignore
-					}
+						if ( file_exists( $file_path ) ) {
+							$file_info = array(
+								'url'      => $upload_dir['url'] . '/' . $file['name'],
+								'file'     => $file_path,
+								'size'     => filesize( $file_path ),
+								'type'     => mime_content_type( $file_path ),
+								'filename' => $file['name'],
+							);
+						} else {
+							$file_info = wp_handle_upload( $file, array( 'test_form' => false ) );
+						}
 
-					if ( $file_info && empty( $file_info['error'] ) ) {
-						array_push( $file_url[ $field_id ], $file_info );
+						if ( ! empty( $file_info['file'] ) && str_contains( $file['type'], 'svg' ) ) {
+							$svg_sanitizer = new \enshrined\svgSanitize\Sanitizer();
+							$dirty_svg     = file_get_contents( $file_info['file'] ); //phpcs:ignore
+							$clean_svg     = $svg_sanitizer->sanitize( $dirty_svg );
+							file_put_contents( $file_info['file'], $clean_svg ); //phpcs:ignore
+						}
+
+						if ( $file_info && empty( $file_info['error'] ) ) {
+							array_push( $file_url[ $field_id ], $file_info );
+						}
 					}
 				}
-
+				$file_upload_index = 0;
 				foreach ( $order_details as $field_key => $field ) {
 					if ( ! empty( $field['alias'] ) && preg_replace( '/_field_id.*/', '', $field['alias'] ) === 'file_upload' ) {
 						$file_key = isset( $file_url[ $field['alias'] ] )
 							? $field['alias']
-							: ( isset( $file_url[ $field['alias'] . '_' . $field_key ] )
-								? $field['alias'] . '_' . $field_key
+							: ( isset( $file_url[ $field['alias'] . '_' . $file_upload_index ] )
+								? $field['alias'] . '_' . $file_upload_index
 								: null );
 
 						if ( $file_key ) {
 							$order_details[ $field_key ]['options'] = wp_json_encode( $file_url[ $file_key ] );
 						}
+						$file_upload_index++;
 					}
 				}
 

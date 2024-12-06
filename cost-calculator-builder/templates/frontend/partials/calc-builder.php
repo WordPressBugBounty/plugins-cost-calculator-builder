@@ -268,12 +268,12 @@ $pdf_data = \cBuilder\Classes\pdfManager\CCBPdfManager::ccb_get_pdf_manager_data
 			</div>
 		</div>
 		<calc-invoice
-					ref="invoice"
-					:key="$store.getters.getPdfUpdateCounter"
-					:pdf="<?php echo esc_attr( wp_json_encode( $pdf_data ) ); ?>"
-					static-texts='<?php echo esc_attr( wp_json_encode( $invoice_texts ) ); ?>'
-					send-email-texts='<?php echo esc_attr( wp_json_encode( $send_pdf_texts ) ); ?>'
-					:summary-fields="getTotalSummaryFields"
-			/>
+			ref="invoice"
+			:key="$store.getters.getPdfUpdateCounter"
+			:pdf="<?php echo esc_attr( wp_json_encode( $pdf_data ) ); ?>"
+			static-texts='<?php echo esc_attr( wp_json_encode( $invoice_texts ) ); ?>'
+			send-email-texts='<?php echo esc_attr( wp_json_encode( $send_pdf_texts ) ); ?>'
+			:summary-fields="getTotalSummaryFields"
+		/>
 	</div>
 </div>
