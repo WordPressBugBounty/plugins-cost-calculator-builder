@@ -95,7 +95,7 @@ $freemius_info = get_freemius_info();
 
 
 $start_date   = new DateTime( '2024-11-14' );
-$end_date     = new DateTime( '2024-12-10' );
+$end_date     = new DateTime( '2024-12-07' );
 $current_time = new DateTime();
 
 
