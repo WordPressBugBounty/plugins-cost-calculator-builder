@@ -38,8 +38,7 @@ $modal_types = array(
 					<div class="ccb-sidebar-header">
 						<span class="ccb-default-title large ccb-bold" v-if="getElements?.length"><?php esc_html_e( 'Add elements', 'cost-calculator-builder' ); ?></span>
 						<span class="ccb-condition-elements-empty" v-else>
-							<span class="ccb-default-title large ccb-bold" style="color: #878787"><?php esc_html_e( 'As per current', 'cost-calculator-builder' ); ?></span>
-							<span class="ccb-default-title large ccb-bold" style="color: #878787"><?php esc_html_e( 'Nothing will be changed', 'cost-calculator-builder' ); ?></span>
+							<span class="ccb-default-title large ccb-bold" style="color: #878787"><?php esc_html_e( 'No elements currently available', 'cost-calculator-builder' ); ?></span>
 						</span>
 					</div>
 					<div class="ccb-conditions-items">

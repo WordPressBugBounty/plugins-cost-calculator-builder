@@ -115,6 +115,9 @@ class CCBPdfManagerTemplates {
 							'key'   => 'design',
 							'data'  => array(
 								'text_align'       => CCBPdfManagerHelper::get_pdf_tab_options_data( '', 'text_align', $top_text_block['design']['text_align'] ),
+								'title_font_size'  => CCBPdfManagerHelper::get_pdf_counter_data( __( 'Heading Font Size', 'cost-calculator-builder-pro' ), 'title_font_size', $top_text_block['design']['title_font_size'] ),
+								'title_color'      => CCBPdfManagerHelper::get_pdf_switch_with_color_data( __( 'Heading Color', 'cost-calculator-builder-pro' ), 'title_color', $top_text_block['design']['title_color'], $top_text_block['design']['title_color_status'] ),
+								'font_size'        => CCBPdfManagerHelper::get_pdf_counter_data( __( 'Font Size', 'cost-calculator-builder-pro' ), 'font_size', $top_text_block['design']['font_size'] ),
 								'text_color'       => CCBPdfManagerHelper::get_pdf_switch_with_color_data( __( 'Text Color', 'cost-calculator-builder-pro' ), 'text_color', $top_text_block['design']['text_color'], $top_text_block['design']['text_color_status'] ),
 								'background_color' => CCBPdfManagerHelper::get_pdf_switch_with_color_data( __( 'Background Color', 'cost-calculator-builder-pro' ), 'background_color', $top_text_block['design']['background_color'], $top_text_block['design']['background_color_status'] ),
 							),
@@ -148,6 +151,7 @@ class CCBPdfManagerTemplates {
 							'key'   => 'design',
 							'data'  => array(
 								'text_align'       => CCBPdfManagerHelper::get_pdf_tab_options_data( '', 'text_align', $order_id_and_date['design']['text_align'] ),
+								'font_size'        => CCBPdfManagerHelper::get_pdf_counter_data( __( 'Font Size', 'cost-calculator-builder-pro' ), 'font_size', $order_id_and_date['design']['font_size'] ),
 								'text_color'       => CCBPdfManagerHelper::get_pdf_switch_with_color_data( __( 'Text Color', 'cost-calculator-builder-pro' ), 'text_color', $order_id_and_date['design']['text_color'], $order_id_and_date['design']['text_color_status'] ),
 								'background_color' => CCBPdfManagerHelper::get_pdf_switch_with_color_data( __( 'Background Color', 'cost-calculator-builder-pro' ), 'background_color', $order_id_and_date['design']['background_color'], $order_id_and_date['design']['background_color_status'] ),
 							),
@@ -206,8 +210,10 @@ class CCBPdfManagerTemplates {
 							'title' => 'Design',
 							'key'   => 'design',
 							'data'  => array(
+								'title_font_size'    => CCBPdfManagerHelper::get_pdf_counter_data( __( 'Heading Font Size', 'cost-calculator-builder-pro' ), 'title_font_size', $order_block['design']['title_font_size'] ),
 								'heading_text'       => CCBPdfManagerHelper::get_pdf_switch_with_color_data( __( 'Heading Text', 'cost-calculator-builder-pro' ), 'heading_text', $order_block['design']['heading_text'], $order_block['design']['heading_text_status'] ),
 								'heading_background' => CCBPdfManagerHelper::get_pdf_switch_with_color_data( __( 'Heading Background', 'cost-calculator-builder-pro' ), 'heading_background', $order_block['design']['heading_background'], $order_block['design']['heading_background_status'] ),
+								'font_size'          => CCBPdfManagerHelper::get_pdf_counter_data( __( 'Table Font Size', 'cost-calculator-builder-pro' ), 'font_size', $order_block['design']['font_size'] ),
 								'table_text'         => CCBPdfManagerHelper::get_pdf_switch_with_color_data( __( 'Table Text', 'cost-calculator-builder-pro' ), 'table_text', $order_block['design']['table_text'], $order_block['design']['table_text_status'] ),
 								'table_background'   => CCBPdfManagerHelper::get_pdf_switch_with_color_data( __( 'Table Background', 'cost-calculator-builder-pro' ), 'table_background', $order_block['design']['table_background'], $order_block['design']['table_background_status'] ),
 							),
@@ -333,6 +339,9 @@ class CCBPdfManagerTemplates {
 							'key'   => 'design',
 							'data'  => array(
 								'text_align'       => CCBPdfManagerHelper::get_pdf_tab_options_data( '', 'text_align', $company_block['design']['text_align'] ),
+								'title_font_size'  => CCBPdfManagerHelper::get_pdf_counter_data( __( 'Heading Font Size', 'cost-calculator-builder-pro' ), 'title_font_size', $company_block['design']['title_font_size'] ),
+								'font_size'        => CCBPdfManagerHelper::get_pdf_counter_data( __( 'Text Font Size', 'cost-calculator-builder-pro' ), 'font_size', $company_block['design']['font_size'] ),
+								'title_color'      => CCBPdfManagerHelper::get_pdf_switch_with_color_data( __( 'Heading Color', 'cost-calculator-builder-pro' ), 'title_color', $company_block['design']['title_color'], $company_block['design']['title_color_status'] ),
 								'text_color'       => CCBPdfManagerHelper::get_pdf_switch_with_color_data( __( 'Text Color', 'cost-calculator-builder-pro' ), 'text_color', $company_block['design']['text_color'], $company_block['design']['text_color_status'] ),
 								'background_color' => CCBPdfManagerHelper::get_pdf_switch_with_color_data( __( 'Background Color', 'cost-calculator-builder-pro' ), 'background_color', $company_block['design']['background_color'], $company_block['design']['background_color_status'] ),
 							),
@@ -358,6 +367,9 @@ class CCBPdfManagerTemplates {
 							'key'   => 'design',
 							'data'  => array(
 								'text_align'       => CCBPdfManagerHelper::get_pdf_tab_options_data( '', 'text_align', $customer_block['design']['text_align'] ),
+								'title_font_size'  => CCBPdfManagerHelper::get_pdf_counter_data( __( 'Heading Font Size', 'cost-calculator-builder-pro' ), 'title_font_size', $customer_block['design']['title_font_size'] ),
+								'font_size'        => CCBPdfManagerHelper::get_pdf_counter_data( __( 'Text Font Size', 'cost-calculator-builder-pro' ), 'font_size', $customer_block['design']['font_size'] ),
+								'title_color'      => CCBPdfManagerHelper::get_pdf_switch_with_color_data( __( 'Heading Color', 'cost-calculator-builder-pro' ), 'title_color', $customer_block['design']['title_color'], $customer_block['design']['title_color_status'] ),
 								'text_color'       => CCBPdfManagerHelper::get_pdf_switch_with_color_data( __( 'Text Color', 'cost-calculator-builder-pro' ), 'text_color', $customer_block['design']['text_color'], $customer_block['design']['text_color_status'] ),
 								'background_color' => CCBPdfManagerHelper::get_pdf_switch_with_color_data( __( 'Background Color', 'cost-calculator-builder-pro' ), 'background_color', $customer_block['design']['background_color'], $customer_block['design']['background_color_status'] ),
 							),
@@ -384,6 +396,9 @@ class CCBPdfManagerTemplates {
 							'key'   => 'design',
 							'data'  => array(
 								'text_align'       => CCBPdfManagerHelper::get_pdf_tab_options_data( '', 'text_align', $additional_text_block['design']['text_align'] ),
+								'title_font_size'  => CCBPdfManagerHelper::get_pdf_counter_data( __( 'Heading Font Size', 'cost-calculator-builder-pro' ), 'title_font_size', $additional_text_block['design']['title_font_size'] ),
+								'font_size'        => CCBPdfManagerHelper::get_pdf_counter_data( __( 'Text Font Size', 'cost-calculator-builder-pro' ), 'font_size', $additional_text_block['design']['font_size'] ),
+								'title_color'      => CCBPdfManagerHelper::get_pdf_switch_with_color_data( __( 'Heading Color', 'cost-calculator-builder-pro' ), 'title_color', $additional_text_block['design']['title_color'], $additional_text_block['design']['title_color_status'] ),
 								'text_color'       => CCBPdfManagerHelper::get_pdf_switch_with_color_data( __( 'Text Color', 'cost-calculator-builder-pro' ), 'text_color', $additional_text_block['design']['text_color'], $additional_text_block['design']['text_color_status'] ),
 								'background_color' => CCBPdfManagerHelper::get_pdf_switch_with_color_data( __( 'Background Color', 'cost-calculator-builder-pro' ), 'background_color', $additional_text_block['design']['background_color'], $additional_text_block['design']['background_color_status'] ),
 							),
@@ -446,6 +461,10 @@ class CCBPdfManagerTemplates {
 						),
 						'design'  => array(
 							'text_align'              => 'left',
+							'title_font_size'         => 8,
+							'title_color'             => '#111111',
+							'title_color_status'      => false,
+							'font_size'               => 8,
 							'text_color'              => '#111111',
 							'text_color_status'       => false,
 							'background_color'        => '#FFFFFF',
@@ -468,6 +487,7 @@ class CCBPdfManagerTemplates {
 						),
 						'design'  => array(
 							'text_align'              => 'left',
+							'font_size'               => 8,
 							'text_color'              => '#111111',
 							'text_color_status'       => false,
 							'background_color'        => '#FFFFFF',
@@ -504,6 +524,8 @@ class CCBPdfManagerTemplates {
 							'angle_border_size'  => 2,
 						),
 						'design'  => array(
+							'title_font_size'           => 8,
+							'font_size'                 => 8,
 							'heading_text'              => '#FFFFFF',
 							'heading_text_status'       => true,
 							'heading_background_status' => true,
@@ -595,6 +617,10 @@ class CCBPdfManagerTemplates {
 						),
 						'design'   => array(
 							'text_align'              => 'left',
+							'title_font_size'         => 12,
+							'font_size'               => 8,
+							'title_color'             => '#111111',
+							'title_color_status'      => false,
 							'text_color'              => '#111111',
 							'text_color_status'       => false,
 							'background_color'        => '#FFFFFF',
@@ -610,6 +636,10 @@ class CCBPdfManagerTemplates {
 						),
 						'design'  => array(
 							'text_align'              => 'left',
+							'title_font_size'         => 12,
+							'font_size'               => 8,
+							'title_color'             => '#111111',
+							'title_color_status'      => false,
 							'text_color'              => '#111111',
 							'text_color_status'       => false,
 							'background_color'        => '#FFFFFF',
@@ -626,6 +656,10 @@ class CCBPdfManagerTemplates {
 						),
 						'design'  => array(
 							'text_align'              => 'left',
+							'title_font_size'         => 12,
+							'font_size'               => 8,
+							'title_color'             => '#111111',
+							'title_color_status'      => false,
 							'text_color'              => '#111111',
 							'text_color_status'       => false,
 							'background_color'        => '#FFFFFF',
@@ -671,6 +705,10 @@ class CCBPdfManagerTemplates {
 						),
 						'design'  => array(
 							'text_align'              => 'right',
+							'title_font_size'         => 8,
+							'title_color'             => '#111111',
+							'title_color_status'      => false,
+							'font_size'               => 8,
 							'text_color'              => '#111111',
 							'text_color_status'       => false,
 							'background_color'        => '#FFFFFF',
@@ -693,6 +731,7 @@ class CCBPdfManagerTemplates {
 						),
 						'design'  => array(
 							'text_align'              => 'left',
+							'font_size'               => 8,
 							'text_color'              => '#111111',
 							'text_color_status'       => false,
 							'background_color'        => '#FFFFFF',
@@ -729,6 +768,8 @@ class CCBPdfManagerTemplates {
 							'angle_border_size'  => 2,
 						),
 						'design'  => array(
+							'title_font_size'           => 8,
+							'font_size'                 => 8,
 							'heading_text'              => '#111111',
 							'heading_text_status'       => true,
 							'heading_background_status' => true,
@@ -819,6 +860,10 @@ class CCBPdfManagerTemplates {
 							'description'      => 'The best place on the Earth Planet',
 						),
 						'design'   => array(
+							'title_font_size'         => 12,
+							'font_size'               => 8,
+							'title_color'             => '#111111',
+							'title_color_status'      => false,
 							'text_align'              => 'left',
 							'text_color'              => '#111111',
 							'text_color_status'       => false,
@@ -835,6 +880,10 @@ class CCBPdfManagerTemplates {
 						),
 						'design'  => array(
 							'text_align'              => 'left',
+							'title_font_size'         => 12,
+							'font_size'               => 8,
+							'title_color'             => '#111111',
+							'title_color_status'      => false,
 							'text_color'              => '#111111',
 							'text_color_status'       => false,
 							'background_color'        => '#FFFFFF',
@@ -851,6 +900,10 @@ class CCBPdfManagerTemplates {
 						),
 						'design'  => array(
 							'text_align'              => 'left',
+							'title_font_size'         => 12,
+							'font_size'               => 8,
+							'title_color'             => '#111111',
+							'title_color_status'      => false,
 							'text_color'              => '#111111',
 							'text_color_status'       => false,
 							'background_color'        => '#FFFFFF',
@@ -945,6 +998,8 @@ class CCBPdfManagerTemplates {
 							'angle_border_size'  => 2,
 						),
 						'design'  => array(
+							'title_font_size'           => 8,
+							'font_size'                 => 8,
 							'heading_text'              => '#111111',
 							'heading_text_status'       => true,
 							'heading_background_status' => true,
@@ -981,6 +1036,10 @@ class CCBPdfManagerTemplates {
 						),
 						'design'  => array(
 							'text_align'              => 'left',
+							'title_font_size'         => 8,
+							'title_color'             => '#111111',
+							'title_color_status'      => false,
+							'font_size'               => 8,
 							'text_color'              => '#111111',
 							'text_color_status'       => false,
 							'background_color'        => '#FFFFFF',
@@ -1003,6 +1062,7 @@ class CCBPdfManagerTemplates {
 						),
 						'design'  => array(
 							'text_align'              => 'left',
+							'font_size'               => 8,
 							'text_color'              => '#111111',
 							'text_color_status'       => false,
 							'background_color'        => '#FFFFFF',
@@ -1044,6 +1104,10 @@ class CCBPdfManagerTemplates {
 							'description'      => 'The best place on the Earth Planet',
 						),
 						'design'   => array(
+							'title_font_size'         => 12,
+							'font_size'               => 8,
+							'title_color'             => '#111111',
+							'title_color_status'      => true,
 							'text_align'              => 'left',
 							'text_color'              => '#111111',
 							'text_color_status'       => true,
@@ -1060,6 +1124,10 @@ class CCBPdfManagerTemplates {
 						),
 						'design'  => array(
 							'text_align'              => 'left',
+							'title_font_size'         => 12,
+							'font_size'               => 8,
+							'title_color'             => '#111111',
+							'title_color_status'      => false,
 							'text_color'              => '#111111',
 							'text_color_status'       => false,
 							'background_color'        => '#8BD2C5',
@@ -1076,6 +1144,10 @@ class CCBPdfManagerTemplates {
 						),
 						'design'  => array(
 							'text_align'              => 'left',
+							'title_font_size'         => 12,
+							'font_size'               => 8,
+							'title_color'             => '#111111',
+							'title_color_status'      => false,
 							'text_color'              => '#111111',
 							'text_color_status'       => false,
 							'background_color'        => '#FFFFFF',
@@ -1170,6 +1242,8 @@ class CCBPdfManagerTemplates {
 							'angle_border_size'  => 2,
 						),
 						'design'  => array(
+							'title_font_size'           => 8,
+							'font_size'                 => 8,
 							'heading_text'              => '#FAA7E8',
 							'heading_text_status'       => true,
 							'heading_background_status' => true,
@@ -1206,6 +1280,10 @@ class CCBPdfManagerTemplates {
 						),
 						'design'  => array(
 							'text_align'              => 'left',
+							'title_font_size'         => 8,
+							'title_color'             => '#111111',
+							'title_color_status'      => false,
+							'font_size'               => 8,
 							'text_color'              => '#111111',
 							'text_color_status'       => false,
 							'background_color'        => '#FAA7E8',
@@ -1228,6 +1306,7 @@ class CCBPdfManagerTemplates {
 						),
 						'design'  => array(
 							'text_align'              => 'left',
+							'font_size'               => 8,
 							'text_color'              => '#111111',
 							'text_color_status'       => false,
 							'background_color'        => '#FAA7E8',
@@ -1269,6 +1348,10 @@ class CCBPdfManagerTemplates {
 							'description'      => 'The best place on the Earth Planet',
 						),
 						'design'   => array(
+							'title_font_size'         => 12,
+							'font_size'               => 8,
+							'title_color'             => '#FAA7E8',
+							'title_color_status'      => false,
 							'text_align'              => 'left',
 							'text_color'              => '#FAA7E8',
 							'text_color_status'       => false,
@@ -1285,6 +1368,10 @@ class CCBPdfManagerTemplates {
 						),
 						'design'  => array(
 							'text_align'              => 'left',
+							'title_font_size'         => 12,
+							'font_size'               => 8,
+							'title_color'             => '#FAA7E8',
+							'title_color_status'      => false,
 							'text_color'              => '#FAA7E8',
 							'text_color_status'       => false,
 							'background_color'        => '#262626',
@@ -1301,6 +1388,10 @@ class CCBPdfManagerTemplates {
 						),
 						'design'  => array(
 							'text_align'              => 'left',
+							'title_font_size'         => 12,
+							'font_size'               => 8,
+							'title_color'             => '#FAA7E8',
+							'title_color_status'      => false,
 							'text_color'              => '#FAA7E8',
 							'text_color_status'       => false,
 							'background_color'        => '#262626',
@@ -1345,6 +1436,10 @@ class CCBPdfManagerTemplates {
 						),
 						'design'  => array(
 							'text_align'              => 'left',
+							'title_font_size'         => 8,
+							'title_color'             => '#111111',
+							'title_color_status'      => false,
+							'font_size'               => 8,
 							'text_color'              => '#111111',
 							'text_color_status'       => false,
 							'background_color'        => '#FFFFFF',
@@ -1367,6 +1462,7 @@ class CCBPdfManagerTemplates {
 						),
 						'design'  => array(
 							'text_align'              => 'left',
+							'font_size'               => 8,
 							'text_color'              => '#111111',
 							'text_color_status'       => false,
 							'background_color'        => '#FFFFFF',
@@ -1403,6 +1499,8 @@ class CCBPdfManagerTemplates {
 							'angle_border_size'  => 2,
 						),
 						'design'  => array(
+							'title_font_size'           => 8,
+							'font_size'                 => 8,
 							'heading_text'              => '#FFFFFF',
 							'heading_text_status'       => true,
 							'heading_background_status' => true,
@@ -1493,6 +1591,10 @@ class CCBPdfManagerTemplates {
 							'description'      => 'The best place on the Earth Planet',
 						),
 						'design'   => array(
+							'title_font_size'         => 12,
+							'font_size'               => 8,
+							'title_color'             => '#111111',
+							'title_color_status'      => false,
 							'text_align'              => 'left',
 							'text_color'              => '#111111',
 							'text_color_status'       => false,
@@ -1509,6 +1611,10 @@ class CCBPdfManagerTemplates {
 						),
 						'design'  => array(
 							'text_align'              => 'left',
+							'title_font_size'         => 12,
+							'font_size'               => 8,
+							'title_color'             => '#111111',
+							'title_color_status'      => false,
 							'text_color'              => '#111111',
 							'text_color_status'       => false,
 							'background_color'        => '#FFFFFF',
@@ -1525,6 +1631,10 @@ class CCBPdfManagerTemplates {
 						),
 						'design'  => array(
 							'text_align'              => 'left',
+							'title_font_size'         => 12,
+							'font_size'               => 8,
+							'title_color'             => '#111111',
+							'title_color_status'      => false,
 							'text_color'              => '#111111',
 							'text_color_status'       => false,
 							'background_color'        => '#FFFFFF',
@@ -1569,6 +1679,10 @@ class CCBPdfManagerTemplates {
 						),
 						'design'  => array(
 							'text_align'              => 'right',
+							'title_font_size'         => 8,
+							'title_color'             => '#111111',
+							'title_color_status'      => false,
+							'font_size'               => 8,
 							'text_color'              => '#111111',
 							'text_color_status'       => false,
 							'background_color'        => '#FFFFFF',
@@ -1591,6 +1705,7 @@ class CCBPdfManagerTemplates {
 						),
 						'design'  => array(
 							'text_align'              => 'left',
+							'font_size'               => 8,
 							'text_color'              => '#111111',
 							'text_color_status'       => false,
 							'background_color'        => '#FFFFFF',
@@ -1627,6 +1742,8 @@ class CCBPdfManagerTemplates {
 							'angle_border_size'  => 2,
 						),
 						'design'  => array(
+							'title_font_size'           => 8,
+							'font_size'                 => 8,
 							'heading_text'              => '#111111',
 							'heading_text_status'       => true,
 							'heading_background_status' => true,
@@ -1717,6 +1834,10 @@ class CCBPdfManagerTemplates {
 							'description'      => 'The best place on the Earth Planet',
 						),
 						'design'   => array(
+							'title_font_size'         => 12,
+							'font_size'               => 8,
+							'title_color'             => '#111111',
+							'title_color_status'      => false,
 							'text_align'              => 'left',
 							'text_color'              => '#111111',
 							'text_color_status'       => false,
@@ -1733,6 +1854,10 @@ class CCBPdfManagerTemplates {
 						),
 						'design'  => array(
 							'text_align'              => 'left',
+							'title_font_size'         => 12,
+							'font_size'               => 8,
+							'title_color'             => '#111111',
+							'title_color_status'      => false,
 							'text_color'              => '#111111',
 							'text_color_status'       => false,
 							'background_color'        => '#FFFFFF',
@@ -1749,6 +1874,10 @@ class CCBPdfManagerTemplates {
 						),
 						'design'  => array(
 							'text_align'              => 'left',
+							'title_font_size'         => 12,
+							'font_size'               => 8,
+							'title_color'             => '#111111',
+							'title_color_status'      => false,
 							'text_color'              => '#111111',
 							'text_color_status'       => false,
 							'background_color'        => '#FFFFFF',
@@ -1793,6 +1922,10 @@ class CCBPdfManagerTemplates {
 						),
 						'design'  => array(
 							'text_align'              => 'right',
+							'title_font_size'         => 8,
+							'title_color'             => '#111111',
+							'title_color_status'      => false,
+							'font_size'               => 8,
 							'text_color'              => '#111111',
 							'text_color_status'       => false,
 							'background_color'        => '#FFFFFF',
@@ -1815,6 +1948,7 @@ class CCBPdfManagerTemplates {
 						),
 						'design'  => array(
 							'text_align'              => 'left',
+							'font_size'               => 8,
 							'text_color'              => '#111111',
 							'text_color_status'       => false,
 							'background_color'        => '#FFFFFF',
@@ -1851,6 +1985,8 @@ class CCBPdfManagerTemplates {
 							'angle_border_size'  => 2,
 						),
 						'design'  => array(
+							'title_font_size'           => 8,
+							'font_size'                 => 8,
 							'heading_text'              => '#222222',
 							'heading_text_status'       => true,
 							'heading_background_status' => true,
@@ -1941,6 +2077,10 @@ class CCBPdfManagerTemplates {
 							'description'      => 'The best place on the Earth Planet',
 						),
 						'design'   => array(
+							'title_font_size'         => 12,
+							'font_size'               => 8,
+							'title_color'             => '#111111',
+							'title_color_status'      => false,
 							'text_align'              => 'left',
 							'text_color'              => '#111111',
 							'text_color_status'       => false,
@@ -1957,6 +2097,10 @@ class CCBPdfManagerTemplates {
 						),
 						'design'  => array(
 							'text_align'              => 'left',
+							'title_font_size'         => 12,
+							'font_size'               => 8,
+							'title_color'             => '#111111',
+							'title_color_status'      => false,
 							'text_color'              => '#111111',
 							'text_color_status'       => false,
 							'background_color'        => '#FFFFFF',
@@ -1973,6 +2117,10 @@ class CCBPdfManagerTemplates {
 						),
 						'design'  => array(
 							'text_align'              => 'left',
+							'title_font_size'         => 12,
+							'font_size'               => 8,
+							'title_color'             => '#111111',
+							'title_color_status'      => false,
 							'text_color'              => '#111111',
 							'text_color_status'       => false,
 							'background_color'        => '#FFFFFF',
@@ -2017,6 +2165,10 @@ class CCBPdfManagerTemplates {
 						),
 						'design'  => array(
 							'text_align'              => 'left',
+							'title_font_size'         => 8,
+							'title_color'             => '#111111',
+							'title_color_status'      => false,
+							'font_size'               => 8,
 							'text_color'              => '#111111',
 							'text_color_status'       => false,
 							'background_color'        => '#FFFFFF',
@@ -2039,6 +2191,7 @@ class CCBPdfManagerTemplates {
 						),
 						'design'  => array(
 							'text_align'              => 'left',
+							'font_size'               => 8,
 							'text_color'              => '#111111',
 							'text_color_status'       => false,
 							'background_color'        => '#FFFFFF',
@@ -2075,6 +2228,8 @@ class CCBPdfManagerTemplates {
 							'angle_border_size'  => 2,
 						),
 						'design'  => array(
+							'title_font_size'           => 8,
+							'font_size'                 => 8,
 							'heading_text'              => '#EDFFFF',
 							'heading_text_status'       => true,
 							'heading_background_status' => true,
@@ -2165,6 +2320,10 @@ class CCBPdfManagerTemplates {
 							'description'      => 'The best place on the Earth Planet',
 						),
 						'design'   => array(
+							'title_font_size'         => 12,
+							'font_size'               => 8,
+							'title_color'             => '#111111',
+							'title_color_status'      => false,
 							'text_align'              => 'left',
 							'text_color'              => '#111111',
 							'text_color_status'       => false,
@@ -2181,6 +2340,10 @@ class CCBPdfManagerTemplates {
 						),
 						'design'  => array(
 							'text_align'              => 'left',
+							'title_font_size'         => 12,
+							'font_size'               => 8,
+							'title_color'             => '#111111',
+							'title_color_status'      => false,
 							'text_color'              => '#111111',
 							'text_color_status'       => false,
 							'background_color'        => '#FFFFFF',
@@ -2197,6 +2360,10 @@ class CCBPdfManagerTemplates {
 						),
 						'design'  => array(
 							'text_align'              => 'left',
+							'title_font_size'         => 12,
+							'font_size'               => 8,
+							'title_color'             => '#111111',
+							'title_color_status'      => false,
 							'text_color'              => '#111111',
 							'text_color_status'       => false,
 							'background_color'        => '#FFFFFF',
@@ -2241,6 +2408,10 @@ class CCBPdfManagerTemplates {
 						),
 						'design'  => array(
 							'text_align'              => 'left',
+							'title_font_size'         => 8,
+							'title_color'             => '#111111',
+							'title_color_status'      => false,
+							'font_size'               => 8,
 							'text_color'              => '#111111',
 							'text_color_status'       => false,
 							'background_color'        => '#FFFFFF',
@@ -2263,6 +2434,7 @@ class CCBPdfManagerTemplates {
 						),
 						'design'  => array(
 							'text_align'              => 'left',
+							'font_size'               => 8,
 							'text_color'              => '#111111',
 							'text_color_status'       => false,
 							'background_color'        => '#FFFFFF',
@@ -2299,6 +2471,8 @@ class CCBPdfManagerTemplates {
 							'angle_border_size'  => 2,
 						),
 						'design'  => array(
+							'title_font_size'           => 8,
+							'font_size'                 => 8,
 							'heading_text'              => '#FFF4E4',
 							'heading_text_status'       => true,
 							'heading_background_status' => true,
@@ -2389,6 +2563,10 @@ class CCBPdfManagerTemplates {
 							'description'      => 'The best place on the Earth Planet',
 						),
 						'design'   => array(
+							'title_font_size'         => 12,
+							'font_size'               => 8,
+							'title_color'             => '#111111',
+							'title_color_status'      => false,
 							'text_align'              => 'left',
 							'text_color'              => '#111111',
 							'text_color_status'       => false,
@@ -2405,6 +2583,10 @@ class CCBPdfManagerTemplates {
 						),
 						'design'  => array(
 							'text_align'              => 'left',
+							'title_font_size'         => 12,
+							'font_size'               => 8,
+							'title_color'             => '#111111',
+							'title_color_status'      => false,
 							'text_color'              => '#111111',
 							'text_color_status'       => false,
 							'background_color'        => '#FFFFFF',
@@ -2421,6 +2603,10 @@ class CCBPdfManagerTemplates {
 						),
 						'design'  => array(
 							'text_align'              => 'left',
+							'title_font_size'         => 12,
+							'font_size'               => 8,
+							'title_color'             => '#111111',
+							'title_color_status'      => false,
 							'text_color'              => '#111111',
 							'text_color_status'       => false,
 							'background_color'        => '#FFFFFF',
@@ -2465,6 +2651,10 @@ class CCBPdfManagerTemplates {
 						),
 						'design'  => array(
 							'text_align'              => 'left',
+							'title_font_size'         => 8,
+							'title_color'             => '#111111',
+							'title_color_status'      => false,
+							'font_size'               => 8,
 							'text_color'              => '#111111',
 							'text_color_status'       => false,
 							'background_color'        => '#FFFFFF',
@@ -2487,6 +2677,7 @@ class CCBPdfManagerTemplates {
 						),
 						'design'  => array(
 							'text_align'              => 'left',
+							'font_size'               => 8,
 							'text_color'              => '#111111',
 							'text_color_status'       => false,
 							'background_color'        => '#FFFFFF',
@@ -2523,6 +2714,8 @@ class CCBPdfManagerTemplates {
 							'angle_border_size'  => 2,
 						),
 						'design'  => array(
+							'title_font_size'           => 8,
+							'font_size'                 => 8,
 							'heading_text'              => '#E8D9FF',
 							'heading_text_status'       => true,
 							'heading_background_status' => true,
@@ -2613,6 +2806,10 @@ class CCBPdfManagerTemplates {
 							'description'      => 'The best place on the Earth Planet',
 						),
 						'design'   => array(
+							'title_font_size'         => 12,
+							'font_size'               => 8,
+							'title_color'             => '#111111',
+							'title_color_status'      => false,
 							'text_align'              => 'left',
 							'text_color'              => '#111111',
 							'text_color_status'       => false,
@@ -2629,6 +2826,10 @@ class CCBPdfManagerTemplates {
 						),
 						'design'  => array(
 							'text_align'              => 'left',
+							'title_font_size'         => 12,
+							'font_size'               => 8,
+							'title_color'             => '#111111',
+							'title_color_status'      => false,
 							'text_color'              => '#111111',
 							'text_color_status'       => false,
 							'background_color'        => '#FFFFFF',
@@ -2645,6 +2846,10 @@ class CCBPdfManagerTemplates {
 						),
 						'design'  => array(
 							'text_align'              => 'left',
+							'title_font_size'         => 12,
+							'font_size'               => 8,
+							'title_color'             => '#111111',
+							'title_color_status'      => false,
 							'text_color'              => '#111111',
 							'text_color_status'       => false,
 							'background_color'        => '#FFFFFF',
@@ -2689,6 +2894,10 @@ class CCBPdfManagerTemplates {
 						),
 						'design'  => array(
 							'text_align'              => 'right',
+							'title_font_size'         => 8,
+							'title_color'             => '#111111',
+							'title_color_status'      => false,
+							'font_size'               => 8,
 							'text_color'              => '#111111',
 							'text_color_status'       => false,
 							'background_color'        => '#FFFFFF',
@@ -2711,6 +2920,7 @@ class CCBPdfManagerTemplates {
 						),
 						'design'  => array(
 							'text_align'              => 'left',
+							'font_size'               => 8,
 							'text_color'              => '#111111',
 							'text_color_status'       => false,
 							'background_color'        => '#FFFFFF',
@@ -2747,6 +2957,8 @@ class CCBPdfManagerTemplates {
 							'angle_border_size'  => 2,
 						),
 						'design'  => array(
+							'title_font_size'           => 8,
+							'font_size'                 => 8,
 							'heading_text'              => '#111111',
 							'heading_text_status'       => true,
 							'heading_background_status' => true,
@@ -2837,6 +3049,10 @@ class CCBPdfManagerTemplates {
 							'description'      => 'The best place on the Earth Planet',
 						),
 						'design'   => array(
+							'title_font_size'         => 12,
+							'font_size'               => 8,
+							'title_color'             => '#111111',
+							'title_color_status'      => false,
 							'text_align'              => 'left',
 							'text_color'              => '#111111',
 							'text_color_status'       => false,
@@ -2853,6 +3069,10 @@ class CCBPdfManagerTemplates {
 						),
 						'design'  => array(
 							'text_align'              => 'left',
+							'title_font_size'         => 12,
+							'font_size'               => 8,
+							'title_color'             => '#111111',
+							'title_color_status'      => false,
 							'text_color'              => '#111111',
 							'text_color_status'       => false,
 							'background_color'        => '#FFFFFF',
@@ -2869,6 +3089,10 @@ class CCBPdfManagerTemplates {
 						),
 						'design'  => array(
 							'text_align'              => 'left',
+							'title_font_size'         => 12,
+							'font_size'               => 8,
+							'title_color'             => '#111111',
+							'title_color_status'      => false,
 							'text_color'              => '#111111',
 							'text_color_status'       => false,
 							'background_color'        => '#FFFFFF',
@@ -2913,6 +3137,10 @@ class CCBPdfManagerTemplates {
 						),
 						'design'  => array(
 							'text_align'              => 'left',
+							'title_font_size'         => 8,
+							'title_color'             => '#111111',
+							'title_color_status'      => false,
+							'font_size'               => 8,
 							'text_color'              => '#FFFFFF',
 							'text_color_status'       => true,
 							'background_color'        => '#257101',
@@ -2935,6 +3163,7 @@ class CCBPdfManagerTemplates {
 						),
 						'design'  => array(
 							'text_align'              => 'left',
+							'font_size'               => 8,
 							'text_color'              => '#FFFFFF',
 							'text_color_status'       => true,
 							'background_color'        => '#257101',
@@ -2971,6 +3200,8 @@ class CCBPdfManagerTemplates {
 							'angle_border_size'  => 2,
 						),
 						'design'  => array(
+							'title_font_size'           => 8,
+							'font_size'                 => 8,
 							'heading_text'              => '#111111',
 							'heading_text_status'       => true,
 							'heading_background_status' => true,
@@ -3061,6 +3292,10 @@ class CCBPdfManagerTemplates {
 							'description'      => 'The best place on the Earth Planet',
 						),
 						'design'   => array(
+							'title_font_size'         => 12,
+							'font_size'               => 8,
+							'title_color'             => '#111111',
+							'title_color_status'      => false,
 							'text_align'              => 'left',
 							'text_color'              => '#111111',
 							'text_color_status'       => false,
@@ -3077,6 +3312,10 @@ class CCBPdfManagerTemplates {
 						),
 						'design'  => array(
 							'text_align'              => 'left',
+							'title_font_size'         => 12,
+							'font_size'               => 8,
+							'title_color'             => '#111111',
+							'title_color_status'      => false,
 							'text_color'              => '#111111',
 							'text_color_status'       => false,
 							'background_color'        => '#FFFFFF',
@@ -3093,6 +3332,10 @@ class CCBPdfManagerTemplates {
 						),
 						'design'  => array(
 							'text_align'              => 'left',
+							'title_font_size'         => 12,
+							'font_size'               => 8,
+							'title_color'             => '#111111',
+							'title_color_status'      => false,
 							'text_color'              => '#111111',
 							'text_color_status'       => false,
 							'background_color'        => '#FFFFFF',
@@ -3137,6 +3380,10 @@ class CCBPdfManagerTemplates {
 						),
 						'design'  => array(
 							'text_align'              => 'left',
+							'title_font_size'         => 8,
+							'title_color'             => '#111111',
+							'title_color_status'      => false,
+							'font_size'               => 8,
 							'text_color'              => '#111111',
 							'text_color_status'       => false,
 							'background_color'        => '#FFFFFF',
@@ -3159,6 +3406,7 @@ class CCBPdfManagerTemplates {
 						),
 						'design'  => array(
 							'text_align'              => 'left',
+							'font_size'               => 8,
 							'text_color'              => '#111111',
 							'text_color_status'       => false,
 							'background_color'        => '#FFFFFF',
@@ -3195,6 +3443,8 @@ class CCBPdfManagerTemplates {
 							'angle_border_size'  => 2,
 						),
 						'design'  => array(
+							'title_font_size'           => 8,
+							'font_size'                 => 8,
 							'heading_text'              => '#FFFFFF',
 							'heading_text_status'       => true,
 							'heading_background_status' => true,
@@ -3285,6 +3535,10 @@ class CCBPdfManagerTemplates {
 							'description'      => 'The best place on the Earth Planet',
 						),
 						'design'   => array(
+							'title_font_size'         => 12,
+							'font_size'               => 8,
+							'title_color'             => '#111111',
+							'title_color_status'      => false,
 							'text_align'              => 'left',
 							'text_color'              => '#111111',
 							'text_color_status'       => false,
@@ -3301,6 +3555,10 @@ class CCBPdfManagerTemplates {
 						),
 						'design'  => array(
 							'text_align'              => 'left',
+							'title_font_size'         => 12,
+							'font_size'               => 8,
+							'title_color'             => '#111111',
+							'title_color_status'      => false,
 							'text_color'              => '#111111',
 							'text_color_status'       => false,
 							'background_color'        => '#FFFFFF',
@@ -3317,6 +3575,10 @@ class CCBPdfManagerTemplates {
 						),
 						'design'  => array(
 							'text_align'              => 'left',
+							'title_font_size'         => 12,
+							'font_size'               => 8,
+							'title_color'             => '#111111',
+							'title_color_status'      => false,
 							'text_color'              => '#111111',
 							'text_color_status'       => false,
 							'background_color'        => '#E4E4E4',
@@ -3361,6 +3623,10 @@ class CCBPdfManagerTemplates {
 						),
 						'design'  => array(
 							'text_align'              => 'left',
+							'title_font_size'         => 8,
+							'title_color'             => '#111111',
+							'title_color_status'      => false,
+							'font_size'               => 8,
 							'text_color'              => '#111111',
 							'text_color_status'       => false,
 							'background_color'        => '#FFFFFF',
@@ -3383,6 +3649,7 @@ class CCBPdfManagerTemplates {
 						),
 						'design'  => array(
 							'text_align'              => 'left',
+							'font_size'               => 8,
 							'text_color'              => '#111111',
 							'text_color_status'       => false,
 							'background_color'        => '#FFFFFF',
@@ -3419,6 +3686,8 @@ class CCBPdfManagerTemplates {
 							'angle_border_size'  => 2,
 						),
 						'design'  => array(
+							'title_font_size'           => 8,
+							'font_size'                 => 8,
 							'heading_text'              => '#FFFFFF',
 							'heading_text_status'       => true,
 							'heading_background_status' => true,
@@ -3509,6 +3778,10 @@ class CCBPdfManagerTemplates {
 							'description'      => 'The best place on the Earth Planet',
 						),
 						'design'   => array(
+							'title_font_size'         => 12,
+							'font_size'               => 8,
+							'title_color'             => '#111111',
+							'title_color_status'      => false,
 							'text_align'              => 'left',
 							'text_color'              => '#111111',
 							'text_color_status'       => false,
@@ -3525,6 +3798,10 @@ class CCBPdfManagerTemplates {
 						),
 						'design'  => array(
 							'text_align'              => 'left',
+							'title_font_size'         => 12,
+							'font_size'               => 8,
+							'title_color'             => '#111111',
+							'title_color_status'      => false,
 							'text_color'              => '#111111',
 							'text_color_status'       => false,
 							'background_color'        => '#FFFFFF',
@@ -3541,6 +3818,10 @@ class CCBPdfManagerTemplates {
 						),
 						'design'  => array(
 							'text_align'              => 'left',
+							'title_font_size'         => 12,
+							'font_size'               => 8,
+							'title_color'             => '#111111',
+							'title_color_status'      => false,
 							'text_color'              => '#111111',
 							'text_color_status'       => false,
 							'background_color'        => '#FFFFFF',
@@ -3585,6 +3866,10 @@ class CCBPdfManagerTemplates {
 						),
 						'design'  => array(
 							'text_align'              => 'right',
+							'title_font_size'         => 8,
+							'title_color'             => '#111111',
+							'title_color_status'      => false,
+							'font_size'               => 8,
 							'text_color'              => '#111111',
 							'text_color_status'       => false,
 							'background_color'        => '#CAB2EB',
@@ -3607,6 +3892,7 @@ class CCBPdfManagerTemplates {
 						),
 						'design'  => array(
 							'text_align'              => 'left',
+							'font_size'               => 8,
 							'text_color'              => '#111111',
 							'text_color_status'       => false,
 							'background_color'        => '#CAB2EB',
@@ -3643,6 +3929,8 @@ class CCBPdfManagerTemplates {
 							'angle_border_size'  => 2,
 						),
 						'design'  => array(
+							'title_font_size'           => 8,
+							'font_size'                 => 8,
 							'heading_text'              => '#111111',
 							'heading_text_status'       => true,
 							'heading_background_status' => true,
@@ -3733,6 +4021,10 @@ class CCBPdfManagerTemplates {
 							'description'      => 'The best place on the Earth Planet',
 						),
 						'design'   => array(
+							'title_font_size'         => 12,
+							'font_size'               => 8,
+							'title_color'             => '#111111',
+							'title_color_status'      => false,
 							'text_align'              => 'left',
 							'text_color'              => '#111111',
 							'text_color_status'       => false,
@@ -3749,6 +4041,10 @@ class CCBPdfManagerTemplates {
 						),
 						'design'  => array(
 							'text_align'              => 'left',
+							'title_font_size'         => 12,
+							'font_size'               => 8,
+							'title_color'             => '#111111',
+							'title_color_status'      => false,
 							'text_color'              => '#111111',
 							'text_color_status'       => false,
 							'background_color'        => '#FFFFFF',
@@ -3765,6 +4061,10 @@ class CCBPdfManagerTemplates {
 						),
 						'design'  => array(
 							'text_align'              => 'left',
+							'title_font_size'         => 12,
+							'font_size'               => 8,
+							'title_color'             => '#111111',
+							'title_color_status'      => false,
 							'text_color'              => '#111111',
 							'text_color_status'       => true,
 							'background_color'        => '#CAB2EB',
@@ -3809,6 +4109,10 @@ class CCBPdfManagerTemplates {
 						),
 						'design'  => array(
 							'text_align'              => 'left',
+							'title_font_size'         => 8,
+							'title_color'             => '#111111',
+							'title_color_status'      => false,
+							'font_size'               => 8,
 							'text_color'              => '#111111',
 							'text_color_status'       => false,
 							'background_color'        => '#FFFFFF',
@@ -3831,6 +4135,7 @@ class CCBPdfManagerTemplates {
 						),
 						'design'  => array(
 							'text_align'              => 'left',
+							'font_size'               => 8,
 							'text_color'              => '#111111',
 							'text_color_status'       => false,
 							'background_color'        => '#FFFFFF',
@@ -3867,6 +4172,8 @@ class CCBPdfManagerTemplates {
 							'angle_border_size'  => 2,
 						),
 						'design'  => array(
+							'title_font_size'           => 8,
+							'font_size'                 => 8,
 							'heading_text'              => '#111111',
 							'heading_text_status'       => true,
 							'heading_background_status' => true,
@@ -3957,6 +4264,10 @@ class CCBPdfManagerTemplates {
 							'description'      => 'The best place on the Earth Planet',
 						),
 						'design'   => array(
+							'title_font_size'         => 12,
+							'font_size'               => 8,
+							'title_color'             => '#111111',
+							'title_color_status'      => false,
 							'text_align'              => 'left',
 							'text_color'              => '#111111',
 							'text_color_status'       => false,
@@ -3973,6 +4284,10 @@ class CCBPdfManagerTemplates {
 						),
 						'design'  => array(
 							'text_align'              => 'left',
+							'title_font_size'         => 12,
+							'font_size'               => 8,
+							'title_color'             => '#111111',
+							'title_color_status'      => false,
 							'text_color'              => '#111111',
 							'text_color_status'       => false,
 							'background_color'        => '#FFFFFF',
@@ -3989,6 +4304,10 @@ class CCBPdfManagerTemplates {
 						),
 						'design'  => array(
 							'text_align'              => 'left',
+							'title_font_size'         => 12,
+							'font_size'               => 8,
+							'title_color'             => '#111111',
+							'title_color_status'      => false,
 							'text_color'              => '#111111',
 							'text_color_status'       => false,
 							'background_color'        => '#FFFFFF',
@@ -4033,6 +4352,10 @@ class CCBPdfManagerTemplates {
 						),
 						'design'  => array(
 							'text_align'              => 'right',
+							'title_font_size'         => 8,
+							'title_color'             => '#111111',
+							'title_color_status'      => false,
+							'font_size'               => 8,
 							'text_color'              => '#111111',
 							'text_color_status'       => false,
 							'background_color'        => '#FFFFFF',
@@ -4055,6 +4378,7 @@ class CCBPdfManagerTemplates {
 						),
 						'design'  => array(
 							'text_align'              => 'left',
+							'font_size'               => 8,
 							'text_color'              => '#111111',
 							'text_color_status'       => false,
 							'background_color'        => '#FFFFFF',
@@ -4091,6 +4415,8 @@ class CCBPdfManagerTemplates {
 							'angle_border_size'  => 2,
 						),
 						'design'  => array(
+							'title_font_size'           => 8,
+							'font_size'                 => 8,
 							'heading_text'              => '#111111',
 							'heading_text_status'       => true,
 							'heading_background_status' => true,
@@ -4181,6 +4507,10 @@ class CCBPdfManagerTemplates {
 							'description'      => 'The best place on the Earth Planet',
 						),
 						'design'   => array(
+							'title_font_size'         => 12,
+							'font_size'               => 8,
+							'title_color'             => '#111111',
+							'title_color_status'      => false,
 							'text_align'              => 'left',
 							'text_color'              => '#111111',
 							'text_color_status'       => false,
@@ -4197,6 +4527,10 @@ class CCBPdfManagerTemplates {
 						),
 						'design'  => array(
 							'text_align'              => 'left',
+							'title_font_size'         => 12,
+							'font_size'               => 8,
+							'title_color'             => '#111111',
+							'title_color_status'      => false,
 							'text_color'              => '#111111',
 							'text_color_status'       => false,
 							'background_color'        => '#FF7452',
@@ -4213,6 +4547,10 @@ class CCBPdfManagerTemplates {
 						),
 						'design'  => array(
 							'text_align'              => 'left',
+							'title_font_size'         => 12,
+							'font_size'               => 8,
+							'title_color'             => '#111111',
+							'title_color_status'      => false,
 							'text_color'              => '#111111',
 							'text_color_status'       => false,
 							'background_color'        => '#FFFFFF',
@@ -4271,6 +4609,8 @@ class CCBPdfManagerTemplates {
 			$template['sections']['top_text_block']['text']['description'] = $text['data']['description']['value'];
 
 			$template['sections']['top_text_block']['design']['text_align']              = $design['data']['text_align']['value'];
+			$template['sections']['top_text_block']['design']['title_font_size']         = $design['data']['title_font_size']['value'];
+			$template['sections']['top_text_block']['design']['font_size']               = $design['data']['font_size']['value'];
 			$template['sections']['top_text_block']['design']['text_color']              = $design['data']['text_color']['value'];
 			$template['sections']['top_text_block']['design']['text_color_status']       = $design['data']['text_color']['data']['status'];
 			$template['sections']['top_text_block']['design']['background_color']        = $design['data']['background_color']['value'];
@@ -4295,6 +4635,7 @@ class CCBPdfManagerTemplates {
 			$template['sections']['order_id_and_date']['date']['time_format']      = $date['data']['format']['data']['time_format']['value'];
 
 			$template['sections']['order_id_and_date']['design']['text_align']              = $design['data']['text_align']['value'];
+			$template['sections']['order_id_and_date']['design']['font_size']               = $design['data']['font_size']['value'];
 			$template['sections']['order_id_and_date']['design']['text_color']              = $design['data']['text_color']['value'];
 			$template['sections']['order_id_and_date']['design']['text_color_status']       = $design['data']['text_color']['data']['status'];
 			$template['sections']['order_id_and_date']['design']['background_color']        = $design['data']['background_color']['value'];
@@ -4333,10 +4674,12 @@ class CCBPdfManagerTemplates {
 			$template['sections']['order_block']['lines']['border_border_size'] = $lines['data']['border_border_size']['value'];
 			$template['sections']['order_block']['lines']['angle_border_size']  = $lines['data']['angle_border_size']['value'];
 
+			$template['sections']['order_block']['design']['title_font_size']           = $design['data']['title_font_size']['value'];
 			$template['sections']['order_block']['design']['heading_text']              = $design['data']['heading_text']['value'];
 			$template['sections']['order_block']['design']['heading_text_status']       = $design['data']['heading_text']['data']['status'];
 			$template['sections']['order_block']['design']['heading_background']        = $design['data']['heading_background']['value'];
 			$template['sections']['order_block']['design']['heading_background_status'] = $design['data']['heading_background']['data']['status'];
+			$template['sections']['order_block']['design']['font_size']                 = $design['data']['font_size']['value'];
 			$template['sections']['order_block']['design']['table_text']                = $design['data']['table_text']['value'];
 			$template['sections']['order_block']['design']['table_text_status']         = $design['data']['table_text']['data']['status'];
 			$template['sections']['order_block']['design']['table_background_status']   = $design['data']['table_background']['data']['status'];
@@ -4432,6 +4775,10 @@ class CCBPdfManagerTemplates {
 			$template['sections']['company_block']['contacts']['description']      = $contacts['data']['description']['value'];
 
 			$template['sections']['company_block']['design']['text_align']              = $design['data']['text_align']['value'];
+			$template['sections']['company_block']['design']['title_font_size']         = $design['data']['title_font_size']['value'];
+			$template['sections']['company_block']['design']['title_color']             = $design['data']['title_color']['value'];
+			$template['sections']['company_block']['design']['title_color_status']      = $design['data']['title_color']['data']['status'];
+			$template['sections']['company_block']['design']['font_size']               = $design['data']['font_size']['value'];
 			$template['sections']['company_block']['design']['text_color']              = $design['data']['text_color']['value'];
 			$template['sections']['company_block']['design']['text_color_status']       = $design['data']['text_color']['data']['status'];
 			$template['sections']['company_block']['design']['background_color']        = $design['data']['background_color']['value'];
@@ -4449,6 +4796,10 @@ class CCBPdfManagerTemplates {
 			$template['sections']['customer_block']['text']['title'] = $text['data']['title']['value'];
 
 			$template['sections']['customer_block']['design']['text_align']              = $design['data']['text_align']['value'];
+			$template['sections']['customer_block']['design']['title_font_size']         = $design['data']['title_font_size']['value'];
+			$template['sections']['customer_block']['design']['title_color']             = $design['data']['title_color']['value'];
+			$template['sections']['customer_block']['design']['title_color_status']      = $design['data']['title_color']['data']['status'];
+			$template['sections']['customer_block']['design']['font_size']               = $design['data']['font_size']['value'];
 			$template['sections']['customer_block']['design']['text_color']              = $design['data']['text_color']['value'];
 			$template['sections']['customer_block']['design']['text_color_status']       = $design['data']['text_color']['data']['status'];
 			$template['sections']['customer_block']['design']['background_color']        = $design['data']['background_color']['value'];
@@ -4467,6 +4818,10 @@ class CCBPdfManagerTemplates {
 			$template['sections']['additional_text_block']['text']['description'] = $text['data']['description']['value'];
 
 			$template['sections']['additional_text_block']['design']['text_align']              = $design['data']['text_align']['value'];
+			$template['sections']['additional_text_block']['design']['title_font_size']         = $design['data']['title_font_size']['value'];
+			$template['sections']['additional_text_block']['design']['title_color']             = $design['data']['title_color']['value'];
+			$template['sections']['additional_text_block']['design']['title_color_status']      = $design['data']['title_color']['data']['status'];
+			$template['sections']['additional_text_block']['design']['font_size']               = $design['data']['font_size']['value'];
 			$template['sections']['additional_text_block']['design']['text_color']              = $design['data']['text_color']['value'];
 			$template['sections']['additional_text_block']['design']['text_color_status']       = $design['data']['text_color']['data']['status'];
 			$template['sections']['additional_text_block']['design']['background_color']        = $design['data']['background_color']['value'];

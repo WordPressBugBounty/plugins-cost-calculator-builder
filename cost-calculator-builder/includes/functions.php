@@ -590,7 +590,7 @@ function override_admin_bar_css() {
 		}
 
 		#wp-admin-bar-ccb-admin-menu-default {
-			max-width: 170px;
+			max-width: 100%;
 			overflow: hidden;
 		}
 

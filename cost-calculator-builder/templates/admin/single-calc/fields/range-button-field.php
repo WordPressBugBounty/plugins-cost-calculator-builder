@@ -128,7 +128,7 @@
 								<span class="ccb-multiply__icon"><i class="ccb-icon-close"></i></span>
 								<div class="ccb-input-wrapper number">
 									<div class="ccb-input-box">
-										<input type="text" class="ccb-heading-5 ccb-light" name="unit" min="1" step="1" @keypress="unitMinValue" v-model="rangeField.unit" placeholder="<?php esc_attr_e( 'Enter unit', 'cost-calculator-builder' ); ?>">
+										<input type="text" class="ccb-heading-5 ccb-light" name="unit" min="0" step="1" :class="{'ccb-input-required': isObjectHasPath(errors, ['unit'] ) && errors.unit}" v-model="rangeField.unit" placeholder="<?php esc_attr_e( 'Enter unit', 'cost-calculator-builder' ); ?>">
 										<span @click="numberCounterAction('unit')" class="input-number-counter up"></span>
 										<span @click="numberCounterAction('unit', '-')" class="input-number-counter down"></span>
 									</div>

@@ -8,7 +8,7 @@
  * License: GNU General Public License v2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: cost-calculator-builder
- * Version: 3.2.49
+ * Version: 3.2.50
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -17,9 +17,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 define( 'CALC_DIR', __DIR__ );
 define( 'CALC_FILE', __FILE__ );
-define( 'CALC_VERSION', '3.2.49' );
+define( 'CALC_VERSION', '3.2.50' );
 define( 'CALC_WP_TESTED_UP', '6.7.1' );
-define( 'CALC_DB_VERSION', '3.2.47' );
+define( 'CALC_DB_VERSION', '3.2.50' );
 define( 'CALC_PATH', dirname( CALC_FILE ) );
 define( 'CALC_URL', plugins_url( '', CALC_FILE ) );
 
@@ -75,6 +75,7 @@ if ( is_admin() ) {
 require_once CALC_PATH . '/includes/functions.php';
 require_once CALC_PATH . '/includes/helpers/sanitizer/svg-scanner.php';
 require_once CALC_PATH . '/includes/classes/old_custom_fields/autoload.php';
+require_once CALC_PATH . '/includes/classes/CCBContactFormSeven.php';
 require_once CALC_PATH . '/includes/classes/CCBUpdates.php';
 require_once CALC_PATH . '/includes/classes/CCBUpdatesCallbacks.php';
 require_once CALC_PATH . '/includes/classes/CCBSettingsData.php';

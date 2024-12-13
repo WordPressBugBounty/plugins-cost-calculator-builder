@@ -125,7 +125,7 @@ $modal_types = array(
 		cancel="<?php esc_html_e( 'Cancel', 'cost-calculator-builder' ); ?>"
 	>
 		<slot>
-			<span slot="description"><?php esc_html_e( 'Are you sure to move a field that uses Conditions?', 'cost-calculator-builder' ); ?></span>
+			<span slot="description"><?php esc_html_e( 'Are you sure you want to move a field with Conditions? Moving it will delete all its Conditions.', 'cost-calculator-builder' ); ?></span>
 		</slot>
 	</ccb-confirm-condition-popup>
 	<ccb-modal-window>

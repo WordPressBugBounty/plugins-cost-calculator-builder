@@ -122,6 +122,9 @@ class CCBUpdates {
 			'ccb_add_date_picker_field',
 			'add_default_value_to_fields',
 		),
+		'3.2.50' => array(
+			'ccb_update_pdf_data_font_controls',
+		),
 	);
 
 	public static function init() {

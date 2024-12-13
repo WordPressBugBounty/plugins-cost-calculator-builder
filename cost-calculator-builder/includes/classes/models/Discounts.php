@@ -219,11 +219,15 @@ class Discounts extends DataBaseModel {
 		$calc_id         = $params['calc_id'];
 		$sorting         = $params['direction'] ?? 'ASC';
 		$order_by        = $params['orderBy'] ?? 'discount_id';
-		$limit           = $params['limit'] ?? 10;
-		$offset          = $params['offset'] ?? 0;
 
-		$sql = sprintf(
-			'SELECT %1$s.*,
+		if ( empty( $params['all'] ) ) {
+			$limit  = $params['limit'] ?? 10;
+			$offset = $params['offset'] ?? 0;
+		}
+
+		if ( isset( $limit ) && isset( $offset ) ) {
+			$sql = sprintf(
+				'SELECT %1$s.*,
 					%1$s.discount_id as discount_id,
 					%1$s.title as title,
 					%1$s.is_promo as is_promo,
@@ -242,15 +246,44 @@ class Discounts extends DataBaseModel {
 					%4$s
 					ORDER BY %1$s.%5$s %6$s LIMIT %7$s OFFSET %8$s
 					',
-			self::_table(),
-			Promocodes::_table(),
-			$calc_id,
-			( ! empty( $discount_status ) ) ? ' AND ' . self::_table() . ".discount_status IN ('{$discount_status}')" : '',
-			$order_by,
-			$sorting,
-			$limit,
-			$offset
-		);
+				self::_table(),
+				Promocodes::_table(),
+				$calc_id,
+				( ! empty( $discount_status ) ) ? ' AND ' . self::_table() . ".discount_status IN ('{$discount_status}')" : '',
+				$order_by,
+				$sorting,
+				$limit,
+				$offset
+			);
+		} else {
+			$sql = sprintf(
+				'SELECT %1$s.*,
+					%1$s.discount_id as discount_id,
+					%1$s.title as title,
+					%1$s.is_promo as is_promo,
+					%1$s.view_type as view_type,
+					%1$s.period as period,
+					%1$s.period_start_date as period_start_date,
+					%1$s.period_end_date as period_end_date,
+					%1$s.single_date as single_date,
+					%1$s.discount_status as discount_status,
+					%2$s.promocode_count as promocode_count,
+					%2$s.promocode as promocode,
+					%2$s.promocode_used as promocode_used
+					FROM %1$s
+					LEFT JOIN %2$s ON %1$s.discount_id = %2$s.discount_id
+					WHERE %1$s.calc_id in (%3$s)
+					%4$s
+					ORDER BY %1$s.%5$s %6$s
+					',
+				self::_table(),
+				Promocodes::_table(),
+				$calc_id,
+				( ! empty( $discount_status ) ) ? ' AND ' . self::_table() . ".discount_status IN ('{$discount_status}')" : '',
+				$order_by,
+				$sorting
+			);
+		}
 
 		$discounts = $wpdb->get_results( $sql, ARRAY_A ); // phpcs:ignore
 

@@ -59,7 +59,7 @@ $templates_page = get_admin_url( null, 'admin.php?page=cost_calculator_templates
 								<?php esc_html_e( 'Embed', 'cost-calculator-builder' ); ?>
 							</span>
 						</button>
-						<span class="ccb-options-tooltip__text" style="right: -15px; top: 115%"><?php esc_html_e( 'Save before embed', 'cost-calculator-builder' ); ?></span>
+						<span class="ccb-options-tooltip__text" style="right: -15px; top: 115%"><?php esc_html_e( 'Save changes to embed', 'cost-calculator-builder' ); ?></span>
 					</span>
 					<button class="ccb-button ccb-save-settings success calc-quick-tour-ccb-button" @click="saveSettings">
 						<span class="calc-save-btn-txt" style="font-size: 14px !important;">

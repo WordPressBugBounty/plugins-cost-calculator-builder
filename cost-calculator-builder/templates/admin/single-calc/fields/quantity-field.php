@@ -145,10 +145,11 @@
 							<span class="ccb-multiply__icon"><i class="ccb-icon-close"></i></span>
 							<div class="ccb-input-wrapper number">
 								<div class="ccb-input-box">
-									<input type="text" class="ccb-heading-5 ccb-light" name="unit" min="1" step="1" @keypress="unitMinValue" v-model="quantityField.unit" placeholder="<?php esc_attr_e( 'Enter unit', 'cost-calculator-builder' ); ?>">
+									<input type="text" class="ccb-heading-5 ccb-light" name="unit" min="0" step="1" :class="{'ccb-input-required': isObjectHasPath(errors, ['unit'] ) && errors.unit}" v-model="quantityField.unit" placeholder="<?php esc_attr_e( 'Enter unit', 'cost-calculator-builder' ); ?>">
 									<span @click="numberCounterAction('unit')" class="input-number-counter up"></span>
 									<span @click="numberCounterAction('unit', '-')" class="input-number-counter down"></span>
 								</div>
+								<span class="ccb-error-tip default" v-if="isObjectHasPath(errors, ['unit'] ) && errors.unit" v-html="errors.unit"></span>
 							</div>
 							<div class="ccb-input-wrapper" style="margin-left: 10px; width: 160px;" :class="{'disabled': quantityField.fieldCurrency || quantityField.allowCurrency }">
 								<input type="text" maxlength="18" class="ccb-heading-5 ccb-light" v-model.trim="quantityField.unitSymbol" placeholder="<?php esc_attr_e( 'Unit (kg, cm,...)', 'cost-calculator-builder' ); ?>">

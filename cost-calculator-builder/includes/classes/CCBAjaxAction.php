@@ -113,5 +113,8 @@ class CCBAjaxAction {
 		self::addAction( 'calc_update_form', array( CCBForms::class, 'update_form' ) );
 		self::addAction( 'calc_duplicate_form', array( CCBForms::class, 'duplicate_form' ) );
 		self::addAction( 'calc_delete_form', array( CCBForms::class, 'delete_form' ) );
+
+		/** Cost Calculator ContactForm */
+		self::addAction( 'get_template_preview_cf7', array( CCBContactFormSeven::class, 'get_template_preview_cf7' ) );
 	}
 }

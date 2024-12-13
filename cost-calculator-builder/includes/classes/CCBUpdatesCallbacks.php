@@ -1345,4 +1345,55 @@ class CCBUpdatesCallbacks {
 			);
 		}
 	}
+
+	public static function ccb_update_pdf_data_font_controls() {
+		$pdf_templates = CCBPdfManager::ccb_get_pdf_template();
+
+		foreach ( $pdf_templates as $key => $template ) {
+			if ( isset( $template['sections']['top_text_block']['design'] ) && ! isset( $template['sections']['top_text_block']['design']['title_font_size'] ) ) {
+				$template['sections']['top_text_block']['design']['title_font_size']    = 8;
+				$template['sections']['top_text_block']['design']['title_color']        = '#111111';
+				$template['sections']['top_text_block']['design']['title_color_status'] = false;
+				$template['sections']['top_text_block']['design']['font_size']          = 8;
+			}
+
+			if ( isset( $template['sections']['order_id_and_date']['design'] ) && ! isset( $template['sections']['order_id_and_date']['design']['font_size'] ) ) {
+				$template['sections']['order_id_and_date']['design']['font_size'] = 8;
+			}
+
+			if ( isset( $template['sections']['order_block']['design'] ) && ! isset( $template['sections']['order_block']['design']['title_font_size'] ) ) {
+				$template['sections']['order_block']['design']['title_font_size'] = 8;
+				$template['sections']['order_block']['design']['font_size']       = 8;
+			}
+
+			if ( isset( $template['sections']['footer_text']['design'] ) && ! isset( $template['sections']['footer_text']['design']['font_size'] ) ) {
+				$template['sections']['footer_text']['design']['font_size'] = 8;
+			}
+
+			if ( isset( $template['sections']['company_block']['design'] ) && ! isset( $template['sections']['company_block']['design']['title_font_size'] ) ) {
+				$template['sections']['company_block']['design']['title_font_size']    = 12;
+				$template['sections']['company_block']['design']['title_color']        = '#111111';
+				$template['sections']['company_block']['design']['title_color_status'] = false;
+				$template['sections']['company_block']['design']['font_size']          = 8;
+			}
+
+			if ( isset( $template['sections']['customer_block']['design'] ) && ! isset( $template['sections']['customer_block']['design']['title_font_size'] ) ) {
+				$template['sections']['customer_block']['design']['title_font_size']    = 12;
+				$template['sections']['customer_block']['design']['title_color']        = '#111111';
+				$template['sections']['customer_block']['design']['title_color_status'] = false;
+				$template['sections']['customer_block']['design']['font_size']          = 8;
+			}
+
+			if ( isset( $template['sections']['additional_text_block']['design'] ) && ! isset( $template['sections']['additional_text_block']['design']['title_font_size'] ) ) {
+				$template['sections']['additional_text_block']['design']['title_font_size']    = 12;
+				$template['sections']['additional_text_block']['design']['title_color']        = '#111111';
+				$template['sections']['additional_text_block']['design']['title_color_status'] = false;
+				$template['sections']['additional_text_block']['design']['font_size']          = 8;
+			}
+
+			$pdf_templates[ $key ] = $template;
+		}
+
+		CCBPdfManager::update_tempaltes( $pdf_templates );
+	}
 }

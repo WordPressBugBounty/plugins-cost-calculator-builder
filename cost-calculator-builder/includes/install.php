@@ -90,6 +90,7 @@ function ccb_add_admin_nonces() {
 		'ccb_restore_pdf_template'   => wp_create_nonce( 'ccb_restore_pdf_template' ),
 		'ccb_extend_pdf_template'    => wp_create_nonce( 'ccb_extend_pdf_template' ),
 		'ccb_get_pdf_data'           => wp_create_nonce( 'ccb_get_pdf_data' ),
+		'ccb_get_template_cf7'       => wp_create_nonce( 'ccb_get_template_cf7' ),
 	);
 
 	echo ( '<script type="text/javascript">window.ccb_nonces = ' . json_encode( $variables ) . ';</script>' ); //phpcs:ignore
