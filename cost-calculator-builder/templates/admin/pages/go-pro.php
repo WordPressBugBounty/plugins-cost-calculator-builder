@@ -94,8 +94,8 @@ function get_freemius_info() {
 $freemius_info = get_freemius_info();
 
 
-$start_date   = new DateTime( '2024-11-14' );
-$end_date     = new DateTime( '2024-12-07' );
+$start_date   = new DateTime( '2024-12-19' );
+$end_date     = new DateTime( '2025-01-11' );
 $current_time = new DateTime();
 
 
@@ -146,7 +146,7 @@ if ( array_key_exists( 'from', $params_array ) && ! empty( $params_array['from']
 			</div>
 			<?php if ( $is_promotion ) : ?>
 				<div class="stm-discount">
-					<a href="https://stylemixthemes.com/deal/?utm_source=wpadmin&utm_medium=gopro&utm_campaign=bfcampaign24" target="_blank"></a>
+					<a href="https://stylemixthemes.com/deal/?utm_source=ccb-go-pro&utm_medium=wpadmin&utm_campaign=WRAPUP24" target="_blank"></a>
 				</div>
 			<?php endif; ?>
 			<?php if ( isset( $freemius_info['plan'] ) ) : ?>
@@ -174,13 +174,13 @@ if ( array_key_exists( 'from', $params_array ) && ! empty( $params_array['from']
 										?>
 										<sup>$</sup>
 										<span class="stm_price__value"
-											data-price-annual="<?php echo esc_attr( number_format( $plan->annual_price * 0.5, 0, '.', '' ) ); ?>"
-											data-price-lifetime="<?php echo esc_attr( number_format( $plan->lifetime_price * 0.5, 0, '.', '' ) ); ?>"
+											data-price-annual="<?php echo esc_attr( number_format( $plan->annual_price * 0.75, 0, '.', '' ) ); ?>"
+											data-price-lifetime="<?php echo esc_attr( $plan->lifetime_price ); ?>"
 											data-price-old-annual="<?php echo esc_attr( $plan->annual_price ); ?>"
 											data-price-old-lifetime="<?php echo esc_attr( $plan->lifetime_price ); ?>">
-											<?php echo esc_html( number_format( $plan->annual_price * 0.50, 0, '.', '' ) ); ?>
+											<?php echo esc_html( number_format( $plan->annual_price * 0.75, 0, '.', '' ) ); ?>
 										</span>
-										<div class="discount">
+										<div class="discount life-time-discount">
 											<sup>$</sup>
 											<span style="font-size: 18px;">
 												<?php echo esc_html( $plan->annual_price ); ?>
@@ -342,11 +342,18 @@ if ( array_key_exists( 'from', $params_array ) && ! empty( $params_array['from']
 			let left = parent.find('.left'); //Annual
 			let right = parent.find('.right'); //Lifetime
 			let stm_price = $('.stm_price small');
+			let life_time_discount = $('.life-time-discount');
 
 			left.toggleClass('active', !this.checked);
 			right.toggleClass('active', this.checked);
 
 			stm_price.toggleClass('hidden', this.checked);
+
+			if (this.checked) {
+				life_time_discount.hide();
+			} else {
+				life_time_discount.show();
+			}
 
 			let typePrice = 'annual';
 

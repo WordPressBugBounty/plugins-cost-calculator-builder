@@ -6,7 +6,7 @@ Tags: cost calculator, calculator, calculator form builder, cost estimation, shi
 Requires at least: 4.6
 Requires PHP: 5.6
 Tested up to: 6.7.1
-Stable tag: 3.2.50
+Stable tag: 3.2.51
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -162,6 +162,9 @@ Also, you can import the demo sample using Tools -> Import -> WordPress Import.
 Demo sample XML file included in plugin archive.
 
 == Changelog ==
+
+= 3.2.51 =
+- Fix: Small bug fixes.
 
 = 3.2.50 =
  - Fix: Resolved an issue where HTML elements and styles were not correctly applied to Hints in mobile view.
