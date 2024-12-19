@@ -146,7 +146,7 @@ if ( array_key_exists( 'from', $params_array ) && ! empty( $params_array['from']
 			</div>
 			<?php if ( $is_promotion ) : ?>
 				<div class="stm-discount">
-					<a href="https://stylemixthemes.com/deal/?utm_source=ccb-go-pro&utm_medium=wpadmin&utm_campaign=WRAPUP24" target="_blank"></a>
+					<a href="https://stylemixthemes.com/2024-year-in-review/?utm_source=ccb-go-pro&utm_medium=wpadmin&utm_campaign=WRAPUP24" target="_blank"></a>
 				</div>
 			<?php endif; ?>
 			<?php if ( isset( $freemius_info['plan'] ) ) : ?>
