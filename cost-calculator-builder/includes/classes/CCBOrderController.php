@@ -309,7 +309,7 @@ class CCBOrderController {
 
 			$payment_data = array(
 				'type'       => ! empty( $data['paymentMethod'] ) ? $data['paymentMethod'] : Payments::$defaultType,
-				'currency'   => $currency,
+				'currency'   => $currency ?? ' ',
 				'status'     => Payments::$defaultStatus,
 				'total'      => $total,
 				'created_at' => wp_date( 'Y-m-d H:i:s' ),
@@ -652,15 +652,15 @@ class CCBOrderController {
 
 				$totals = $meta_data['totals'];
 				if ( isset( $meta_data['totals'] ) && is_string( $meta_data['totals'] ) ) {
-					$totals = json_decode( $meta_data['totals'] );
+					$totals = json_decode( $meta_data['totals'], true );
 				}
 
 				if ( isset( $meta_data['otherTotals'] ) && is_string( $meta_data['otherTotals'] ) ) {
-					$otherTotals          = json_decode( $meta_data['otherTotals'] );
-					$order['otherTotals'] = $otherTotals;
+					$otherTotals          = json_decode( $meta_data['otherTotals'], true );
+					$order['otherTotals'] = CCBCalculator::set_measuring_unit( $otherTotals, true );
 				}
 
-				$order['totals'] = $totals;
+				$order['totals'] = CCBCalculator::set_measuring_unit( $totals, true );
 
 				$order['form_details'] = json_decode( $order['form_details'] );
 

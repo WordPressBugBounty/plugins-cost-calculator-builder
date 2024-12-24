@@ -28,10 +28,7 @@ class Orders extends DataBaseModel {
 			id INT UNSIGNED NOT NULL AUTO_INCREMENT,
 			calc_id  INT UNSIGNED NOT NULL,
 			calc_title VARCHAR(255) DEFAULT NULL,
-			total DECIMAL(10,2) NOT NULL DEFAULT 0.00,
 			status VARCHAR(20) NOT NULL DEFAULT 'pending',
-			currency CHAR(20) NOT NULL,
-			payment_method VARCHAR(30) NOT NULL DEFAULT 'no_payments',
 			order_details longtext DEFAULT NULL,
 			form_details longtext DEFAULT NULL,
             promocodes longtext DEFAULT NULL,
@@ -368,22 +365,26 @@ class Orders extends DataBaseModel {
 	public static function get_order_by_id( $params ) {
 		global $wpdb;
 
-		$sql = sprintf(
-			'SELECT %1$s.*, 
-                    %2$s.type as paymentMethod,
-                    %2$s.currency as paymentCurrency,
-                    %2$s.status as paymentStatus,
-                    %2$s.transaction,
-                    %2$s.total
-                    FROM %1$s
-                    LEFT JOIN %2$s ON %1$s.id = %2$s.order_id
-                    WHERE %1$s.id = %3$s 
-                    ',
-			self::_table(),
-			Payments::_table(),
-			$params['id']
-		);
+		$order_table    = self::_table();
+		$payments_table = Payments::_table();
+		$order_id       = $params['id'];
 
-		return $wpdb->get_results( $sql, ARRAY_A ); // phpcs:ignore
+        //phpcs:disable
+		$query = $wpdb->prepare(
+			"SELECT o.*,
+                       p.type as paymentMethod,
+                       p.currency as paymentCurrency,
+                       p.status as paymentStatus,
+                       p.transaction,
+                       p.total
+                    FROM $order_table o
+                    LEFT JOIN $payments_table p ON o.id = p.order_id
+                    WHERE o.id = %d
+                    ",
+			$order_id
+		);
+        // phpcs:enable
+
+		return $wpdb->get_results( $query, ARRAY_A ); // phpcs:ignore
 	}
 }

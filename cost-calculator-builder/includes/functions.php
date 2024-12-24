@@ -388,8 +388,15 @@ function ccb_sync_settings_from_general_settings( $settings, $general_settings, 
 	if ( ! empty( $general_settings_cloned['form_fields']['use_in_all'] ) ) {
 		unset( $general_settings_cloned['form_fields']['use_in_all'] );
 		foreach ( $general_settings_cloned['form_fields'] as $form_field_key => $form_field_value ) {
-			if ( ! in_array( $form_field_key, array( 'terms_and_conditions', 'summary_display' ), true ) ) {
-				$settings['formFields'][ $form_field_key ] = $form_field_value;
+			if ( 'terms_and_conditions' === $form_field_key ) {
+				if ( ! empty( $general_settings_cloned['form_fields']['terms_use_in_all'] ) ) {
+					$settings['formFields'][ $form_field_key ] = $form_field_value;
+				}
+			}
+			if ( 'summary_display' === $form_field_key ) {
+				if ( ! empty( $general_settings_cloned['form_fields']['summary_display']['use_in_all'] ) ) {
+					$settings['formFields'][ $form_field_key ] = $form_field_value;
+				}
 			}
 		}
 	}

@@ -125,6 +125,9 @@ class CCBUpdates {
 		'3.2.50' => array(
 			'ccb_update_pdf_data_font_controls',
 		),
+		'3.2.54' => array(
+			'ccb_delete_payments_table_constraints',
+		),
 	);
 
 	public static function init() {

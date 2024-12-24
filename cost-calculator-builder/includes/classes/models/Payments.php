@@ -29,7 +29,7 @@ class Payments extends DataBaseModel {
             `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
             `order_id` INT UNSIGNED NOT NULL,
             `type` ENUM('paypal', 'stripe', 'woocommerce', 'cash_payment', 'twoCheckout', 'razorpay', 'no_payments') NOT NULL DEFAULT 'no_payments',
-            `currency` CHAR(20) NOT NULL DEFAULT '$',
+            `currency` CHAR(20) DEFAULT '',
             `status` ENUM('pending', 'cancelled', 'rejected', 'complete') NOT NULL DEFAULT 'pending',
             `total`   DOUBLE NOT NULL DEFAULT 0.00,
             `tax`       DECIMAL(10,2) DEFAULT 0.00,

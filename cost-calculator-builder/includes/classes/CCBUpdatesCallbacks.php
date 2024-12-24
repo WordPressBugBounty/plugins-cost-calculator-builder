@@ -1396,4 +1396,17 @@ class CCBUpdatesCallbacks {
 
 		CCBPdfManager::update_tempaltes( $pdf_templates );
 	}
+
+	public static function ccb_delete_payments_table_constraints() {
+		global $wpdb;
+		$payment_table = Payments::_table();
+		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW COLUMNS FROM `%1s` LIKE %s;', $payment_table, 'currency' ) ) ) { // phpcs:ignore
+			$wpdb->query(
+				$wpdb->prepare(
+					"ALTER TABLE `%1s` MODIFY COLUMN `currency` CHAR(20) DEFAULT '';", // phpcs:ignore
+					$payment_table
+				)
+			);
+		}
+	}
 }
