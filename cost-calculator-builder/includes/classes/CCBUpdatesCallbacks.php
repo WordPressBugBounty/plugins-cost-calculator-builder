@@ -250,78 +250,6 @@ class CCBUpdatesCallbacks {
 	}
 
 
-	/**
-	 * Update Payments table total column.
-	 */
-	public static function ccb_update_payments_table_total_column() {
-		global $wpdb;
-		$payment_table = Payments::_table();
-		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW COLUMNS FROM `%1s` LIKE %s;', $payment_table, 'total' ) ) ) { // phpcs:ignore
-			$wpdb->query(
-				$wpdb->prepare(
-				"ALTER TABLE `%1s` CHANGE `total` `total` double NOT NULL DEFAULT '0.00000000';", // phpcs:ignore
-					$payment_table
-				)
-			);
-		}
-	}
-
-	/**
-	 * Move Payments data from order to payment table.
-	 */
-	public static function move_from_order_to_payment_table() {
-		$orders = Orders::get_all();
-		foreach ( $orders as $order ) {
-			$exist = Payments::get( 'order_id', $order['id'] );
-			if ( null !== $exist ) {
-				continue;
-			}
-
-			$payment_type = Payments::$defaultType; // phpcs:ignore
-			if ( ! empty( $order['payment_method'] ) && in_array( $order['payment_method'], Payments::$typeList, true ) ) { // phpcs:ignore
-				$payment_type = $order['payment_method'];
-			}
-
-			$payment = array(
-				'order_id'   => $order['id'],
-				'type'       => $payment_type,
-				'status'     => ! empty( $order['status'] ) ? $order['status'] : Payments::$defaultStatus, // phpcs:ignore
-				'total'      => $order['total'] ?? 0,
-				'currency'   => $order['currency'] ?? '$',
-				'created_at' => wp_date( 'Y-m-d H:i:s' ),
-				'updated_at' => wp_date( 'Y-m-d H:i:s' ),
-			);
-
-			if ( Payments::$completeStatus === $payment['status'] ) { // phpcs:ignore
-				$payment['paid_at'] = wp_date( 'Y-m-d H:i:s' );
-			}
-			Payments::insert( $payment );
-		}
-		self::drop_payment_fields_from_order_table();
-	}
-
-	/**
-	 * Update Orders table, remove payment_method, currency, total
-	 */
-	public static function drop_payment_fields_from_order_table() {
-		global $wpdb;
-		try {
-			if ( $wpdb->get_var( $wpdb->prepare( 'SHOW COLUMNS FROM `%1s` LIKE %s;', Orders::_table(), 'payment_method' ) ) ) {  // phpcs:ignore
-				$wpdb->query( $wpdb->prepare( 'ALTER TABLE `%1s` DROP  COLUMN `payment_method`;', Orders::_table() ) );  // phpcs:ignore
-			}
-
-			if ( $wpdb->get_var( $wpdb->prepare( 'SHOW COLUMNS FROM `%1s` LIKE %s;', Orders::_table(), 'currency' ) ) ) {  // phpcs:ignore
-				$wpdb->query( $wpdb->prepare( 'ALTER TABLE `%1s` DROP  COLUMN `currency`;', Orders::_table() ) );  // phpcs:ignore
-			}
-
-			if ( $wpdb->get_var( $wpdb->prepare( 'SHOW COLUMNS FROM `%1s` LIKE %s;', Orders::_table(), 'total' ) ) ) {  // phpcs:ignore
-				$wpdb->query( $wpdb->prepare( 'ALTER TABLE `%1s` DROP  COLUMN `total`;', Orders::_table() ) );  // phpcs:ignore
-			}
-		} catch ( \Exception $e ) {
-			ccb_write_log( $e );
-		}
-	}
-
 	public static function ccb_appearance_totals( $totals, $descriptions ) {
 		$formulas = array();
 		foreach ( $totals as $idx => $total ) {
@@ -1407,6 +1335,36 @@ class CCBUpdatesCallbacks {
 					$payment_table
 				)
 			);
+		}
+	}
+
+	public static function ccb_add_pdf_border_style() {
+		$pdf_templates = CCBPdfManager::ccb_get_pdf_template();
+
+		foreach ( $pdf_templates as $key => $template ) {
+			if ( ! isset( $template['document']['border']['border_style'] ) ) {
+				$template['document']['border']['border_style'] = 'solid';
+			}
+
+			if ( ! isset( $template['sections']['order_block']['lines']['border_style'] ) ) {
+				$template['sections']['order_block']['lines']['border_style'] = 'solid';
+			}
+
+			if ( ! isset( $template['sections']['order_block']['lines']['line_border_style'] ) ) {
+				$template['sections']['order_block']['lines']['line_border_style'] = 'solid';
+			}
+
+			$pdf_templates[ $key ] = $template;
+		}
+
+		CCBPdfManager::update_tempaltes( $pdf_templates );
+	}
+
+	public static function ccb_maybe_create_orders_table() {
+		global $wpdb;
+		$orders_table = Orders::_table();
+		if ( ! $wpdb->get_var( $wpdb->prepare( 'SHOW COLUMNS FROM `%1s` LIKE %s;', $orders_table, 'id' ) ) ) { // phpcs:ignore
+			Orders::create_table();
 		}
 	}
 }

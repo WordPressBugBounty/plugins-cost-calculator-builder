@@ -1,7 +1,7 @@
 <div :style="additionalCss" class="calc-item ccb-field ccb-fields-tooltip" :class="{required: requiredActive, [dropDownField.additionalStyles]: dropDownField.additionalStyles}" :data-id="dropDownField.alias" :data-repeater="repeater">
 	<div class="calc-item__title">
 		<span v-if="dropDownField.required" :class="{active: requiredActive}" class="ccb-error-tip front default">
-			{{ $store.getters.getSettings.texts.required_msg }}
+			{{ $store.getters.getTranslations.required_field }}
 		</span>
 		<span>{{ dropDownField.label }}</span>
 		<span class="ccb-required-mark" v-if="dropDownField.required">*</span>

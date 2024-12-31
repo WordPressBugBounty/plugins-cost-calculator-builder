@@ -37,8 +37,7 @@ class Orders extends DataBaseModel {
 			PRIMARY KEY ({$primary_key}),
 		    INDEX `idx_calc_id` (`calc_id`),
 		    INDEX `idx_created_at` (`created_at`),
-		    INDEX `idx_status` (`status`),
-		    INDEX `idx_total` (`total`)
+		    INDEX `idx_status` (`status`)
 		) {$wpdb->get_charset_collate()};";
 
 		maybe_create_table( $table_name, $sql );

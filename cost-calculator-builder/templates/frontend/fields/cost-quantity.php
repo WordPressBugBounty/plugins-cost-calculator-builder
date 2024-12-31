@@ -7,7 +7,7 @@
 
 <div :style="additionalCss" class="calc-item ccb-field ccb-field-quantity ccb-fields-tooltip" :class="{required: requiredWrapperActive, [quantityField.additionalStyles]: quantityField.additionalStyles}" :data-id="quantityField.alias" :data-repeater="repeater">
 	<div class="calc-item__title">
-		<span v-if="quantityField.required" :class="{active: requiredActive}" class="ccb-error-tip front default" style="bottom: 47px">{{ $store.getters.getSettings.texts.required_msg }}</span>
+		<span v-if="quantityField.required" :class="{active: requiredActive}" class="ccb-error-tip front default" style="bottom: 47px">{{ $store.getters.getTranslations.required_field }}</span>
 		<span v-if="Object.keys(errors).length > 0" class="ccb-error-tip front default active" style="bottom: 47px">
 			<span v-if="errors.hasOwnProperty('max')"><?php esc_html_e( 'Value can\'t be greater than ', 'cost-calculator-builder' ); ?> {{ quantityField.max }}</span>
 			<span v-if="errors.hasOwnProperty('min')"><?php esc_html_e( 'Value can\'t be less than ', 'cost-calculator-builder' ); ?> {{ quantityField.min }}</span>

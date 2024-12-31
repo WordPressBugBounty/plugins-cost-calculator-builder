@@ -1,4 +1,28 @@
 <div class="ccb-tab-container">
+	<?php if ( ! defined( 'CCB_PRO_VERSION' ) ) : ?>
+		<div class="ccb-grid-box">
+			<div class="container">
+				<div class="row">
+					<div class="col">
+						<span class="ccb-tab-title"><?php esc_html_e( 'Error message in calculator', 'cost-calculator-builder' ); ?></span>
+					</div>
+				</div>
+				<div class="ccb-single-pro-feature" style="max-width:400px; margin-top: 15px;">
+					<div class="ccb-single-pro-feature__header" style="border:none;">
+						<div class="ccb-single-pro-feature__image-box">
+							<span class="ccb-single-pro-feature--icon-box">
+								<i class="ccb-icon-Lock"></i>
+							</span>
+							<span style="font-size:14px; font-weight:500;">This feature is available in the Pro version</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<?php
+		endif;
+	if ( defined( 'CCB_PRO_VERSION' ) ) :
+		?>
 	<div class="ccb-grid-box">
 		<div class="container">
 			<div class="row">
@@ -16,8 +40,10 @@
 			</div>
 		</div>
 	</div>
-	
-	<?php if ( ! defined( 'CCB_PRO_VERSION' ) ) : ?>
+		<?php
+		endif;
+	if ( ! defined( 'CCB_PRO_VERSION' ) ) :
+		?>
 		<div class="ccb-grid-box">
 			<div class="container">
 				<div class="row">
@@ -37,9 +63,10 @@
 				</div>
 			</div>
 		</div>
-	<?php endif; ?>
-
-	<?php if ( defined( 'CCB_PRO_VERSION' ) ) : ?>
+		<?php
+	endif;
+	if ( defined( 'CCB_PRO_VERSION' ) ) :
+		?>
 		<div class="ccb-grid-box">
 			<div class="container">
 				<div class="row">

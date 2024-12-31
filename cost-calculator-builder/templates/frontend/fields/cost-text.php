@@ -7,7 +7,7 @@
 
 <div :style="additionalCss" class="calc-item ccb-field ccb-fields-tooltip" :class="{required: requiredActive, [textField.additionalStyles]: textField.additionalStyles}" :data-id="textField.alias" :data-repeater="repeater">
 	<div class="calc-item__title">
-		<span v-if="textField.required" :class="{active: requiredActive}" class="ccb-error-tip front textarea">{{ $store.getters.getSettings.texts.required_msg }}</span>
+		<span v-if="textField.required" :class="{active: requiredActive}" class="ccb-error-tip front textarea">{{ $store.getters.getTranslations.required_field }}</span>
 		<span v-if="!isAllowedLimit" class="ccb-error-tip front textarea active">
 			<?php esc_html_e( 'Allowed limit is ', 'cost-calculator-builder' ); ?>{{ textField.numberOfCharacters }} <?php esc_html_e( 'characters', 'cost-calculator-builder' ); ?>
 		</span>

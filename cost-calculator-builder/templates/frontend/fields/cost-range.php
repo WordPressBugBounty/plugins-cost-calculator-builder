@@ -13,7 +13,7 @@
 				<span v-if="rangeField.required" class="calc-required-field">
 					<div class="ccb-field-required-tooltip">
 						<span class="ccb-field-required-tooltip-text" :class="{active: requiredActive}" style="display: none;">
-							{{ $store.getters.getSettings.texts.required_msg }}
+							{{ $store.getters.getTranslations.required_field }}
 						</span>
 					</div>
 				</span>

@@ -5,12 +5,6 @@ namespace cBuilder\Classes;
 class CCBUpdates {
 
 	private static $updates = array(
-		'3.0.1'  => array(
-			'move_from_order_to_payment_table',
-		),
-		'3.0.2'  => array(
-			'ccb_update_payments_table_total_column',
-		),
 		'3.1.14' => array(
 			'calculator_add_templates',
 		),
@@ -127,6 +121,10 @@ class CCBUpdates {
 		),
 		'3.2.54' => array(
 			'ccb_delete_payments_table_constraints',
+		),
+		'3.2.55' => array(
+			'ccb_add_pdf_border_style',
+			'ccb_maybe_create_orders_table',
 		),
 	);
 

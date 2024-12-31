@@ -124,6 +124,16 @@ class CCBPdfManagerHelper {
 		);
 	}
 
+	public static function get_pdf_dropDown_data( $label, $key, $value, $options ) {
+		return array(
+			'label'   => $label,
+			'key'     => $key,
+			'value'   => $value,
+			'type'    => 'ccb-pdf-drop-down',
+			'options' => $options,
+		);
+	}
+
 	public static function get_pdf_color_data( $label, $key, $value ) {
 		return array(
 			'label' => $label,
@@ -249,6 +259,23 @@ class CCBPdfManagerHelper {
 			'bottom' => array(
 				'key'  => 'bottom',
 				'icon' => 'ccb-icon-Cost-Calculator-Admin-Bottom',
+			),
+		);
+	}
+
+	public static function get_border_style_options() {
+		return array(
+			'dashed' => array(
+				'label' => 'Dashed',
+				'value' => 'dashed',
+			),
+			'dotted' => array(
+				'label' => 'Dotted',
+				'value' => 'dotted',
+			),
+			'solid'  => array(
+				'label' => 'Solid',
+				'value' => 'solid',
 			),
 		);
 	}

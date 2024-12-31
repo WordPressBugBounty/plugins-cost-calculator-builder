@@ -90,6 +90,7 @@ class CCBPdfManagerTemplates {
 							'border_type'  => CCBPdfManagerHelper::get_pdf_tab_options_data( '', 'border_type', $store['document']['border']['border_type'] ),
 							'border_color' => CCBPdfManagerHelper::get_pdf_color_data( __( 'Border Color', 'cost-calculator-builder-pro' ), 'border_color', $store['document']['border']['border_color'] ),
 							'border_size'  => CCBPdfManagerHelper::get_pdf_counter_data( __( 'Border Size', 'cost-calculator-builder-pro' ), 'border_size', $store['document']['border']['border_size'] ),
+							'border_style' => CCBPdfManagerHelper::get_pdf_dropDown_data( __( 'Border Style', 'cost-calculator-builder-pro' ), 'border_style', $store['document']['border']['border_style'], CCBPdfManagerHelper::get_border_style_options() ),
 						),
 					),
 				),
@@ -199,9 +200,11 @@ class CCBPdfManagerTemplates {
 								'show_lines'         => CCBPdfManagerHelper::get_pdf_switch_data( __( 'Show Lines', 'cost-calculator-builder-pro' ), 'show_lines', $order_block['lines']['show_lines'] ),
 								'line_border_color'  => CCBPdfManagerHelper::get_pdf_color_data( __( 'Line Color', 'cost-calculator-builder-pro' ), 'line_border_color', $order_block['lines']['line_border_color'] ),
 								'line_border_size'   => CCBPdfManagerHelper::get_pdf_counter_data( __( 'Line Size', 'cost-calculator-builder-pro' ), 'line_border_size', $order_block['lines']['line_border_size'] ),
+								'line_border_style'  => CCBPdfManagerHelper::get_pdf_dropDown_data( __( 'Line Style', 'cost-calculator-builder-pro' ), 'line_border_style', $order_block['lines']['line_border_style'], CCBPdfManagerHelper::get_border_style_options() ),
 								'separator'          => CCBPdfManagerHelper::get_pdf_hr_data(),
 								'show_border'        => CCBPdfManagerHelper::get_pdf_switch_data( __( 'Show Border', 'cost-calculator-builder-pro' ), 'show_border', $order_block['lines']['show_border'] ),
 								'border_color'       => CCBPdfManagerHelper::get_pdf_color_data( __( 'Border Color', 'cost-calculator-builder-pro' ), 'border_color', $order_block['lines']['border_color'] ),
+								'border_style'       => CCBPdfManagerHelper::get_pdf_dropDown_data( __( 'Border Style', 'cost-calculator-builder-pro' ), 'border_style', $order_block['lines']['border_style'], CCBPdfManagerHelper::get_border_style_options() ),
 								'border_border_size' => CCBPdfManagerHelper::get_pdf_counter_data( __( 'Border Size', 'cost-calculator-builder-pro' ), 'border_border_size', $order_block['lines']['border_border_size'] ),
 								'angle_border_size'  => CCBPdfManagerHelper::get_pdf_counter_data( __( 'Angle Size', 'cost-calculator-builder-pro' ), 'angle_border_size', $order_block['lines']['angle_border_size'] ),
 							),
@@ -448,6 +451,7 @@ class CCBPdfManagerTemplates {
 						'border_type'  => 'solid',
 						'border_color' => '#111111',
 						'border_size'  => 2,
+						'border_style' => 'solid',
 					),
 				),
 				'sections' => array(
@@ -518,8 +522,10 @@ class CCBPdfManagerTemplates {
 							'show_lines'         => true,
 							'line_border_color'  => '#000000cc',
 							'line_border_size'   => 1,
+							'line_border_style'  => 'solid',
 							'show_border'        => false,
 							'border_color'       => '#000000cc',
+							'border_style'       => 'solid',
 							'border_border_size' => 1,
 							'angle_border_size'  => 2,
 						),
@@ -692,6 +698,7 @@ class CCBPdfManagerTemplates {
 						'border_type'  => 'solid',
 						'border_color' => '#111111',
 						'border_size'  => 2,
+						'border_style' => 'solid',
 					),
 				),
 				'sections' => array(
@@ -762,8 +769,10 @@ class CCBPdfManagerTemplates {
 							'show_lines'         => true,
 							'line_border_color'  => '#000000cc',
 							'line_border_size'   => 1,
+							'line_border_style'  => 'solid',
 							'show_border'        => false,
 							'border_color'       => '#000000cc',
+							'border_style'       => 'solid',
 							'border_border_size' => 1,
 							'angle_border_size'  => 2,
 						),
@@ -936,6 +945,7 @@ class CCBPdfManagerTemplates {
 						'border_type'  => 'solid',
 						'border_color' => '#111111',
 						'border_size'  => 2,
+						'border_style' => 'solid',
 					),
 				),
 				'sections' => array(
@@ -992,8 +1002,10 @@ class CCBPdfManagerTemplates {
 							'show_lines'         => true,
 							'line_border_color'  => '#000000cc',
 							'line_border_size'   => 1,
+							'line_border_style'  => 'solid',
 							'show_border'        => false,
 							'border_color'       => '#000000cc',
+							'border_style'       => 'solid',
 							'border_border_size' => 1,
 							'angle_border_size'  => 2,
 						),
@@ -1180,6 +1192,7 @@ class CCBPdfManagerTemplates {
 						'border_type'  => 'solid',
 						'border_color' => '#111111',
 						'border_size'  => 2,
+						'border_style' => 'solid',
 					),
 				),
 				'sections' => array(
@@ -1236,8 +1249,10 @@ class CCBPdfManagerTemplates {
 							'show_lines'         => true,
 							'line_border_color'  => '#111111',
 							'line_border_size'   => 1,
+							'line_border_style'  => 'solid',
 							'show_border'        => false,
 							'border_color'       => '#111111',
+							'border_style'       => 'solid',
 							'border_border_size' => 1,
 							'angle_border_size'  => 2,
 						),
@@ -1423,6 +1438,7 @@ class CCBPdfManagerTemplates {
 						'border_type'  => 'solid',
 						'border_color' => '#111111',
 						'border_size'  => 2,
+						'border_style' => 'solid',
 					),
 				),
 				'sections' => array(
@@ -1493,8 +1509,10 @@ class CCBPdfManagerTemplates {
 							'show_lines'         => true,
 							'line_border_color'  => '#87588B',
 							'line_border_size'   => 1,
+							'line_border_style'  => 'solid',
 							'show_border'        => false,
 							'border_color'       => '#87588B',
+							'border_style'       => 'solid',
 							'border_border_size' => 1,
 							'angle_border_size'  => 2,
 						),
@@ -1666,6 +1684,7 @@ class CCBPdfManagerTemplates {
 						'border_type'  => 'solid',
 						'border_color' => '#111111',
 						'border_size'  => 2,
+						'border_style' => 'solid',
 					),
 				),
 				'sections' => array(
@@ -1736,8 +1755,10 @@ class CCBPdfManagerTemplates {
 							'show_lines'         => true,
 							'line_border_color'  => '#EAE9D0',
 							'line_border_size'   => 1,
+							'line_border_style'  => 'solid',
 							'show_border'        => false,
 							'border_color'       => '#EAE9D0',
+							'border_style'       => 'solid',
 							'border_border_size' => 1,
 							'angle_border_size'  => 2,
 						),
@@ -1909,6 +1930,7 @@ class CCBPdfManagerTemplates {
 						'border_type'  => 'solid',
 						'border_color' => '#111111',
 						'border_size'  => 2,
+						'border_style' => 'solid',
 					),
 				),
 				'sections' => array(
@@ -1979,8 +2001,10 @@ class CCBPdfManagerTemplates {
 							'show_lines'         => true,
 							'line_border_color'  => '#FEFFD7',
 							'line_border_size'   => 1,
+							'line_border_style'  => 'solid',
 							'show_border'        => false,
 							'border_color'       => '#FEFFD7',
+							'border_style'       => 'solid',
 							'border_border_size' => 1,
 							'angle_border_size'  => 2,
 						),
@@ -2152,6 +2176,7 @@ class CCBPdfManagerTemplates {
 						'border_type'  => 'solid',
 						'border_color' => '#111111',
 						'border_size'  => 2,
+						'border_style' => 'solid',
 					),
 				),
 				'sections' => array(
@@ -2222,8 +2247,10 @@ class CCBPdfManagerTemplates {
 							'show_lines'         => true,
 							'line_border_color'  => '#1A5D7C',
 							'line_border_size'   => 1,
+							'line_border_style'  => 'solid',
 							'show_border'        => false,
 							'border_color'       => '#1A5D7C',
+							'border_style'       => 'solid',
 							'border_border_size' => 1,
 							'angle_border_size'  => 2,
 						),
@@ -2395,6 +2422,7 @@ class CCBPdfManagerTemplates {
 						'border_type'  => 'solid',
 						'border_color' => '#111111',
 						'border_size'  => 2,
+						'border_style' => 'solid',
 					),
 				),
 				'sections' => array(
@@ -2465,8 +2493,10 @@ class CCBPdfManagerTemplates {
 							'show_lines'         => true,
 							'line_border_color'  => '#E44849',
 							'line_border_size'   => 1,
+							'line_border_style'  => 'solid',
 							'show_border'        => false,
 							'border_color'       => '#E44849',
+							'border_style'       => 'solid',
 							'border_border_size' => 1,
 							'angle_border_size'  => 2,
 						),
@@ -2638,6 +2668,7 @@ class CCBPdfManagerTemplates {
 						'border_type'  => 'solid',
 						'border_color' => '#111111',
 						'border_size'  => 2,
+						'border_style' => 'solid',
 					),
 				),
 				'sections' => array(
@@ -2708,8 +2739,10 @@ class CCBPdfManagerTemplates {
 							'show_lines'         => true,
 							'line_border_color'  => '#C0BBE9',
 							'line_border_size'   => 1,
+							'line_border_style'  => 'solid',
 							'show_border'        => false,
 							'border_color'       => '#C0BBE9',
+							'border_style'       => 'solid',
 							'border_border_size' => 1,
 							'angle_border_size'  => 2,
 						),
@@ -2881,6 +2914,7 @@ class CCBPdfManagerTemplates {
 						'border_type'  => 'solid',
 						'border_color' => '#111111',
 						'border_size'  => 2,
+						'border_style' => 'solid',
 					),
 				),
 				'sections' => array(
@@ -2951,8 +2985,10 @@ class CCBPdfManagerTemplates {
 							'show_lines'         => true,
 							'line_border_color'  => '#EEEEEE',
 							'line_border_size'   => 1,
+							'line_border_style'  => 'solid',
 							'show_border'        => false,
 							'border_color'       => '#C0BBE9',
+							'border_style'       => 'solid',
 							'border_border_size' => 1,
 							'angle_border_size'  => 2,
 						),
@@ -3124,6 +3160,7 @@ class CCBPdfManagerTemplates {
 						'border_type'  => 'solid',
 						'border_color' => '#111111',
 						'border_size'  => 2,
+						'border_style' => 'solid',
 					),
 				),
 				'sections' => array(
@@ -3194,8 +3231,10 @@ class CCBPdfManagerTemplates {
 							'show_lines'         => true,
 							'line_border_color'  => '#ACACAC',
 							'line_border_size'   => 1,
+							'line_border_style'  => 'solid',
 							'show_border'        => false,
 							'border_color'       => '#ACACAC',
+							'border_style'       => 'solid',
 							'border_border_size' => 1,
 							'angle_border_size'  => 2,
 						),
@@ -3367,6 +3406,7 @@ class CCBPdfManagerTemplates {
 						'border_type'  => 'solid',
 						'border_color' => '#111111',
 						'border_size'  => 2,
+						'border_style' => 'solid',
 					),
 				),
 				'sections' => array(
@@ -3437,8 +3477,10 @@ class CCBPdfManagerTemplates {
 							'show_lines'         => true,
 							'line_border_color'  => '#111111',
 							'line_border_size'   => 1,
+							'line_border_style'  => 'solid',
 							'show_border'        => false,
 							'border_color'       => '#111111',
+							'border_style'       => 'solid',
 							'border_border_size' => 1,
 							'angle_border_size'  => 2,
 						),
@@ -3610,6 +3652,7 @@ class CCBPdfManagerTemplates {
 						'border_type'  => 'solid',
 						'border_color' => '#111111',
 						'border_size'  => 2,
+						'border_style' => 'solid',
 					),
 				),
 				'sections' => array(
@@ -3680,8 +3723,10 @@ class CCBPdfManagerTemplates {
 							'show_lines'         => true,
 							'line_border_color'  => '#294C74',
 							'line_border_size'   => 1,
+							'line_border_style'  => 'solid',
 							'show_border'        => false,
 							'border_color'       => '#294C74',
+							'border_style'       => 'solid',
 							'border_border_size' => 1,
 							'angle_border_size'  => 2,
 						),
@@ -3853,6 +3898,7 @@ class CCBPdfManagerTemplates {
 						'border_type'  => 'solid',
 						'border_color' => '#111111',
 						'border_size'  => 2,
+						'border_style' => 'solid',
 					),
 				),
 				'sections' => array(
@@ -3923,8 +3969,10 @@ class CCBPdfManagerTemplates {
 							'show_lines'         => true,
 							'line_border_color'  => '#CAB2EB',
 							'line_border_size'   => 1,
+							'line_border_style'  => 'solid',
 							'show_border'        => false,
 							'border_color'       => '#CAB2EB',
+							'border_style'       => 'solid',
 							'border_border_size' => 1,
 							'angle_border_size'  => 2,
 						),
@@ -4096,6 +4144,7 @@ class CCBPdfManagerTemplates {
 						'border_type'  => 'solid',
 						'border_color' => '#111111',
 						'border_size'  => 2,
+						'border_style' => 'solid',
 					),
 				),
 				'sections' => array(
@@ -4166,8 +4215,10 @@ class CCBPdfManagerTemplates {
 							'show_lines'         => true,
 							'line_border_color'  => '#EEEEEE',
 							'line_border_size'   => 1,
+							'line_border_style'  => 'solid',
 							'show_border'        => false,
 							'border_color'       => '#C0BBE9',
+							'border_style'       => 'solid',
 							'border_border_size' => 1,
 							'angle_border_size'  => 2,
 						),
@@ -4339,6 +4390,7 @@ class CCBPdfManagerTemplates {
 						'border_type'  => 'solid',
 						'border_color' => '#111111',
 						'border_size'  => 2,
+						'border_style' => 'solid',
 					),
 				),
 				'sections' => array(
@@ -4409,8 +4461,10 @@ class CCBPdfManagerTemplates {
 							'show_lines'         => true,
 							'line_border_color'  => '#EEEEEE',
 							'line_border_size'   => 1,
+							'line_border_style'  => 'solid',
 							'show_border'        => false,
 							'border_color'       => '#C0BBE9',
+							'border_style'       => 'solid',
 							'border_border_size' => 1,
 							'angle_border_size'  => 2,
 						),
@@ -4595,6 +4649,7 @@ class CCBPdfManagerTemplates {
 			$template['document']['border']['border_type']  = $border['data']['border_type']['value'];
 			$template['document']['border']['border_color'] = $border['data']['border_color']['value'];
 			$template['document']['border']['border_size']  = $border['data']['border_size']['value'];
+			$template['document']['border']['border_style'] = $border['data']['border_style']['value'];
 		}
 
 		if ( ! empty( $data['sections']['top_text_block']['tabs'] ) ) {
@@ -4669,8 +4724,10 @@ class CCBPdfManagerTemplates {
 			$template['sections']['order_block']['lines']['show_lines']         = $lines['data']['show_lines']['value'];
 			$template['sections']['order_block']['lines']['line_border_color']  = $lines['data']['line_border_color']['value'];
 			$template['sections']['order_block']['lines']['line_border_size']   = $lines['data']['line_border_size']['value'];
+			$template['sections']['order_block']['lines']['line_border_style']  = $lines['data']['line_border_style']['value'];
 			$template['sections']['order_block']['lines']['show_border']        = $lines['data']['show_border']['value'];
 			$template['sections']['order_block']['lines']['border_color']       = $lines['data']['border_color']['value'];
+			$template['sections']['order_block']['lines']['border_style']       = $lines['data']['border_style']['value'];
 			$template['sections']['order_block']['lines']['border_border_size'] = $lines['data']['border_border_size']['value'];
 			$template['sections']['order_block']['lines']['angle_border_size']  = $lines['data']['angle_border_size']['value'];
 
