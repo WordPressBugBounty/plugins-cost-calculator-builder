@@ -139,7 +139,7 @@ class CCBSettingsData {
 				'formulas'    => array(),
 			),
 			'payment_gateway' => array(
-				'cards'        => array(
+				'cards'         => array(
 					'enable'        => false,
 					'card_payments' => array(
 						'stripe'   => array(
@@ -167,7 +167,7 @@ class CCBSettingsData {
 						),
 					),
 				),
-				'paypal'       => array(
+				'paypal'        => array(
 					'enable'           => false,
 					'integration_type' => 'legacy',
 					'paypal_email'     => '',
@@ -176,12 +176,12 @@ class CCBSettingsData {
 					'client_id'        => '',
 					'client_secret'    => '',
 				),
-				'cash_payment' => array(
+				'cash_payment'  => array(
 					'enable' => false,
 					'label'  => 'Cash Payment',
 					'type'   => '',
 				),
-				'formulas'     => array(),
+				'formulas'      => array(),
 			),
 			'webhooks'        => array(
 				'enableSendForms'        => false,
@@ -271,6 +271,11 @@ class CCBSettingsData {
 					'default' => '#EEF1F7',
 				),
 				'content_bg'       => array(
+					'value'   => '#FFFFFF',
+					'type'    => 'color',
+					'default' => '#FFFFFF',
+				),
+				'header_bg'        => array(
 					'value'   => '#FFFFFF',
 					'type'    => 'color',
 					'default' => '#FFFFFF',
@@ -440,7 +445,7 @@ class CCBSettingsData {
 				'type'  => 'basic',
 				'title' => __( 'Form Manager', 'cost-calculator-builder' ),
 				'slug'  => 'form-manager',
-				'icon'  => '',
+				'icon'  => 'ccb-icon-form-edit-manager',
 			),
 			array(
 				'type'  => 'pro',

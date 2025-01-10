@@ -135,7 +135,6 @@ if ( '' !== $form_id ) {
 	);
 }
 
-
 $geolocation = isset( $general_settings['geolocation'] ) ? $general_settings['geolocation'] : array();
 
 if ( isset( $general_settings['invoice'] ) ) {
@@ -146,26 +145,26 @@ if ( isset( $general_settings['invoice'] ) ) {
 }
 
 $data = array(
-	'id'            => $calc_id,
-	'settings'      => $settings,
-	'currency'      => ccb_parse_settings( $settings ),
-	'geolocation'   => $geolocation,
-	'fields'        => $fields,
-	'pdf_status'    => ! empty( $general_settings['invoice']['use_in_all'] ),
-	'form_fields'   => $form_fields,
-	'form_data'     => $form_data,
-	'formula'       => get_post_meta( $calc_id, 'stm-formula', true ),
-	'conditions'    => apply_filters( 'calc_render_conditions', array(), $calc_id ), // phpcs:ignore WordPress.NamingConventions.ValidHookName.UseUnderscores
-	'language'      => $language,
-	'appearance'    => $appearance,
-	'dateFormat'    => get_option( 'date_format' ),
-	'pro_active'    => ccb_pro_active(),
-	'default_img'   => CALC_URL . '/frontend/dist/img/default.png',
-	'error_img'     => CALC_URL . '/frontend/dist/img/error.png',
-	'success_img'   => CALC_URL . '/frontend/dist/img/success.png',
-	'translations'  => $translations,
-	'discounts'     => \cBuilder\Classes\Database\Discounts::get_calc_active_discounts( $calc_id ),
-	'has_promocode' => \cBuilder\Classes\Database\Discounts::has_active_promocode( $calc_id ),
+	'id'                  => $calc_id,
+	'settings'            => $settings,
+	'currency'            => ccb_parse_settings( $settings ),
+	'geolocation'         => $geolocation,
+	'fields'              => $fields,
+	'pdf_status'          => ! empty( $general_settings['invoice']['use_in_all'] ),
+	'form_fields'         => $form_fields,
+	'form_data'           => $form_data,
+	'formula'             => get_post_meta( $calc_id, 'stm-formula', true ),
+	'conditions'          => apply_filters( 'calc_render_conditions', array(), $calc_id ), // phpcs:ignore WordPress.NamingConventions.ValidHookName.UseUnderscores
+	'language'            => $language,
+	'appearance'          => $appearance,
+	'dateFormat'          => get_option( 'date_format' ),
+	'pro_active'          => ccb_pro_active(),
+	'default_img'         => CALC_URL . '/frontend/dist/img/default.png',
+	'error_img'           => CALC_URL . '/frontend/dist/img/error.png',
+	'success_img'         => CALC_URL . '/frontend/dist/img/success.png',
+	'translations'        => $translations,
+	'discounts'           => \cBuilder\Classes\Database\Discounts::get_calc_active_discounts( $calc_id ),
+	'has_promocode'       => \cBuilder\Classes\Database\Discounts::has_active_promocode( $calc_id ),
 );
 
 $custom_defined = false;

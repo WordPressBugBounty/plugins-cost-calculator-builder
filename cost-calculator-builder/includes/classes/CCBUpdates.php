@@ -126,6 +126,9 @@ class CCBUpdates {
 			'ccb_add_pdf_border_style',
 			'ccb_maybe_create_orders_table',
 		),
+		'3.2.56' => array(
+			'ccb_get_old_header_color',
+		),
 	);
 
 	public static function init() {

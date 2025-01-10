@@ -6,7 +6,7 @@ Tags: cost calculator, calculator, calculator form builder, cost estimation, shi
 Requires at least: 4.6
 Requires PHP: 5.6
 Tested up to: 6.7.1
-Stable tag: 3.2.55
+Stable tag: 3.2.56
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -23,9 +23,7 @@ WP Cost Calculator helps you build any type of estimation form in a few easy ste
 
 Our Calculator plugin for WordPress is intuitive and super easy for visitors to your WordPress website. Cost Calculator is especially suitable if your services or products have variable costs, and there are many options to estimate those costs.
 
-### 2024 Year In Review
-
-https://www.youtube.com/watch?v=X2OkqfDmvF8
+https://youtu.be/jHxgukfRkZk
 
 If you need to make a price calculator to determine your project costs, this tool is for you. Need a loan calculator? Just install our plugin. Table order? Easy. The possibilities are unlimited. Let WP Cost Calculator become your virtual assistant and increase your website's conversion rate.
 
@@ -164,6 +162,11 @@ Also, you can import the demo sample using Tools -> Import -> WordPress Import.
 Demo sample XML file included in plugin archive.
 
 == Changelog ==
+
+= 3.2.56 =
+- Enhancement: Added an option to search calculators by name in the Calculators Dashboard for easier navigation.
+- Fix: Addressed Hidden Formulas not calculating when the "Calculate Hidden by Default" setting was enabled.
+- Fix: Fixed an issue where hidden formulas within another non-hidden formula were not counted.
 
 = 3.2.55 =
 - Fix: Clicking on an element's hint no longer changes the status of the associated checkbox.

@@ -249,7 +249,6 @@ class CCBUpdatesCallbacks {
 		}
 	}
 
-
 	public static function ccb_appearance_totals( $totals, $descriptions ) {
 		$formulas = array();
 		foreach ( $totals as $idx => $total ) {
@@ -1365,6 +1364,16 @@ class CCBUpdatesCallbacks {
 		$orders_table = Orders::_table();
 		if ( ! $wpdb->get_var( $wpdb->prepare( 'SHOW COLUMNS FROM `%1s` LIKE %s;', $orders_table, 'id' ) ) ) { // phpcs:ignore
 			Orders::create_table();
+		}
+	}
+
+	public static function ccb_get_old_header_color() {
+		$global_settings  = get_option( 'ccb_general_settings', '' );
+		$content_bg_value = $global_settings['email_templates']['content_bg']['value'];
+
+		if ( ! isset( $global_settings['email_templates']['header_bg']['value'] ) ) {
+			$global_settings['email_templates']['header_bg']['value'] = $content_bg_value;
+			update_option( 'ccb_general_settings', $global_settings );
 		}
 	}
 }

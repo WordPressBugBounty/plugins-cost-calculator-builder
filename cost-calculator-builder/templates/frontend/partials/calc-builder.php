@@ -116,7 +116,7 @@ $pdf_data = \cBuilder\Classes\pdfManager\CCBPdfManager::ccb_get_pdf_manager_data
 						<i class="ccb-icon-Arrow-Previous"></i>
 						<span>{{ currentPagePrevBtn }}</span>
 					</button>
-					<button class="next" :class="{'disable': !pageConditionResult}" @click="nextPage" v-if="activePageIndex + 1 !== totalPages">
+					<button class="next" :class="{'disable': !pageConditionResult}" @click="nextPage(activePageIndex)" v-if="activePageIndex + 1 !== totalPages">
 						<span>{{ currentPageNextBtn }}</span>
 						<i class="ccb-icon-Arrow-Previous" style="transform: rotate(180deg);"></i>
 					</button>

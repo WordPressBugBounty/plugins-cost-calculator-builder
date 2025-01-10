@@ -6,7 +6,7 @@ $export_link = esc_url( get_site_url() ) . '/wp-admin/admin-ajax.php?action=cost
 	<loader></loader>
 </div>
 <div class="ccb-table-body" style="height: calc(100vh - 145px)" v-else>
-	<div class="ccb-table-body--card" v-if="getExisting?.length > 0 || calculatorsList.page > 1">
+	<div class="ccb-table-body--card" v-if="showListCalculators">
 		<div class="table-display" style="z-index: 2">
 			<div class="table-display--left">
 				<div class="ccb-bulk-actions">
@@ -19,6 +19,11 @@ $export_link = esc_url( get_site_url() ) . '/wp-admin/admin-ajax.php?action=cost
 						</select>
 					</div>
 					<button class="ccb-button default" @click.prevent="bulkAction"><?php esc_html_e( 'Apply', 'cost-calculator-builder' ); ?></button>
+					<div class="ccb-input-wrapper">
+						<i class="ccb-icon-Search-Magnifier ccb-search-magnifier"></i>
+						<input type="text" v-model="searchInput" class="ccb-search-input" ref="searchInput" placeholder=<?php esc_html_e( 'Search', 'cost-calculator-builder' ); ?>>
+						<i v-if="searchInput?.length > 0" class="ccb-icon-close-x ccb-search-close" @click="resetSearch"></i>
+					</div>
 				</div>
 			</div>
 			<div class="table-display--right">
@@ -57,77 +62,88 @@ $export_link = esc_url( get_site_url() ) . '/wp-admin/admin-ajax.php?action=cost
 				</div>
 			</div>
 		</div>
-		<div class="table-concept ccb-custom-scrollbar" style="z-index: 1">
-			<div class="list-item calculators-header calculators">
-				<div class="list-title check">
-					<input type="checkbox" class="ccb-pure-checkbox" v-model="allChecked" @click="checkAllCalculatorsAction">
+		<template v-if="this.getExisting?.length > 0 || this.calculatorsList.page > 1">
+			<div class="table-concept ccb-custom-scrollbar" style="z-index: 1">
+				<div class="list-item calculators-header calculators">
+					<div class="list-title check">
+						<input type="checkbox" class="ccb-pure-checkbox" v-model="allChecked" @click="checkAllCalculatorsAction">
+					</div>
+					<div class="list-title sortable id" :class="isActiveSort('id')" @click="setSort('id')">
+						<span class="ccb-default-title"><?php esc_html_e( 'ID', 'cost-calculator-builder' ); ?></span>
+					</div>
+					<div class="list-title sortable title" :class="isActiveSort('post_title')" @click="setSort('post_title')">
+						<span class="ccb-default-title"><?php esc_html_e( 'Calculator Name', 'cost-calculator-builder' ); ?></span>
+					</div>
+					<div class="list-title actions <?php echo esc_attr( 'actions' ); ?>" style="text-align: right">
+						<span class="ccb-default-title"><?php esc_html_e( 'Actions', 'cost-calculator-builder' ); ?></span>
+					</div>
 				</div>
-				<div class="list-title sortable id" :class="isActiveSort('id')" @click="setSort('id')">
-					<span class="ccb-default-title"><?php esc_html_e( 'ID', 'cost-calculator-builder' ); ?></span>
-				</div>
-				<div class="list-title sortable title" :class="isActiveSort('post_title')" @click="setSort('post_title')">
-					<span class="ccb-default-title"><?php esc_html_e( 'Calculator Name', 'cost-calculator-builder' ); ?></span>
-				</div>
-				<div class="list-title actions <?php echo esc_attr( 'actions' ); ?>" style="text-align: right">
-					<span class="ccb-default-title"><?php esc_html_e( 'Actions', 'cost-calculator-builder' ); ?></span>
-				</div>
-			</div>
-			<div class="list-item calculators" v-for="(calc, idx) in getExisting" :key="idx">
-				<div class="list-title check">
-					<input type="checkbox" class="ccb-pure-checkbox" :checked="checkedCalculatorIds.includes(calc.id)" :value="calc.id" @click="checkCalculatorAction(calc.id)">
-				</div>
-				<div class="list-title id">
-					<span class="ccb-default-title">{{ calc.id }}</span>
-				</div>
-				<div class="list-title title">
+				<div class="list-item calculators" v-for="(calc, idx) in getExisting" :key="idx">
+					<div class="list-title check">
+						<input type="checkbox" class="ccb-pure-checkbox" :checked="checkedCalculatorIds.includes(calc.id)" :value="calc.id" @click="checkCalculatorAction(calc.id)">
+					</div>
+					<div class="list-title id">
+						<span class="ccb-default-title">{{ calc.id }}</span>
+					</div>
+					<div class="list-title title">
 					<span class="ccb-title">
 						<span class="ccb-default-title" style="cursor: pointer" @click="editCalc(calc.id)">{{ calc.project_name }}</span>
 					</span>
-				</div>
-				<div class="list-title actions" style="display: flex; justify-content: flex-end">
-					<div class="ccb-action copy" @click="embedCalc(calc.id)">
-						<i class="ccb-icon-html"></i>
-						<span><?php echo esc_html__( 'Embed', 'cost-calculator-builder' ); ?></span>
 					</div>
-					<div class="ccb-action copy" @click="duplicateCalc(calc.id)">
-						<i class="ccb-icon-Path-3505"></i>
-						<span><?php echo esc_html__( 'Duplicate', 'cost-calculator-builder' ); ?></span>
-					</div>
-					<div class="ccb-action delete" @click="deleteCalc(calc.id)">
-						<i class="ccb-icon-Path-3503"></i>
-						<span><?php echo esc_html__( 'Delete', 'cost-calculator-builder' ); ?></span>
-					</div>
-					<div class="ccb-action edit"  @click="editCalc(calc.id)">
-						<i class="ccb-icon-Path-3483"></i>
-						<span><?php echo esc_html__( 'Edit', 'cost-calculator-builder' ); ?></span>
+					<div class="list-title actions" style="display: flex; justify-content: flex-end">
+						<div class="ccb-action copy" @click="embedCalc(calc.id)">
+							<i class="ccb-icon-html"></i>
+							<span><?php echo esc_html__( 'Embed', 'cost-calculator-builder' ); ?></span>
+						</div>
+						<div class="ccb-action copy" @click="duplicateCalc(calc.id)">
+							<i class="ccb-icon-Path-3505"></i>
+							<span><?php echo esc_html__( 'Duplicate', 'cost-calculator-builder' ); ?></span>
+						</div>
+						<div class="ccb-action delete" @click="deleteCalc(calc.id)">
+							<i class="ccb-icon-Path-3503"></i>
+							<span><?php echo esc_html__( 'Delete', 'cost-calculator-builder' ); ?></span>
+						</div>
+						<div class="ccb-action edit"  @click="editCalc(calc.id)">
+							<i class="ccb-icon-Path-3483"></i>
+							<span><?php echo esc_html__( 'Edit', 'cost-calculator-builder' ); ?></span>
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
-		<div class="ccb-pagination" :class="{'ccb-pagination-scroll': totalPages > 20}">
-			<div class="ccb-pages" :class="{'ccb-custom-scrollbar': totalPages > 20}">
+			<div class="ccb-pagination" :class="{'ccb-pagination-scroll': totalPages > 20}">
+				<div class="ccb-pages" :class="{'ccb-custom-scrollbar': totalPages > 20}">
 				<span class="ccb-page-item" @click="prevPage" v-if="calculatorsList.page != 1">
 					<i class="ccb-icon-Path-3481 prev"></i>
 				</span>
-				<span class="ccb-page-item" v-for="n in totalPages" :key="n" :class="{active: n === calculatorsList.page}" @click="getPage(n)" :disabled="n == calculatorsList.page">{{ n }}</span>
-				<span class="ccb-page-item" @click="nextPage" v-if="calculatorsList.page != totalPages">
+					<span class="ccb-page-item" v-for="n in totalPages" :key="n" :class="{active: n === calculatorsList.page}" @click="getPage(n)" :disabled="n == calculatorsList.page">{{ n }}</span>
+					<span class="ccb-page-item" @click="nextPage" v-if="calculatorsList.page != totalPages">
 					<i class="ccb-icon-Path-3481"></i>
 				</span>
-			</div>
-			<div class="ccb-bulk-actions">
-				<div class="ccb-select-wrapper">
-					<i class="ccb-icon-Path-3485 ccb-select-arrow"></i>
-					<select v-model="limit" @change="resetPage" class="ccb-select">
-						<option value="5"><?php esc_html_e( '5 per page', 'cost-calculator-builder' ); ?></option>
-						<option value="10" class="hide-if-no-js"><?php esc_html_e( '10 per page', 'cost-calculator-builder' ); ?></option>
-						<option value="15" class="hide-if-no-js"><?php esc_html_e( '15 per page', 'cost-calculator-builder' ); ?></option>
-						<option value="20"><?php esc_html_e( '20 per page', 'cost-calculator-builder' ); ?></option>
-					</select>
+				</div>
+				<div class="ccb-bulk-actions">
+					<div class="ccb-select-wrapper">
+						<i class="ccb-icon-Path-3485 ccb-select-arrow"></i>
+						<select v-model="limit" @change="resetPage" class="ccb-select">
+							<option value="5"><?php esc_html_e( '5 per page', 'cost-calculator-builder' ); ?></option>
+							<option value="10" class="hide-if-no-js"><?php esc_html_e( '10 per page', 'cost-calculator-builder' ); ?></option>
+							<option value="15" class="hide-if-no-js"><?php esc_html_e( '15 per page', 'cost-calculator-builder' ); ?></option>
+							<option value="20"><?php esc_html_e( '20 per page', 'cost-calculator-builder' ); ?></option>
+						</select>
+					</div>
 				</div>
 			</div>
-		</div>
+		</template>
+		<template v-else>
+			<div class="ccb-table-body--no-content">
+				<span  class="ccb-table-body--no-content-icon-wrap">
+					<i  class="ccb-icon-Box-open-2"></i>
+				</span>
+				<span class="ccb-table-body--no-content-label"><?php esc_attr_e( 'No results found', 'cost-calculator-builder' ); ?></span>
+				<span class="ccb-table-body--no-content-description"><?php esc_attr_e( 'Change search criteria', 'cost-calculator-builder' ); ?></span>
+			</div>
+		</template>
 	</div>
-	<div class="ccb-no-existing-calc ccb-demo-import-container" :class="ccbDragOverClasses"  @drop="handleDrop" @dragover="handleDragOver" @dragleave="handleDragLeave"  ref="ccbDragAreaParent" style="width: 100%" v-else>
+	<div class="ccb-no-existing-calc ccb-demo-import-container" :class="ccbDragOverClasses"  @drop="handleDrop" @dragover="handleDragOver" @dragleave="handleDragLeave"  ref="ccbDragAreaParent" style="width: 100%" v-else-if="showExportImport">
 		<div class="ccb-demo-import-content">
 			<div class="ccb-demo-import-icon-wrap">
 				<i class="ccb-icon-Union-32"></i>

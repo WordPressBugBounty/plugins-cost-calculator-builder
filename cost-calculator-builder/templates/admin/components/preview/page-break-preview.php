@@ -307,7 +307,7 @@ $get_date_format  = get_option( 'date_format' );
 								<i class="ccb-icon-Arrow-Previous"></i>
 								<span>{{ currentPagePrevBtn }}</span>
 							</button>
-							<button class="next" :class="{'disable': !pageConditionResult}" @click="nextPage"
+							<button class="next" :class="{'disable': !pageConditionResult}" @click="nextPage(activePageIndex)"
 									v-if="activePageIndex + 1 !== totalPages">
 								<span>{{ currentPageNextBtn }}</span>
 								<i class="ccb-icon-Arrow-Previous" style="transform: rotate(180deg);"></i>

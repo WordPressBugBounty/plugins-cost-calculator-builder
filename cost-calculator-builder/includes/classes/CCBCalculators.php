@@ -799,9 +799,10 @@ class CCBCalculators {
 	 * @return array
 	 */
 	public static function get_calculator_list( $params = array() ) {
-		$result         = array();
-		$existing       = ccb_calc_get_all_posts( 'cost-calc', $params );
-		$existing_count = ccb_calc_get_all_posts( 'cost-calc' );
+		$result          = array();
+		$existing        = ccb_calc_get_all_posts( 'cost-calc', $params );
+		$params['limit'] = -1;
+		$existing_count  = ccb_calc_get_all_posts( 'cost-calc', $params );
 
 		if ( is_array( $existing ) ) {
 			foreach ( $existing as $key => $value ) {
@@ -829,6 +830,7 @@ class CCBCalculators {
 		$direction = ! empty( $data['direction'] ) ? sanitize_text_field( $data['direction'] ) : 'desc';
 		$page      = ! empty( $data['page'] ) ? (int) sanitize_text_field( $data['page'] ) : 1;
 		$limit     = ! empty( $data['limit'] ) ? sanitize_text_field( $data['limit'] ) : 5;
+		$search    = ! empty( $data['search'] ) ? sanitize_text_field( $data['search'] ) : '';
 		$offset    = 1 === $page ? 0 : ( $page - 1 ) * $limit;
 		$direction = 'desc' === strtolower( $direction ) ? $direction : 'asc';
 
@@ -838,6 +840,7 @@ class CCBCalculators {
 			'offset'    => $offset,
 			'sort_by'   => $sort_by,
 			'direction' => $direction,
+			'search'    => $search,
 		);
 	}
 
