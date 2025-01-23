@@ -1376,4 +1376,23 @@ class CCBUpdatesCallbacks {
 			update_option( 'ccb_general_settings', $global_settings );
 		}
 	}
+
+	public static function ccb_make_option_upload_from_url() {
+		$calculators = self::get_calculators();
+
+		foreach ( $calculators as $calculator ) {
+			$fields = get_post_meta( $calculator->ID, 'stm-fields', true );
+
+			foreach ( $fields as $key => $field ) {
+				if ( isset( $field['alias'] ) && 'file_upload' === preg_replace( '/_field_id.*/', '', $field['alias'] ) ) {
+					if ( ! isset( $field['uploadFromUrl'] ) ) {
+						$field['uploadFromUrl'] = true;
+					}
+
+					$fields[ $key ] = $field;
+				}
+			}
+			update_post_meta( $calculator->ID, 'stm-fields', (array) $fields );
+		}
+	}
 }

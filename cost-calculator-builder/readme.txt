@@ -6,7 +6,7 @@ Tags: cost calculator, calculator, calculator form builder, cost estimation, shi
 Requires at least: 4.6
 Requires PHP: 5.6
 Tested up to: 6.7.1
-Stable tag: 3.2.57
+Stable tag: 3.2.58
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -162,6 +162,12 @@ Also, you can import the demo sample using Tools -> Import -> WordPress Import.
 Demo sample XML file included in plugin archive.
 
 == Changelog ==
+
+= 3.2.58 =
+ - Fix: Fixed an issue where the Default Value setting was not disabled if there were no options for Checkbox or Toggle elements.
+ - Fix: Corrected the popup overlap on the Formula element settings during the quick tour.
+ - Fix: Fixed the navigation bar disappearing on the "Element Style" step when clicking an element during the quick tour.
+ - Fix: Corrected the Edit button leading to the first calculator on the page when multiple calculators are embedded.
 
 = 3.2.57 =
 - Enhancement: Added dynamic error messages for Checkboxes appearing when a miminum number of options to select is defined.

@@ -52,7 +52,7 @@ $pdf_data = \cBuilder\Classes\pdfManager\CCBPdfManager::ccb_get_pdf_manager_data
 		<calc-thank-you-page :class="['calc-hidden', {'calc-loaded': loader}]" v-if="hideThankYouPage" @invoice="getInvoice" @send-pdf="showSendPdf" @reset="resetCalc" :invoice_status="false"></calc-thank-you-page>
 	<?php endif; ?>
 
-	<div v-show="hideCalculator" ref="calc" class="calc-container" data-calc-id="<?php echo esc_attr( $calc_id ); ?>" :class="[boxStyle, {demoSite: showDemoBoxStyle}, {'has-title': showMultiStepCalcTitle}]" :style="fullWithStepCalc">
+	<div v-show="hideCalculator" ref="calc" class="calc-container" :data-calc-id="getCalcId" :class="[boxStyle, {demoSite: showDemoBoxStyle}, {'has-title': showMultiStepCalcTitle}]" :style="fullWithStepCalc">
 		<loader-wrapper v-if="loader" idx="<?php echo esc_attr( $loader_idx ); ?>" width="60px" height="60px" scale="0.9" :front="true"></loader-wrapper>
 		<div class="ccb-demo-box-styles" :class="{active: showDemoBoxStyle}">
 			<div class="ccb-box-styles">
@@ -69,7 +69,7 @@ $pdf_data = \cBuilder\Classes\pdfManager\CCBPdfManager::ccb_get_pdf_manager_data
 
 		<div class="calc-fields calc-list calc-list__indexed" :class="{loaded: !loader, 'payment' : getHideCalc}">
 			<?php if ( is_user_logged_in() && current_user_can( 'administrator' ) ) : ?>
-				<a href="<?php echo htmlspecialchars_decode( esc_url( admin_url( 'admin.php?page=cost_calculator_builder&action=edit&id=' . $calc_id ) ) ); //phpcs:ignore ?>"
+				<a :href="'<?php echo esc_url_raw( admin_url( 'admin.php?page=cost_calculator_builder&action=edit&id=' ) ); ?>' + getCalcId"
 				target="_blank" class="ccb-calc-edit">
 					<span><i class="ccb-icon-Path-3483"></i></span>
 					<span class="ccb-calc-edit__text"><?php esc_html_e( 'Edit', 'cost-calculator-builder' ); ?></span>

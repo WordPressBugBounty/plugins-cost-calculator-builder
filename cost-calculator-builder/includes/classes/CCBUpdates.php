@@ -129,6 +129,9 @@ class CCBUpdates {
 		'3.2.56' => array(
 			'ccb_get_old_header_color',
 		),
+		'3.2.58' => array(
+			'ccb_make_option_upload_from_url',
+		),
 	);
 
 	public static function init() {

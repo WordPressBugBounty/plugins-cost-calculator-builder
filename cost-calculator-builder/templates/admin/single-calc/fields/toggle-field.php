@@ -101,7 +101,7 @@
 			<div class="row ccb-p-t-15">
 				<div class="col-6 ccb-select-box">
 					<span class="ccb-select-label"><?php esc_html_e( 'Default Value(s)', 'cost-calculator-builder' ); ?></span>
-					<div class="ccb-multi-select" tabindex="100" @click.prevent="multiselectShow(event)">
+					<div class="ccb-multi-select" tabindex="100" @click.prevent="multiselectShow(event)" :class="[{'disabled': isOptionEmpty}]">
 						<i :class="['ccb-icon-Path-3485 ccb-select-arrow', {'ccb-arrow-up': multiselectOpened}]"></i>
 						<span v-if="toggleField.hasOwnProperty('default') && toggleField.default.length > 0 && toggleField.default.split(',').length <= 3" class="anchor ccb-heading-5 ccb-light-3 ccb-selected">
 							<span class="selected" v-for="choosenOption in toggleField.default.split(',')" >
