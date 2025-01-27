@@ -22,15 +22,15 @@ function ccb_update_calc_new_values( $data ) {
 		if ( isset( $data['builder'] ) ) {
 			foreach ( $data['builder'] as $idx => $builder ) {
 				if ( isset( $builder['description'] ) ) {
-					$data['builder'][ $idx ]['description'] = sanitize_text_field( $builder['description'] );
+					$data['builder'][ $idx ]['description'] = ccb_get_sanitized_text( $builder['description'] );
 				}
 
 				if ( isset( $builder['label'] ) ) {
-					$data['builder'][ $idx ]['label'] = sanitize_text_field( $builder['label'] );
+					$data['builder'][ $idx ]['label'] = ccb_get_sanitized_text( $builder['label'] );
 				}
 
 				if ( isset( $builder['placeholder'] ) ) {
-					$data['builder'][ $idx ]['placeholder'] = sanitize_text_field( $builder['placeholder'] );
+					$data['builder'][ $idx ]['placeholder'] = ccb_get_sanitized_text( $builder['placeholder'] );
 				}
 			}
 		}
@@ -808,4 +808,10 @@ function ccb_remove_params_from_url( $url, $params_to_remove ) {
 	}
 
 	return $finalUrl;
+}
+
+function ccb_get_sanitized_text( $text ) {
+	$text = str_replace( array( '<', '>' ), array( '__lt__', '__gt__' ), $text ); //phpcs:ignore
+	$text = sanitize_text_field( $text );
+	return str_replace( array( '__lt__', '__gt__' ), array( '<', '>' ), $text ); //phpcs:ignore
 }

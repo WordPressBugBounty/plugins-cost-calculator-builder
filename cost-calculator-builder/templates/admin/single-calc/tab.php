@@ -65,7 +65,7 @@ $templates_page = get_admin_url( null, 'admin.php?page=cost_calculator_templates
 						<span class="calc-save-btn-txt" style="font-size: 14px !important;">
 							<?php esc_html_e( 'Save', 'cost-calculator-builder' ); ?>
 						</span>
-						<span class="ccb-btn-dropdown ccb-btn-save-as-template" @click.stop="() => showSaveTemplate = !showSaveTemplate">
+						<span class="ccb-btn-dropdown ccb-btn-save-as-template" :class="{ disabled: getTourStep !== 'done' }" @click.stop="() => showSaveTemplate = !showSaveTemplate">
 							<span class="ccb-btn-dropdown-content">
 								<i class="ccb-icon-Path-3398"></i>
 							</span>

@@ -9,7 +9,7 @@ use cBuilder\Classes\CCBTemplate;
  * Cost Calculator Fields Helper
  */
 class CCBFieldsHelper {
-	private static $file_field_formats = array( 'png', 'jpg/jpeg', 'gif', 'webp', 'svg', 'tiff', 'pdf', 'csv', 'doc/docx', 'ppt/pptx', 'pps/ppsx', 'odt', 'xls/xlsx', 'psd', 'key', 'mp3', 'm4a', 'ogg', 'wav', 'mp4', 'mov', 'avi', 'mpg', 'ogv', '3gp', '3g2', 'ai', 'cdr', 'rar', 'zip', 'dxf', 'dwg' );
+	private static $file_field_formats = array( 'png', 'jpg/jpeg', 'gif', 'webp', 'svg', 'tiff', 'tif', 'pdf', 'csv', 'doc/docx', 'ppt/pptx', 'pps/ppsx', 'odt', 'xls/xlsx', 'psd', 'key', 'mp3', 'm4a', 'ogg', 'wav', 'mp4', 'mov', 'avi', 'mpg', 'ogv', '3gp', '3g2', 'ai', 'cdr', 'rar', 'zip', 'dxf', 'dwg' );
 
 	/**
 	 * Field templates

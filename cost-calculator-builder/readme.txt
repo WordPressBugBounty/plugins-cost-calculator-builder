@@ -6,7 +6,7 @@ Tags: cost calculator, calculator, calculator form builder, cost estimation, shi
 Requires at least: 4.6
 Requires PHP: 5.6
 Tested up to: 6.7.1
-Stable tag: 3.2.58
+Stable tag: 3.2.59
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -162,6 +162,11 @@ Also, you can import the demo sample using Tools -> Import -> WordPress Import.
 Demo sample XML file included in plugin archive.
 
 == Changelog ==
+
+= 3.2.59 =
+- Fix: Fixed minor visual bugs in the embed pop-up when WPML was installed.
+- Fix: Resolved a problem with the "Save as Template" option being available in the Save Calculator step during Quick Tour.
+- Fix: Fixed the display issue where the less-than sign (<) in element names was not shown correctly.
 
 = 3.2.58 =
  - Fix: Fixed an issue where the Default Value setting was not disabled if there were no options for Checkbox or Toggle elements.
