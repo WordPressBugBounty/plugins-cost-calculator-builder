@@ -62,112 +62,120 @@ class CCBFrontController {
 
 		$extra_content   = '';
 		$global_settings = CCBSettingsData::get_calc_global_settings();
+
+		$is_product = false;
+		if ( function_exists( 'is_product' ) && is_product() ) {
+			$is_product = is_product();
+		}
+
 		foreach ( array_reverse( $calculators ) as $calculator ) {
 			$calc_settings = CCBSettingsData::get_calc_single_settings( $calculator->ID );
 			if ( isset( $calc_settings['sticky_calc'] ) && ! empty( $calc_settings['sticky_calc']['enable'] ) && ccb_pro_active() ) {
-				if ( ! $has_sticky ) {
-					$has_sticky  = true;
-					$calc_sticky = '<div id="ccb-sticky-floating-wrapper">';
+				if ( ! $is_product || ( ! empty( $calc_settings['woo_products']['enable'] ) && CCBWooProducts::is_category_included_or_is_product_included( $calc_settings['woo_products'] ) ) ) {
+					if ( ! $has_sticky ) {
+						$has_sticky  = true;
+						$calc_sticky = '<div id="ccb-sticky-floating-wrapper">';
 
-					wp_enqueue_style( 'ccb-sticky-css', CALC_URL . '/frontend/dist/css/sticky.css', array(), CALC_VERSION );
-					wp_enqueue_style( 'ccb-bootstrap-css', CALC_URL . '/frontend/dist/css/modal.bootstrap.css', array(), CALC_VERSION );
-					wp_enqueue_script( 'ccb-velocity-ui-js', CALC_URL . '/frontend/dist/libs/velocity.ui.min.js', array(), CALC_VERSION, true );
-					wp_enqueue_script( 'ccb-velocity-ui-js', CALC_URL . '/frontend/dist/libs/velocity.ui.min.js', array(), CALC_VERSION, true );
-					wp_enqueue_script( 'ccb-sticky-js', CALC_URL . '/frontend/dist/sticky.js', array(), CALC_VERSION, true );
-				}
-
-				$page_id           = get_the_ID();
-				$not_allowed_pages = array();
-				$sticky_settings   = $calc_settings['sticky_calc'];
-
-				$position_type = '';
-				if ( 'btn' === $sticky_settings['display_type'] ) {
-					$position_type = $sticky_settings['btn_position'];
-				}
-
-				if ( ( isset( $positions[ $position_type ] ) && $positions[ $position_type ] < 2 ) || empty( $position_type ) ) {
-
-					foreach ( $sticky_settings['pages'] as $page ) {
-						$not_allowed_pages[] = intval( $page['id'] );
+						wp_enqueue_style( 'ccb-sticky-css', CALC_URL . '/frontend/dist/css/sticky.css', array(), CALC_VERSION );
+						wp_enqueue_style( 'ccb-bootstrap-css', CALC_URL . '/frontend/dist/css/modal.bootstrap.css', array(), CALC_VERSION );
+						wp_enqueue_script( 'ccb-velocity-ui-js', CALC_URL . '/frontend/dist/libs/velocity.ui.min.js', array(), CALC_VERSION, true );
+						wp_enqueue_script( 'ccb-velocity-ui-js', CALC_URL . '/frontend/dist/libs/velocity.ui.min.js', array(), CALC_VERSION, true );
+						wp_enqueue_script( 'ccb-sticky-js', CALC_URL . '/frontend/dist/sticky.js', array(), CALC_VERSION, true );
 					}
 
-					if ( ! in_array( intval( $page_id ), $not_allowed_pages, true ) ) {
-						$action  = self::check_action( $sticky_settings['one_click_action'] ?? '', $calc_settings, $global_settings );
-						$actions = array( 'open_modal', 'woo_product_as_modal', 'pro_features' );
+					$page_id           = get_the_ID();
+					$not_allowed_pages = array();
+					$sticky_settings   = $calc_settings['sticky_calc'];
 
-						$title                           = get_post_meta( $calculator->ID, 'stm-name', true );
-						$sticky_settings['calc_title']   = $title;
-						$sticky_settings['woo_checkout'] = $calc_settings['woo_checkout'];
-						$sticky_settings['woo_products'] = $calc_settings['woo_products'];
-						$sticky_settings['invoice']      = $global_settings['invoice'];
-						$sticky_settings['post_id']      = $post->ID ?? null;
+					$position_type = '';
+					if ( 'btn' === $sticky_settings['display_type'] ) {
+						$position_type = $sticky_settings['btn_position'];
+					}
 
-						wp_localize_script(
-							'ccb-sticky-js',
-							'ccb_sticky_data',
-							array(
-								'title'        => $title,
-								'the_id'       => get_the_ID(),
-								'calc_id'      => $calculator->ID,
-								'sticky_calc'  => $sticky_settings,
-								'translations' => CCBTranslations::get_frontend_translations(),
-								'currency'     => ccb_parse_settings( $calc_settings ),
-							)
-						);
+					if ( ( isset( $positions[ $position_type ] ) && $positions[ $position_type ] < 2 ) || empty( $position_type ) ) {
 
-						if ( isset( $sticky_settings['one_click_action'] ) ) {
-							$sticky_settings['one_click_action'] = $action;
+						foreach ( $sticky_settings['pages'] as $page ) {
+							$not_allowed_pages[] = intval( $page['id'] );
 						}
 
-						$sticky_content = \cBuilder\Classes\CCBTemplate::load(
-							'/frontend/sticky',
-							array(
-								'calc_id'      => $calculator->ID,
-								'the_id'       => get_the_ID(),
-								'translations' => CCBTranslations::get_frontend_translations(),
-								'sticky_calc'  => $sticky_settings,
-								'position'     => $positions[ $position_type ] ?? '',
-							)
-						);
+						if ( ! in_array( intval( $page_id ), $not_allowed_pages, true ) ) {
+							$action  = self::check_action( $sticky_settings['one_click_action'] ?? '', $calc_settings, $global_settings );
+							$actions = array( 'open_modal', 'woo_product_as_modal', 'pro_features' );
 
-						$calc_content = '';
+							$title                           = get_post_meta( $calculator->ID, 'stm-name', true );
+							$sticky_settings['calc_title']   = $title;
+							$sticky_settings['woo_checkout'] = $calc_settings['woo_checkout'];
+							$sticky_settings['woo_products'] = $calc_settings['woo_products'];
+							$sticky_settings['invoice']      = $global_settings['invoice'];
+							$sticky_settings['post_id']      = $post->ID ?? null;
 
-						if ( in_array( $action, $actions, true ) ) {
-							$calc_content = \cBuilder\Classes\CCBTemplate::load(
-								'/frontend/partials/sticky-modal',
+							wp_localize_script(
+								'ccb-sticky-js',
+								'ccb_sticky_data',
 								array(
-									'calc_id' => $calculator->ID,
-									'the_id'  => get_the_ID(),
-									'action'  => $action,
+									'title'        => $title,
+									'the_id'       => get_the_ID(),
+									'calc_id'      => $calculator->ID,
+									'sticky_calc'  => $sticky_settings,
+									'translations' => CCBTranslations::get_frontend_translations(),
+									'currency'     => ccb_parse_settings( $calc_settings ),
 								)
 							);
-						}
 
-						if ( ! $is_woocommerce && in_array( $action, array( 'pdf', 'invoice' ), true ) && ! str_contains( $content, 'stm-calc id="' . $calculator->ID . '"' ) ) {
-							$sticky_calc .= do_shortcode( "[stm-calc id='" . esc_attr( $calculator->ID ) . "' custom='1' hidden='1']" );
-						} elseif ( ! $is_woocommerce && 'woo_checkout' === $action && ! str_contains( $content, 'stm-calc id="' . $calculator->ID . '"' ) ) {
-							$sticky_calc .= do_shortcode( "[stm-calc id='" . esc_attr( $calculator->ID ) . "' custom='1' hidden='1']" );
-						}
+							if ( isset( $sticky_settings['one_click_action'] ) ) {
+								$sticky_settings['one_click_action'] = $action;
+							}
 
-						$actions     = array( 'open_modal', 'scroll_to', 'woo_checkout', 'pdf', 'invoice', 'pro_features' );
-						$woo_actions = array( 'woo_product_as_modal', 'woo_product_with_redirect' );
+							$sticky_content = \cBuilder\Classes\CCBTemplate::load(
+								'/frontend/sticky',
+								array(
+									'calc_id'      => $calculator->ID,
+									'the_id'       => get_the_ID(),
+									'translations' => CCBTranslations::get_frontend_translations(),
+									'sticky_calc'  => $sticky_settings,
+									'position'     => $positions[ $position_type ] ?? '',
+								)
+							);
 
-						if ( ! ( ( $is_woocommerce && in_array( $action, $actions, true ) ) || ( ! $is_woocommerce && in_array( $action, $woo_actions, true ) ) ) && 'banner' === $sticky_settings['display_type'] ) {
-							$sticky_banner  = $sticky_content;
-							$sticky_content = '';
-						}
-
-						if ( ( $is_woocommerce && in_array( $action, $actions, true ) ) || ( ! $is_woocommerce && in_array( $action, $woo_actions, true ) ) ) {
 							$calc_content = '';
-						} else {
-							$calc_sticky = $calc_sticky . $sticky_content;
+
+							if ( in_array( $action, $actions, true ) ) {
+								$calc_content = \cBuilder\Classes\CCBTemplate::load(
+									'/frontend/partials/sticky-modal',
+									array(
+										'calc_id' => $calculator->ID,
+										'the_id'  => get_the_ID(),
+										'action'  => $action,
+									)
+								);
+							}
+
+							if ( ! $is_woocommerce && in_array( $action, array( 'pdf', 'invoice' ), true ) && ! str_contains( $content, 'stm-calc id="' . $calculator->ID . '"' ) ) {
+								$sticky_calc .= do_shortcode( "[stm-calc id='" . esc_attr( $calculator->ID ) . "' custom='1' hidden='1']" );
+							} elseif ( ! $is_woocommerce && 'woo_checkout' === $action && ! str_contains( $content, 'stm-calc id="' . $calculator->ID . '"' ) ) {
+								$sticky_calc .= do_shortcode( "[stm-calc id='" . esc_attr( $calculator->ID ) . "' custom='1' hidden='1']" );
+							}
+
+							$actions     = array( 'open_modal', 'scroll_to', 'woo_checkout', 'pdf', 'invoice', 'pro_features' );
+							$woo_actions = array( 'woo_product_as_modal', 'woo_product_with_redirect' );
+
+							if ( ! ( ( $is_woocommerce && in_array( $action, $actions, true ) ) || ( ! $is_woocommerce && in_array( $action, $woo_actions, true ) ) ) && 'banner' === $sticky_settings['display_type'] ) {
+								$sticky_banner  = $sticky_content;
+								$sticky_content = '';
+							}
+
+							if ( ! $is_woocommerce && in_array( $action, $woo_actions, true ) ) {
+								$calc_content = '';
+							} else {
+								$calc_sticky = $calc_sticky . $sticky_content;
+							}
+
+							$extra_content .= $calc_content;
 						}
 
-						$extra_content .= $calc_content;
-					}
-
-					if ( isset( $positions[ $position_type ] ) ) {
-						$positions[ $position_type ]++;
+						if ( isset( $positions[ $position_type ] ) ) {
+							$positions[ $position_type ]++;
+						}
 					}
 				}
 			}

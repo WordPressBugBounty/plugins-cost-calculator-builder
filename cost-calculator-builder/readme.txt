@@ -6,7 +6,7 @@ Tags: cost calculator, calculator, calculator form builder, cost estimation, shi
 Requires at least: 4.6
 Requires PHP: 5.6
 Tested up to: 6.7.1
-Stable tag: 3.2.59
+Stable tag: 3.2.60
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -162,6 +162,11 @@ Also, you can import the demo sample using Tools -> Import -> WordPress Import.
 Demo sample XML file included in plugin archive.
 
 == Changelog ==
+
+= 3.2.60 =
+- Fix: Resolved an issue where Thousand & Decimal Separator combinations did not work correctly when Thousand Separator was set to “Dot” and Decimal Separator to “Comma.”
+- Fix: Fixed misalignment of the Checkbox hint in the Horizontal box style.
+- Fix: Corrected minor Quick Tour issues in Mozilla Firefox.
 
 = 3.2.59 =
 - Fix: Fixed minor visual bugs in the embed pop-up when WPML was installed.

@@ -228,16 +228,25 @@ class CCBOrderController {
 					}
 
 					if ( ! empty( $file['name'] ) ) {
-						$upload_dir = wp_upload_dir();
-						$file_path  = $upload_dir['path'] . '/' . $file['name']; // Path to the file
+						$upload_dir   = wp_upload_dir();
+						$image_info   = getimagesize( $file['tmp_name'] );
+						$file['name'] = sanitize_file_name( $file['name'] );
+
+						if ( isset( $image_info['mime'] ) ) {
+							$file_name = pathinfo( $file['name'], PATHINFO_FILENAME ) . ccb_get_format_by_mime( $image_info['mime'] );
+						} else {
+							$file_name = $file['name'];
+						}
+
+						$file_path = $upload_dir['path'] . '/' . $file_name;
 
 						if ( file_exists( $file_path ) ) {
 							$file_info = array(
-								'url'      => $upload_dir['url'] . '/' . $file['name'],
+								'url'      => trailingslashit( $upload_dir['url'] ) . $file_name,
 								'file'     => $file_path,
 								'size'     => filesize( $file_path ),
 								'type'     => mime_content_type( $file_path ),
-								'filename' => $file['name'],
+								'filename' => $file_name,
 							);
 						} else {
 							$file_info = wp_handle_upload( $file, array( 'test_form' => false ) );

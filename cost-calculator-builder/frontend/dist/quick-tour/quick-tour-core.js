@@ -547,7 +547,7 @@
 							});
 						}
 
-						if ( $target.length > 0 && $target.prop('style').hasOwnProperty('zIndex') ){
+						if ( $target.length > 0 ) {
 							origzindex = $target.prop('style').zIndex;
 							(function (_this) {
 								return (function (origzindex) {
@@ -558,11 +558,12 @@
 									});
 								});
 							})(this)(origzindex);
+
+							$target.css({
+								zIndex: '1001'
+							});
 						}
 
-						$target.css({
-							zIndex: '1001'
-						});
 						return $target;
 					};
 

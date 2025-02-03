@@ -815,3 +815,68 @@ function ccb_get_sanitized_text( $text ) {
 	$text = sanitize_text_field( $text );
 	return str_replace( array( '__lt__', '__gt__' ), array( '<', '>' ), $text ); //phpcs:ignore
 }
+
+function ccb_get_format_by_mime( $mime ) {
+    //phpcs:disable
+    $mimes = array(
+        'image/jpeg' => '.jpg',
+        'image/png' => '.png',
+        'image/gif' => '.gif',
+        'image/webp' => '.webp',
+        'image/bmp' => '.bmp',
+        'image/tiff' => '.tiff',
+        'image/svg+xml' => '.svg',
+        'audio/mpeg' => '.mp3',
+        'audio/wav' => '.wav',
+        'audio/ogg' => '.ogg',
+        'audio/webm' => '.webm',
+        'audio/flac' => '.flac',
+        'video/mp4' => '.mp4',
+        'video/webm' => '.webm',
+        'video/ogg' => '.ogv',
+        'video/avi' => '.avi',
+        'video/mkv' => '.mkv',
+        'video/quicktime' => '.mov',
+        'text/plain' => '.txt',
+        'text/html' => '.html',
+        'text/css' => '.css',
+        'text/javascript' => '.js',
+        'application/javascript' => '.js',
+        'application/json' => '.json',
+        'application/xml' => '.xml',
+        'text/csv' => '.csv',
+        'text/rtf' => '.rtf',
+        'application/pdf' => '.pdf',
+        'application/msword' => '.doc',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document' => '.docx',
+        'application/vnd.ms-excel' => '.xls',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' => '.xlsx',
+        'application/vnd.ms-powerpoint' => '.ppt',
+        'application/vnd.openxmlformats-officedocument.presentationml.presentation' => '.pptx',
+        'application/zip' => '.zip',
+        'application/x-rar-compressed' => '.rar',
+        'application/x-tar' => '.tar',
+        'font/woff' => '.woff',
+        'font/woff2' => '.woff2',
+        'application/font-woff' => '.woff',
+        'application/font-woff2' => '.woff2',
+        'font/otf' => '.otf',
+        'font/ttf' => '.ttf',
+        'application/x-font-ttf' => '.ttf',
+        'application/epub+zip' => '.epub',
+        'application/msaccess' => '.mdb',
+        'application/x-msdownload' => '.exe',
+        'application/gzip' => '.gz',
+        'application/x-bzip' => '.bz2',
+        'application/x-bzip2' => '.bz2',
+        'application/x-shockwave-flash' => '.swf',
+        'application/octet-stream' => '',  // Generic binary file, no specific extension
+    );
+    //phpcs:enable
+
+	if ( isset( $mimes[ $mime ] ) ) {
+		return $mimes[ $mime ];
+	}
+
+	return '';
+}
