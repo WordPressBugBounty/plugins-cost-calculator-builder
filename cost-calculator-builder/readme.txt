@@ -6,7 +6,7 @@ Tags: cost calculator, calculator, calculator form builder, cost estimation, shi
 Requires at least: 4.6
 Requires PHP: 5.6
 Tested up to: 6.7.1
-Stable tag: 3.2.60
+Stable tag: 3.2.61
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -162,6 +162,10 @@ Also, you can import the demo sample using Tools -> Import -> WordPress Import.
 Demo sample XML file included in plugin archive.
 
 == Changelog ==
+
+= 3.2.61 =
+- Enhancement: Updated Loan Calculator template with more dynamic features on the landing and live demo pages.
+- Fix: Fixed a minor conflict with WP FacturaONE that occurred after the update.
 
 = 3.2.60 =
 - Fix: Resolved an issue where Thousand & Decimal Separator combinations did not work correctly when Thousand Separator was set to “Dot” and Decimal Separator to “Comma.”

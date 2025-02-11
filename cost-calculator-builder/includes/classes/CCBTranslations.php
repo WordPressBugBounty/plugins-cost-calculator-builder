@@ -102,6 +102,7 @@ class CCBTranslations {
 			'cash_payment'                   => esc_html__( 'Cash Payment', 'cost-calculator-builder' ),
 			'stripe'                         => esc_html__( 'Stripe', 'cost-calculator-builder' ),
 			'paypal'                         => esc_html__( 'PayPal', 'cost-calculator-builder' ),
+			'razorpay'                       => esc_html__( 'Razorpay', 'cost-calculator-builder' ),
 			'no_payment'                     => esc_html__( 'No Payment', 'cost-calculator-builder' ),
 			'no_payments'                    => esc_html__( 'No Payment', 'cost-calculator-builder' ),
 			'woocommerce'                    => esc_html__( 'WooCommerce', 'cost-calculator-builder' ),

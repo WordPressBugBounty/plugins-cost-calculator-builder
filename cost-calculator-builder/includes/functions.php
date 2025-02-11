@@ -143,13 +143,17 @@ function ccb_calc_get_all_posts( $post_type, $params = array() ) {
 		'post_status'    => array( 'publish' ),
 		'orderby'        => isset( $params['sort_by'] ) ? sanitize_text_field( $params['sort_by'] ) : 'id',
 		'order'          => isset( $params['direction'] ) ? sanitize_text_field( $params['direction'] ) : 'desc',
-		's'              => isset( $params['search'] ) ? sanitize_text_field( $params['search'] ) : '',
 	);
+
+	if ( isset( $params['search'] ) && ! empty( $params['search'] ) ) {
+		$args['s'] = sanitize_text_field( $params['search'] );
+	}
+
 	if ( class_exists( 'Polylang' ) ) {
 		$args['lang'] = '';
 	}
-	$resources = new WP_Query( $args );
 
+	$resources      = new WP_Query( $args );
 	$resources_json = array();
 
 	if ( $resources->have_posts() ) {

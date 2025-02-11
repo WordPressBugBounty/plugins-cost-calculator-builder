@@ -1395,4 +1395,42 @@ class CCBUpdatesCallbacks {
 			update_post_meta( $calculator->ID, 'stm-fields', (array) $fields );
 		}
 	}
+
+	/**
+	 * 3.1.61
+	 * Update "Loan Calculator" template in wp posts
+	 * change "changed fields"
+	 */
+	public static function ccb_update_template_loan() {
+		$templateName = 'Loan Calculator';
+
+		$args = array(
+			'post_type'   => 'cost-calc',
+			'post_status' => array( 'draft' ),
+			'title'       => $templateName,
+		);
+
+		if ( class_exists( 'Polylang' ) ) {
+			$args['lang'] = '';
+		}
+
+		$calcTemplates = get_posts( $args );
+
+		if ( count( $calcTemplates ) === 0 ) {
+			return;
+		}
+
+		$newTemplateData = CCBCalculatorTemplates::get_template_by_name( $templateName );
+		if ( ! isset( $newTemplateData ) ) {
+			return;
+		}
+
+		if ( ! isset( $newTemplateData['ccb_fields'] ) || count( $newTemplateData['ccb_fields'] ) === 0 ) {
+			return;
+		}
+
+		update_post_meta( $calcTemplates[0]->ID, 'stm-formula', (array) $newTemplateData['ccb_formula'] );
+		update_post_meta( $calcTemplates[0]->ID, 'stm-fields', (array) $newTemplateData['ccb_fields'] );
+		update_post_meta( $calcTemplates[0]->ID, 'stm-conditions', (array) $newTemplateData['ccb_conditions'] );
+	}
 }

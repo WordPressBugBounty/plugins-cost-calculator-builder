@@ -6,6 +6,7 @@ $invoice_texts = array(
 	'paypal'               => esc_html__( 'Paypal', 'cost-calculator-builder' ),
 	'woocommerce_checkout' => esc_html__( 'Woocommerce', 'cost-calculator-builder' ),
 	'no_payment'           => esc_html__( 'No Payment', 'cost-calculator-builder' ),
+	'razorpay'             => esc_html__( 'Razorpay', 'cost-calculator-builder' ),
 );
 
 $send_pdf_texts = array(

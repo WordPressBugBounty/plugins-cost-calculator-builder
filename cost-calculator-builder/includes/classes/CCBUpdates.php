@@ -132,6 +132,9 @@ class CCBUpdates {
 		'3.2.58' => array(
 			'ccb_make_option_upload_from_url',
 		),
+		'3.2.61' => array(
+			'ccb_update_template_loan',
+		),
 	);
 
 	public static function init() {

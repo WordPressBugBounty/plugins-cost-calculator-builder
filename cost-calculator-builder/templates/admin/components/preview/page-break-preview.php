@@ -99,7 +99,7 @@ $get_date_format  = get_option( 'date_format' );
 										</template>
 									</template>
 								</div>
-								<div class="calc-summary-page" v-if="summaryInLastPage && showSummaryPage">
+								<div class="calc-summary-page" v-show="summaryInLastPage && showSummaryPage">
 									<div class="calc-subtotal calc-list" :id="getTotalStickyId" :class="{loaded: !loader}">
 										<div class="calc-subtotal-wrapper">
 											<div class="calc-list-inner">
