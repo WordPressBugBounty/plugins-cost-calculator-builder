@@ -237,7 +237,7 @@ $featuresCCB = array(
 				<?php echo esc_html__( 'Free vs Pro', 'cost-calculator-builder' ); ?>
 			</div>
 			<div class="ccb-upgrade-table-info-desc">
-				<?php echo esc_html__( 'Choose the best option. Upgrade to Pro version just for $49', 'cost-calculator-builder' ); ?>
+				<?php echo esc_html__( 'Choose the best option. Upgrade to Pro version just for $59', 'cost-calculator-builder' ); ?>
 			</div>
 		</div>
 		<table>

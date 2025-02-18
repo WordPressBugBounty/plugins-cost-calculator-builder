@@ -95,10 +95,10 @@ $pdf_data = \cBuilder\Classes\pdfManager\CCBPdfManager::ccb_get_pdf_manager_data
 				<div class="calc-page-navigation__total" v-if="totalsInPages">
 					<div class="totals">
 						<div class="totals-item">
-							<template v-for="item in pageBreakRepeaterFormula">
+							<template v-for="item in getFilteredTotals(pageBreakRepeaterFormula)">
 								<cost-total :value="item.total" :discount="item.discount" :field="item.data" :id="calc_data.id" @condition-apply="renderCondition"></cost-total>
 							</template>
-							<template v-for="item in pageBreakTotals">
+							<template v-for="item in getFilteredTotals(pageBreakTotals)">
 								<div v-if="showFormulaConst" style="display: flex" class="sub-list-item total">
 									<span class="sub-item-title"><?php esc_html_e( 'Total', 'cost-calculator-builder' ); ?></span>
 									<span class="sub-item-value" style="white-space: nowrap">{{ item.data.converted }}</span>
@@ -187,10 +187,10 @@ $pdf_data = \cBuilder\Classes\pdfManager\CCBPdfManager::ccb_get_pdf_manager_data
 					</div>
 
 					<div class="calc-subtotal-list totals" style="margin-top: 20px; padding-top: 10px;" ref="calcTotals" :class="{'unit-enable': showUnitInSummary}" v-show="shouldShowSummaryOrTotals">
-						<template v-for="item in getRepeaterTotals">
+						<template v-for="item in getFilteredTotals(getRepeaterTotals)">
 							<cost-total :value="item.total" :discount="item.discount" :field="item.data" :id="calc_data.id" @condition-apply="renderCondition"></cost-total>
 						</template>
-						<template v-for="item in formulaConst">
+						<template v-for="item in getFilteredTotals(formulaConst)">
 							<div v-if="isFormulaConstInvalid" style="display: flex" class="sub-list-item total">
 								<span class="sub-item-title"><?php esc_html_e( 'Total', 'cost-calculator-builder' ); ?></span>
 								<span class="sub-item-value" style="white-space: nowrap">{{ item.data.converted }}</span>
@@ -275,6 +275,7 @@ $pdf_data = \cBuilder\Classes\pdfManager\CCBPdfManager::ccb_get_pdf_manager_data
 			static-texts='<?php echo esc_attr( wp_json_encode( $invoice_texts ) ); ?>'
 			send-email-texts='<?php echo esc_attr( wp_json_encode( $send_pdf_texts ) ); ?>'
 			:summary-fields="getTotalSummaryFields"
+			v-if="pdfStatus"
 		/>
 	</div>
 </div>

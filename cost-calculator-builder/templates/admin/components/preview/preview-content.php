@@ -151,10 +151,10 @@ $get_date_format  = get_option( 'date_format' );
 						</div>
 
 						<div class="calc-subtotal-list totals" style="margin-top: 20px; padding-top: 10px;" ref="calcTotals" :class="{'unit-enable': showUnitInSummary}" v-show="!summaryDisplay">
-							<template v-for="item in getRepeaterTotals">
+							<template v-for="item in getFilteredTotals(getRepeaterTotals)">
 								<cost-total :value="item.total" :discount="item.discount" :field="item.data" :id="calc_data.id" @condition-apply="renderCondition"></cost-total>
 							</template>
-							<template v-for="item in formulaConst">
+							<template v-for="item in getFilteredTotals(formulaConst)">
 								<div v-if="formulaConst?.length === 1 && typeof formulaConst[0].alias === 'undefined'" style="display: flex" class="sub-list-item total">
 									<span class="sub-item-title"><?php esc_html_e( 'Total', 'cost-calculator-builder' ); ?></span>
 									<span class="sub-item-value" style="white-space: nowrap">{{ item.data.converted }}</span>

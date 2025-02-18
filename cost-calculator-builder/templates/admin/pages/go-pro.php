@@ -26,9 +26,9 @@ function get_freemius_info() {
 				'classname' => '',
 				'type'      => '',
 			),
-			'5'  => array(
+			'10'  => array(
 				'classname' => 'stm_plan--popular',
-				'text'      => '<b>5 Site</b> license',
+				'text'      => '<b>10 Site</b> license',
 				'type'      => esc_html__( 'Most Popular', 'cost-calculator-builder' ),
 			),
 			'25' => array(
@@ -161,63 +161,65 @@ if ( array_key_exists( 'from', $params_array ) && ! empty( $params_array['from']
 				</div>
 				<div class="row">
 					<?php foreach ( $freemius_info['plan'] as $plan ) : ?>
-						<div class="col-md-4">
-							<div class="stm_plan <?php echo esc_attr( $plan->data['classname'] ); ?>">
-								<?php if ( ! empty( $plan->data['type'] ) ) : ?>
-									<div class="stm_plan__type">
-										<?php echo esc_attr( $plan->data['type'] ); ?>
-									</div>
-								<?php endif; ?>
-								<div class="stm_price">
-									<?php
-									if ( $is_promotion ) :
-										?>
-										<sup>$</sup>
-										<span class="stm_price__value"
-											data-price-annual="<?php echo esc_attr( number_format( $plan->annual_price * 0.75, 0, '.', '' ) ); ?>"
-											data-price-lifetime="<?php echo esc_attr( $plan->lifetime_price ); ?>"
-											data-price-old-annual="<?php echo esc_attr( $plan->annual_price ); ?>"
-											data-price-old-lifetime="<?php echo esc_attr( $plan->lifetime_price ); ?>">
-											<?php echo esc_html( number_format( $plan->annual_price * 0.75, 0, '.', '' ) ); ?>
-										</span>
-										<div class="discount life-time-discount">
-											<sup>$</sup>
-											<span style="font-size: 18px;">
-												<?php echo esc_html( $plan->annual_price ); ?>
-											</span>
+						<?php if ( ! $plan->is_hidden ) : ?>
+							<div class="col-md-4">
+								<div class="stm_plan <?php echo esc_attr( $plan->data['classname'] ); ?>">
+									<?php if ( ! empty( $plan->data['type'] ) ) : ?>
+										<div class="stm_plan__type">
+											<?php echo esc_attr( $plan->data['type'] ); ?>
 										</div>
-										<small style="float: left; width: 100%; text-align: center;">/<?php esc_html_e( 'per year', 'cost-calculator-builder' ); ?></small>
-									<?php else : ?>
-
-									<sup>$</sup>
-									<span class="stm_price__value" data-price-annual="<?php echo esc_attr( $plan->annual_price ); ?>" data-price-lifetime="<?php echo esc_attr( $plan->lifetime_price ); ?>">
-										<?php echo esc_html( $plan->annual_price ); ?>
-									</span>
-									<small>/<?php esc_html_e( 'per year', 'cost-calculator-builder' ); ?></small>
 									<?php endif; ?>
+									<div class="stm_price">
+										<?php
+										if ( $is_promotion ) :
+											?>
+											<sup>$</sup>
+											<span class="stm_price__value"
+												data-price-annual="<?php echo esc_attr( number_format( $plan->annual_price * 0.75, 0, '.', '' ) ); ?>"
+												data-price-lifetime="<?php echo esc_attr( $plan->lifetime_price ); ?>"
+												data-price-old-annual="<?php echo esc_attr( $plan->annual_price ); ?>"
+												data-price-old-lifetime="<?php echo esc_attr( $plan->lifetime_price ); ?>">
+												<?php echo esc_html( number_format( $plan->annual_price * 0.75, 0, '.', '' ) ); ?>
+											</span>
+											<div class="discount life-time-discount">
+												<sup>$</sup>
+												<span style="font-size: 18px;">
+													<?php echo esc_html( $plan->annual_price ); ?>
+												</span>
+											</div>
+											<small style="float: left; width: 100%; text-align: center;">/<?php esc_html_e( 'per year', 'cost-calculator-builder' ); ?></small>
+										<?php else : ?>
+
+										<sup>$</sup>
+										<span class="stm_price__value" data-price-annual="<?php echo esc_attr( $plan->annual_price ); ?>" data-price-lifetime="<?php echo esc_attr( $plan->lifetime_price ); ?>">
+											<?php echo esc_html( $plan->annual_price ); ?>
+										</span>
+										<small>/<?php esc_html_e( 'per year', 'cost-calculator-builder' ); ?></small>
+										<?php endif; ?>
+									</div>
+
+									<ul class="ccb-pricing-as-live">
+										<li><span class="ccb-icon-globus"></span><?php echo $plan->data['text']; // phpcs:ignore ?></li>
+										<li><span class="ccb-icon-feature"></span>All Pro Features</li>
+										<li><span class="ccb-icon-email-template"></span> Premium Templates </li>
+										<li class="life-time-updates"><span class="ccb-icon-update"></span><b> Updates </b> for 1 year</li>
+										<li class="life-time-support"><span class="ccb-icon-support"></span><b> Support </b> for 1 year </li>
+									</ul>
+									<?php
+									$get_now_link = isset( $freemius_info['info']->url ) ? $freemius_info['info']->url . '?' . STM_FREEMIUS_CHECKOUT_UTM_SOURCE . '&licenses=' . $plan->licenses . '&billing_cycle=annual' : $plan->url;
+									$data_url     = isset( $freemius_info['info']->url ) ? $freemius_info['info']->url . '?' . STM_FREEMIUS_CHECKOUT_UTM_SOURCE . '&licenses=' . $plan->licenses : $plan->url;
+
+									if ( ! empty( $pro_features_utm ) ) {
+										$get_now_link = $get_now_link . $pro_features_utm;
+									}
+
+									?>
+									<a href="<?php echo esc_url( $get_now_link ); ?>" class="stm_plan__btn stm_plan__btn--buy" data-checkout-url="<?php echo esc_url( $data_url ); ?>" target="_blank">
+										<?php esc_html_e( 'Get now', 'cost-calculator-builder' ); ?>
+									</a>
 								</div>
-
-								<ul class="ccb-pricing-as-live">
-									<li><span class="ccb-icon-globus"></span><?php echo $plan->data['text']; // phpcs:ignore ?></li>
-									<li><span class="ccb-icon-feature"></span>All Pro Features</li>
-									<li><span class="ccb-icon-email-template"></span> Premium Templates </li>
-									<li class="life-time-updates"><span class="ccb-icon-update"></span><b> Updates </b> for 1 year</li>
-									<li class="life-time-support"><span class="ccb-icon-support"></span><b> Support </b> for 1 year </li>
-								</ul>
-								<?php
-								$get_now_link = isset( $freemius_info['info']->url ) ? $freemius_info['info']->url . '?' . STM_FREEMIUS_CHECKOUT_UTM_SOURCE . '&licenses=' . $plan->licenses . '&billing_cycle=annual' : $plan->url;
-								$data_url     = isset( $freemius_info['info']->url ) ? $freemius_info['info']->url . '?' . STM_FREEMIUS_CHECKOUT_UTM_SOURCE . '&licenses=' . $plan->licenses : $plan->url;
-
-								if ( ! empty( $pro_features_utm ) ) {
-									$get_now_link = $get_now_link . $pro_features_utm;
-								}
-
-								?>
-								<a href="<?php echo esc_url( $get_now_link ); ?>" class="stm_plan__btn stm_plan__btn--buy" data-checkout-url="<?php echo esc_url( $data_url ); ?>" target="_blank">
-									<?php esc_html_e( 'Get now', 'cost-calculator-builder' ); ?>
-								</a>
 							</div>
-						</div>
+						<?php endif; ?>
 					<?php endforeach; ?>
 				</div>
 			<?php endif; ?>
