@@ -30,7 +30,7 @@
 								<span class="calc-list-title"><?php esc_html_e( 'Select value', 'cost-calculator-builder' ); ?></span>
 							</span>
 						</li>
-						<li v-for="element in getOptions" :key="element.value" :value="element.value" @click="selectOption(element)">
+						<li v-for="(element, index) in getOptions" :key="element.value" :value="element.value" @click="selectOption(element)" :class="{'ccb-field-option-disabled': checkDisableOption(index)}">
 							<span class="calc-list-wrapper">
 								<span class="calc-list-title">{{ element.label }}</span>
 								<span class="calc-list-price" v-if="dropDownField.show_value_in_option">

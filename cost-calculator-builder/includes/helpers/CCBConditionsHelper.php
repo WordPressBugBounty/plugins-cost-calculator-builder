@@ -154,6 +154,13 @@ class CCBConditionsHelper {
 		),
 
 		array(
+			'title'     => 'Disable options',
+			'value'     => 'disable_option',
+			'flex_grow' => '1',
+			'fields'    => array( 'checkbox', 'toggle', 'dropDown', 'dropDown_with_img', 'checkbox_with_img', 'radio_with_img', 'radio' ),
+		),
+
+		array(
 			'title'     => 'Select option and disable',
 			'value'     => 'select_option_and_disable',
 			'flex_grow' => '1',

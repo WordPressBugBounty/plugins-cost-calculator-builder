@@ -130,7 +130,7 @@
 					<div class="ccb-input-wrapper number">
 						<span class="ccb-input-label"><?php esc_html_e( 'Number of decimals', 'cost-calculator-builder' ); ?></span>
 						<div class="ccb-input-box">
-							<input type="number" name="option_num_after_integer" v-model="fieldCurrency.num_after_integer" min="1" max="8" placeholder="<?php esc_attr_e( 'Enter decimals', 'cost-calculator-builder' ); ?>">
+							<input type="number" name="num_after_integer" v-model="fieldCurrency.num_after_integer" min="0" max="8" placeholder="<?php esc_attr_e( 'Enter decimals', 'cost-calculator-builder' ); ?>" @blur="handleBlur">
 							<span class="input-number-counter up" @click="numberCounterAction('num_after_integer')"></span>
 							<span class="input-number-counter down" @click="numberCounterAction('num_after_integer', '-')"></span>
 						</div>

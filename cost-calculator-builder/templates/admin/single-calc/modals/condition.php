@@ -281,6 +281,32 @@
 
 			</div>
 			<!--        SET OPTION END-->
+
+			<!--        SET OPTION  START-->
+			<div class="select-with-label" v-if=" model.action === 'disable_option'">
+				<div class="select-label">
+					<?php esc_html_e( 'Option', 'cost-calculator-builder' ); ?>
+				</div>
+				<!--        FOR multiple items (checkbox, toggle) -->
+				<div class="multiselect" tabindex="100">
+					<span v-if="model.setVal.length > 0" class="anchor" @click.prevent="multiselectShow(event)">
+						{{ model.setVal.split(',').length }} <?php esc_html_e( 'options selected', 'cost-calculator-builder' ); ?>
+					</span>
+					<span v-else class="anchor" @click.prevent="multiselectShow(event)">
+						<?php esc_html_e( 'Select option', 'cost-calculator-builder' ); ?>
+					</span>
+					<ul class="items">
+						<li class="option-item" @click="multiselectChoose(event, optionIndex, index)"
+							v-for="(item, optionIndex) in $store.getters.getFieldOptionsByFieldId($store.getters.getConditionData.optionTo)">
+							<input :checked="( model.setVal.length > 0 && model.setVal.split(',').map(Number).includes(optionIndex))" @change="multiselectChoose(event, optionIndex);" :class="['index',optionIndex].join('_')" type="checkbox"/>
+							<span class="option-item-text">{{ item.optionText }}</span>
+						</li>
+					</ul>
+					<input v-model="model.setVal" name="options" type="hidden" :class="$store.getters.getConditionData.optionTo"/>
+				</div>
+
+			</div>
+			<!--        SET OPTION END-->
 		</div>
 		<div class="remove-full-condition" @click.prevent="removeRow(index)">
 			<i class="remove-icon"></i>

@@ -1396,6 +1396,27 @@ class CCBUpdatesCallbacks {
 		}
 	}
 
+	public static function ccb_add_field_disable_options() {
+		$calculators = self::get_calculators();
+
+		foreach ( $calculators as $calculator ) {
+			$fields = get_post_meta( $calculator->ID, 'stm-fields', true );
+
+			$field_names_with_options = array( 'radio', 'checkbox', 'toggle', 'dropDown', 'dropDown_with_img', 'radio_with_img', 'checkbox_with_img' );
+			foreach ( $fields as $key => $field ) {
+				$field_name = preg_replace( '/_field_id.*/', '', $field['alias'] );
+				if ( in_array( $field_name, $field_names_with_options, true ) && ! isset( $field['disableOptions'] ) ) {
+					$field['disableOptions'] = array();
+					$field['hasNextTick']    = true;
+					$field['nextTickCount']  = 0;
+					$fields[ $key ]          = $field;
+				}
+			}
+
+			update_post_meta( $calculator->ID, 'stm-fields', (array) $fields );
+		}
+	}
+
 	/**
 	 * 3.1.61
 	 * Update "Loan Calculator" template in wp posts
@@ -1432,5 +1453,33 @@ class CCBUpdatesCallbacks {
 		update_post_meta( $calcTemplates[0]->ID, 'stm-formula', (array) $newTemplateData['ccb_formula'] );
 		update_post_meta( $calcTemplates[0]->ID, 'stm-fields', (array) $newTemplateData['ccb_fields'] );
 		update_post_meta( $calcTemplates[0]->ID, 'stm-conditions', (array) $newTemplateData['ccb_conditions'] );
+	}
+
+	/**
+	 * 3.1.64
+	 * Update "Number of Decimals" in all single calculators
+	 * change "changed fields"
+	 */
+	public static function ccb_update_total_number_of_decimals() {
+		$calculators = self::get_calculators();
+
+		foreach ( $calculators as $calculator ) {
+			$fields = get_post_meta( $calculator->ID, 'stm-fields', true );
+
+			foreach ( $fields as $key => $field ) {
+				if ( 'cost-total' === $field['_tag'] && isset( $field['fieldCurrency'] ) && $field['fieldCurrency'] ) {
+					$fields[ $key ]['fieldCurrencySettings']['num_after_integer'] = '' === $fields[ $key ]['fieldCurrencySettings']['num_after_integer'] ? '2' : min( 8, $fields[ $key ]['fieldCurrencySettings']['num_after_integer'] );
+				}
+			}
+			update_post_meta( $calculator->ID, 'stm-fields', $fields );
+
+			$formula = get_post_meta( $calculator->ID, 'stm-formula', true );
+			foreach ( $formula as $index => $total ) {
+				if ( isset( $total['fieldCurrency'] ) && $total['fieldCurrency'] ) {
+					$formula[ $index ]['fieldCurrencySettings']['num_after_integer'] = '' === $formula[ $index ]['fieldCurrencySettings']['num_after_integer'] ? '2' : min( 8, $formula[ $index ]['fieldCurrencySettings']['num_after_integer'] );
+				}
+			}
+			update_post_meta( $calculator->ID, 'stm-formula', $formula );
+		}
 	}
 }

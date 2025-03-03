@@ -135,6 +135,10 @@ class CCBUpdates {
 		'3.2.61' => array(
 			'ccb_update_template_loan',
 		),
+		'3.2.64' => array(
+			'ccb_update_total_number_of_decimals',
+			'ccb_add_field_disable_options',
+		),
 	);
 
 	public static function init() {
