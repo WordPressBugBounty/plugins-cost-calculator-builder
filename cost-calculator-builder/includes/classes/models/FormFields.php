@@ -77,6 +77,10 @@ class FormFields extends DataBaseModel {
 	}
 
 	public static function get_active_fields( $form_id ) {
+		if ( ! is_numeric( $form_id ) ) {
+			return;
+		}
+
 		global $wpdb;
 
 		$fields_table     = esc_sql( self::_table() );

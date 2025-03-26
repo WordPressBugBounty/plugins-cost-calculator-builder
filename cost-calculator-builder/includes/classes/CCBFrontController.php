@@ -4,7 +4,6 @@ namespace cBuilder\Classes;
 
 use cBuilder\Classes\Appearance\CCBAppearanceHelper;
 use cBuilder\Helpers\CCBFieldsHelper;
-use function Clue\StreamFilter\fun;
 
 $template_variables = array();
 
@@ -197,7 +196,14 @@ class CCBFrontController {
 	public static function render_calculator( $attr ) {
 		$data   = array( 'id' => null, 'sticky' => null, 'custom' => null, 'action' => '', 'hidden' => null ); //phpcs:ignore
 		$params = shortcode_atts( $data, $attr );
-		return self::render_calculator_handler( $params['id'], $params['sticky'], $params['custom'], $params['action'], $params['hidden'] );
+
+		if ( ! is_numeric( $params['id'] ) ) {
+			return '<p style="text-align: center">' . __( 'No selected calculator', 'cost-calculator-builder' ) . '</p>';
+		}
+
+		$id = intval( $params['id'] );
+
+		return self::render_calculator_handler( $id, $params['sticky'], $params['custom'], $params['action'], $params['hidden'] );
 	}
 
 	/**

@@ -141,6 +141,10 @@ class Forms extends DataBaseModel {
 	}
 
 	public static function get_form_name( $form_id ) {
+		if ( ! is_numeric( $form_id ) ) {
+			return;
+		}
+
 		global $wpdb;
 
 		$sql = sprintf(
