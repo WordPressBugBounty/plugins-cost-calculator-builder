@@ -52,15 +52,29 @@ class Payments extends DataBaseModel {
 	public static function update_payment_status_by_order_ids( $order_ids, $status = '' ) {
 		global $wpdb;
 
-		return $wpdb->query(
-			$wpdb->prepare(
-				'UPDATE `%1s` SET `status` = "%2s", `updated_at` = "%3s" WHERE order_id IN (%4s)', //phpcs:ignore
-				self::_table(),
-				$status,
-				wp_date( 'Y-m-d H:i:s' ),
-				implode( ',', $order_ids )
-			)
+		$statuses = array( 'pending', 'cancelled', 'rejected', 'complete' );
+		if ( ! in_array( $status, $statuses, true ) ) {
+			wp_send_json(
+				array(
+					'message' => 'Invalid status: ' . $status,
+					'success' => false,
+				)
+			);
+		}
+
+		$order_ids    = array_map( 'intval', (array) $order_ids );
+		$placeholders = implode( ',', array_fill( 0, count( $order_ids ), '%d' ) );
+
+		$query = sprintf(
+			"UPDATE `%s` SET `status` = %%s, `updated_at` = %%s WHERE order_id IN (%s)", //phpcs:ignore
+			self::_table(),
+			$placeholders
 		);
+
+		$args           = array_merge( array( $query, $status, wp_date( 'Y-m-d H:i:s' ) ), $order_ids );
+		$prepared_query = call_user_func_array( array( $wpdb, 'prepare' ), $args );
+
+		return $wpdb->query( $prepared_query ); //phpcs:ignore
 	}
 
 	/**
