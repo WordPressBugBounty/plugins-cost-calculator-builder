@@ -347,3 +347,7 @@
 		</div>
 	</div>
 </div>
+
+<template v-if="settings.woo_products?.enable && settings.page_break?.summary_after_last_page">
+	<?php echo \cBuilder\Classes\CCBProTemplate::load( 'frontend/partials/woo-products' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+</template>

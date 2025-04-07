@@ -75,6 +75,19 @@
 				<div class="col-6 ccb-p-t-10">
 					<div class="list-header">
 						<div class="ccb-switch">
+							<input type="checkbox" v-model="totalField.advancedJsCalculation"/>
+							<label></label>
+						</div>
+						<h6 class="ccb-heading-5"><?php esc_html_e( 'Advanced calculations', 'cost-calculator-builder' ); ?></h6>
+						<span class="ccb-options-tooltip">
+							<i class="ccb-icon-circle-question"></i>
+							<span class="ccb-options-tooltip__text"><?php esc_html_e( 'Enable for advanced calculations using JavaScript-based formulas. With over 9 totals, performance may slow. Disable for faster basic calculations.' ); ?></span>
+						</span>
+					</div>
+				</div>
+				<div class="col-6 ccb-p-t-10">
+					<div class="list-header">
+						<div class="ccb-switch">
 							<input type="checkbox" v-model="totalField.calculateHidden"/>
 							<label></label>
 						</div>

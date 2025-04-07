@@ -62,6 +62,7 @@ class CCBSettingsData {
 				'custom_button_text'   => 'Go to website',
 				'custom_button_link'   => get_home_url(),
 				'complete_msg'         => 'Your order has been placed',
+				'showOrderId'          => true,
 			),
 			'sticky_calc'     => array(
 				'enable'           => false,
