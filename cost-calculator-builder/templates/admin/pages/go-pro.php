@@ -26,7 +26,7 @@ function get_freemius_info() {
 				'classname' => '',
 				'type'      => '',
 			),
-			'10'  => array(
+			'10' => array(
 				'classname' => 'stm_plan--popular',
 				'text'      => '<b>10 Site</b> license',
 				'type'      => esc_html__( 'Most Popular', 'cost-calculator-builder' ),
@@ -94,8 +94,8 @@ function get_freemius_info() {
 $freemius_info = get_freemius_info();
 
 
-$start_date   = new DateTime( '2025-03-10' );
-$end_date     = new DateTime( '2025-03-17' );
+$start_date   = new DateTime( '2025-04-16 00:00:00' );
+$end_date     = new DateTime( '2025-04-21 23:59:00' );
 $current_time = new DateTime();
 
 
@@ -146,7 +146,7 @@ if ( array_key_exists( 'from', $params_array ) && ! empty( $params_array['from']
 			</div>
 			<?php if ( $is_promotion ) : ?>
 				<div class="stm-discount">
-					<a href="https://stylemixthemes.com/cost-calculator-plugin/pricing/?utm_source=wpadmin&utm_medium=gopro&utm_campaign=springsale" target="_blank"></a>
+					<a href="https://stylemixthemes.com/cost-calculator-plugin/pricing/?utm_source=wpadmin&utm_medium=gopro&utm_campaign=easter25" target="_blank"></a>
 				</div>
 			<?php endif; ?>
 			<?php if ( isset( $freemius_info['plan'] ) ) : ?>
@@ -175,11 +175,11 @@ if ( array_key_exists( 'from', $params_array ) && ! empty( $params_array['from']
 											?>
 											<sup>$</sup>
 											<span class="stm_price__value"
-												data-price-annual="<?php echo esc_attr( number_format( $plan->annual_price * 0.70, 0, '.', '' ) ); ?>"
-												data-price-lifetime="<?php echo esc_attr( number_format( $plan->lifetime_price * 0.70, 0, '.', '' ) ); ?>"
+												data-price-annual="<?php echo esc_attr( number_format( $plan->annual_price * 0.75, 0, '.', '' ) ); ?>"
+												data-price-lifetime="<?php echo esc_attr( number_format( $plan->lifetime_price * 0.75, 0, '.', '' ) ); ?>"
 												data-price-old-annual="<?php echo esc_attr( $plan->annual_price ); ?>"
 												data-price-old-lifetime="<?php echo esc_attr( $plan->lifetime_price ); ?>">
-												<?php echo esc_html( number_format( $plan->annual_price * 0.70, 0, '.', '' ) ); ?>
+												<?php echo esc_html( number_format( $plan->annual_price * 0.75, 0, '.', '' ) ); ?>
 											</span>
 											<div class="discount">
 												<sup>$</sup>
