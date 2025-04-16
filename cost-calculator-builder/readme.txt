@@ -5,8 +5,8 @@ Donate link: https://stylemixthemes.com
 Tags: cost calculator, calculator, calculator form builder, cost estimation, shipping calculator, taxi fare calculator, price calculator, tax calculation, cost, calc, cost calc, calc builder
 Requires at least: 4.6
 Requires PHP: 5.6
-Tested up to: 6.7.2
-Stable tag: 3.2.72
+Tested up to: 6.8
+Stable tag: 3.2.73
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -145,10 +145,16 @@ You can visit our Cost Calculator [group](https://www.facebook.com/groups/costca
 
 ## More Awesome Free Plugins by Stylemix
 
-⭐ [Zoom Meetings and Webinars Plugin — eRoom](https://wordpress.org/plugins/eroom-zoom-meetings-webinar/)
-⭐ [BookIt - a free booking calendar plugin](https://wordpress.org/plugins/bookit/)
 ⭐ [MasterStudy - All-in-One WordPress LMS Plugin](https://wordpress.org/plugins/masterstudy-lms-learning-management-system/)
+⭐ [Motors – Car Dealership & Classified Listings Plugin](https://wordpress.org/plugins/motors-car-dealership-classified-listings/)
+⭐ [Zoom Meetings and Webinars Plugin — eRoom](https://wordpress.org/plugins/eroom-zoom-meetings-webinar/)
 ⭐ [Free Classifieds and Listings Plugin - uListing](https://wordpress.org/plugins/ulisting/)
+
+== Frequently Asked Questions ==
+
+= How can I report security bugs? =
+
+You can report security bugs through the Patchstack Vulnerability Disclosure Program. The Patchstack team help validate, triage and handle any security vulnerabilities. [Report a security vulnerability](https://patchstack.com/database/vdp/cost-calculator-builder).
 
 == Installation ==
 This section describes how to install the plugin and get it working.
@@ -162,6 +168,9 @@ Also, you can import the demo sample using Tools -> Import -> WordPress Import.
 Demo sample XML file included in plugin archive.
 
 == Changelog ==
+
+= 3.2.73 =
+- Update: Added compatibility with WordPress 6.8.
 
 = 3.2.72 =
 - Fix: Minor bug fixes.
