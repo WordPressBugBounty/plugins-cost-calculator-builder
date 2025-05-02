@@ -122,7 +122,7 @@ class STMMailChimpBase {
 				'opt_out'    => false,
 				'created_at' => wp_date( 'Y-m-d H:i:s' ),
 			];
-			$result            = add_option( 'stm_mailchimp_integration_member_data_' . self::$pluginSlug, serialize( $integrationData ) );
+			$result            = update_option( 'stm_mailchimp_integration_member_data_' . self::$pluginSlug, serialize( $integrationData ) );
 
 		} else {
 
@@ -163,6 +163,9 @@ class STMMailChimpBase {
 		$integrationData = self::getMailchimpIntegrationData();
 
 		if ( self::memberKeyIfExist( $integrationData ) === false ) {
+			if ( empty( $integrationData ) ) {
+				$integrationData = [];
+			}
 
 			$integrationData[] = [
 				'email'      => self::$currentUser->data->user_email,
@@ -172,7 +175,7 @@ class STMMailChimpBase {
 				'created_at' => wp_date( 'Y-m-d H:i:s' ),
 			];
 
-			add_option( 'stm_mailchimp_integration_member_data_' . self::$pluginSlug, serialize( $integrationData ) );
+			update_option( 'stm_mailchimp_integration_member_data_' . self::$pluginSlug, serialize( $integrationData ) );
 
 		}
 
@@ -322,5 +325,26 @@ class STMMailChimpBase {
 			define( 'SECURE_AUTH_COOKIE', 'wordpress_sec_' . COOKIEHASH );
 		}
 
+	}
+
+	public static function subscribeUserFromFrontend( $email, $name = '' ) {
+		if ( ! is_email( $email ) ) {
+			return new WP_Error( 'invalid_email' );
+		}
+
+		$user_id  = isset( self::$currentUser->data->ID ) ? intval( self::$currentUser->data->ID ) : 0;
+		$locale   = $user_id ? get_user_locale( $user_id ) : get_locale();
+		$language = explode( '_', $locale )[0];
+
+		$member = array(
+			'action'   => 'add',
+			'plugin'   => sanitize_text_field( self::$pluginSlug ),
+			'email'    => sanitize_email( $email ),
+			'language' => sanitize_text_field( $language ),
+			'ip'       => isset( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( $_SERVER['REMOTE_ADDR'] ) : '',
+			'name'     => sanitize_text_field( $name ),
+		);
+
+		return STMMailChimpIntegration::addMember( $member );
 	}
 }
