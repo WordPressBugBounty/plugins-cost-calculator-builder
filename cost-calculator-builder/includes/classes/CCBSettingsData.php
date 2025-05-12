@@ -140,7 +140,7 @@ class CCBSettingsData {
 				'formulas'    => array(),
 			),
 			'payment_gateway' => array(
-				'cards'         => array(
+				'cards'        => array(
 					'enable'        => false,
 					'card_payments' => array(
 						'stripe'   => array(
@@ -168,7 +168,7 @@ class CCBSettingsData {
 						),
 					),
 				),
-				'paypal'        => array(
+				'paypal'       => array(
 					'enable'           => false,
 					'integration_type' => 'legacy',
 					'paypal_email'     => '',
@@ -177,12 +177,12 @@ class CCBSettingsData {
 					'client_id'        => '',
 					'client_secret'    => '',
 				),
-				'cash_payment'  => array(
+				'cash_payment' => array(
 					'enable' => false,
 					'label'  => 'Cash Payment',
 					'type'   => '',
 				),
-				'formulas'      => array(),
+				'formulas'     => array(),
 			),
 			'webhooks'        => array(
 				'enableSendForms'        => false,
@@ -261,46 +261,48 @@ class CCBSettingsData {
 				'fromName'         => '',
 			),
 			'email_templates' => array(
-				'title'            => __( 'Calculation result', 'cost-calculator-builder' ),
-				'description'      => 'This email is automatically generated and does not require a response. If you have a question, please contact: support@example.com',
-				'logo'             => '',
-				'logo_position'    => 'left',
-				'footer'           => true,
-				'template_color'   => array(
+				'title'              => __( 'Calculation result', 'cost-calculator-builder' ),
+				'description'        => 'This email is automatically generated and does not require a response. If you have a question, please contact: support@example.com',
+				'logo'               => '',
+				'logo_position'      => 'left',
+				'footer'             => true,
+				'template_color'     => array(
 					'value'   => '#EEF1F7',
 					'type'    => 'color',
 					'default' => '#EEF1F7',
 				),
-				'content_bg'       => array(
+				'content_bg'         => array(
 					'value'   => '#FFFFFF',
 					'type'    => 'color',
 					'default' => '#FFFFFF',
 				),
-				'header_bg'        => array(
+				'header_bg'          => array(
 					'value'   => '#FFFFFF',
 					'type'    => 'color',
 					'default' => '#FFFFFF',
 				),
-				'main_text_color'  => array(
+				'main_text_color'    => array(
 					'value'   => '#001931',
 					'type'    => 'color',
 					'default' => '#001931',
 				),
-				'border_color'     => array(
+				'border_color'       => array(
 					'value'   => '#ddd',
 					'type'    => 'color',
 					'default' => '#ddd',
 				),
-				'button_color'     => array(
+				'button_color'       => array(
 					'value'   => '#00B163',
 					'type'    => 'color',
 					'default' => '#00B163',
 				),
-				'button_text_color' => array(
+				'button_text_color'  => array(
 					'value'   => '#001931',
 					'type'    => 'color',
 					'default' => '#001931',
 				),
+				'allowedDateFormats' => array( 'F j Y', 'j F Y', 'j M Y', 'd.m.Y', 'd-m-Y', 'd/m/Y', 'm/d/Y', 'Y-m-d', 'l, F j, Y', 'D, j M Y', 'Y F j', 'Ymd', 'm-d-Y', 'd-M-Y', "D, j M 'y" ),
+				'dateFormat'         => 'F j Y',
 			),
 			'form_fields'     => array(
 				'use_in_all'           => false,

@@ -360,4 +360,22 @@ class CCBConditionsHelper {
 		}
 
 	}
+
+	public static function ccb_check_conditions( $conditions = array() ) {
+		$condition_links = array();
+
+		if ( isset( $conditions['links'] ) ) {
+			foreach ( $conditions['links'] as $link ) {
+				if ( isset( $link['options_to'] ) && isset( $link['options_from'] ) && isset( $link['condition'] ) ) {
+					$condition_links[] = array(
+						'optionsTo'   => $link['options_to'],
+						'optionsFrom' => $link['options_from'],
+						'condition'   => $link['condition'],
+					);
+				}
+			}
+		}
+
+		return $condition_links;
+	}
 }

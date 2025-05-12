@@ -6,7 +6,7 @@ $settings         = \cBuilder\Classes\CCBSettingsData::get_calc_single_settings(
 $get_date_format  = get_option( 'date_format' );
 ?>
 
-<calc-builder-front :key="getFieldsKey" :custom="1" :content="{...preview_data, default_img: '<?php echo esc_attr( $default_img ); ?>'}" inline-template :id="getId">
+<div :id="getId">
 	<div :class="'ccb-wrapper-' + getId">
 		<div ref="calc" :class="['calc-container', {[boxStyle]: preview !== 'mobile'}]" :data-calc-id="getId">
 			<loader v-if="loader"></loader>
@@ -16,6 +16,7 @@ $get_date_format  = get_option( 'date_format' );
 						<div class="calc-item-title">
 							<div class="ccb-calc-heading">{{ getTitle }}</div>
 						</div>
+
 						<div v-if="calc_data" class="calc-fields-container">
 							<template v-for="field in calc_data.fields">
 								<template v-if="field && field.alias && field.type !== 'Total' && !field.alias.includes('group')">
@@ -27,53 +28,42 @@ $get_date_format  = get_option( 'date_format' );
 											:field="field"
 											:is_preview="true"
 											v-model="fields[field.alias].value"
-											v-on:[field._event]="change"
-											v-on:condition-apply="renderCondition"
-											format="<?php esc_attr( $get_date_format ); ?>"
-											:converter="currencyFormat"
-											:disabled="fields[field.alias].disabled"
 											v-on:change="change"
+											v-on:[field._event]="change"
+											format="<?php esc_attr( $get_date_format ); ?>"
+											:disabled="fields[field.alias].disabled"
 											:key="!field.hasNextTick ? field.alias : field.alias + '_' + fields[field.alias].nextTickCount"
-											@delete-repeater="deleteRepeater"
 									>
 									</component>
 								</template>
 								<template v-if="field.alias && field.alias.includes('group')">
 									<component
-										format="<?php esc_attr( $get_date_format ); ?>"
-										text-days="<?php esc_attr_e( 'days', 'cost-calculator-builder' ); ?>"
-										v-if="fields[field.alias] && !field.group_id"
-										:is="field._tag"
-										:id="calc_data.id"
-										:field="field"
-										:converter="currencyFormat"
-										:disabled="fields[field.alias].disabled"
-										v-model="fields[field.alias].value"
-										v-on:change="change"
-										v-on:[field._event]="change"
-										v-on:condition-apply="renderCondition"
-										@delete-repeater="deleteRepeater"
-										@add-repeater="deleteRepeater"
-										:key="!field.hasNextTick ? field.alias : field.alias + '_' + fields[field.alias].nextTickCount"
+											format="<?php esc_attr( $get_date_format ); ?>"
+											text-days="<?php esc_attr_e( 'days', 'cost-calculator-builder' ); ?>"
+											v-if="fields[field.alias] && !field.group_id"
+											:is="field._tag"
+											:id="calc_data.id"
+											:field="field"
+											:disabled="fields[field.alias].disabled"
+											v-model="fields[field.alias].value"
+											v-on:change="change"
+											v-on:[field._event]="change"
+											:key="!field.hasNextTick ? field.alias : field.alias + '_' + fields[field.alias].nextTickCount"
 									>
 										<slot>
 											<template v-for="element in calc_data.fields">
 												<component
-													format="<?php esc_attr( $get_date_format ); ?>"
-													text-days="<?php esc_attr_e( 'days', 'cost-calculator-builder' ); ?>"
-													v-if="fields[element.alias] && element.group_id === field.alias"
-													:is="element._tag"
-													:id="calc_data.id"
-													:field="element"
-													:converter="currencyFormat"
-													:disabled="fields[element.alias].disabled"
-													v-model="fields[element.alias].value"
-													v-on:change="change"
-													v-on:[element._event]="change"
-													v-on:condition-apply="renderCondition"
-													@delete-repeater="deleteRepeater"
-													@add-repeater="deleteRepeater"
-													:key="!element.hasNextTick ? element.alias : element.alias + '_' + fields[element.alias].nextTickCount"
+														format="<?php esc_attr( $get_date_format ); ?>"
+														text-days="<?php esc_attr_e( 'days', 'cost-calculator-builder' ); ?>"
+														v-if="fields[element.alias] && element.group_id === field.alias"
+														:is="element._tag"
+														:id="calc_data.id"
+														:field="element"
+														:disabled="fields[element.alias].disabled"
+														v-model="fields[element.alias].value"
+														v-on:change="change"
+														v-on:[element._event]="change"
+														:key="!element.hasNextTick ? element.alias : element.alias + '_' + fields[element.alias].nextTickCount"
 												>
 												</component>
 											</template>
@@ -118,7 +108,7 @@ $get_date_format  = get_option( 'date_format' );
 										<template v-if="field.alias.includes('repeater')">
 											<div class="calc-repeater-subtotal" v-for="(f, idx) in Object.values(field?.resultGrouped)">
 												<template v-if="getRepeaterFields(f)?.length">
-													<div class="calc-repeater-subtotal-header" :data-index="idx" @click="toggleRepeater(idx)">
+													<div class="calc-repeater-subtotal-header" :data-index="idx">
 														<i class="ccb-icon-Path-3514"></i>
 														<span>{{field.label}}</span>
 														<span class="ccb-repeater-field-number">#{{idx + 1}}</span>
@@ -149,21 +139,6 @@ $get_date_format  = get_option( 'date_format' );
 								</div>
 							</transition>
 						</div>
-
-						<div class="calc-subtotal-list totals" style="margin-top: 20px; padding-top: 10px;" ref="calcTotals" :class="{'unit-enable': showUnitInSummary}" v-show="!summaryDisplay">
-							<template v-for="item in getFilteredTotals(getRepeaterTotals)">
-								<cost-total :value="item.total" :discount="item.discount" :field="item.data" :id="calc_data.id" @condition-apply="renderCondition"></cost-total>
-							</template>
-							<template v-for="item in getFilteredTotals(formulaConst)">
-								<div v-if="formulaConst?.length === 1 && typeof formulaConst[0].alias === 'undefined'" style="display: flex" class="sub-list-item total">
-									<span class="sub-item-title"><?php esc_html_e( 'Total', 'cost-calculator-builder' ); ?></span>
-									<span class="sub-item-value" style="white-space: nowrap">{{ item.data.converted }}</span>
-								</div>
-								{{ item.discount }}
-								<cost-total v-else :value="item.total" :discount="item.discount" :field="item.data" :id="calc_data.id" @condition-apply="renderCondition"></cost-total>
-							</template>
-						</div>
-
 						<div class="calc-promocode-wrapper" v-if="hasPromocode">
 							<div class="promocode-header"></div>
 							<div class="promocode-body">
@@ -204,7 +179,7 @@ $get_date_format  = get_option( 'date_format' );
 
 						<div class="calc-subtotal-list">
 							<?php if ( ccb_pro_active() ) : ?>
-								<cost-pro-features inline-template :settings="content.settings">
+								<cost-pro-features inline-template :settings="preview_data.settings">
 									<?php echo \cBuilder\Classes\CCBProTemplate::load( 'admin/pro-features', array( 'settings' => $settings, 'general_settings' => $general_settings, 'invoice' => $general_settings['invoice'] ?? array() ) ); // phpcs:ignore ?>
 								</cost-pro-features>
 							<?php endif; ?>
@@ -214,4 +189,4 @@ $get_date_format  = get_option( 'date_format' );
 			</template>
 		</div>
 	</div>
-</calc-builder-front>
+</div>

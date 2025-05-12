@@ -1,0 +1,2 @@
+import{_ as c}from"./_plugin-vue_export-helper-DlAUqK2U.js";import{c as o,o as e,l as t,G as r}from"./runtime-dom.esm-bundler-q8x4SZ5d.js";const a={},_={class:"ccb-hint"},i={class:"ccb-hint__content"};function l(n,s){return e(),o("span",_,[s[0]||(s[0]=t("i",{class:"ccb-icon-Path-3367"},null,-1)),t("span",i,[r(n.$slots,"content")])])}const f=c(a,[["render",l]]);export{f as H};
+//# sourceMappingURL=Hint-RbxMJKqa.js.map

@@ -25,9 +25,9 @@ var __webpack_exports__ = {};
  * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-metadata/#view-script
  */
 
-/* eslint-disable no-console */
+ 
 console.log('Hello World! (from create-block-gutenberg-block block)');
-/* eslint-enable no-console */
+ 
 /******/ })()
 ;
 //# sourceMappingURL=view.js.map

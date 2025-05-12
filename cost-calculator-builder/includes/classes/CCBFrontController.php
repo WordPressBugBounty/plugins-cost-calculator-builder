@@ -3,7 +3,9 @@
 namespace cBuilder\Classes;
 
 use cBuilder\Classes\Appearance\CCBAppearanceHelper;
+use cBuilder\Classes\Appearance\CCBCssLoader;
 use cBuilder\Helpers\CCBFieldsHelper;
+use CCB\Vite;
 
 $template_variables = array();
 
@@ -67,20 +69,52 @@ class CCBFrontController {
 			$is_product = is_product();
 		}
 
+		if ( ! isset( $GLOBALS['ccb_sticky_data'] ) ) {
+			$GLOBALS['ccb_sticky_data'] = array();
+		}
+
+		// First pass: collect all sticky data and check if we need to initialize sticky wrapper
 		foreach ( array_reverse( $calculators ) as $calculator ) {
 			$calc_settings = CCBSettingsData::get_calc_single_settings( $calculator->ID );
 			if ( isset( $calc_settings['sticky_calc'] ) && ! empty( $calc_settings['sticky_calc']['enable'] ) && ccb_pro_active() ) {
 				if ( ! $is_product || ( ! empty( $calc_settings['woo_products']['enable'] ) && CCBWooProducts::is_category_included_or_is_product_included( $calc_settings['woo_products'] ) ) ) {
 					if ( ! $has_sticky ) {
+						if ( ! empty( $calc_settings['sticky_calc']['one_click_action'] ) && 'open_modal' === $calc_settings['sticky_calc']['one_click_action'] ) {
+							self::ccb_load_appearance( $calculator->ID );
+						}
+
 						$has_sticky  = true;
-						$calc_sticky = '<div id="ccb-sticky-floating-wrapper">';
+						$calc_sticky = '<div class="ccb-sticky-floating-' . $calculator->ID . '" id="ccb-sticky-floating-wrapper">';
 
 						wp_enqueue_style( 'ccb-sticky-css', CALC_URL . '/frontend/dist/css/sticky.css', array(), CALC_VERSION );
 						wp_enqueue_style( 'ccb-bootstrap-css', CALC_URL . '/frontend/dist/css/modal.bootstrap.css', array(), CALC_VERSION );
 						wp_enqueue_script( 'ccb-velocity-ui-js', CALC_URL . '/frontend/dist/libs/velocity.ui.min.js', array(), CALC_VERSION, true );
 						wp_enqueue_script( 'ccb-velocity-ui-js', CALC_URL . '/frontend/dist/libs/velocity.ui.min.js', array(), CALC_VERSION, true );
-						wp_enqueue_script( 'ccb-sticky-js', CALC_URL . '/frontend/dist/sticky.js', array(), CALC_VERSION, true );
+
+						Vite\enqueue_asset(
+							CALC_PATH . '/frontend/vue3/dist',
+							'src/sticky/main.ts',
+							array(
+								'handle'    => 'ccb-sticky-js',
+								'in-footer' => true,
+								'version'   => CALC_VERSION,
+							)
+						);
 					}
+
+					$currency = $global_settings['currency']['use_in_all'] ? $global_settings['currency'] : $calc_settings['currency'];
+
+					$sticky_settings_data = array(
+						'title'               => get_post_meta( $calculator->ID, 'stm-name', true ),
+						'calcId'              => $calculator->ID,
+						'stickySettings'      => $calc_settings['sticky_calc'],
+						'wooCheckoutSettings' => $calc_settings['woo_checkout'],
+						'currency'            => $currency,
+						'translations'        => CCBTranslations::get_frontend_translations(),
+						'is_pro_active'       => ccb_pro_active(),
+					);
+
+					$GLOBALS['ccb_sticky_data'][ $calculator->ID ] = $sticky_settings_data;
 
 					$page_id           = get_the_ID();
 					$not_allowed_pages = array();
@@ -108,6 +142,8 @@ class CCBFrontController {
 							$sticky_settings['invoice']      = $global_settings['invoice'];
 							$sticky_settings['post_id']      = $post->ID ?? null;
 
+							$currency = $global_settings['currency']['use_in_all'] ? $global_settings['currency'] : ccb_parse_settings( $calc_settings );
+
 							wp_localize_script(
 								'ccb-sticky-js',
 								'ccb_sticky_data',
@@ -117,7 +153,7 @@ class CCBFrontController {
 									'calc_id'      => $calculator->ID,
 									'sticky_calc'  => $sticky_settings,
 									'translations' => CCBTranslations::get_frontend_translations(),
-									'currency'     => ccb_parse_settings( $calc_settings ),
+									'currency'     => $currency,
 								)
 							);
 
@@ -180,6 +216,8 @@ class CCBFrontController {
 			}
 		}
 
+		wp_localize_script( 'ccb-sticky-js', 'ccb_sticky_data', $GLOBALS['ccb_sticky_data'] );
+
 		$close_tag = '';
 		if ( $has_sticky ) {
 			$close_tag = '</div>';
@@ -230,6 +268,10 @@ class CCBFrontController {
 			$general_settings     = $ccb_sync['general_settings'];
 			$sticky_calc_settings = $settings['sticky_calc'] ?? array();
 
+			if ( is_admin() ) {
+				$sticky_calc_settings['enable'] = false;
+			}
+
 			$is_woocommerce = false;
 			if ( function_exists( 'is_woocommerce' ) && is_woocommerce() ) {
 				$is_woocommerce = true;
@@ -270,27 +312,26 @@ class CCBFrontController {
 
 			$custom_sticky = is_null( $sticky ) ? $custom : $sticky;
 			self::ccb_add_custom_data( $calc_id, $custom_sticky, $settings, $general_settings, $custom_action );
+			self::ccb_load_appearance( $calc_id );
 
-			$templates       = \cBuilder\Helpers\CCBFieldsHelper::get_fields_templates( $settings, $general_settings );
-			$order_templates = \cBuilder\Helpers\CCBFieldsHelper::get_order_fields_templates( $settings, $general_settings );
-			$payments        = array();
+			Vite\enqueue_asset(
+				CALC_PATH . '/frontend/vue3/dist',
+				'src/widget/main.ts',
+				array(
+					'handle'    => 'calc-builder-main-js',
+					'in-footer' => true,
+					'version'   => CALC_VERSION,
+				)
+			);
 
-			if ( ccb_pro_active() ) {
-				$payments = \cBuilder\Classes\CCBProSettings::get_payments();
-			}
-
-			wp_enqueue_script( 'calc-builder-main-js', CALC_URL . '/frontend/dist/bundle.js', array( 'cbb-sticky-sidebar-js' ), CALC_VERSION, true );
 			wp_localize_script(
 				'calc-builder-main-js',
 				'ajax_window',
 				array(
 					'ajax_url'         => admin_url( 'admin-ajax.php' ),
 					'language'         => $language,
-					'templates'        => $templates,
-					'order_templates'  => $order_templates,
 					'pro_active'       => ccb_pro_active(),
 					'the_id'           => get_the_ID(),
-					'payments'         => $payments,
 					'general_settings' => $general_settings,
 					'plugin_url'       => CALC_URL,
 				)
@@ -307,6 +348,7 @@ class CCBFrontController {
 					'general_settings' => $calc_settings['general_settings'],
 					'fields'           => $fields,
 					'extra_style'      => $extra_style,
+					'pro_active'       => ccb_pro_active(),
 				)
 			);
 		}
@@ -342,7 +384,6 @@ class CCBFrontController {
 	}
 
 	public static function render_thank_you_page( $attr ) {
-
 		wp_enqueue_script( 'cbb-resize-sensor-js', CALC_URL . '/frontend/dist/sticky/ResizeSensor.js', array(), CALC_VERSION, true );
 		wp_enqueue_script( 'cbb-sticky-sidebar-js', CALC_URL . '/frontend/dist/sticky/sticky-sidebar.js', array( 'cbb-resize-sensor-js' ), CALC_VERSION, true );
 
@@ -354,7 +395,20 @@ class CCBFrontController {
 		$params   = shortcode_atts( array( 'id' => null ), $attr );
 		$language = substr( get_bloginfo( 'language' ), 0, 2 );
 
-		wp_enqueue_script( 'calc-builder-main-js', CALC_URL . '/frontend/dist/bundle.js', array( 'ccb-lodash-js', 'cbb-sticky-sidebar-js' ), CALC_VERSION, true );
+		if ( ! empty( $params['id'] ) ) {
+			self::ccb_load_appearance( $params['id'] );
+		}
+
+		Vite\enqueue_asset(
+			CALC_PATH . '/frontend/vue3/dist',
+			'src/widget/main.ts',
+			array(
+				'handle'    => 'calc-builder-main-js',
+				'in-footer' => true,
+				'version'   => CALC_VERSION,
+			)
+		);
+
 		wp_localize_script(
 			'calc-builder-main-js',
 			'ajax_window',
@@ -428,6 +482,18 @@ class CCBFrontController {
 		return array();
 	}
 
+	public static function ccb_load_appearance( $calc_id ) {
+		$preset_key = get_post_meta( $calc_id, 'ccb_calc_preset_idx', true );
+		$preset_key = empty( $preset_key ) ? 0 : $preset_key;
+		$appearance = CCBAppearanceHelper::get_appearance_data( $preset_key );
+
+		if ( ! empty( $appearance ) ) {
+			$appearance   = $appearance['data'];
+			$ccbCssLoader = new CCBCssLoader( $calc_id, $appearance );
+			$ccbCssLoader->ccb_upload_root_css();
+		}
+	}
+
 	public static function ccb_add_custom_data( $calc_id, $sticky, $settings, $general_settings, $action ) {
 		$preset_key = get_post_meta( $calc_id, 'ccb_calc_preset_idx', true );
 		$preset_key = empty( $preset_key ) ? 0 : $preset_key;
@@ -436,7 +502,6 @@ class CCBFrontController {
 
 		if ( ! empty( $appearance ) ) {
 			$appearance = $appearance['data'];
-
 			if ( isset( $appearance['desktop']['others']['data']['calc_preloader']['value'] ) ) {
 				$loader_idx = $appearance['desktop']['others']['data']['calc_preloader']['value'];
 			}
@@ -453,7 +518,7 @@ class CCBFrontController {
 			'action'           => $action,
 		);
 
-		$template_variables['template'] = \cBuilder\Classes\CCBTemplate::load( 'frontend/partials/calc-builder', $template_params ); // phpcs:ignore
+		$template_variables = array();
 
 		if ( ! empty( $settings['formFields']['contactFormId'] ) ) {
 			$template_variables['cf7_form'] = do_shortcode( '[contact-form-7 id="' . $settings['formFields']['contactFormId'] . '"]' );
@@ -479,7 +544,7 @@ class CCBFrontController {
 	private static function check_action( $action, $settings, $global_settings ) {
 		if ( 'pro_features' === $action ) {
 			$access_email = empty( $settings['formFields']['accessEmail'] );
-			$woo_action   = ( empty( $settings['woo_checkout']['enable'] ) || empty( $settings['woo_products']['enable'] ) );
+			$woo_action   = empty( $settings['woo_checkout']['enable'] );
 
 			$payment_gateway = $settings['payment_gateway'];
 			$paypal          = empty( $payment_gateway['paypal']['enable'] );

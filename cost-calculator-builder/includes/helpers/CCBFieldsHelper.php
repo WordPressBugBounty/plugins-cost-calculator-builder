@@ -18,45 +18,30 @@ class CCBFieldsHelper {
 	 */
 	public static function get_fields_templates( $settings = array(), $general_settings = array(), $calc_id = null ) {
 		$templates = array(
-			'line'         => CCBTemplate::load( 'frontend/fields/cost-line' ),
-			'html'         => CCBTemplate::load( 'frontend/fields/cost-html' ),
-			'toggle'       => CCBTemplate::load( 'frontend/fields/cost-toggle' ),
-			'text-area'    => CCBTemplate::load( 'frontend/fields/cost-text' ),
-			'checkbox'     => CCBTemplate::load( 'frontend/fields/cost-checkbox' ),
-			'quantity'     => CCBTemplate::load( 'frontend/fields/cost-quantity' ),
-			'radio-button' => CCBTemplate::load( 'frontend/fields/cost-radio' ),
-			'range-button' => CCBTemplate::load( 'frontend/fields/cost-range' ),
-			'drop-down'    => CCBTemplate::load( 'frontend/fields/cost-drop-down' ),
-			'total'        => CCBTemplate::load( 'frontend/fields/cost-total' ),
+			'line'         => CCBTemplate::load( 'admin/components/preview/fields/cost-line' ),
+			'html'         => CCBTemplate::load( 'admin/components/preview/fields/cost-html' ),
+			'toggle'       => CCBTemplate::load( 'admin/components/preview/fields/cost-toggle' ),
+			'text-area'    => CCBTemplate::load( 'admin/components/preview/fields/cost-text' ),
+			'checkbox'     => CCBTemplate::load( 'admin/components/preview/fields/cost-checkbox' ),
+			'quantity'     => CCBTemplate::load( 'admin/components/preview/fields/cost-quantity' ),
+			'radio-button' => CCBTemplate::load( 'admin/components/preview/fields/cost-radio' ),
+			'range-button' => CCBTemplate::load( 'admin/components/preview/fields/cost-range' ),
+			'drop-down'    => CCBTemplate::load( 'admin/components/preview/fields/cost-drop-down' ),
+			'total'        => CCBTemplate::load( 'admin/components/preview/fields/cost-total' ),
 		);
 
 		if ( ccb_pro_active() ) {
-			$templates['group']                = CCBProTemplate::load( 'frontend/fields/cost-group' );
-			$templates['geolocation']          = CCBProTemplate::load( 'frontend/fields/cost-geolocation' );
-			$templates['repeater']             = CCBProTemplate::load( 'frontend/fields/cost-repeater' );
-			$templates['date-picker']          = CCBProTemplate::load( 'frontend/fields/cost-date-picker' );
-			$templates['time-picker']          = CCBProTemplate::load( 'frontend/fields/cost-time-picker' );
-			$templates['multi-range']          = CCBProTemplate::load( 'frontend/fields/cost-multi-range' );
-			$templates['file-upload']          = CCBProTemplate::load( 'frontend/fields/cost-file-upload' );
-			$templates['validated-form']       = CCBProTemplate::load( 'frontend/fields/cost-validated-form' );
-			$templates['radio-with-image']     = CCBProTemplate::load( 'frontend/fields/cost-radio-with-image' );
-			$templates['checkbox-with-image']  = CCBProTemplate::load( 'frontend/fields/cost-checkbox-with-image' );
-			$templates['drop-down-with-image'] = CCBProTemplate::load( 'frontend/fields/cost-drop-down-with-image' );
-
-			if ( ! empty( $general_settings ) && ! empty( $settings ) ) {
-				$template_params = array(
-					'settings'         => $settings,
-					'general_settings' => $general_settings,
-				);
-
-				$templates['ccb-thank-you-page'] = \cBuilder\Classes\CCBTemplate::load( 'frontend/partials/thank-you-page', $template_params );
-				$templates['ccb-pro-features']   = \cBuilder\Classes\CCBProTemplate::load( 'frontend/pro-features', $template_params );
-				$templates['calc-payments']      = \cBuilder\Classes\CCBProTemplate::load( 'frontend/partials/calc-payments', $template_params );
-				$templates['calc-woo-checkout']  = \cBuilder\Classes\CCBProTemplate::load( 'frontend/partials/woo-checkout', $template_params );
-				$templates['invoice-btn']        = \cBuilder\Classes\CCBProTemplate::load( 'frontend/partials/calc-invoice', $template_params );
-				$templates['calc-form']          = \cBuilder\Classes\CCBProTemplate::load( 'frontend/partials/calc-contact-form', $template_params );
-				$templates['form-payments']      = \cBuilder\Classes\CCBProTemplate::load( 'frontend/partials/calc-form-payments', $template_params );
-			}
+			$templates['group']                = CCBProTemplate::load( 'admin/components/fields/cost-group' );
+			$templates['geolocation']          = CCBProTemplate::load( 'admin/components/fields/cost-geolocation' );
+			$templates['repeater']             = CCBProTemplate::load( 'admin/components/fields/cost-repeater' );
+			$templates['date-picker']          = CCBProTemplate::load( 'admin/components/fields/cost-date-picker' );
+			$templates['time-picker']          = CCBProTemplate::load( 'admin/components/fields/cost-time-picker' );
+			$templates['multi-range']          = CCBProTemplate::load( 'admin/components/fields/cost-multi-range' );
+			$templates['file-upload']          = CCBProTemplate::load( 'admin/components/fields/cost-file-upload' );
+			$templates['validated-form']       = CCBProTemplate::load( 'admin/components/fields/cost-validated-form' );
+			$templates['radio-with-image']     = CCBProTemplate::load( 'admin/components/fields/cost-radio-with-image' );
+			$templates['checkbox-with-image']  = CCBProTemplate::load( 'admin/components/fields/cost-checkbox-with-image' );
+			$templates['drop-down-with-image'] = CCBProTemplate::load( 'admin/components/fields/cost-drop-down-with-image' );
 		}
 
 		return $templates;
@@ -335,5 +320,76 @@ class CCBFieldsHelper {
 			}
 		}
 		return self::$file_field_formats;
+	}
+
+	public static function ccb_check_fields( $fields = array() ) {
+		$not_calculable = array( 'text', 'html', 'line', 'validated_form' );
+		$true_values    = array( '1', 'true', 1, true );
+		$keys           = array( 'hidden', 'required', 'allowRound', 'allowCurrency', 'addToSummary', 'calculateHidden', 'fieldCurrency', 'multiply', 'calculatePerEach', 'allowPrice', 'uploadFromUrl', 'is_have_unselectable', 'day_price_enabled', 'autoclose_enabled', 'range', 'enabled_currency_settings' );
+		foreach ( $fields as $idx => $field ) {
+			if ( ! empty( $field['alias'] ) ) {
+				$field_name = preg_replace( '/_field_id.*/', '', $field['alias'] );
+
+				$field['isCalculable'] = ! in_array( $field_name, $not_calculable, true );
+
+				foreach ( $keys as $key ) {
+					if ( isset( $field[ $key ] ) ) {
+						$field[ $key ] = in_array( $field[ $key ], $true_values, true );
+					}
+				}
+
+				if ( ! isset( $field['addToSummary'] ) ) {
+					$field['addToSummary'] = true;
+				}
+
+				$fields[ $idx ] = $field;
+			}
+		}
+
+		return $fields;
+	}
+
+	public static function ccb_apply_style_for_all( $fields = array(), $settings = array() ) {
+		$keys = array( 'radio', 'checkbox', 'toggle', 'range-button', 'radio_with_img', 'checkbox_with_img' );
+
+		if ( ccb_pro_active() ) {
+			foreach ( $keys as $key ) {
+				if ( ! empty( $settings['general']['styles'][ $key ] ) ) {
+					$alias      = $settings['general']['styles'][ $key ];
+					$main_field = self::ccb_find_field( $alias, $fields );
+					if ( ! is_null( $main_field ) ) {
+						foreach ( $fields as $idx => $field ) {
+							$field_type = preg_replace( '/_field_id.*/', '', $field['alias'] );
+							if ( $field_type === $key ) {
+								$fields[ $idx ]['styles'] = $main_field['styles'];
+							}
+						}
+					}
+				}
+			}
+		} else {
+			foreach ( $fields as $idx => $field ) {
+				if ( ! empty( $field['styles'] ) ) {
+					$fields[ $idx ]['styles'] = array(
+						'box_style' => 'vertical',
+						'style'     => 'default',
+					);
+				}
+			}
+		}
+
+		return $fields;
+	}
+
+	private static function ccb_find_field( $alias = '', $fields = array() ) {
+		$field = null;
+		foreach ( $fields as $idx => $field ) {
+			if ( $field['alias'] === $alias ) {
+				$field = $fields[ $idx ];
+				break;
+			}
+		}
+
+		return $field;
 	}
 }

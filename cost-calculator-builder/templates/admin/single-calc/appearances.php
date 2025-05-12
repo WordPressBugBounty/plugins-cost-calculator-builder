@@ -47,6 +47,9 @@ $hide_notice = get_option( 'ccb_appearance_hide_notice', false );
 	<loader v-if="preloader"></loader>
 	<div class="ccb-appearance-container" v-else>
 		<div class="ccb-appearance-content ccb-custom-scrollbar">
+			<div class="ccb-appearance-top-notice" >
+				<span v-html="'<?php echo esc_attr( sprintf( __( 'Important! You can customize styles in %1$s, but calculations and interactive features are disabled.', 'cost-calculator-builder-pro' ), '<b>preview mode</b>' ) ); ?>'"></span>
+			</div>
 			<div class="ccb-appearance-property-toggle" @click="toggleSettings">
 				<i class="ccb-icon-Path-3398"></i>
 			</div>

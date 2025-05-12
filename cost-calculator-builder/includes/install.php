@@ -1,18 +1,23 @@
 <?php
-function ccb_add_nonces() {
-	$variables = array(
-		'ccb_payment'          => wp_create_nonce( 'ccb_payment' ),
-		'ccb_contact_form'     => wp_create_nonce( 'ccb_contact_form' ),
-		'ccb_woo_checkout'     => wp_create_nonce( 'ccb_woo_checkout' ),
-		'ccb_add_order'        => wp_create_nonce( 'ccb_add_order' ),
-		'ccb_orders'           => wp_create_nonce( 'ccb_orders' ),
-		'ccb_update_order'     => wp_create_nonce( 'ccb_update_order' ),
-		'ccb_send_invoice'     => wp_create_nonce( 'ccb_send_invoice' ),
-		'ccb_get_invoice'      => wp_create_nonce( 'ccb_get_invoice' ),
-		'ccb_wp_hook_nonce'    => wp_create_nonce( 'ccb_wp_hook_nonce' ),
-		'ccb_razorpay_receive' => wp_create_nonce( 'ccb_razorpay_receive' ),
+function ccb_get_nonces() {
+	return array(
+		'ccb_payment'             => wp_create_nonce( 'ccb_payment' ),
+		'ccb_contact_form'        => wp_create_nonce( 'ccb_contact_form' ),
+		'ccb_woo_checkout'        => wp_create_nonce( 'ccb_woo_checkout' ),
+		'ccb_add_order'           => wp_create_nonce( 'ccb_add_order' ),
+		'ccb_orders'              => wp_create_nonce( 'ccb_orders' ),
+		'ccb_update_order'        => wp_create_nonce( 'ccb_update_order' ),
+		'ccb_send_invoice'        => wp_create_nonce( 'ccb_send_invoice' ),
+		'ccb_get_invoice'         => wp_create_nonce( 'ccb_get_invoice' ),
+		'ccb_wp_hook_nonce'       => wp_create_nonce( 'ccb_wp_hook_nonce' ),
+		'ccb_razorpay_receive'    => wp_create_nonce( 'ccb_razorpay_receive' ),
+		'ccb_woocommerce_payment' => wp_create_nonce( 'ccb_woocommerce_payment' ),
 	);
-	echo ( '<script type="text/javascript">window.ccb_nonces = ' . json_encode( $variables ) . ';</script>' ); //phpcs:ignore
+}
+
+function ccb_add_nonces() {
+	$nonces = ccb_get_nonces();
+	echo ( '<script type="text/javascript">window.ccb_nonces = ' . json_encode( $nonces ) . ';</script>' ); //phpcs:ignore
 }
 
 function ccb_add_admin_nonces() {
@@ -94,6 +99,7 @@ function ccb_add_admin_nonces() {
 	);
 
 	echo ( '<script type="text/javascript">window.ccb_nonces = ' . json_encode( $variables ) . ';</script>' ); //phpcs:ignore
+	echo ( '<script type="text/javascript">window.ccb_frontend_nonces = ' . json_encode( ccb_get_nonces() ) . ';</script>' ); //phpcs:ignore
 }
 
 add_action( 'wp_head', 'ccb_add_nonces' );

@@ -264,6 +264,7 @@ class CCBOrderController {
 						}
 					}
 				}
+
 				$file_upload_index = 0;
 				foreach ( $order_details as $field_key => $field ) {
 					if ( ! empty( $field['alias'] ) && preg_replace( '/_field_id.*/', '', $field['alias'] ) === 'file_upload' ) {
@@ -330,25 +331,61 @@ class CCBOrderController {
 				'order_data'   => $order_data,
 			);
 
-			apply_filters( 'ccb_orders_before_create', $before_data );
+			if ( ! empty( $data['paymentMethod'] ) ) {
+				apply_filters( 'ccb_orders_before_create', $before_data );
+				$id = Orders::create_order( $order_data, $payment_data );
+				do_action( 'ccb_after_create_order', $order_data, $payment_data );
 
-			$id = Orders::create_order( $order_data, $payment_data );
+				$meta_data = array(
+					'converted'   => $data['converted'] ?? array(),
+					'totals'      => isset( $data['totals'] ) ? wp_json_encode( $data['totals'] ) : array(),
+					'otherTotals' => isset( $data['otherTotals'] ) ? wp_json_encode( $data['otherTotals'] ) : array(),
+				);
 
-			do_action( 'ccb_after_create_order', $order_data, $payment_data );
-			$meta_data = array(
-				'converted'   => $data['converted'] ?? array(),
-				'totals'      => isset( $data['totals'] ) ? wp_json_encode( $data['totals'] ) : array(),
-				'otherTotals' => isset( $data['otherTotals'] ) ? wp_json_encode( $data['otherTotals'] ) : array(),
-			);
+				update_option( 'calc_meta_data_order_' . $id, $meta_data, false );
 
-			update_option( 'calc_meta_data_order_' . $id, $meta_data, false );
+				do_action( 'ccb_order_created', $order_data, $payment_data );
 
-			do_action( 'ccb_order_created', $order_data, $payment_data );
+				if ( ! isset( $data['calcId'] ) && ! empty( $data['id'] ) ) {
+					$data['calcId'] = $data['id'];
+				}
+
+				$message         = '';
+				$data['orderId'] = $id;
+				if ( 'no_payments' === $data['paymentMethod'] ) {
+					\cBuilder\Classes\CCBContactForm::ccb_send_form( $id, $data );
+					$message = 'Your order has been placed';
+				} elseif ( 'cash_payment' === $data['paymentMethod'] ) {
+					\cBuilder\Classes\Payments\CCBCashPayment::renderPayment( $data, $id );
+					$message = 'Cash payment applied successfully';
+				} elseif ( 'paypal' === $data['paymentMethod'] ) {
+					\cBuilder\Classes\Payments\CCBPayPal::renderPayment( $data, $id );
+					$message = 'Paypal payment applied successfully';
+				} elseif ( 'stripe' === $data['paymentMethod'] ) {
+					\cBuilder\Classes\Payments\CCBStripe::intent_payment( $data, $id );
+					$message = 'Stripe payment applied successfully';
+				} elseif ( 'razorpay' === $data['paymentMethod'] ) {
+					\cBuilder\Classes\Payments\CCBRazorPay::renderPayment( $data, $id );
+					$message = 'Razorpay payment applied successfully';
+				} elseif ( 'woocommerce' === $data['paymentMethod'] ) {
+					\cBuilder\Classes\CCBWooCheckout::init( $data, $id );
+					$message = 'Added to cart successfully';
+				}
+
+				wp_send_json_success(
+					array(
+						'status'  => 'success',
+						'orderId' => $id,
+						'message' => $message,
+					)
+				);
+			}
 
 			wp_send_json_success(
 				array(
-					'status'   => 'success',
-					'order_id' => $id,
+					'status'   => 'error',
+					'order_id' => null,
+					'message'  => 'Invalid payment method',
 				)
 			);
 		}
@@ -374,8 +411,9 @@ class CCBOrderController {
 			$data = ccb_convert_from_btoa( $_POST['data'], true );
 		}
 
-		if ( ! empty( $data['ids'] ) ) {
-			$ids    = sanitize_text_field( $data['ids'] );
+		$idOrIds = $data['orderId'] ?? $data['ids'] ?? '';
+		if ( ! empty( $idOrIds ) ) {
+			$ids    = sanitize_text_field( $idOrIds );
 			$status = ! empty( $data['status'] ) ? sanitize_text_field( $data['status'] ) : null;
 
 			$ids  = explode( ',', $ids );
@@ -576,7 +614,8 @@ class CCBOrderController {
 				}
 
 				foreach ( $form_details as $detail ) {
-					if ( 'email' === $detail->name || 'your-email' === $detail->name ) {
+					$type = $detail->name ?? $detail->type;
+					if ( ( 'email' === $type || 'your-email' === $type ) && ! empty( $detail->value ) ) {
 						$order['user_email'] = $detail->value;
 					}
 				}
@@ -724,7 +763,7 @@ class CCBOrderController {
 			}
 
 			foreach ( $form_details as $detail ) {
-				if ( 'email' === $detail->name || 'your-email' === $detail->name ) {
+				if ( ! empty( $detail->type ) && 'email' === $detail->type && ! empty( $detail->value ) ) {
 					$order['user_email'] = $detail->value;
 				}
 			}
@@ -794,5 +833,39 @@ class CCBOrderController {
 		}
 
 		return array();
+	}
+
+	public static function renderWooCommercePayment() {
+		check_ajax_referer( 'ccb_woocommerce_payment', 'nonce' );
+
+		$data = null;
+
+		if ( isset( $_POST['data'] ) ) {
+			$data = ccb_convert_from_btoa( $_POST['data'] );
+			if ( ! ccb_is_convert_correct( $data ) ) {
+				wp_send_json(
+					array(
+						'status'  => 'error',
+						'success' => false,
+						'message' => 'Invalid data',
+					)
+				);
+			}
+		}
+
+		$data     = (array) json_decode( stripslashes( $data ), true );
+		$order_id = $data['orderId'] ?? null;
+
+		if ( is_null( $order_id ) ) {
+			wp_send_json(
+				array(
+					'status'  => 'error',
+					'success' => false,
+					'message' => 'Invalid data',
+				)
+			);
+		}
+
+		\cBuilder\Classes\CCBWooCheckout::init( $data, $order_id );
 	}
 }

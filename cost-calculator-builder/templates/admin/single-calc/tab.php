@@ -45,7 +45,11 @@ $templates_page = get_admin_url( null, 'admin.php?page=cost_calculator_templates
 						<span class="ccb-options-tooltip__text" style="right: -115%" v-else><?php esc_html_e( 'No saved backups', 'cost-calculator-builder' ); ?></span>
 					</span>
 					<?php endif; ?>
-					<button class="ccb-button default" v-if="currentTab !== 'appearances'" @click="previewMode"><?php esc_html_e( 'Preview', 'cost-calculator-builder' ); ?></button>
+					<div class="ccb-preview-button-dev-container">
+						<button class="ccb-button default" style="height: 100%" @click="previewMode">
+							<?php esc_html_e( 'Preview & Save', 'cost-calculator-builder' ); ?>
+						</button>
+					</div>
 					<button class="ccb-button embed" @click="showEmbed" style="height: 100%" v-if="$store.getters.getSaved">
 						<span class="ccb-icon-html"></span>
 						<span>

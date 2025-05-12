@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'ccb-fonts';
-  src:  url('fonts/ccb-fonts.eot?ssgu');
-  src:  url('fonts/ccb-fonts.eot?ssgu#iefix') format('embedded-opentype'),
-    url('fonts/ccb-fonts.ttf?ssgu') format('truetype'),
-    url('fonts/ccb-fonts.woff?ssgu') format('woff'),
-    url('fonts/ccb-fonts.svg?ssgu#ccb-fonts') format('svg');
+  src:  url('fonts/ccb-fonts.eot?n1thnz');
+  src:  url('fonts/ccb-fonts.eot?n1thnz#iefix') format('embedded-opentype'),
+    url('fonts/ccb-fonts.ttf?n1thnz') format('truetype'),
+    url('fonts/ccb-fonts.woff?n1thnz') format('woff'),
+    url('fonts/ccb-fonts.svg?n1thnz#ccb-fonts') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -921,4 +921,7 @@
 }
 .ccb-icon-form-edit-manager:before {
   content: "\ea27";
+}
+.ccb-icon-warning:before {
+  content: "\ea28";
 }

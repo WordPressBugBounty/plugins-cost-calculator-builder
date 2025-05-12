@@ -10,11 +10,13 @@ class CCBTranslations {
 	 * @return array
 	 */
 	public static function get_frontend_translations() {
-		return array(
+		$translations = array(
 			'empty_end_date_error'   => esc_html__( 'Please select the second date', 'cost-calculator-builder' ),
 			'wrong_date_range_error' => esc_html__( 'Please select correct date range values', 'cost-calculator-builder' ),
 			'empty_end_time_error'   => esc_html__( 'Please select the second time', 'cost-calculator-builder' ),
 			'required_field'         => esc_html__( 'This field is required', 'cost-calculator-builder' ),
+			'min_required_single'    => esc_html__( 'option is required', 'cost-calculator-builder' ),
+			'min_required_plural'    => esc_html__( 'options are required', 'cost-calculator-builder' ),
 			'select_date_range'      => esc_html__( 'Select Date Range', 'cost-calculator-builder' ),
 			'select_date'            => esc_html__( 'Select Date', 'cost-calculator-builder' ),
 			'select_all'             => esc_html__( 'All dates', 'cost-calculator-builder' ),
@@ -25,6 +27,7 @@ class CCBTranslations {
 			'wrong_file_url'         => esc_html__( 'Wrong file url', 'cost-calculator-builder' ),
 			'big_file_size'          => esc_html__( 'File size is too big', 'cost-calculator-builder' ),
 			'wrong_file_format'      => esc_html__( 'Wrong file format', 'cost-calculator-builder' ),
+			'incorrect_email_format' => esc_html__( 'Incorrect email format', 'cost-calculator-builder' ),
 			'form_no_payment'        => esc_html__( 'No Payment', 'cost-calculator-builder' ),
 			'min_higher_max'         => esc_html__( 'Max value must be greater than min value', 'cost-calculator-builder' ),
 			'must_be_between'        => esc_html__( 'Value must be between min and max values', 'cost-calculator-builder' ),
@@ -33,6 +36,11 @@ class CCBTranslations {
 			'days'                   => esc_html__( 'days', 'cost-calculator-builder' ),
 			'files'                  => esc_html__( 'file(s)', 'cost-calculator-builder' ),
 			'order_created'          => esc_html__( 'Order created', 'cost-calculator-builder' ),
+			'clearLocation'          => esc_html__( 'Clear location', 'cost-calculator-builder' ),
+			'cancel'                 => esc_html__( 'Cancel', 'cost-calculator-builder' ),
+			'saveLocation'           => esc_html__( 'Save location', 'cost-calculator-builder' ),
+			'openMap'                => esc_html__( 'Open map', 'cost-calculator-builder' ),
+			'chooseFile'             => esc_html__( 'Choose file', 'cost-calculator-builder' ),
 			'formula'                => array(
 				'addition'              => esc_html__( 'Addition (+)', 'cost-calculator-builder' ),
 				'subtraction'           => esc_html__( 'Subtraction (-)', 'cost-calculator-builder' ),
@@ -69,7 +77,37 @@ class CCBTranslations {
 			'invalid_email'          => esc_html__( 'Invalid email', 'cost-calculator-builder' ),
 			'invalid_url'            => esc_html__( 'Invalid url', 'cost-calculator-builder' ),
 			'invalid_phone'          => esc_html__( 'Invalid phone number', 'cost-calculator-builder' ),
+			'select_value'           => esc_html__( 'Select value', 'cost-calculator-builder' ),
+			'select_values'          => esc_html__( 'Select values', 'cost-calculator-builder' ),
+			'value_must_be_between'  => esc_html__( 'Value must be between', 'cost-calculator-builder' ),
+			'min'                    => esc_html__( 'Min', 'cost-calculator-builder' ),
+			'max'                    => esc_html__( 'Max', 'cost-calculator-builder' ),
+			'allowed_limit_is'       => esc_html__( 'Allowed limit is', 'cost-calculator-builder' ),
+			'characters'             => esc_html__( 'characters', 'cost-calculator-builder' ),
+			'valid_email_address'    => esc_html__( 'Please enter a valid email address', 'cost-calculator-builder' ),
+			'enter_valid_url'        => esc_html__( 'Please enter a valid URL', 'cost-calculator-builder' ),
+			'have_promo_code'        => esc_html__( 'Have a promo code?', 'cost-calculator-builder' ),
+			'promo_code_not_exist'   => esc_html__( 'Promo code does not exist', 'cost-calculator-builder' ),
+			'promo_code_is_applied'  => esc_html__( 'Promo code is already applied', 'cost-calculator-builder' ),
+			'promo_code'             => esc_html__( 'Promo code', 'cost-calculator-builder' ),
+			'apply'                  => esc_html__( 'Apply', 'cost-calculator-builder' ),
+			'applied_promo_codes'    => esc_html__( 'Applied promo codes', 'cost-calculator-builder' ),
+			'hide'                   => esc_html__( 'Hide', 'cost-calculator-builder' ),
+			'show'                   => esc_html__( 'Show', 'cost-calculator-builder' ),
+			'characters_max'         => esc_html__( 'characters max', 'cost-calculator-builder' ),
+			'edit'                   => esc_html__( 'Edit', 'cost-calculator-builder' ),
+			'name'                   => esc_html__( 'Name', 'cost-calculator-builder' ),
+			'total'                  => esc_html__( 'Total', 'cost-calculator-builder' ),
+			'and'                    => esc_html__( 'and', 'cost-calculator-builder' ),
+			'email_quote'            => esc_html__( 'Email Quote', 'cost-calculator-builder' ),
+			'type_your_name'         => esc_html__( 'Type your name', 'cost-calculator-builder' ),
+			'type_your_email'        => esc_html__( 'Type your Email', 'cost-calculator-builder' ),
+			'enter_message'          => esc_html__( 'Enter message', 'cost-calculator-builder' ),
+			'email'                  => esc_html__( 'Email', 'cost-calculator-builder' ),
+			'message'                => esc_html__( 'Message', 'cost-calculator-builder' ),
 		);
+
+		return apply_filters( 'ccb_frontend_translations', $translations );
 	}
 
 	public static function get_backend_translations() {

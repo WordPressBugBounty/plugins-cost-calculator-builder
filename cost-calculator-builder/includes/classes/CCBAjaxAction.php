@@ -97,6 +97,7 @@ class CCBAjaxAction {
 		self::addAction( 'get_cc_orders', array( CCBOrderController::class, 'orders' ), true );
 		self::addAction( 'delete_cc_orders', array( CCBOrderController::class, 'delete' ) );
 		self::addAction( 'update_order_status', array( CCBOrderController::class, 'update' ), true );
+		self::addAction( 'ccb_woocommerce_payment', array( CCBOrderController::class, 'renderWooCommercePayment' ), true );
 
 		/** Cost Calculator Settings */
 		self::addAction( 'save_invoice_logo', array( CCBAdminActions::class, 'upload_invoice_logo' ) );

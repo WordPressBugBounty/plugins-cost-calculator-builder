@@ -20,8 +20,6 @@ if ( ! isset( $translations ) ) {
 	$translations = array();
 }
 
-$container_style = 'v-container';
-
 if ( ! isset( $settings ) ) {
 	$settings = CCBSettingsData::get_calc_single_settings( $calc_id );
 }
@@ -90,9 +88,27 @@ if ( ! empty( $settings['formFields'] ) && ! empty( $settings['texts']['form_fie
 	$settings['texts']['form_fields'] = apply_filters( 'ccb_contact_form_add_text_form_fields', $settings['texts']['form_fields'] );
 }
 
-if ( ! empty( $general_settings['form_fields']['use_in_all'] ) && ! empty( $general_settings['form_fields']['summary_display']['use_in_all'] ) ) {
-	$settings['formFields']['summary_display']           = $general_settings['form_fields']['summary_display'];
-	$settings['formFields']['summary_display']['enable'] = true;
+if ( ! empty( $general_settings['form_fields']['use_in_all'] ) ) {
+	if ( ! empty( $general_settings['form_fields']['summary_display']['use_in_all'] ) ) {
+		$settings['formFields']['summary_display']           = $general_settings['form_fields']['summary_display'];
+		$settings['formFields']['summary_display']['enable'] = true;
+	}
+
+	if ( ! empty( $general_settings['form_fields']['openModalBtnText'] ) ) {
+		$settings['formFields']['openModalBtnText'] = $general_settings['form_fields']['openModalBtnText'];
+	}
+
+	if ( ! empty( $general_settings['form_fields']['submitBtnText'] ) ) {
+		$settings['formFields']['submitBtnText'] = $general_settings['form_fields']['submitBtnText'];
+	}
+
+	if ( ! empty( $general_settings['form_fields']['adminEmailAddress'] ) ) {
+		$settings['formFields']['adminEmailAddress'] = $general_settings['form_fields']['adminEmailAddress'];
+	}
+
+	if ( ! empty( $general_settings['form_fields']['emailSubject'] ) ) {
+		$settings['formFields']['emailSubject'] = $general_settings['form_fields']['emailSubject'];
+	}
 }
 
 if ( ! empty( $settings['formFields']['accessEmail'] ) && ! empty( $settings['formFields']['contactFormId'] ) ) {
@@ -107,22 +123,25 @@ $settings['thankYouPage'] = apply_filters( 'ccb_customize_confirmation_page', $s
 $preset_key               = get_post_meta( $calc_id, 'ccb_calc_preset_idx', true );
 $preset_key               = empty( $preset_key ) ? 0 : $preset_key;
 $appearance               = CCBAppearanceHelper::get_appearance_data( $preset_key );
+$appearance_data          = array();
 
 if ( ! empty( $appearance ) ) {
-	$appearance = $appearance['data'];
+	$appearance      = $appearance['data'];
+	$appearance_data = array(
+		'boxStyle'            => $appearance['desktop']['layout']['data']['box_style']['value'] ?? 'vertical',
+		'descriptionPosition' => $appearance['desktop']['spacing_and_positions']['data']['description_position']['value'] ?? 'after',
+		'loaderType'          => $appearance['desktop']['others']['data']['calc_preloader']['value'] ?? 0,
+		'accentColor'         => $appearance['desktop']['colors']['data']['accent_color']['value'] ?? '',
+		'svgColor'            => $appearance['desktop']['colors']['data']['svg_color']['value'] ?? '',
+	);
 }
 
 $fields = get_post_meta( $calc_id, 'stm-fields', true ) ?? array();
-if ( ! empty( $fields ) ) {
-	array_walk(
-		$fields,
-		function ( &$field_value, $k ) {
-			if ( array_key_exists( 'required', $field_value ) ) {
-				$field_value['required'] = $field_value['required'] ? 'true' : 'false';
-			}
-		}
-	);
-}
+$fields = \cBuilder\Helpers\CCBFieldsHelper::ccb_check_fields( $fields );
+$fields = \cBuilder\Helpers\CCBFieldsHelper::ccb_apply_style_for_all( $fields, $settings );
+
+$conditions = apply_filters( 'calc_render_conditions', array(), $calc_id ); // phpcs:ignore WordPress.NamingConventions.ValidHookName.UseUnderscores
+$conditions = \cBuilder\Helpers\CCBConditionsHelper::ccb_check_conditions( $conditions );
 
 $form_id     = get_post_meta( $calc_id, 'form_id', true );
 $form_fields = array();
@@ -139,32 +158,59 @@ $geolocation = isset( $general_settings['geolocation'] ) ? $general_settings['ge
 
 if ( isset( $general_settings['invoice'] ) ) {
 	$settings['invoice'] = array(
+		'useInAll'         => $general_settings['invoice']['use_in_all'],
+		'pdfButtonText'    => $general_settings['invoice']['buttonText'],
 		'showAfterPayment' => $general_settings['invoice']['showAfterPayment'],
 		'emailButton'      => $general_settings['invoice']['emailButton'],
 	);
 }
 
+if ( is_user_logged_in() && current_user_can( 'administrator' ) && ! is_admin() ) {
+	$settings['editCalcButton'] = array(
+		'editCalcUrl' => esc_url_raw( admin_url( 'admin.php?page=cost_calculator_builder&action=edit&id=' ) ) . $calc_id,
+	);
+}
+
+if ( is_singular( 'product' ) && function_exists( 'wc_get_product' ) ) {
+	$product = wc_get_product( get_the_ID() );
+	if ( ! empty( $product ) && ! empty( $settings['woo_products'] ) ) {
+		$settings['woo_products']['productPrice']     = $product->get_price();
+		$settings['woo_products']['currentProductId'] = $product->get_id();
+	}
+}
+
+if ( ! empty( $settings['woo_checkout'] ) && ! empty( $settings['woo_checkout']['is_on'] ) && function_exists( 'wc_get_product' ) ) {
+	$product = wc_get_product( $settings['woo_checkout']['product_id'] );
+
+	if ( ! empty( $product ) ) {
+		$settings['woo_checkout']['productName'] = $product->get_name();
+		$settings['woo_checkout']['wooCartUrl']  = esc_url( wc_get_cart_url() );
+	}
+}
+
 $data = array(
-	'id'                  => $calc_id,
-	'settings'            => $settings,
-	'currency'            => ccb_parse_settings( $settings ),
-	'geolocation'         => $geolocation,
-	'fields'              => $fields,
-	'pdf_status'          => ! empty( $general_settings['invoice']['use_in_all'] ),
-	'form_fields'         => $form_fields,
-	'form_data'           => $form_data,
-	'formula'             => get_post_meta( $calc_id, 'stm-formula', true ),
-	'conditions'          => apply_filters( 'calc_render_conditions', array(), $calc_id ), // phpcs:ignore WordPress.NamingConventions.ValidHookName.UseUnderscores
-	'language'            => $language,
-	'appearance'          => $appearance,
-	'dateFormat'          => get_option( 'date_format' ),
-	'pro_active'          => ccb_pro_active(),
-	'default_img'         => CALC_URL . '/frontend/dist/img/default.png',
-	'error_img'           => CALC_URL . '/frontend/dist/img/error.png',
-	'success_img'         => CALC_URL . '/frontend/dist/img/success.png',
-	'translations'        => $translations,
-	'discounts'           => \cBuilder\Classes\Database\Discounts::get_calc_active_discounts( $calc_id ),
-	'has_promocode'       => \cBuilder\Classes\Database\Discounts::has_active_promocode( $calc_id ),
+	'id'             => $calc_id,
+	'settings'       => $settings,
+	'currency'       => ccb_parse_settings( $settings ),
+	'geolocation'    => $geolocation,
+	'fields'         => $fields,
+	'pdf_status'     => ! empty( $general_settings['invoice']['use_in_all'] ),
+	'form_fields'    => $form_fields,
+	'form_data'      => $form_data,
+	'formula'        => get_post_meta( $calc_id, 'stm-formula', true ),
+	'conditions'     => $conditions,
+	'language'       => $language,
+	'appearance'     => $appearance_data,
+	'dateFormat'     => get_option( 'date_format' ),
+	'pro_active'     => ccb_pro_active(),
+	'default_img'    => CALC_URL . '/frontend/dist/img/default.png',
+	'error_img'      => CALC_URL . '/frontend/dist/img/error.png',
+	'success_img'    => CALC_URL . '/frontend/dist/img/success.png',
+	'translations'   => $translations,
+	'discounts'      => \cBuilder\Classes\Database\Discounts::get_calc_active_discounts( $calc_id ),
+	'has_promocode'  => \cBuilder\Classes\Database\Discounts::has_active_promocode( $calc_id ),
+	'pdf_settings'   => \cBuilder\Classes\pdfManager\CCBPdfManager::ccb_get_pdf_manager_data(),
+	'quote_settings' => $general_settings['invoice'],
 );
 
 $custom_defined = false;
@@ -187,6 +233,4 @@ if ( ( isset( $general_settings['payment_gateway']['cards']['razorpay'] ) && ! e
 wp_localize_script( 'calc-builder-main-js', 'calc_data_' . $calc_id, $data );
 ?>
 
-<div class="calculator-settings ccb-front ccb-wrapper-<?php echo esc_attr( $calc_id . ' ' . $extra_style ); ?>" data-calc-id="<?php echo esc_attr( $calc_id ); ?>">
-	<calc-builder-front v-cloak custom="<?php echo esc_attr( $custom_defined ); ?>" :content="<?php echo esc_attr( wp_json_encode( $data, 0, JSON_UNESCAPED_UNICODE ) ); ?>"></calc-builder-front>
-</div>
+<div class="ccb-main-widget <?php echo esc_attr( $extra_style ); ?>" id="ccb_app_<?php echo esc_attr( $calc_id ); ?>" data-calc-id="<?php echo esc_attr( $calc_id ); ?>"></div>

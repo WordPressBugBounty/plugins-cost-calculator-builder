@@ -20,6 +20,16 @@ class CCBBuilderAdminMenu {
 		}
 
 		add_menu_page(
+			'Preview',
+			'Preview',
+			'manage_options',
+			'cost_calculator_preview',
+			array( $this, 'render_preview' ),
+			'',
+			100
+		);
+
+		add_menu_page(
 			esc_html__( 'Cost Calculator', 'cost-calculator-builder' ),
 			esc_html__( 'Cost Calculator', 'cost-calculator-builder' ),
 			'manage_options',
@@ -28,6 +38,7 @@ class CCBBuilderAdminMenu {
 			CALC_URL . '/frontend/dist/img/icon.png',
 			110
 		);
+
 		add_submenu_page(
 			'cost_calculator_builder',
 			esc_html__( 'Calculators', 'cost-calculator-builder' ),
@@ -44,6 +55,17 @@ class CCBBuilderAdminMenu {
 			'cost_calculator_templates',
 			array( $this, 'render_templates' )
 		);
+
+		//phpcs:disable
+		// add_submenu_page(
+		// 	'cost_calculator_builder',
+		// 	esc_html__( 'Order Analytics', 'cost-calculator-builder' ),
+		// 	esc_html__( 'Order Analytics', 'cost-calculator-builder' ),
+		// 	'manage_options',
+		// 	'cost_calculator_analytics',
+		// 	array( $this, 'render_analytics' )
+		// );
+		//phpcs:enable
 
 		if ( defined( 'CALC_DEV_MODE' ) ) {
 			add_submenu_page(
@@ -120,6 +142,14 @@ class CCBBuilderAdminMenu {
 
 	public function render_templates() {
 		echo CCBTemplate::load( 'admin/pages/templates' ); //phpcs:ignore
+	}
+
+	public function render_preview() {
+		echo CCBTemplate::load( 'admin/pages/preview' ); //phpcs:ignore
+	}
+
+	public function render_analytics() {
+		echo CCBTemplate::load( 'admin/pages/analytics' ); //phpcs:ignore
 	}
 
 	public function render_categories() {

@@ -1,8 +1,6 @@
 <?php
 
-use cBuilder\Classes\CCBTranslations;
-use cBuilder\Helpers\CCBConditionsHelper;
-use cBuilder\Helpers\CCBFieldsHelper;
+use CCB\Vite;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -33,6 +31,15 @@ function cBuilder_admin_enqueue() {
 		wp_enqueue_script( 'cbb-admin-welcome-js', CALC_URL . '/frontend/dist/welcome.js', array( 'jquery' ), CALC_VERSION ); // phpcs:ignore
 		wp_enqueue_script( 'cbb-phone-js', CALC_URL . '/frontend/dist/libs/vue/phone/vue-phone-number-input.umd.js', array(), CALC_VERSION, true );
 
+	} elseif ( isset( $_GET['page'] ) && ( $_GET['page'] === 'cost_calculator_analytics' ) ) { //phpcs:ignore
+		Vite\enqueue_asset(
+			CALC_PATH . '/frontend/vue3/dist',
+			'src/admin/main.ts',
+			array(
+				'handle'    => 'ccb-admin-bundle',
+				'in-footer' => true,
+			)
+		);
 	} elseif ( isset( $_GET['page'] ) && ( $_GET['page'] === 'cost_calculator_gopro' ) ) { //phpcs:ignore
 		wp_enqueue_style( 'ccb-calc-font', CALC_URL . '/frontend/dist/css/font/font.css', array(), CALC_VERSION );
 		wp_enqueue_style( 'ccb-admin-gopro-css', CALC_URL . '/frontend/dist/css/gopro.css', array(), CALC_VERSION );

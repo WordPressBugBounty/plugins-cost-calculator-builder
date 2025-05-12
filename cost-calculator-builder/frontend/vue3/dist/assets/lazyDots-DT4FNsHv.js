@@ -1,0 +1,2 @@
+import{_ as o}from"./_plugin-vue_export-helper-DlAUqK2U.js";import{c as u,o as e,l}from"./runtime-dom.esm-bundler-q8x4SZ5d.js";const s={},t={class:"ccb-loader-dots"};function d(r,n){return e(),u("div",t,n[0]||(n[0]=[l("div",null,null,-1),l("div",null,null,-1),l("div",null,null,-1),l("div",null,null,-1),l("div",null,null,-1),l("div",null,null,-1),l("div",null,null,-1),l("div",null,null,-1)]))}const a=o(s,[["render",d]]);export{a as default};
+//# sourceMappingURL=lazyDots-DT4FNsHv.js.map
