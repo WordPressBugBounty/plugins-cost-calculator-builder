@@ -884,3 +884,12 @@ function ccb_get_format_by_mime( $mime ) {
 
 	return '';
 }
+
+function js_or( ...$args ) {
+	foreach ( $args as $arg ) {
+		if ( $arg ) {
+			return $arg;
+		}
+	}
+	return 0;
+}

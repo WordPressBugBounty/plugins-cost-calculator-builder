@@ -224,7 +224,11 @@ const getValue = computed(() => {
   return val * field.value.dayPrice;
 });
 
-const updateValue = (modelData: Date | Date[]) => {
+const updateValue = (modelData: Date | Date[], alias?: string) => {
+  if (alias && alias !== field.value.alias) {
+    return;
+  }
+
   field.value.selectedDate = modelData || undefined;
   field.value.value = getValue.value;
   field.value.displayValue = getDisplayValue.value;

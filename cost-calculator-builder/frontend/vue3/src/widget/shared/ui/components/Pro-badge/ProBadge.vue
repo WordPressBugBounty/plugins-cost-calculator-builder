@@ -32,6 +32,7 @@ const appStore = useAppStore();
   .pro-tooltip {
     display: block;
     line-height: 1;
+    overflow: visible;
   }
   .pro-tooltiptext {
     visibility: hidden;
@@ -46,7 +47,6 @@ const appStore = useAppStore();
     padding: 6px 9px !important;
     position: absolute;
     font-size: 12px !important;
-    z-index: 1;
     bottom: 130%;
     left: 50%;
     transition: visible 0.1s linear;
@@ -67,7 +67,7 @@ const appStore = useAppStore();
 
   &:hover {
     .pro-tooltiptext {
-      visibility: visible;
+      visibility: visible !important;
     }
   }
 }

@@ -353,9 +353,6 @@ function applyConditionForField(fieldAlias: string): void {
     }
 
     fieldStore.updateField(targetField.alias, targetField);
-    if (!targetField.hidden || targetField.calculateHidden) {
-      applyConditionForField(targetField.alias);
-    }
   }
 }
 
@@ -377,7 +374,7 @@ function setLocation(
         targetField.disabled = true;
       }
 
-      callbackStore.runCallback("updateGeolocation", data);
+      callbackStore.runCallback("updateGeolocation", targetField.alias);
     }
   } else {
     targetField.disabled = false;
@@ -390,6 +387,12 @@ function setLocation(
       };
     }
   }
+
+  setTimeout(() => {
+    if (!targetField.hidden || targetField.calculateHidden) {
+      applyConditionForField(targetField.alias);
+    }
+  });
 
   return targetField;
 }
@@ -415,6 +418,12 @@ function hide(
     if (!check.length) {
       targetField.hidden = false;
     }
+
+    setTimeout(() => {
+      if (targetField.calculateHidden) {
+        applyConditionForField(targetField.alias);
+      }
+    });
   }
 
   return targetField;
@@ -442,6 +451,12 @@ function hideAndLeaveTotal(
     }
   }
 
+  setTimeout(() => {
+    if (!targetField.hidden || targetField.calculateHidden) {
+      applyConditionForField(targetField.alias);
+    }
+  });
+
   return targetField;
 }
 
@@ -455,7 +470,18 @@ function show(
   if (result && !cHistory.length) {
     addConditionHistory(targetCondition);
     targetField.hidden = false;
+    setTimeout(() => {
+      if (targetField.calculateHidden) {
+        applyConditionForField(targetField.alias);
+      }
+    });
   } else if (cHistory.length && !result) {
+    setTimeout(() => {
+      if (targetField.calculateHidden) {
+        applyConditionForField(targetField.alias);
+      }
+    });
+
     removeFromConditionHistory(targetCondition);
 
     const check = conditionsHistory.filter(
@@ -546,6 +572,12 @@ function disable(
     }
   }
 
+  setTimeout(() => {
+    if (!targetField.hidden || targetField.calculateHidden) {
+      applyConditionForField(targetField.alias);
+    }
+  });
+
   return targetField;
 }
 
@@ -572,9 +604,19 @@ function unset(result: boolean, targetField: Field): Field {
       "selectedDate" in targetField
     ) {
       targetField.selectedDate = undefined;
-      callbackStore.runCallback("updateDatePicker", targetField.selectedDate);
+      callbackStore.runCallback(
+        "updateDatePicker",
+        targetField.selectedDate,
+        targetField.alias,
+      );
     }
   }
+
+  setTimeout(() => {
+    if (!targetField.hidden || targetField.calculateHidden) {
+      applyConditionForField(targetField.alias);
+    }
+  });
 
   return targetField;
 }
@@ -586,17 +628,33 @@ function setValue(
 ): Field {
   if (result) {
     const value: number = Number(targetCondition?.setVal || 0);
+
     targetField.value = prepareSetValue(targetField, value);
     const callbackStore = useCallbackStore();
 
     if (result && targetField.fieldName === "quantity") {
-      callbackStore.runCallback("updateQuantity", true, targetField.value);
+      callbackStore.runCallback(
+        "updateQuantity",
+        true,
+        targetField.value,
+        targetField.alias,
+      );
     }
 
     if (result && targetField.fieldName === "range") {
-      callbackStore.runCallback("updateRange", targetField.value);
+      callbackStore.runCallback(
+        "updateRange",
+        targetField.value,
+        targetField.alias,
+      );
     }
   }
+
+  setTimeout(() => {
+    if (!targetField.hidden || targetField.calculateHidden) {
+      applyConditionForField(targetField.alias);
+    }
+  });
 
   return targetField;
 }
@@ -625,7 +683,11 @@ function setPeriod(
       targetField.value = value;
       if ("values" in targetField) {
         targetField.values = [start, end];
-        callbackStore.runCallback("updateMultiRange", targetField.values);
+        callbackStore.runCallback(
+          "updateMultiRange",
+          targetField.values,
+          targetField.alias,
+        );
       }
     } else if (targetField.fieldName === "datePicker") {
       const { parseDate } = useDatePickerFieldHelper();
@@ -634,10 +696,20 @@ function setPeriod(
       const parsedEnd = parseDate(end);
       if ("selectedDate" in targetField) {
         targetField.selectedDate = [parsedStart, parsedEnd];
-        callbackStore.runCallback("updateDatePicker", targetField.selectedDate);
+        callbackStore.runCallback(
+          "updateDatePicker",
+          targetField.selectedDate,
+          targetField.alias,
+        );
       }
     }
   }
+
+  setTimeout(() => {
+    if (!targetField.hidden || targetField.calculateHidden) {
+      applyConditionForField(targetField.alias);
+    }
+  });
 
   return targetField;
 }
@@ -654,11 +726,16 @@ function setTime(
     if ("range" in targetField && targetField.range) {
       const data = JSON.parse(targetCondition?.setVal?.toString() || "{}");
 
-      callbackStore.runCallback("updateRangeTimePicker", data);
+      callbackStore.runCallback(
+        "updateRangeTimePicker",
+        data,
+        targetField.alias,
+      );
     } else {
       callbackStore.runCallback(
         "updateSingleTimePicker",
         targetCondition.setVal,
+        targetField.alias,
       );
     }
 
@@ -668,6 +745,12 @@ function setTime(
   } else {
     targetField.disabled = false;
   }
+
+  setTimeout(() => {
+    if (!targetField.hidden || targetField.calculateHidden) {
+      applyConditionForField(targetField.alias);
+    }
+  });
 
   return targetField;
 }
@@ -690,9 +773,19 @@ function setDate(
     const date: Date = parseDate(targetCondition?.setVal?.toString());
     if ("selectedDate" in targetField) {
       targetField.selectedDate = date;
-      callbackStore.runCallback("updateDatePicker", targetField.selectedDate);
+      callbackStore.runCallback(
+        "updateDatePicker",
+        targetField.selectedDate,
+        targetField.alias,
+      );
     }
   }
+
+  setTimeout(() => {
+    if (!targetField.hidden || targetField.calculateHidden) {
+      applyConditionForField(targetField.alias);
+    }
+  });
 
   return targetField;
 }
@@ -754,6 +847,12 @@ function selectOption(
       targetField.value = +value;
     }
   }
+
+  setTimeout(() => {
+    if (!targetField.hidden || targetField.calculateHidden) {
+      applyConditionForField(targetField.alias);
+    }
+  });
 
   return targetField;
 }

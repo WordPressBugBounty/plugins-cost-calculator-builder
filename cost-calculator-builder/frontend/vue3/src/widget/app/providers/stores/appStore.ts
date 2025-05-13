@@ -61,9 +61,11 @@ export const useAppStore = defineStore("app", {
 
     checkIfLive(): void {
       const currentUrl = window.location.href;
-      const keywords = ["stylemixthemes"];
+      const keywords = ["stylemixthemes", "stylemixstage"];
 
-      this.isLive = keywords.some((keyword) => currentUrl.includes(keyword));
+      this.isLive =
+        keywords.some((keyword) => currentUrl.includes(keyword)) &&
+        !currentUrl.includes("/wp/");
     },
 
     setProStatus(value: boolean): void {

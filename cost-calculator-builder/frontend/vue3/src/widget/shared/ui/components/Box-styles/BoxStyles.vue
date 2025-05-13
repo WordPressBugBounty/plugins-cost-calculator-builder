@@ -49,10 +49,17 @@ const changeStyle = (style: string) => {
 </script>
 
 <style lang="scss">
+.ccb-sticky-modal {
+  .ccb-demo-box-styles {
+    display: none !important;
+  }
+}
 .ccb-demo-box-styles {
   width: 100%;
+  top: 0;
+  position: relative;
   .ccb-box-styles {
-    background-color: var(--ccb-fields-bg-color, #d2d8e5);
+    background-color: #d2d8e5;
     border-radius: 10px;
     box-sizing: border-box;
     display: flex;
@@ -71,22 +78,22 @@ const changeStyle = (style: string) => {
       min-width: 178px;
       padding: 0 20px;
       & > span {
-        color: var(--ccb-text-color, #001931);
+        color: #001931;
         font-size: 14px;
         font-weight: 500;
       }
 
       &.ccb-style-active {
-        background-color: var(--ccb-container-color, #fff);
-        box-shadow: 0 3px 3px 0 var(--ccb-fields-border-color, #0000001a);
+        background-color: #fff;
+        box-shadow: 0 3px 3px 0 #0000001a;
         i {
-          color: var(--ccb-accent-color, #1ab163);
+          color: #1ab163;
           opacity: 1;
         }
       }
 
       i {
-        color: var(--ccb-text-color, #001931);
+        color: #001931;
         font-size: 19px;
         opacity: 0.7;
       }

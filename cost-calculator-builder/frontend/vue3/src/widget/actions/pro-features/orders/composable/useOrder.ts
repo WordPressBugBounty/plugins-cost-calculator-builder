@@ -222,14 +222,14 @@ const getUsedFiles = (): IFileData[] => {
 const getClearFields = (): Field[] => {
   const { getFields } = useFields();
   const settings = useSettingsStore();
-
   return getFields().filter(
     (f: Field) =>
       f.alias &&
       !["total", "html", "line", "page_break"].includes(f.fieldName) &&
       (f.fieldName === "repeater" ||
         f.fieldName === "group" ||
-        f.addToSummary ||
+        f.addToSummary === true ||
+        f.addToSummary === false ||
         f.alias.indexOf("file") !== -1) &&
       (!f.hidden || f.calculateHidden) &&
       (!settings.general?.hideEmptyForOrdersPdfEmails

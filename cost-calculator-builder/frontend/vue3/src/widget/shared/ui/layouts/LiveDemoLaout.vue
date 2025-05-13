@@ -18,7 +18,7 @@
 </template>
 
 <script setup lang="ts">
-import { defineAsyncComponent, onMounted } from "vue";
+import { defineAsyncComponent } from "vue";
 import { useAppearanceStore } from "@/widget/app/providers/stores/appearanceStore.ts";
 
 const appearanceStore = useAppearanceStore();
@@ -32,10 +32,6 @@ const Vertical = defineAsyncComponent(
 const TwoColumns = defineAsyncComponent(
   () => import("./components/TwoColumns.vue"),
 );
-
-onMounted(() => {
-  console.log("live demo layout");
-});
 </script>
 
 <style>

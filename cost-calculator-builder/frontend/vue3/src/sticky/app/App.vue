@@ -207,7 +207,7 @@ body {
 .modal-content {
   background:
     linear-gradient(0deg, rgba(0, 0, 0, 0.12) 0%, rgba(0, 0, 0, 0.12) 100%),
-    var(--ccb-container-color) !important;
-  border-radius: var(--ccb-container-border-radius) !important;
+    var(--ccb-container-color, #fff) !important;
+  border-radius: var(--ccb-container-border-radius, 20px) !important;
 }
 </style>

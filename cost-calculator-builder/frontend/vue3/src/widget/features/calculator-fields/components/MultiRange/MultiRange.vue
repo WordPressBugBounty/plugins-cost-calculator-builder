@@ -103,7 +103,11 @@ const conditionsStore = useConditionsStore();
 const values = ref<number[]>(field.value.values || [0, 50]);
 const originalValue = ref<number>(0);
 
-const updateValue = (inputValues: number[]) => {
+const updateValue = (inputValues: number[], alias?: string) => {
+  if (alias && alias !== field.value.alias) {
+    return;
+  }
+
   let value = 0;
   const [left, right] = inputValues;
 

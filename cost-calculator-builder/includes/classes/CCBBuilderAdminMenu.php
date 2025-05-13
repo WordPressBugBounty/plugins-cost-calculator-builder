@@ -29,6 +29,8 @@ class CCBBuilderAdminMenu {
 			100
 		);
 
+		remove_menu_page( 'cost_calculator_preview' );
+
 		add_menu_page(
 			esc_html__( 'Cost Calculator', 'cost-calculator-builder' ),
 			esc_html__( 'Cost Calculator', 'cost-calculator-builder' ),

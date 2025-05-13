@@ -3,8 +3,10 @@
     class="ccb-order-form"
     :class="{
       'ccb-order-form-legacy': !settings.getFormSettings?.contactFormId,
+      'is-live-form': !orderFormStore.getNextButtonStatus && isLive,
     }"
   >
+    <ProBadge />
     <template
       v-if="
         orderFormStore.getNextButtonStatus && getPaymentType !== 'woocommerce'
@@ -80,6 +82,7 @@ import DemoNotice from "@/widget/shared/ui/components/Demo-notice/DemoNotice.vue
 import OrderFormItem from "./OrderFormItem.vue";
 import Button from "@/widget/shared/ui/components/Button/Button.vue";
 import TermsAndConditions from "@/widget/features/submission/order-form/terms-and-conditions/TermsAndConditions.vue";
+import ProBadge from "@/widget/shared/ui/components/Pro-badge/ProBadge.vue";
 
 type Props = {
   payment?: boolean;
@@ -336,6 +339,38 @@ onMounted(() => {});
 
 <style lang="scss">
 .ccb-order-form {
+  .is-pro {
+    display: none;
+  }
+  &.is-live-form {
+    position: relative;
+    margin-top: 30px;
+    margin-bottom: 15px;
+    padding-top: 0;
+    .ccb-order-form__submit {
+      z-index: 1;
+    }
+    &::before {
+      content: "";
+      position: absolute;
+      border: 1px solid #8bdef9;
+      left: -20px;
+      top: -12px;
+      right: -20px;
+      bottom: -12px;
+      z-index: 0;
+    }
+    .is-pro {
+      display: block;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      margin-left: 0;
+      top: -20px;
+      width: 40%;
+      text-align: center;
+    }
+  }
   &__submit {
     display: flex;
     button {

@@ -351,6 +351,12 @@ onMounted(() => {
       top: -9px;
       right: -15px;
       margin: 0;
+      &:hover {
+        overflow: visible;
+        .pro-tooltiptext {
+          overflow: visible;
+        }
+      }
       .pro-tooltip {
         margin: 0;
         font-weight: 700;

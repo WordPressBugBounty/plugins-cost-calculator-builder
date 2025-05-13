@@ -285,7 +285,7 @@ export function useSticky() {
   };
 
   const scrollIntoCalc = () => {
-    const query = `.ccb-wrapper-${appStore.getCalcId}`;
+    const query = `#ccb_app_${appStore.getCalcId}`;
     const offsetTop = $(query)?.offset()?.top || 0;
     const offset = offsetTop - ($(window)?.scrollTop() || 0);
     if (offset > window.innerHeight - 300 || offset < 20) {

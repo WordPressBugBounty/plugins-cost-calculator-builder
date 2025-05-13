@@ -55,6 +55,7 @@ a:visited {
   border-radius: 50%;
   cursor: pointer;
   overflow: hidden;
+  box-shadow: none !important;
 
   @media (max-width: 1239px) {
     display: none;

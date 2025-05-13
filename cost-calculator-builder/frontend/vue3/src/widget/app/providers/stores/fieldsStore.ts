@@ -17,6 +17,7 @@ interface IFieldsStore {
   defaultTotals: IDefaultTotal | null;
   activePageIndex: number;
   pageBreakEnabled: boolean;
+  requiredFields: Field[];
 }
 
 const fieldsInstance = useFields();
@@ -30,11 +31,16 @@ export const useFieldsStore = defineStore(`fieldsStore_${randomId}`, {
     defaultTotals: null,
     activePageIndex: 0,
     pageBreakEnabled: false,
+    requiredFields: [],
   }),
 
   getters: {
     getActivePageIndex(): number {
       return this.activePageIndex;
+    },
+
+    getRequiredFields(state: IFieldsStore): Field[] {
+      return state.requiredFields;
     },
 
     getFields(): Field[] {
@@ -119,6 +125,10 @@ export const useFieldsStore = defineStore(`fieldsStore_${randomId}`, {
   },
 
   actions: {
+    setRequiredFields(fields: Field[]): void {
+      this.requiredFields = fields;
+    },
+
     updateActivePageIndex(index: number): void {
       this.activePageIndex = index;
     },

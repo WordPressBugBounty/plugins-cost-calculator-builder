@@ -96,7 +96,11 @@ const currencyInstance = useCurrency();
 const translationsStore = useTranslationsStore();
 const rawInput = ref<number>(field.value.value);
 
-const updateValue = (value: number) => {
+const updateValue = (value: number, alias?: string) => {
+  if (alias && alias !== field.value.alias) {
+    return;
+  }
+
   rawInput.value = value;
 
   if (field.value.multiply) {

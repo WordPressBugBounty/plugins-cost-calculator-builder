@@ -180,8 +180,13 @@ if ( is_singular( 'product' ) && function_exists( 'wc_get_product' ) ) {
 }
 
 if ( ! empty( $settings['woo_checkout'] ) && ! empty( $settings['woo_checkout']['is_on'] ) && function_exists( 'wc_get_product' ) ) {
-	$product = wc_get_product( $settings['woo_checkout']['product_id'] );
+	$product_id = wc_get_product( $settings['woo_checkout']['product_id'] );
 
+	if ( 'current_product' === $product_id ) {
+		$product_id = wc_get_product( get_the_ID() );
+	}
+
+	$product = wc_get_product( $product_id );
 	if ( ! empty( $product ) ) {
 		$settings['woo_checkout']['productName'] = $product->get_name();
 		$settings['woo_checkout']['wooCartUrl']  = esc_url( wc_get_cart_url() );

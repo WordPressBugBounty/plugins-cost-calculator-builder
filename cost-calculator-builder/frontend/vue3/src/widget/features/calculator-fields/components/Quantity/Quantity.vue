@@ -122,7 +122,15 @@ const formattedValue = computed(() => {
   return parseQuantityValue(value.toString());
 });
 
-const updateValue = (updateWithValue = false, numericValue: number) => {
+const updateValue = (
+  updateWithValue = false,
+  numericValue: number,
+  alias?: string,
+) => {
+  if (alias && alias !== field.value.alias) {
+    return;
+  }
+
   rawInput.value = numericValue.toString();
   checkMinMaxRequired();
 

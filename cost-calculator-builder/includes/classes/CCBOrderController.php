@@ -771,7 +771,7 @@ class CCBOrderController {
 			$order['order_details'] = json_decode( $order['order_details'] );
 			$order['order_details'] = array_map(
 				function( $detail ) {
-					if ( preg_replace( '/_field_id.*/', '', $detail->alias ) === 'file_upload' && isset( $detail->options ) ) {
+					if ( preg_replace( '/_field_id.*/', '', $detail->alias ) === 'file_upload' && ! empty( $detail->options ) ) {
 						$detail->options = json_decode( $detail->options );
 					}
 					return $detail;

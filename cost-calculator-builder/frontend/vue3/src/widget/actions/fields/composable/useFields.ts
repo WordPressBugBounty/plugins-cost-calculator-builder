@@ -384,9 +384,25 @@ const evaluateFormula = (total: IFormulaField): void => {
   const fieldsStore = useFieldsStore();
   const fieldsMap: Map<string, Field> = fieldsStore.fields;
 
+  const mergedFieldsMap: Map<string, Field> = new Map();
+
+  for (const [key, field] of fieldsMap) {
+    if ("groupElements" in field) {
+      for (const repeaterElement of field.groupElements) {
+        for (const field of repeaterElement.values()) {
+          mergedFieldsMap.set(field.alias, field);
+        }
+      }
+    } else {
+      mergedFieldsMap.set(key, field);
+    }
+  }
+
   const fieldsAliasList = total.formula.match(/\w+_field_id_\d+/g) || [];
+
   fieldsAliasList.forEach((alias: string) => {
-    const field = fieldsMap.get(alias);
+    const field = mergedFieldsMap.get(alias);
+
     if (field) {
       let value = field.hidden && !field.calculateHidden ? 0 : field.value || 0;
       total.formula = total.formula.replace(

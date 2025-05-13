@@ -1,5 +1,5 @@
 <template>
-  <div class="ccb-payments">
+  <div class="ccb-payments" :class="{ 'is-live': appStore.getIsLive }">
     <div class="ccb-payments__title">
       {{ translationsStore.getTranslations.paymentMethods }}
       <ProBadge />
@@ -24,6 +24,7 @@ import { useTranslationsStore } from "@/widget/app/providers/stores/translations
 import ProBadge from "@/widget/shared/ui/components/Pro-badge/ProBadge.vue";
 import PaymentMethod from "@/widget/features/submission/payments/PaymentMethod.vue";
 import OrderForm from "@/widget/features/submission/order-form";
+import { useAppStore } from "@/widget/app/providers/stores/appStore";
 
 type Props = {
   payment?: boolean;
@@ -33,6 +34,7 @@ const props = defineProps<Props>();
 const { payment } = toRefs(props);
 
 const translationsStore = useTranslationsStore();
+const appStore = useAppStore();
 
 const getPayments = computed(() => {
   const settingsStore = useSettingsStore();
@@ -91,6 +93,39 @@ const getPayments = computed(() => {
 
 <style lang="scss">
 .ccb-payments {
+  &.is-live {
+    padding: 15px 15px;
+    background: #f7f8fb;
+    border: 1px solid #eaeaea;
+    border-radius: 6px;
+    .ccb-payments__title {
+      font-size: 12px;
+      font-weight: 700;
+      color: #001931;
+      margin-bottom: 21px;
+      .is-pro {
+        top: 0;
+      }
+    }
+    .ccb-payments__list {
+      .ccb-payment {
+        background-color: #0019310d;
+        .ccb-payment-body {
+          background-color: transparent;
+        }
+        label {
+          margin-bottom: 0;
+        }
+        .ccb-payment-header {
+          .ccb-payment-header__label {
+            font-size: 14px;
+            font-weight: 700;
+            color: #001931;
+          }
+        }
+      }
+    }
+  }
   .ccb-payments__title {
     font-size: var(--ccb-summary-Ïtext-size);
     font-weight: var(--ccb-field-weight);

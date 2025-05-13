@@ -1,11 +1,9 @@
-import { ref } from "vue";
 import { Field, IQuantityField } from "@/widget/shared/types/fields";
 import { validateEmail } from "@/widget/shared/utils/validate-email.utils";
 import { validateUrl } from "@/widget/shared/utils/validate-url.utils";
 import { scrollIntoRequired } from "@/widget/shared/utils/scroll-to-required.utils";
 import { useAppStore } from "@/widget/app/providers/stores/appStore";
-
-const requiredFields = ref<Field[]>([]);
+import { useFieldsStore } from "@/widget/app/providers/stores/fieldsStore";
 
 interface IUseFieldsRequiredResult {
   hasRequiredFields: (fields: Field[]) => boolean;
@@ -200,7 +198,8 @@ const applyRequiredFieldsValidation = (fields: Field[]) => {
 };
 
 const resetRequiredFields = (): void => {
-  requiredFields.value = [];
+  const fieldsStore = useFieldsStore();
+  fieldsStore.setRequiredFields([]);
 };
 
 const filterRequiredFields = (fieldsData: Field[]): Field[] => {
@@ -222,7 +221,7 @@ const filterRequiredFields = (fieldsData: Field[]): Field[] => {
 
   fields = fields.filter(
     (field: Field) =>
-      (!field.hidden || field.calculateHidden) &&
+      !field.hidden &&
       field.fieldName !== "total" &&
       field.fieldName !== "repeater",
   );
@@ -242,30 +241,36 @@ const filterRequiredFields = (fieldsData: Field[]): Field[] => {
 };
 
 const hasRequiredFields = (fieldsData: Field[]): boolean => {
+  const fieldsStore = useFieldsStore();
   resetRequiredFields();
   const fields = filterRequiredFields(fieldsData);
-  requiredFields.value = fields;
+  fieldsStore.setRequiredFields(fields);
 
-  return requiredFields.value.length > 0;
+  return fieldsStore.getRequiredFields.length > 0;
 };
 
 const maybeStartValidation = (fieldsData: Field[]): void => {
-  if (requiredFields.value.length > 0) {
+  const fieldsStore = useFieldsStore();
+  if (fieldsStore.getRequiredFields.length > 0) {
     const fields = filterRequiredFields(fieldsData);
-    requiredFields.value = fields;
+    fieldsStore.setRequiredFields(fields);
   }
 };
 
 const checkFieldRequired = (field: Field): boolean => {
+  const fieldsStore = useFieldsStore();
   if ("repeaterIdx" in field && typeof field.repeaterIdx !== "undefined") {
     return (
-      requiredFields.value.filter(
+      fieldsStore.getRequiredFields.filter(
         (f) => f.alias === field.alias && f.repeaterIdx === field.repeaterIdx,
       ).length > 0
     );
   }
 
-  return requiredFields.value.filter((f) => f.alias === field.alias).length > 0;
+  return (
+    fieldsStore.getRequiredFields.filter((f) => f.alias === field.alias)
+      .length > 0
+  );
 };
 
 export function useFieldsRequired(): IUseFieldsRequiredResult {
