@@ -79,12 +79,13 @@ class CCBFrontController {
 			if ( isset( $calc_settings['sticky_calc'] ) && ! empty( $calc_settings['sticky_calc']['enable'] ) && ccb_pro_active() ) {
 				if ( ! $is_product || ( ! empty( $calc_settings['woo_products']['enable'] ) && CCBWooProducts::is_category_included_or_is_product_included( $calc_settings['woo_products'] ) ) ) {
 					if ( ! $has_sticky ) {
-						if ( ! empty( $calc_settings['sticky_calc']['one_click_action'] ) && 'open_modal' === $calc_settings['sticky_calc']['one_click_action'] ) {
-							self::ccb_load_appearance( $calculator->ID );
-						}
-
 						$has_sticky  = true;
 						$calc_sticky = '<div class="ccb-sticky-floating-' . $calculator->ID . '" id="ccb-sticky-floating-wrapper">';
+
+						$appearance_css = CCBCssLoader::ccb_load_appearance( $calculator->ID );
+						if ( ! empty( $appearance_css ) ) {
+							wp_enqueue_style( ccb_generate_random_handle(), $appearance_css, array(), CALC_VERSION );
+						}
 
 						wp_enqueue_style( 'ccb-sticky-css', CALC_URL . '/frontend/dist/css/sticky.css', array(), CALC_VERSION );
 						wp_enqueue_style( 'ccb-bootstrap-css', CALC_URL . '/frontend/dist/css/modal.bootstrap.css', array(), CALC_VERSION );
@@ -256,7 +257,13 @@ class CCBFrontController {
 		wp_enqueue_style( 'calc-builder-app', CALC_URL . '/frontend/dist/css/style.css', array(), CALC_VERSION );
 
 		if ( ! empty( $calc_id ) && get_post( $calc_id ) ) {
-			$id            = apply_filters( 'wpml_object_id', $calc_id, 'cost-calc', true );
+			$id = apply_filters( 'wpml_object_id', $calc_id, 'cost-calc', true );
+
+			$appearance_css = CCBCssLoader::ccb_load_appearance( $id );
+			if ( ! empty( $appearance_css ) ) {
+				wp_enqueue_style( ccb_generate_random_handle(), $appearance_css, array(), CALC_VERSION );
+			}
+
 			$calc_settings = CCBSettingsData::get_calculator_settings( $calc_id );
 			$fields        = self::getCalculatorFields( $calc_id, $calc_settings );
 			$settings      = $calc_settings['settings'];
@@ -312,7 +319,6 @@ class CCBFrontController {
 
 			$custom_sticky = is_null( $sticky ) ? $custom : $sticky;
 			self::ccb_add_custom_data( $calc_id, $custom_sticky, $settings, $general_settings, $custom_action );
-			self::ccb_load_appearance( $calc_id );
 
 			Vite\enqueue_asset(
 				CALC_PATH . '/frontend/vue3/dist',
@@ -395,8 +401,9 @@ class CCBFrontController {
 		$params   = shortcode_atts( array( 'id' => null ), $attr );
 		$language = substr( get_bloginfo( 'language' ), 0, 2 );
 
-		if ( ! empty( $params['id'] ) ) {
-			self::ccb_load_appearance( $params['id'] );
+		$appearance_css = CCBCssLoader::ccb_load_appearance( $params['id'] );
+		if ( ! empty( $appearance_css ) ) {
+			wp_enqueue_style( ccb_generate_random_handle(), $appearance_css, array(), CALC_VERSION );
 		}
 
 		Vite\enqueue_asset(
@@ -480,18 +487,6 @@ class CCBFrontController {
 		}
 
 		return array();
-	}
-
-	public static function ccb_load_appearance( $calc_id ) {
-		$preset_key = get_post_meta( $calc_id, 'ccb_calc_preset_idx', true );
-		$preset_key = empty( $preset_key ) ? 0 : $preset_key;
-		$appearance = CCBAppearanceHelper::get_appearance_data( $preset_key );
-
-		if ( ! empty( $appearance ) ) {
-			$appearance   = $appearance['data'];
-			$ccbCssLoader = new CCBCssLoader( $calc_id, $appearance );
-			$ccbCssLoader->ccb_upload_root_css();
-		}
 	}
 
 	public static function ccb_add_custom_data( $calc_id, $sticky, $settings, $general_settings, $action ) {

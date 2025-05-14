@@ -3,77 +3,57 @@
 namespace cBuilder\Classes\Appearance;
 
 class CCBCssLoader {
-	private $appearance;
+	private static $appearance;
 
-	private $calc_id;
+	private static $calc_id;
 
-	private static $processed_calcs = array();
-
-	public function __construct( $calc_id, $appearance ) {
-		$this->calc_id    = $calc_id;
-		$this->appearance = $appearance;
-	}
-
-	public function generate_color( $color, $alpha ) {
+	public static function generate_color( $color, $alpha ) {
 		if ( 7 >= strlen( $color ) && 0 !== $alpha ) {
 			return $color . $alpha;
 		}
 		return $color;
 	}
 
-	public function from_percent( $value ) {
+	public static function from_percent( $value ) {
 		$hex = dechex( round( ( $value * 255 ) / 100 ) );
 		$hex = strtoupper( $hex );
 		return $value < 7 ? '0' . $hex : $hex;
 	}
 
+	public static function ccb_load_appearance( $calc_id ) {
+		self::$calc_id = $calc_id;
+		$preset_key    = get_post_meta( $calc_id, 'ccb_calc_preset_idx', true );
+		$preset_key    = empty( $preset_key ) ? 0 : $preset_key;
+		$appearance    = CCBAppearanceHelper::get_appearance_data( $preset_key );
 
-	public function ccb_upload_root_css() {
-		$current_filter        = current_filter();
-		$direct_output_filters = array( 'wp_footer', 'the_content' );
-
-		if ( in_array( $current_filter, $direct_output_filters, true ) ) {
-			if ( ! isset( self::$processed_calcs[ $this->calc_id ] ) ) {
-				self::$processed_calcs[ $this->calc_id ] = true;
-				echo '<style id="ccb-css-' . esc_attr($this->calc_id) . '">' . $this->get_css_function() . '</style>'; //phpcs:ignore
-			}
-		} else {
-			if ( is_admin() ) {
-				if ( ! isset( self::$processed_calcs[ $this->calc_id ] ) ) {
-					self::$processed_calcs[ $this->calc_id ] = true;
-
-					$handle_name = 'ccb-appearance-' . $this->calc_id;
-					wp_add_inline_style( $handle_name, $this->get_css_function() );
-					wp_enqueue_style( $handle_name );
-				}
-			} else {
-				//phpcs:disable
-				$hooks = array( 'wp_enqueue_scripts', 'elementor/frontend/after_enqueue_styles', 'wp_footer' );
-				
-				foreach ( $hooks as $hook ) {
-					add_action( $hook, function() use ( $hook ) {
-						if ( ! isset( self::$processed_calcs[ $this->calc_id ] ) ) {
-							self::$processed_calcs[ $this->calc_id ] = true;
-							
-							$handle_name = 'ccb-appearance-' . $this->calc_id;
-
-							if ( 'wp_footer' === $hook ) {
-								echo '<style id="ccb-css-' . esc_attr( $this->calc_id ) . '">' . $this->get_css_function() . '</style>';
-							} else {
-								wp_add_inline_style( $handle_name, $this->get_css_function() );
-								wp_enqueue_style( $handle_name );
-							}
-						}
-					}, 20 );
-				}
-				//phpcs:enable
-			}
+		if ( ! empty( $appearance ) ) {
+			$appearance       = $appearance['data'];
+			self::$appearance = $appearance;
+			return self::ccb_upload_root_css();
 		}
+
+		return '';
 	}
 
-	private function get_css_function() {
+	public static function ccb_upload_root_css() {
+		$upload_dir = wp_upload_dir();
+		$file_name  = 'ccb-appearance-' . self::$calc_id . '.css';
+		$css_dir    = $upload_dir['basedir'] . '/ccb-appearance/';
+		$css_url    = $upload_dir['baseurl'] . '/ccb-appearance/';
+		$file_path  = $css_dir . $file_name;
+
+		if ( ! file_exists( $css_dir ) ) {
+			wp_mkdir_p( $css_dir );
+		}
+
+		file_put_contents( $file_path, self::get_css_function() ); // phpcs:ignore
+
+		return $css_url . $file_name;
+	}
+
+	private static function get_css_function() {
 		// Colors
-		$desktop_colors    = $this->appearance['desktop']['colors']['data'];
+		$desktop_colors    = self::$appearance['desktop']['colors']['data'];
 		$container_color   = $desktop_colors['container']['value']['color'];
 		$container_opacity = $desktop_colors['container']['value']['opacity'];
 		$ccb_text_color    = $desktop_colors['primary_color']['value'];
@@ -82,14 +62,14 @@ class CCBCssLoader {
 		$ccb_error_color   = $desktop_colors['error_color']['value'];
 
 		$container_invert    = '';
-		$container_converted = $this->generate_color( $container_color, $this->from_percent( $container_opacity ) );
+		$container_converted = self::generate_color( $container_color, self::from_percent( $container_opacity ) );
 		if ( ! empty( $desktop_colors['container']['value']['blur'] ) ) {
 			$container_converted = 'inherit';
 			$container_invert    = 'invert(' . $desktop_colors['container']['value']['blur'] . '%)';
 		}
 
 		// Font settings
-		$desktop_typography         = $this->appearance['desktop']['typography']['data'];
+		$desktop_typography         = self::$appearance['desktop']['typography']['data'];
 		$ccb_header_size            = $desktop_typography['header_font_size']['value'] . 'px';
 		$ccb_header_weight          = $desktop_typography['header_font_weight']['value'];
 		$ccb_field_size             = $desktop_typography['label_font_size']['value'] . 'px';
@@ -107,7 +87,7 @@ class CCBCssLoader {
 		$ccb_fields_button_size     = $desktop_typography['fields_btn_font_size']['value'] . 'px';
 		$ccb_fields_button_weight   = $desktop_typography['fields_btn_font_weight']['value'];
 
-		$mobile_typography                 = $this->appearance['mobile']['typography']['data'];
+		$mobile_typography                 = self::$appearance['mobile']['typography']['data'];
 		$ccb_mobile_header_size            = $mobile_typography['header_font_size']['value'] . 'px';
 		$ccb_mobile_header_weight          = $mobile_typography['header_font_weight']['value'];
 		$ccb_mobile_field_size             = $mobile_typography['label_font_size']['value'] . 'px';
@@ -126,7 +106,7 @@ class CCBCssLoader {
 		$ccb_mobile_fields_button_weight   = $mobile_typography['fields_btn_font_weight']['value'];
 
 		// Borders
-		$desktop_borders             = $this->appearance['desktop']['borders']['data'];
+		$desktop_borders             = self::$appearance['desktop']['borders']['data'];
 		$ccb_container_border        = $desktop_borders['container_border']['value']['width'] . 'px';
 		$ccb_container_border_radius = $desktop_borders['container_border']['value']['radius'] . 'px';
 		$ccb_container_border_style  = $desktop_borders['container_border']['value']['type'];
@@ -138,21 +118,21 @@ class CCBCssLoader {
 		$ccb_button_border_style     = $desktop_borders['button_border']['value']['type'];
 
 		// Box shadow
-		$desktop_box_shadow            = $this->appearance['desktop']['shadows']['data'];
+		$desktop_box_shadow            = self::$appearance['desktop']['shadows']['data'];
 		$ccb_container_shadow_blur     = $desktop_box_shadow['container_shadow']['value']['blur'] . 'px';
 		$ccb_container_shadow_x_offset = $desktop_box_shadow['container_shadow']['value']['x'] . 'px';
 		$ccb_container_shadow_y_offset = $desktop_box_shadow['container_shadow']['value']['y'] . 'px';
 		$ccb_container_shadow_color    = $desktop_box_shadow['container_shadow']['value']['color'];
 
 		// Sizes
-		$desktop_sizes             = $this->appearance['desktop']['elements_sizes']['data'];
+		$desktop_sizes             = self::$appearance['desktop']['elements_sizes']['data'];
 		$ccb_field_button_height   = $desktop_sizes['field_and_buttons_height']['value'] . 'px';
 		$ccb_vertical_max_width    = $desktop_sizes['container_vertical_max_width']['value'] . 'px';
 		$ccb_horizontal_max_width  = $desktop_sizes['container_horizontal_max_width']['value'] . 'px';
 		$ccb_two_columns_max_width = $desktop_sizes['container_two_column_max_width']['value'] . 'px';
 
 		// Spacing & Positions
-		$desktop_spacing_and_positions = $this->appearance['desktop']['spacing_and_positions']['data'];
+		$desktop_spacing_and_positions = self::$appearance['desktop']['spacing_and_positions']['data'];
 		$ccb_field_side_indent         = $desktop_spacing_and_positions['field_side_indents']['value'] . 'px';
 		$ccb_field_spacing             = $desktop_spacing_and_positions['field_spacing']['value'] . 'px';
 		$ccb_summary_spacing           = $desktop_spacing_and_positions['field_spacing']['value'] / 2 . 'px';
@@ -195,13 +175,11 @@ class CCBCssLoader {
 		// repeater
 		$ccb_repeater_title_font_size = $desktop_typography['total_field_font_size']['value'] - 2 . 'px';
 
-		$handle_name = 'ccb-appearance-' . $this->calc_id;
-		wp_register_style( $handle_name, false, array(), CALC_VERSION );
-
+		//phpcs:disable
 		return "
-		        #ccb-preview-overlay,
-			    #ccb_app_$this->calc_id,
-			    .ccb-sticky-floating-$this->calc_id {
+				#ccb-preview-overlay,
+				#ccb_app_" . self::$calc_id . ",
+			    .ccb-sticky-floating-" . self::$calc_id . " {
 				    --ccb-container-converted:       $container_converted;
 					--ccb-container-invert:          $container_invert;
 			        --ccb-container-color:           $container_color;
@@ -315,5 +293,6 @@ class CCBCssLoader {
 					--ccb-repeater-title-font-size:  $ccb_repeater_title_font_size;
 			    }
 			";
+		//phpcs:enable
 	}
 }

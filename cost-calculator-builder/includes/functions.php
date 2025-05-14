@@ -893,3 +893,14 @@ function js_or( ...$args ) {
 	}
 	return 0;
 }
+
+function ccb_generate_random_handle( $length = 10 ): string {
+	$letters = 'abcdefghijklmnopqrstuvwxyz';
+	$str     = '';
+
+	for ( $i = 0; $i < $length; $i++ ) {
+		$str .= $letters[ random_int( 0, 25 ) ];
+	}
+
+	return $str;
+}

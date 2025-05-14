@@ -98,6 +98,17 @@ class CCBBuilderAdminMenu {
 				'cost_calculator_orders',
 				array( $this, 'calc_orders_page' )
 			);
+
+			add_submenu_page(
+				'cost_calculator_builder',
+				esc_html__( 'Help center', 'cost-calculator-builder' ),
+				'<span style="color: #FC7B40; font-weight: 700;">' . esc_html__( 'Help center', 'cost-calculator-builder' ) . '</span>',
+				'manage_options',
+				'stm-support-page-ccb',
+				function () {
+					\STM_Support_Page::render_support_page( 'cost-calculator-builder' );
+				}
+			);
 		} else {
 			add_submenu_page(
 				'cost_calculator_builder',
@@ -124,6 +135,16 @@ class CCBBuilderAdminMenu {
 				'manage_options',
 				'cost_calculator_pro_features',
 				array( $this, 'calc_pro_features' )
+			);
+			add_submenu_page(
+				'cost_calculator_builder',
+				esc_html__( 'Help center', 'cost-calculator-builder' ),
+				'<span style="color: #FC7B40; font-weight: 700;">' . esc_html__( 'Help center', 'cost-calculator-builder' ) . '</span>',
+				'manage_options',
+				'stm-support-page-ccb',
+				function () {
+					\STM_Support_Page::render_support_page( 'cost-calculator-builder' );
+				}
 			);
 		}
 	}

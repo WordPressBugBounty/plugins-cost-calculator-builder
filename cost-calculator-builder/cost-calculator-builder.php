@@ -8,7 +8,7 @@
  * License: GNU General Public License v2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: cost-calculator-builder
- * Version: 3.5.1
+ * Version: 3.5.2
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -17,8 +17,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 define( 'CALC_DIR', __DIR__ );
 define( 'CALC_FILE', __FILE__ );
-define( 'CALC_VERSION', '3.5.1' );
-define( 'CALC_WP_TESTED_UP', '6.8' );
+define( 'CALC_VERSION', '3.5.2' );
+define( 'CALC_WP_TESTED_UP', '6.8.1' );
 define( 'CALC_DB_VERSION', '3.5.0' );
 define( 'CALC_PATH', dirname( CALC_FILE ) );
 define( 'CALC_URL', plugins_url( '', CALC_FILE ) );
@@ -31,6 +31,7 @@ if ( is_admin() ) {
 		$plugin_pages   = array(
 			'cost_calculator_builder',
 			'page' => 'cost_calculator_orders',
+			'stm-support-page',
 		);
 		$plugin_actions = array(
 			'stm_mailchimp_integration_add_cost-calculator-builder',
@@ -75,6 +76,7 @@ if ( is_admin() ) {
 	require_once CALC_PATH . '/includes/admin/enqueue.php';
 	require_once CALC_PATH . '/includes/admin/item-announcements.php';
 	require_once CALC_PATH . '/includes/classes/CCBBuilderAdminMenu.php';
+	require_once CALC_PATH . '/includes/admin/support-page-integration.php';
 }
 
 require_once CALC_PATH . '/includes/functions.php';

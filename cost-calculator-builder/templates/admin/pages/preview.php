@@ -1,5 +1,7 @@
 <?php
 
+use cBuilder\Classes\Appearance\CCBCssLoader;
+
 $id = isset( $_GET['preview_calc_id'] ) ? intval( $_GET['preview_calc_id'] ) : null; // phpcs:ignore
 
 wp_enqueue_style( 'ccb-admin-preview-css', CALC_URL . '/frontend/dist/css/preview.css', array(), CALC_VERSION );
@@ -16,8 +18,9 @@ wp_localize_script(
 	)
 );
 
-if ( ! empty( $id ) ) {
-	\cBuilder\Classes\CCBFrontController::ccb_load_appearance( $id );
+$appearance_css = CCBCssLoader::ccb_load_appearance( $id );
+if ( ! empty( $appearance_css ) ) {
+	wp_enqueue_style( ccb_generate_random_handle(), $appearance_css, array(), CALC_VERSION );
 }
 ?>
 
