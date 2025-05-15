@@ -290,13 +290,7 @@ class CCBFrontController {
 			}
 
 			if ( ! $is_woocommerce && ccb_pro_active() && ! empty( $sticky_calc_settings['enable'] ) ) {
-				$sticky_calc_actions = array( 'open_modal' );
-
-				if ( in_array( $action, $sticky_calc_actions, true ) && is_null( $sticky ) ) {
-					return '';
-				}
-
-				$sticky_calc_actions = array( 'woo_checkout', 'pdf', 'invoice', 'pro_features' );
+				$sticky_calc_actions = array( 'woo_checkout', 'pdf', 'invoice', 'pro_features', 'open_modal' );
 				if ( $hidden || ( empty( $sticky_calc_settings['show_calculator'] ) && in_array( $action, $sticky_calc_actions, true ) && is_null( $sticky ) ) ) {
 					$extra_style = 'ccb-calc-hidden';
 				}

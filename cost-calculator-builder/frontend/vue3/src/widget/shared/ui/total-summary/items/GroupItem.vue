@@ -6,6 +6,7 @@
           <TotalSummaryItem
             item-type="summary"
             :summary="element"
+            v-if="!element.alias.includes('total')"
           ></TotalSummaryItem>
         </Transition>
       </template>

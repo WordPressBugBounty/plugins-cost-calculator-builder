@@ -389,6 +389,7 @@ const evaluateFormula = (total: IFormulaField): void => {
   for (const [key, field] of fieldsMap) {
     if ("groupElements" in field) {
       for (const repeaterElement of field.groupElements) {
+        mergedFieldsMap.set(key, field);
         for (const field of repeaterElement.values()) {
           mergedFieldsMap.set(field.alias, field);
         }

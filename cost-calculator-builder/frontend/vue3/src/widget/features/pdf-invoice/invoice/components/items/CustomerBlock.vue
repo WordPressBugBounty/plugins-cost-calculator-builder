@@ -45,11 +45,8 @@
 <script setup lang="ts">
 import { toRefs, defineProps, computed } from "vue";
 import { IPdfSettings } from "@/widget/shared/types/settings";
-import { useOrderForm } from "@/widget/actions/pro-features/order-form/composable/useOrderForm.ts";
 import { useSubmissionStore } from "@/widget/app/providers/stores/submissionStore.ts";
-
-const submissionStore = useSubmissionStore();
-const { formFields } = useOrderForm();
+import { useOrderFormStore } from "@/widget/app/providers/stores/orderFormStore.ts";
 
 type Props = {
   pdf: IPdfSettings;
@@ -108,6 +105,7 @@ const getBackgroundStyles = computed(() => {
 });
 
 const getOrderId = computed(() => {
+  const submissionStore = useSubmissionStore();
   return submissionStore.getOrderId;
 });
 
@@ -140,6 +138,8 @@ const upperFirst = (str: string) => {
 };
 
 const getCustomerDetails = computed(() => {
+  const orderFormStore = useOrderFormStore();
+  const formFields = orderFormStore.getFormFields;
   let data = [];
   if (formFields) {
     for (const detail of formFields) {

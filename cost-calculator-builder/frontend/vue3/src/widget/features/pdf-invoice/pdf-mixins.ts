@@ -121,6 +121,13 @@ export function pdfMixin() {
             "@/widget/features/pdf-invoice/invoice/components/items/OrderIdAndDate.vue"
           ),
       );
+    } else if (componentName === "image_block") {
+      return defineAsyncComponent(
+        () =>
+          import(
+            "@/widget/features/pdf-invoice/invoice/components/items/ImageBlock.vue"
+          ),
+      );
     }
 
     return "";

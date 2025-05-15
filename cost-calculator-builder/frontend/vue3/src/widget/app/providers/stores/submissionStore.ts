@@ -5,12 +5,12 @@ import {
   useOrder,
 } from "@/widget/actions/pro-features/orders/composable/useOrder";
 import { PaymentMethods } from "@/widget/shared/types/orders";
-import { useOrderForm } from "@/widget/actions/pro-features/order-form/composable/useOrderForm";
 import { useSettingsStore } from "@/widget/app/providers/stores/settingsStore";
 import { useNotificationsStore } from "@/widget/app/providers/stores/notificationsStore";
 import { usePaymentAfterSubmitStore } from "./paymentAfterSubmit";
 import { useAppStore } from "@/widget/app/providers/stores/appStore";
 import { ContactFormFields } from "@/widget/shared/types/orders/contact-form-fields.type";
+import { useOrderFormStore } from "./orderFormStore";
 
 type SubmissionState = { orderId: number | undefined; sendPaymentType: string };
 
@@ -82,7 +82,8 @@ export const useSubmissionStore = defineStore("submission", {
           "createPaymentMethod" in paymentStore.stripeInstance &&
           typeof paymentStore.stripeInstance.createPaymentMethod === "function"
         ) {
-          const { formFields } = useOrderForm();
+          const orderFormStore = useOrderFormStore();
+          const formFields = orderFormStore.getFormFields;
           const billingDetails: Record<string, string> = {};
           for (const field of formFields) {
             if (field.type === "email") billingDetails["email"] = field.value;

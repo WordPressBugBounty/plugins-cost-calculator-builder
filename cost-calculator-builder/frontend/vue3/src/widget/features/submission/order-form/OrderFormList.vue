@@ -91,7 +91,7 @@ type Props = {
 const props = defineProps<Props>();
 const { payment } = toRefs(props);
 
-const { formFields, validateOrderFormSettings } = useOrderForm();
+const { validateOrderFormSettings } = useOrderForm();
 const orderFormStore = useOrderFormStore();
 const submissionStore = useSubmissionStore();
 const settings = useSettingsStore();
@@ -99,6 +99,10 @@ const appStore = useAppStore();
 const myCf7Root = ref<HTMLElement | null>(null);
 const allowContactForm = ref<boolean>(false);
 const fieldsInstance = useFields();
+
+const formFields = computed(() => {
+  return orderFormStore.getFormFields;
+});
 
 const getMakeOrderText = computed((): string => {
   return settings.getFormSettings?.openModalBtnText || "Make Order";

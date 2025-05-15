@@ -171,10 +171,33 @@ export const useFieldsStore = defineStore(`fieldsStore_${randomId}`, {
             if (!appStore.isProActive && proFields.includes(itemFieldName)) {
               return;
             }
-            const createField = fieldsInstance.addField(item);
-            this.fields.set(item.alias, createField);
+
+            if (item.type === "Group" && item.groupElements) {
+              const createdField = fieldsInstance.addField(item);
+              if (createdField) {
+                this.fields.set(item.alias, createdField);
+              }
+              item.groupElements.forEach((item) => {
+                const createField = fieldsInstance.addField(item);
+                this.fields.set(item.alias, createField);
+              });
+            } else {
+              const createField = fieldsInstance.addField(item);
+              this.fields.set(item.alias, createField);
+            }
           });
           fieldsInstance.setPageBreakEnabled(true);
+        } else if (field.type === "Group" && field.groupElements) {
+          const createdField = fieldsInstance.addField(field);
+          if (createdField) {
+            this.fields.set(field.alias, createdField);
+          }
+          field.groupElements.forEach((item) => {
+            if (item.type === "Total") {
+              const createdField = fieldsInstance.addField(item);
+              this.fields.set(item.alias, createdField);
+            }
+          });
         } else {
           const createdField = fieldsInstance.addField(field);
           if (createdField) {

@@ -19,13 +19,12 @@ import {
   IRepeaterField,
   IGroupField,
 } from "@/widget/shared/types/fields";
-import { useOrderForm } from "@/widget/actions/pro-features/order-form/composable/useOrderForm.ts";
 import { usePaymentStore } from "@/widget/app/providers/stores/paymentsStore.ts";
 import { usePaymentAfterSubmitStore } from "@/widget/app/providers/stores/paymentAfterSubmit.ts";
 import { useSubmissionStore } from "@/widget/app/providers/stores/submissionStore.ts";
 import { useSettingsStore } from "@/widget/app/providers/stores/settingsStore.ts";
 import { ContactFormFields } from "@/widget/shared/types/orders/contact-form-fields.type";
-
+import { useOrderFormStore } from "@/widget/app/providers/stores/orderFormStore.ts";
 type OrdersResponseData = {
   success: boolean;
   message: string;
@@ -78,7 +77,7 @@ const prepareOrderData = (
   const appStore = useAppStore();
   const paymentStore = usePaymentStore();
   const discountsStore = useDiscountsStore();
-  const { formFields } = useOrderForm();
+  const orderFormStore = useOrderFormStore();
 
   const legacyFormFields = [];
   if (orderInputs?.length) {
@@ -88,7 +87,7 @@ const prepareOrderData = (
       });
     }
   } else {
-    for (const formField of formFields) {
+    for (const formField of orderFormStore.getFormFields) {
       if (formField.type !== "space") {
         legacyFormFields.push({
           ...formField,
@@ -441,7 +440,7 @@ const makeWooCommercePayment = async (
   } else if (settingsStore.getWooCheckoutSettings?.redirectTo === "stay") {
     return {
       success: true,
-      message: "Redirect to Cart",
+      message: "Stay on page",
     };
   }
 
@@ -538,7 +537,7 @@ const createOrder = async (
     ) {
       return {
         success: true,
-        message: "Redirect to Cart",
+        message: "Stay on page",
       };
     }
 

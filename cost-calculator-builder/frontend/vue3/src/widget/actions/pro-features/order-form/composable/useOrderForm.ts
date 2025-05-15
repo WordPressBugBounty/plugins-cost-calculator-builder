@@ -2,10 +2,10 @@ import { IFormField } from "@/widget/shared/types/fields";
 import { useSettingsStore } from "@/widget/app/providers/stores/settingsStore.ts";
 import { useNotificationsStore } from "@/widget/app/providers/stores/notificationsStore.ts";
 import { useAppStore } from "@/widget/app/providers/stores/appStore.ts";
-import { ref } from "vue";
 import { splitByLastUnderscore } from "@/widget/shared/utils/split-by-last-underscore.utils.ts";
 import { useOrderFormFieldsRequired } from "./useOrderFormFieldsRequired";
 import { useFieldsStore } from "@/widget/app/providers/stores/fieldsStore";
+import { useOrderFormStore } from "@/widget/app/providers/stores/orderFormStore";
 
 const { maybeStartOrderFormValidation, checkOrderFormRequiredFields } =
   useOrderFormFieldsRequired();
@@ -14,100 +14,106 @@ interface OrderFormResult {
   initializeFields: (rowData: any[]) => void;
   submitForm: () => void;
   validateOrderFormSettings: () => boolean;
-  formFields: IFormField[];
   updateValue: (id: number, value: any, idx?: number[]) => void;
 }
 
-const formFields = ref<IFormField[]>([]);
-const errors = ref<Record<number, string>>({});
-
 function initializeFields(rawData: any[]): void {
-  formFields.value = rawData.map((field) => {
-    const attr = field.attributes;
+  const orderFormStore = useOrderFormStore();
+  orderFormStore.updateFormFields(
+    rawData.map((field) => {
+      const attr = field.attributes;
 
-    let defaultValue = attr.default_value;
-    let selectedIdx: number[] = [];
-    if (field.type === "checkbox" || field.type === "dropdown") {
-      defaultValue = defaultValue.map((option: string) => {
-        const lastWithSpace: string[] = option.split(" ");
-        const last: string = lastWithSpace[lastWithSpace.length - 1];
-        const idx = +last.split("_")[1];
-        if (!isNaN(idx)) {
-          selectedIdx.push(idx);
-        }
-        return splitByLastUnderscore(option);
-      });
-    }
+      let defaultValue = attr.default_value;
+      let selectedIdx: number[] = [];
+      if (field.type === "checkbox" || field.type === "dropdown") {
+        defaultValue = defaultValue.map((option: string) => {
+          const lastWithSpace: string[] = option.split(" ");
+          const last: string = lastWithSpace[lastWithSpace.length - 1];
+          const idx = +last.split("_")[1];
+          if (!isNaN(idx)) {
+            selectedIdx.push(idx);
+          }
+          return splitByLastUnderscore(option);
+        });
+      }
 
-    if (field.type === "formatted-text") {
-      defaultValue = field.attributes.text;
-    }
+      if (field.type === "formatted-text") {
+        defaultValue = field.attributes.text;
+      }
 
-    return {
-      id: +field.id,
-      type: field.type,
-      label: attr.label || "",
-      placeholder: attr.placeholder || "",
-      required: attr.required === "1",
-      value: defaultValue,
-      sortId: Number(field.sort_id || 0),
-      fieldWidth: Number(field.field_width || 0),
-      ...(selectedIdx.length ? { selectedIdx } : {}),
-      attributes: {
-        ...(attr.confirmation
-          ? { confirmation: attr.confirmation === "1" }
-          : {}),
-        ...(attr.confirmation_label
-          ? { confirmationLabel: attr.confirmation_label }
-          : {}),
-        ...(attr.confirmation_placeholder
-          ? { confirmationPlaceholder: attr.confirmation_placeholder }
-          : {}),
-        ...(attr.position
-          ? {
-              position:
-                attr.position.toLowerCase() === "horizontal"
-                  ? "horizontal"
-                  : "vertical",
-            }
-          : {}),
-        ...(attr.display
-          ? {
-              display:
-                attr.display.toLowerCase() === "horizontal"
-                  ? "horizontal"
-                  : "vertical",
-            }
-          : {}),
-        ...(attr.primary
-          ? {
-              primary: attr.primary === "1",
-            }
-          : {}),
-        ...(attr.character_limit
-          ? { characterLimit: Number(attr.character_limit || 0) }
-          : {}),
-        ...(attr.multiselect ? { multiselect: attr.multiselect === "1" } : {}),
-        ...(attr.range ? { range: attr.range === "1" } : {}),
-        ...(attr.format ? { format: attr.format === "1" } : {}),
-        ...(attr.options ? { options: attr.options } : {}),
-      },
-    };
-  });
+      return {
+        id: +field.id,
+        type: field.type,
+        label: attr.label || "",
+        placeholder: attr.placeholder || "",
+        required: attr.required === "1",
+        value: defaultValue,
+        sortId: Number(field.sort_id || 0),
+        fieldWidth: Number(field.field_width || 0),
+        ...(selectedIdx.length ? { selectedIdx } : {}),
+        attributes: {
+          ...(attr.confirmation
+            ? { confirmation: attr.confirmation === "1" }
+            : {}),
+          ...(attr.confirmation_label
+            ? { confirmationLabel: attr.confirmation_label }
+            : {}),
+          ...(attr.confirmation_placeholder
+            ? { confirmationPlaceholder: attr.confirmation_placeholder }
+            : {}),
+          ...(attr.position
+            ? {
+                position:
+                  attr.position.toLowerCase() === "horizontal"
+                    ? "horizontal"
+                    : "vertical",
+              }
+            : {}),
+          ...(attr.display
+            ? {
+                display:
+                  attr.display.toLowerCase() === "horizontal"
+                    ? "horizontal"
+                    : "vertical",
+              }
+            : {}),
+          ...(attr.primary
+            ? {
+                primary: attr.primary === "1",
+              }
+            : {}),
+          ...(attr.character_limit
+            ? { characterLimit: Number(attr.character_limit || 0) }
+            : {}),
+          ...(attr.multiselect
+            ? { multiselect: attr.multiselect === "1" }
+            : {}),
+          ...(attr.range ? { range: attr.range === "1" } : {}),
+          ...(attr.format ? { format: attr.format === "1" } : {}),
+          ...(attr.options ? { options: attr.options } : {}),
+        },
+      };
+    }),
+  );
 }
 
 function validateForm(): boolean {
-  errors.value = {};
-  formFields.value.forEach((field: IFormField) => {
+  const orderFormStore = useOrderFormStore();
+
+  orderFormStore.updateErrors({});
+  orderFormStore.getFormFields.forEach((field: IFormField) => {
     if (field.required && !field.value) {
-      errors.value[field.id] = `${field.label} is required`;
+      orderFormStore.updateErrors({
+        [field.id]: `${field.label} is required`,
+      });
     }
   });
 
-  return Object.keys(errors.value).length === 0;
+  return Object.keys(orderFormStore.getErrors).length === 0;
 }
 
 function validateOrderFormSettings(): boolean {
+  const orderFormStore = useOrderFormStore();
   const settingsStore = useSettingsStore();
   const notificationsStore = useNotificationsStore();
   const appStore = useAppStore();
@@ -119,7 +125,7 @@ function validateOrderFormSettings(): boolean {
   }
 
   const hasRequiredFields: boolean = checkOrderFormRequiredFields(
-    formFields.value,
+    orderFormStore.getFormFields,
   );
 
   settingsStore.setTermsAndConditionsTrigger(true);
@@ -155,10 +161,13 @@ function submitForm(): void {
 }
 
 function updateValue(id: number, value: any, idx?: number[]): void {
-  for (let i = 0; i < formFields.value.length; i++) {
-    const field = formFields.value[i];
+  const orderFormStore = useOrderFormStore();
+  const formFields = orderFormStore.getFormFields;
+
+  for (let i = 0; i < formFields.length; i++) {
+    const field = formFields[i];
     if (+field.id === id) {
-      formFields.value[i].value = value;
+      formFields[i].value = value;
 
       if (typeof idx !== "undefined") {
         field.selectedIdx = idx;
@@ -166,7 +175,9 @@ function updateValue(id: number, value: any, idx?: number[]): void {
     }
   }
 
-  maybeStartOrderFormValidation(formFields.value);
+  orderFormStore.updateFormFields(formFields);
+
+  maybeStartOrderFormValidation(formFields);
 }
 
 export function useOrderForm(): OrderFormResult {
@@ -175,6 +186,5 @@ export function useOrderForm(): OrderFormResult {
     initializeFields,
     submitForm,
     updateValue,
-    formFields: formFields.value,
   };
 }

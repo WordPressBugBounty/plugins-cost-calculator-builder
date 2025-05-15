@@ -357,7 +357,10 @@ const showWooRedirectCart = computed((): boolean => {
 });
 
 const getWooStayOnPage = computed((): boolean => {
-  return settingsStore.getWooCheckoutSettings?.redirectTo === "stay";
+  return (
+    settingsStore.getWooCheckoutSettings?.redirectTo === "stay" &&
+    notificationsStore.message === "Stay on page"
+  );
 });
 
 watch(showThankYouPage, (newValue) => {
