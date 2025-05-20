@@ -27,7 +27,11 @@ if ( isset( $_GET['page'] ) && ( 'stm-support-page-ccb' === $_GET['page'] ) ) {
 			STM_Support_Page::set_api_urls(
 				'cost-calculator-builder',
 				array(
-					'promo' => 'https://promo-dashboard.stylemixthemes.com/wp-content/dashboard-promo/cost-calculator-builder_posts.json',
+					'promo'    => 'https://promo-dashboard.stylemixthemes.com/wp-content/dashboard-promo/cost-calculator-builder_posts.json',
+					'freemius' => array(
+						'plugin_slug' => 'cost-calculator-builder-pro',
+						'item_id'     => 29,
+					),
 				)
 			);
 			STM_Support_Page::set_data(
@@ -71,19 +75,33 @@ if ( isset( $_GET['page'] ) && ( 'stm-support-page-ccb' === $_GET['page'] ) ) {
 								),
 							),
 						),
+						'customization' => array(
+							'buttons' => array(
+								array(
+									'href' => 'https://stylemix.net/ticket-form/?utm_source=wpadmin&utm_medium=help_center&utm_campaign=ccb_get_quotes',
+								),
+							),
+						),
 						'features'      => array(
 							'title'        => __( 'Get Cost Calculator and Enjoy PRO Features', 'cost-calculator-builder' ),
 							'description'  => __( 'Upgrade now and unlock multi-step forms, conditional logic, file uploads, and advanced styling options. Create smarter, more interactive calculators that fit your business.', 'cost-calculator-builder' ),
 							'buttons'      => array(
 								array(
-									'href' => 'https://stylemixthemes.com/cost-calculator-plugin/pricing/',
+									'href' => 'https://stylemixthemes.com/cost-calculator-plugin/pricing/?utm_source=wpadmin&utm_medium=help_center&utm_campaign=ccb_promo_banner',
 								),
 								array(
-									'href' => 'https://stylemixthemes.com/cost-calculator-plugin/',
+									'href' => 'https://stylemixthemes.com/cost-calculator-plugin/?utm_source=wpadmin&utm_medium=help_center&utm_campaign=ccb_promo_banner',
 								),
 							),
 							'image'        => CALC_URL . '/includes/lib/support-page/assets/images/feature-bg-ccb.jpg',
 							'has-pro-plus' => defined( 'CCB_PRO' ) && defined( 'CCB_PRO_PATH' ) && defined( 'CCB_PRO_URL' ) ? true : false,
+						),
+						'expert'        => array(
+							'buttons' => array(
+								array(
+									'href' => 'https://stylemix.net/?utm_source=wpadmin&utm_medium=help_center&utm_campaign=ccb_hire_us',
+								),
+							),
 						),
 					),
 					'review'     => array(
