@@ -247,13 +247,14 @@ const additionalClasses = computed(() => {
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
     max-height: 261px;
     position: absolute;
-    top: 5z5px;
+    top: 55px;
     left: 0;
     width: 100%;
     z-index: 100;
     visibility: hidden;
     opacity: 0;
     transition: 200ms ease;
+    overflow-y: auto;
 
     ul {
       list-style: none;

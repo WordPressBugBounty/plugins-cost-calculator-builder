@@ -11,7 +11,7 @@
 				<div class="ccb-templates-main-header">
 					<div class="ccb-templates-main-header-title-box">
 						<span class="ccb-heading-1 ccb-bold"><?php esc_html_e( 'Select a Template', 'cost-calculator-builder' ); ?></span>
-						<span class="ccb-heading-5 ccb-light"><?php esc_html_e( 'To speed up the process you can select from one of our pre-made templates, start with a blank form and create your own.', 'cost-calculator-builder' ); ?></span>
+						<span class="ccb-heading-5 ccb-light"><?php esc_html_e( 'Choose from our pre-made templates to speed up the setup, or start with a blank form to create your own.', 'cost-calculator-builder' ); ?></span>
 					</div>
 					<div class="ccb-templates-main-header-filters">
 						<div class="ccb-templates-main-header-filters-sort-box">

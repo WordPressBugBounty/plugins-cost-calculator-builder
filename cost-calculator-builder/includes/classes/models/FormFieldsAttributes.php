@@ -88,242 +88,278 @@ class FormFieldsAttributes extends DataBaseModel {
 		return $formatted_attributes;
 	}
 
-	public static function name_attributes( $field_id ) {
+	public static function name_attributes( $field_id, $data = array() ) {
 		$attributes = array(
 			array(
 				'type'      => 'required',
-				'text_data' => '1',
+				'text_data' => $data['required'] ?? '',
 			),
 			array(
 				'type'      => 'label',
-				'text_data' => 'Name',
+				'text_data' => $data['label'] ?? 'Name',
 			),
 			array(
 				'type'      => 'placeholder',
-				'text_data' => 'Type your name',
+				'text_data' => $data['placeholder'] ?? 'Type your name',
 			),
 		);
 		self::insert_field_attributes( $field_id, $attributes );
 	}
 
-	public static function email_attributes( $field_id ) {
+	public static function email_attributes( $field_id, $data = array() ) {
 		$attributes = array(
 			array(
 				'type'      => 'required',
-				'text_data' => '1',
+				'text_data' => $data['required'] ?? '',
 			),
 			array(
 				'type'      => 'label',
-				'text_data' => 'Email',
+				'text_data' => $data['label'] ?? 'Email',
 			),
 			array(
 				'type'      => 'placeholder',
-				'text_data' => 'Type your email',
+				'text_data' => $data['placeholder'] ?? 'Type your email',
 			),
 			array(
 				'type'      => 'confirmation',
-				'text_data' => '1',
+				'text_data' => $data['confirmation'] ?? '1',
 			),
 			array(
 				'type'      => 'confirmation_label',
-				'text_data' => 'Confirm your email',
+				'text_data' => $data['confirmation_label'] ?? 'Confirm your email',
 			),
 			array(
 				'type'      => 'confirmation_placeholder',
-				'text_data' => '',
+				'text_data' => $data['confirmation_placeholder'] ?? '',
 			),
 			array(
 				'type'      => 'position',
-				'text_data' => 'Vertical',
+				'text_data' => $data['position'] ?? 'Vertical',
 			),
 			array(
 				'type'      => 'primary',
-				'text_data' => '1',
+				'text_data' => $data['primary'] ?? '1',
 			),
 
 		);
 		self::insert_field_attributes( $field_id, $attributes );
 	}
 
-	public static function phone_attributes( $field_id ) {
+	public static function phone_attributes( $field_id, $data = array() ) {
 		$attributes = array(
 			array(
 				'type'      => 'required',
-				'text_data' => '1',
+				'text_data' => $data['required'] ?? '',
 			),
 			array(
 				'type'      => 'label',
-				'text_data' => 'Phone',
+				'text_data' => $data['label'] ?? 'Phone',
 			),
 			array(
 				'type'      => 'placeholder',
-				'text_data' => 'Type your phone',
+				'text_data' => $data['placeholder'] ?? 'Type your phone',
 			),
 		);
 		self::insert_field_attributes( $field_id, $attributes );
 	}
 
-	public static function input_textbox_attributes( $field_id ) {
+	public static function input_textbox_attributes( $field_id, $data = array() ) {
 		$attributes = array(
 			array(
 				'type'      => 'required',
-				'text_data' => '1',
+				'text_data' => $data['required'] ?? '1',
 			),
 			array(
 				'type'      => 'label',
-				'text_data' => 'Input textbox',
+				'text_data' => $data['label'] ?? 'Input textbox',
 			),
 			array(
 				'type'      => 'placeholder',
-				'text_data' => 'Type your text',
+				'text_data' => $data['placeholder'] ?? 'Type your text',
 			),
 			array(
 				'type'      => 'character_limit',
-				'text_data' => '80',
+				'text_data' => $data['character_limit'] ?? '80',
 			),
 		);
 		self::insert_field_attributes( $field_id, $attributes );
 	}
 
-	public static function textarea_attributes( $field_id ) {
+	public static function textarea_attributes( $field_id, $data = array() ) {
 		$attributes = array(
 			array(
 				'type'      => 'required',
-				'text_data' => '1',
+				'text_data' => $data['required'] ?? '',
 			),
 			array(
 				'type'      => 'label',
-				'text_data' => 'Message',
+				'text_data' => $data['label'] ?? 'Message',
 			),
 			array(
 				'type'      => 'placeholder',
-				'text_data' => 'Type your text',
+				'text_data' => $data['placeholder'] ?? 'Type your text',
 			),
 			array(
 				'type'      => 'character_limit',
-				'text_data' => '400',
+				'text_data' => $data['character_limit'] ?? '400',
 			),
 		);
 		self::insert_field_attributes( $field_id, $attributes );
 	}
 
-	public static function number_attributes( $field_id ) {
+	public static function number_attributes( $field_id, $data = array() ) {
 		$attributes = array(
 			array(
 				'type'      => 'required',
-				'text_data' => '1',
+				'text_data' => $data['required'] ?? '',
 			),
 			array(
 				'type'      => 'label',
-				'text_data' => 'Number',
+				'text_data' => $data['label'] ?? 'Number',
 			),
 			array(
 				'type'      => 'placeholder',
-				'text_data' => 'Type your number',
+				'text_data' => $data['placeholder'] ?? 'Type your number',
 			),
 		);
 		self::insert_field_attributes( $field_id, $attributes );
 	}
 
-	public static function dropdown_attributes( $field_id ) {
+	public static function date_picker_attributes( $field_id, $data = array() ) {
 		$attributes = array(
 			array(
 				'type'      => 'required',
-				'text_data' => '1',
+				'text_data' => $data['required'] ?? '',
 			),
 			array(
 				'type'      => 'label',
-				'text_data' => 'Dropdown',
+				'text_data' => $data['label'] ?? 'Date Picker',
+			),
+			array(
+				'type'      => 'placeholder',
+				'text_data' => $data['placeholder'] ?? 'Select date',
+			),
+			array(
+				'type'      => 'range',
+				'text_data' => $data['range'] ?? '',
+			),
+		);
+		self::insert_field_attributes( $field_id, $attributes );
+	}
+
+	public static function time_picker_attributes( $field_id, $data = array() ) {
+		$attributes = array(
+			array(
+				'type'      => 'required',
+				'text_data' => $data['required'] ?? '',
+			),
+			array(
+				'type'      => 'label',
+				'text_data' => $data['label'] ?? 'Date Picker',
+			),
+			array(
+				'type'      => 'format',
+				'text_data' => $data['format'] ?? '',
+			),
+			array(
+				'type'      => 'range',
+				'text_data' => $data['range'] ?? '',
+			),
+		);
+		self::insert_field_attributes( $field_id, $attributes );
+	}
+
+	public static function dropdown_attributes( $field_id, $data = array() ) {
+		$attributes = array(
+			array(
+				'type'      => 'required',
+				'text_data' => $data['required'] ?? '',
+			),
+			array(
+				'type'      => 'label',
+				'text_data' => $data['label'] ?? 'Dropdown',
 			),
 			array(
 				'type'      => 'options',
-				'text_data' => '',
+				'text_data' => $data['options'] ?? '',
+			),
+			array(
+				'type'      => 'placeholder',
+				'text_data' => $data['placeholder'] ?? 'Select an option',
 			),
 			array(
 				'type'      => 'multiselect',
-				'text_data' => '1',
+				'text_data' => $data['multiselect'] ?? '',
 			),
 		);
+
 		self::insert_field_attributes( $field_id, $attributes );
 	}
 
-	public static function radio_attributes( $field_id ) {
+	public static function radio_attributes( $field_id, $data = array() ) {
 		$attributes = array(
 			array(
 				'type'      => 'required',
-				'text_data' => '1',
+				'text_data' => $data['required'] ?? '',
 			),
 			array(
 				'type'      => 'label',
-				'text_data' => 'Radio',
+				'text_data' => $data['label'] ?? 'Radio',
 			),
 			array(
 				'type'      => 'options',
-				'text_data' => '',
-			),
-			array(
-				'type'      => 'multiselect',
-				'text_data' => '1',
+				'text_data' => $data['options'] ?? '',
 			),
 			array(
 				'type'      => 'display',
-				'text_data' => 'Horizontal',
+				'text_data' => $data['display'] ?? 'Horizontal',
 			),
 		);
+
 		self::insert_field_attributes( $field_id, $attributes );
 	}
 
-	public static function checkbox_attributes( $field_id ) {
+	public static function checkbox_attributes( $field_id, $data = array() ) {
 		$attributes = array(
 			array(
 				'type'      => 'required',
-				'text_data' => '1',
+				'text_data' => $data['required'] ?? '',
 			),
 			array(
 				'type'      => 'label',
-				'text_data' => 'Checkbox',
+				'text_data' => $data['label'] ?? 'Checkbox',
 			),
 			array(
 				'type'      => 'options',
-				'text_data' => '',
+				'text_data' => $data['options'] ?? '',
 			),
 			array(
 				'type'      => 'display',
-				'text_data' => 'Horizontal',
+				'text_data' => $data['display'] ?? 'Horizontal',
 			),
 		);
 		self::insert_field_attributes( $field_id, $attributes );
 	}
 
-	public static function formatted_text_attributes( $field_id ) {
+	public static function formatted_text_attributes( $field_id, $data = array() ) {
 		$attributes = array(
 			array(
 				'type'      => 'label',
-				'text_data' => 'Formatted text',
+				'text_data' => $data['label'] ?? 'Formatted text',
 			),
 			array(
 				'type'      => 'text',
-				'text_data' => 'Formatted text',
+				'text_data' => $data['text'] ?? 'Formatted text',
 			),
 		);
 		self::insert_field_attributes( $field_id, $attributes );
 	}
 
-	public static function button_attributes( $field_id ) {
+	public static function button_attributes( $field_id, $data = array() ) {
 		$attributes = array(
 			array(
 				'type'      => 'button_text',
-				'text_data' => 'Submit Order',
-			),
-		);
-		self::insert_field_attributes( $field_id, $attributes );
-	}
-
-	public static function space_attributes( $field_id ) {
-		$attributes = array(
-			array(
-				'type'      => 'space',
-				'text_data' => '',
+				'text_data' => $data['button_text'] ?? 'Submit Order',
 			),
 		);
 		self::insert_field_attributes( $field_id, $attributes );

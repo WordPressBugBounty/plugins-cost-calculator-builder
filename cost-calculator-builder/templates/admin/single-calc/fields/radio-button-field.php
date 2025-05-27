@@ -133,7 +133,7 @@
 				<div class="row ccb-p-t-15" style="align-items: flex-end !important;" v-if="radioField.styles">
 					<div class="col-6">
 						<div class="ccb-select-box">
-							<span class="ccb-select-label"><?php esc_html_e( 'Style', 'cost-calculator-builder' ); ?></span>
+							<span class="ccb-select-label"><?php esc_html_e( 'Layout Style', 'cost-calculator-builder' ); ?></span>
 							<div class="ccb-select-wrapper">
 								<i class="ccb-icon-Path-3485 ccb-select-arrow"></i>
 								<select class="ccb-select" v-model="radioField.styles.style" style="padding-right: 30px !important;">
@@ -144,7 +144,7 @@
 					</div>
 					<div class="col-6">
 						<div class="ccb-select-box">
-							<span class="ccb-select-label"><?php esc_html_e( 'Box style', 'cost-calculator-builder' ); ?></span>
+							<span class="ccb-select-label"><?php esc_html_e( 'Options Alignment', 'cost-calculator-builder' ); ?></span>
 							<div class="ccb-select-wrapper">
 								<i class="ccb-icon-Path-3485 ccb-select-arrow"></i>
 								<select class="ccb-select" v-model="radioField.styles.box_style" style="padding-right: 30px !important;">
@@ -158,7 +158,7 @@
 				<div class="row ccb-p-t-15">
 					<div class="col-12">
 						<div class="ccb-style-preview">
-							<span class="ccb-style-preview-header"><?php esc_html_e( 'Style preview', 'cost-calculator-builder' ); ?></span>
+							<span class="ccb-style-preview-header"><?php esc_html_e( 'Style Preview', 'cost-calculator-builder' ); ?></span>
 							<img :src="getCurrentImage">
 						</div>
 					</div>
@@ -170,7 +170,7 @@
 								<input type="checkbox" v-model="radioField.apply_style_for_all"/>
 								<label></label>
 							</div>
-							<h6 class="ccb-heading-5" style="font-size: 14px"><?php esc_html_e( 'Apply this radio style to all radio fields in this calculator', 'cost-calculator-builder' ); ?></h6>
+							<h6 class="ccb-heading-5" style="font-size: 14px"><?php esc_html_e( 'Apply to All Radio Fields in Calculator', 'cost-calculator-builder' ); ?></h6>
 						</div>
 					</div>
 				</div>

@@ -231,6 +231,7 @@ const additionalClasses = computed(() => {
     visibility: hidden;
     opacity: 0;
     transition: 200ms ease;
+    overflow-y: auto;
 
     ul {
       list-style: none;

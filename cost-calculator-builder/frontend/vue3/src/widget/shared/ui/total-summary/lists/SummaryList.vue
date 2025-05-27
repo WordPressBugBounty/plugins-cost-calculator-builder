@@ -99,6 +99,7 @@ const toggleBody = () => {
     padding: 2px 10px;
     border-radius: var(--ccb-fields-border-radius);
     text-transform: var(--ccb-summary-text-transform);
+    text-align: left;
   }
 
   .ccb-summary-list__accordion-btn {

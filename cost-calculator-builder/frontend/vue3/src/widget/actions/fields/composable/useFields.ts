@@ -36,6 +36,7 @@ import { usePaymentAfterSubmitStore } from "@/widget/app/providers/stores/paymen
 import { useSettingsStore } from "@/widget/app/providers/stores/settingsStore.ts";
 import { IPageBreakerField } from "@/widget/shared/types/fields/fields.type";
 import { useFieldsStore } from "@/widget/app/providers/stores/fieldsStore.ts";
+import { useConditionsStore } from "@/widget/app/providers/stores/conditionsStore";
 
 let timeout: ReturnType<typeof setTimeout> | null = null;
 
@@ -413,8 +414,11 @@ const evaluateFormula = (total: IFormulaField): void => {
     }
   });
 
-  total.originalValue = eval(total.formula);
-  total.value = total.originalValue;
+  const newValue = eval(total.formula);
+  const oldValue = total.value;
+
+  total.originalValue = newValue;
+  total.value = newValue;
   total = discountStore.applyDiscounts(total) as IFormulaField;
   total.displayValue = currencyFormatter.formatCurrency(
     total.value || 0,
@@ -426,6 +430,11 @@ const evaluateFormula = (total: IFormulaField): void => {
   );
 
   fieldsMap.set(total.alias, total);
+
+  if (total.fieldName !== "repeater" && newValue !== oldValue) {
+    const conditionsStore = useConditionsStore();
+    conditionsStore.applyConditionForField(total.alias);
+  }
 };
 
 function getField(alias: string): Field | undefined {

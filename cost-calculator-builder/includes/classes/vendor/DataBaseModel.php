@@ -11,7 +11,7 @@ class DataBaseModel {
 	 *
 	 * @return string
 	 */
-	public static function _table() {
+	public static function _table() { //phpcs:ignore
 		global $wpdb;
 		$classname = get_called_class();
 
@@ -43,9 +43,14 @@ class DataBaseModel {
 
 		$data = array_map(
 			function ( $item ) {
+				if ( is_numeric( $item ) ) {
+					return $item;
+				}
+
 				if ( 0 === $item || ( ! is_null( $item ) && trim( $item, ' \'"' ) ) ) {
 					return trim( $item );
 				}
+
 				return null;
 			},
 			$data

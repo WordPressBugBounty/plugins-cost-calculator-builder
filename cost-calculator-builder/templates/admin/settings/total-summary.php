@@ -6,7 +6,7 @@
 					<span class="ccb-tab-title"><?php esc_html_e( 'Summary block ', 'cost-calculator-builder' ); ?></span>
 				</div>
 				<div class="col-12">
-					<span class="ccb-tab-description"><?php esc_html_e( 'In this section, you can set up the the summary section and choose which additional values to display.', 'cost-calculator-builder' ); ?></span>
+					<span class="ccb-tab-description"><?php esc_html_e( 'Set up the summary section and choose additional values to display.', 'cost-calculator-builder' ); ?></span>
 				</div>
 			</div>
 			<div class="row">
@@ -16,7 +16,7 @@
 							<input type="checkbox" v-model="settingsField.general.descriptions" @change="toggleTotalOptions"/>
 							<label></label>
 						</div>
-						<h6 class="ccb-heading-6 ccb-bold"><?php esc_html_e( 'Show summary details', 'cost-calculator-builder' ); ?></h6>
+						<h6 class="ccb-heading-6 ccb-bold"><?php esc_html_e( 'Summary details', 'cost-calculator-builder' ); ?></h6>
 					</div>
 				</div>
 			</div>
@@ -29,7 +29,7 @@
 									<input type="checkbox" v-model="settingsField.general.hide_empty"/>
 									<label></label>
 								</div>
-								<h6 class="ccb-heading-6 ccb-bold"><?php esc_html_e( 'Show zero values in summary list', 'cost-calculator-builder' ); ?></h6>
+								<h6 class="ccb-heading-6 ccb-bold"><?php esc_html_e( 'Zero values in summary list', 'cost-calculator-builder' ); ?></h6>
 							</div>
 						</div>
 					</div>
@@ -40,7 +40,7 @@
 									<input type="checkbox" v-model="settingsField.general.hide_empty_for_orders_pdf_emails"/>
 									<label></label>
 								</div>
-								<h6 class="ccb-heading-6 ccb-bold"><?php esc_html_e( 'Zero Values in Orders, PDF Entries, Emails', 'cost-calculator-builder' ); ?></h6>
+								<h6 class="ccb-heading-6 ccb-bold"><?php esc_html_e( 'Zero values in Orders, PDF Entries, Emails', 'cost-calculator-builder' ); ?></h6>
 							</div>
 						</div>
 					</div>
@@ -51,7 +51,7 @@
 									<input type="checkbox" v-model="settingsField.general.show_details_accordion"/>
 									<label></label>
 								</div>
-								<h6 class="ccb-heading-6 ccb-bold"><?php esc_html_e( 'Keep details  open by default', 'cost-calculator-builder' ); ?></h6>
+								<h6 class="ccb-heading-6 ccb-bold"><?php esc_html_e( 'Details expanded by default', 'cost-calculator-builder' ); ?></h6>
 								<span class="ccb-help-tip-block" style="margin-top: 2px;">
 							<span class="ccb-help-label" ><?php esc_html_e( 'Preview', 'cost-calculator-builder' ); ?></span>
 							<span class="ccb-help ccb-help-settings">
@@ -70,7 +70,7 @@
 									<input type="checkbox" v-model="settingsField.general.show_option_unit"/>
 									<label></label>
 								</div>
-								<h6 class="ccb-heading-6 ccb-bold"><?php esc_html_e( 'Show composition in summary', 'cost-calculator-builder' ); ?></h6>
+								<h6 class="ccb-heading-6 ccb-bold"><?php esc_html_e( 'Cost breakdown in summary', 'cost-calculator-builder' ); ?></h6>
 								<span class="ccb-help-tip-block" style="margin-top: 2px;">
 							<span class="ccb-help-label" ><?php esc_html_e( 'Preview', 'cost-calculator-builder' ); ?></span>
 							<span class="ccb-help ccb-help-settings">
@@ -92,7 +92,7 @@
 								<input type="checkbox" v-model="settingsField.general.sticky"/>
 								<label></label>
 							</div>
-							<h6 class="ccb-heading-6 ccb-bold"><?php esc_html_e( 'Make summary block fixed on scroll', 'cost-calculator-builder' ); ?></h6>
+							<h6 class="ccb-heading-6 ccb-bold"><?php esc_html_e( 'Sticky Summary block', 'cost-calculator-builder' ); ?></h6>
 							<span class="ccb-help-tip-block" style="margin-top: 2px;">
 								<span class="ccb-help-label" ><?php esc_html_e( 'Preview', 'cost-calculator-builder' ); ?></span>
 								<span class="ccb-help ccb-help-settings">
@@ -113,7 +113,7 @@
 								<label></label>
 							</div>
 							<h6 class="ccb-heading-6 ccb-bold" style="color: #9196A1; display: flex">
-								<span><?php esc_html_e( 'Make summary block fixed on scroll', 'cost-calculator-builder' ); ?></span>
+								<span><?php esc_html_e( 'Sticky Summary block', 'cost-calculator-builder' ); ?></span>
 								<span class="ccb-item-lock-inner" style="left: 0px;"><i class="ccb-icon-Path-3482"></i> <span>PRO</span></span>
 							</h6>
 							<span class="ccb-help-tip-block" style="margin-top: 2px;">

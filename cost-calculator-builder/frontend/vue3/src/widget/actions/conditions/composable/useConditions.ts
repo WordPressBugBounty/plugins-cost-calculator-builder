@@ -254,7 +254,7 @@ function applyConditionForField(fieldAlias: string): void {
           targetField = disable(conditionResult, targetField, condition);
           break;
         case "unset":
-          targetField = unset(conditionResult, targetField);
+          targetField = unset(conditionResult, targetField, condition);
           break;
         case "set_value":
           targetField = setValue(conditionResult, targetField, condition);
@@ -389,7 +389,10 @@ function setLocation(
   }
 
   setTimeout(() => {
-    if (!targetField.hidden || targetField.calculateHidden) {
+    if (
+      (!targetField.hidden || targetField.calculateHidden) &&
+      targetCondition.optionFrom !== targetCondition.optionTo
+    ) {
       applyConditionForField(targetField.alias);
     }
   });
@@ -420,7 +423,10 @@ function hide(
     }
 
     setTimeout(() => {
-      if (targetField.calculateHidden) {
+      if (
+        targetField.calculateHidden &&
+        targetCondition.optionFrom !== targetCondition.optionTo
+      ) {
         applyConditionForField(targetField.alias);
       }
     });
@@ -451,12 +457,6 @@ function hideAndLeaveTotal(
     }
   }
 
-  setTimeout(() => {
-    if (!targetField.hidden || targetField.calculateHidden) {
-      applyConditionForField(targetField.alias);
-    }
-  });
-
   return targetField;
 }
 
@@ -471,13 +471,19 @@ function show(
     addConditionHistory(targetCondition);
     targetField.hidden = false;
     setTimeout(() => {
-      if (targetField.calculateHidden) {
+      if (
+        targetField.calculateHidden &&
+        targetCondition.optionFrom !== targetCondition.optionTo
+      ) {
         applyConditionForField(targetField.alias);
       }
     });
   } else if (cHistory.length && !result) {
     setTimeout(() => {
-      if (targetField.calculateHidden) {
+      if (
+        targetField.calculateHidden &&
+        targetCondition.optionFrom !== targetCondition.optionTo
+      ) {
         applyConditionForField(targetField.alias);
       }
     });
@@ -508,6 +514,13 @@ function disable(
   const callbackStore = useCallbackStore();
 
   if (result && !cHistory.length) {
+    if (
+      singleOptionsField.includes(targetField.fieldName) &&
+      targetCondition.action === "disable_option"
+    ) {
+      conditionHistoryLeaveOnlyCurrent(targetCondition);
+    }
+
     addConditionHistory(targetCondition);
     if (targetCondition.action === "disable_option") {
       const disableOptions: number[] = [];
@@ -572,16 +585,14 @@ function disable(
     }
   }
 
-  setTimeout(() => {
-    if (!targetField.hidden || targetField.calculateHidden) {
-      applyConditionForField(targetField.alias);
-    }
-  });
-
   return targetField;
 }
 
-function unset(result: boolean, targetField: Field): Field {
+function unset(
+  result: boolean,
+  targetField: Field,
+  targetCondition: ICondition,
+): Field {
   const callbackStore = useCallbackStore();
   if (result) {
     targetField.value = fieldMinValue(targetField);
@@ -613,7 +624,10 @@ function unset(result: boolean, targetField: Field): Field {
   }
 
   setTimeout(() => {
-    if (!targetField.hidden || targetField.calculateHidden) {
+    if (
+      (!targetField.hidden || targetField.calculateHidden) &&
+      targetCondition.optionFrom !== targetCondition.optionTo
+    ) {
       applyConditionForField(targetField.alias);
     }
   });
@@ -651,7 +665,10 @@ function setValue(
   }
 
   setTimeout(() => {
-    if (!targetField.hidden || targetField.calculateHidden) {
+    if (
+      (!targetField.hidden || targetField.calculateHidden) &&
+      targetCondition.optionFrom !== targetCondition.optionTo
+    ) {
       applyConditionForField(targetField.alias);
     }
   });
@@ -706,7 +723,10 @@ function setPeriod(
   }
 
   setTimeout(() => {
-    if (!targetField.hidden || targetField.calculateHidden) {
+    if (
+      (!targetField.hidden || targetField.calculateHidden) &&
+      targetCondition.optionFrom !== targetCondition.optionTo
+    ) {
       applyConditionForField(targetField.alias);
     }
   });
@@ -747,7 +767,10 @@ function setTime(
   }
 
   setTimeout(() => {
-    if (!targetField.hidden || targetField.calculateHidden) {
+    if (
+      (!targetField.hidden || targetField.calculateHidden) &&
+      targetCondition.optionFrom !== targetCondition.optionTo
+    ) {
       applyConditionForField(targetField.alias);
     }
   });
@@ -782,7 +805,10 @@ function setDate(
   }
 
   setTimeout(() => {
-    if (!targetField.hidden || targetField.calculateHidden) {
+    if (
+      (!targetField.hidden || targetField.calculateHidden) &&
+      targetCondition.optionFrom !== targetCondition.optionTo
+    ) {
       applyConditionForField(targetField.alias);
     }
   });
@@ -849,7 +875,10 @@ function selectOption(
   }
 
   setTimeout(() => {
-    if (!targetField.hidden || targetField.calculateHidden) {
+    if (
+      (!targetField.hidden || targetField.calculateHidden) &&
+      targetCondition.optionFrom !== targetCondition.optionTo
+    ) {
       applyConditionForField(targetField.alias);
     }
   });
@@ -889,8 +918,27 @@ function checkInConditionHistory(data: ICondition) {
       d.optionTo === data.optionTo &&
       d.optionFrom === data.optionFrom &&
       d.action === data.action &&
-      data.sort === d.sort,
+      d.sort === data.sort,
   );
+}
+
+function conditionHistoryLeaveOnlyCurrent(data: ICondition) {
+  const indexesToRemove = [];
+  for (let i = 0; i < conditionsHistory.length; i++) {
+    const current = conditionsHistory[i];
+    if (
+      current.optionTo === data.optionTo &&
+      current.optionFrom === data.optionFrom &&
+      current.action === data.action &&
+      current.sort !== data.sort
+    ) {
+      indexesToRemove.push(i);
+    }
+  }
+
+  for (let i = indexesToRemove.length - 1; i >= 0; i--) {
+    conditionsHistory.splice(indexesToRemove[i], 1);
+  }
 }
 
 function evaluateExpression(expression: (boolean | string)[]): boolean {

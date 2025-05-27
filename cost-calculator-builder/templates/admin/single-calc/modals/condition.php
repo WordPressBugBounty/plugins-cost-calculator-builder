@@ -264,8 +264,8 @@
 					<ul class="items">
 						<li class="option-item" @click="multiselectChoose(event, optionIndex, index)"
 							v-for="(item, optionIndex) in $store.getters.getFieldOptionsByFieldId($store.getters.getConditionData.optionTo)">
-							<input :checked="( model.setVal.length > 0 && model.setVal.split(',').map(Number).includes(optionIndex))" @change="multiselectChoose(event, optionIndex);" :class="['index',optionIndex].join('_')" type="checkbox"/>
-							<span class="option-item-text">{{ item.optionText }}</span>
+							<input :checked="( model.setVal.length > 0 && model.setVal.split(',').map(Number).includes(optionIndex))" @change="multiselectChoose(event, optionIndex);" :class="['index',optionIndex].join('_')" type="checkbox" :name="['index',optionIndex].join('_')" :id="['index',optionIndex].join('_')"/>
+							<label :for="['index',optionIndex].join('_')" class="option-item-text">{{ item.optionText }}</span>
 						</li>
 					</ul>
 					<input v-model="model.setVal" name="options" type="hidden" :class="$store.getters.getConditionData.optionTo"/>

@@ -20,5 +20,6 @@ const { title } = toRefs(props);
   font-size: var(--ccb-header-size);
   font-weight: var(--ccb-header-weight);
   color: var(--ccb-text-color);
+  text-align: left;
 }
 </style>

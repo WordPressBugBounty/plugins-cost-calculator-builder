@@ -104,7 +104,7 @@ class CCBFieldsHelper {
 				'sort_type'   => 'type',
 			),
 			array(
-				'name'        => __( 'Dropdown list', 'cost-calculator-builder' ),
+				'name'        => __( 'Dropdown', 'cost-calculator-builder' ),
 				'alias'       => 'drop-down',
 				'type'        => 'drop-down',
 				'tag'         => 'cost-drop-down',
@@ -213,12 +213,12 @@ class CCBFieldsHelper {
 				'sort_type'   => 'other',
 			),
 			array(
-				'name'        => __( 'Html element', 'cost-calculator-builder' ),
+				'name'        => __( 'HTML', 'cost-calculator-builder' ),
 				'alias'       => 'html',
 				'type'        => 'html',
 				'tag'         => 'cost-html',
 				'icon'        => 'ccb-icon-Path-3517',
-				'description' => __( 'Html element', 'cost-calculator-builder' ),
+				'description' => __( 'HTML element', 'cost-calculator-builder' ),
 				'sort_type'   => 'other',
 			),
 			array(
@@ -240,7 +240,7 @@ class CCBFieldsHelper {
 				'sort_type'   => 'grouping',
 			),
 			array(
-				'name'        => __( 'Section (Group)', 'cost-calculator-builder' ),
+				'name'        => __( 'Group', 'cost-calculator-builder' ),
 				'alias'       => 'group',
 				'type'        => 'group',
 				'tag'         => 'cost-group-field',
@@ -249,7 +249,7 @@ class CCBFieldsHelper {
 				'sort_type'   => 'grouping',
 			),
 			array(
-				'name'        => __( 'Divider (line)', 'cost-calculator-builder' ),
+				'name'        => __( 'Divider', 'cost-calculator-builder' ),
 				'alias'       => 'line',
 				'type'        => 'line',
 				'tag'         => 'cost-line',

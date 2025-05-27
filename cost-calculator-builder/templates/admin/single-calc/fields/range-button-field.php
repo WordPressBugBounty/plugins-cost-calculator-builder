@@ -76,7 +76,7 @@
 					</div>
 					<div class="col-6">
 						<div class="ccb-input-wrapper number">
-							<span class="ccb-input-label"><?php esc_html_e( 'Range Default Value', 'cost-calculator-builder' ); ?></span>
+							<span class="ccb-input-label"><?php esc_html_e( 'Default Range Value', 'cost-calculator-builder' ); ?></span>
 							<div class="ccb-input-box">
 								<input type="text" class="ccb-heading-5 ccb-light" name="default" min="0" step="1" @input="errors.default=false" v-model="rangeField.default" placeholder="<?php esc_attr_e( 'Enter default value', 'cost-calculator-builder' ); ?>">
 								<span @click="numberCounterAction('default')" class="input-number-counter up"></span>
@@ -115,7 +115,7 @@
 								<input type="checkbox" v-model="rangeField.multiply"/>
 								<label></label>
 							</div>
-							<h6 class="ccb-heading-5"><?php esc_html_e( 'Multiply (cost per value)', 'cost-calculator-builder' ); ?></h6>
+							<h6 class="ccb-heading-5"><?php esc_html_e( 'Multiply by Unit Price', 'cost-calculator-builder' ); ?></h6>
 						</div>
 					</div>
 				</div>
@@ -148,7 +148,7 @@
 								<input type="checkbox" v-model="rangeField.multipliedTotal"/>
 								<label></label>
 							</div>
-							<h6 class="ccb-heading-5"><?php esc_html_e( 'Show multiplied value instead of subtotal', 'cost-calculator-builder' ); ?></h6>
+							<h6 class="ccb-heading-5"><?php esc_html_e( 'Replace Subtotal with Multiplied Value', 'cost-calculator-builder' ); ?></h6>
 							<span class="ccb-help-tip-block" style="margin-top: 2px;">
 								<span class="ccb-help-label ccb-help-label-range" ><?php esc_html_e( 'Preview', 'cost-calculator-builder' ); ?></span>
 								<span class="ccb-help ccb-help-settings" style="left: -50%; bottom: 20px;">

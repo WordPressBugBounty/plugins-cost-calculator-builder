@@ -74,7 +74,7 @@
 </template>
 
 <script setup lang="ts">
-import { toRefs, computed, ref } from "vue";
+import { toRefs, computed, ref, onMounted } from "vue";
 import { IQuantityField } from "@/widget/shared/types/fields";
 import { useAppearanceStore } from "@/widget/app/providers/stores/appearanceStore.ts";
 import { useFieldsStore } from "@/widget/app/providers/stores/fieldsStore.ts";
@@ -120,6 +120,12 @@ const formattedValue = computed(() => {
   let value = field.value.round ? Math.round(+rawInput.value) : +rawInput.value;
 
   return parseQuantityValue(value.toString());
+});
+
+onMounted(() => {
+  rawInput.value = field.value.multiply
+    ? (field.value.value / field.value.unit).toString()
+    : field.value.value.toString();
 });
 
 const updateValue = (

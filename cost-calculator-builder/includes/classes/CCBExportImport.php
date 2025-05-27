@@ -3,8 +3,8 @@
 namespace cBuilder\Classes;
 
 use cBuilder\Classes\Appearance\Presets\CCBPresetGenerator;
-use cBuilder\Classes\Database\Condition;
 use cBuilder\Classes\Database\Discounts;
+use cBuilder\Classes\Database\Forms;
 
 class CCBExportImport {
 
@@ -117,6 +117,7 @@ class CCBExportImport {
 						'ccb_form_settings' => $item['stm_ccb_form_settings'],
 						'ccb_custom_fields' => (array) $item['ccb-custom-fields'],
 						'ccb_discounts'     => $item['ccb_discounts'] ?? array(),
+						'ccb_form_fields'   => ! empty( $item['ccb_form_fields'] ) ? (array) $item['ccb_form_fields'] : array(),
 					);
 					self::addCalculatorData( $item_data, $result, true );
 				}
@@ -146,6 +147,10 @@ class CCBExportImport {
 		update_post_meta( $calculator_id, 'stm-formula', isset( $data['ccb_formula'] ) ? (array) $data['ccb_formula'] : array() );
 		update_post_meta( $calculator_id, 'stm-conditions', isset( $data['ccb_conditions'] ) ? (array) $data['ccb_conditions'] : array() );
 		update_post_meta( $calculator_id, 'stm-name', isset( $data['ccb_name'] ) ? sanitize_text_field( $data['ccb_name'] ) : 'Untitled' );
+
+		if ( ! empty( $data['ccb_form_fields'] ) ) {
+			Forms::compare_and_maybe_create( $calculator_id, $data['ccb_form_fields'] );
+		}
 
 		$data['ccb_form_settings'] = (array) $data['ccb_form_settings'];
 		if ( isset( $data['ccb_form_settings']['thankYouPage'] ) && 'separate_page' === $data['ccb_form_settings']['thankYouPage']['type'] ) {
@@ -364,6 +369,7 @@ class CCBExportImport {
 				$calculator['ccb_conditions']    = unserialize( $post_store['stm-conditions'][0] ); //phpcs:ignore
 				$calculator['ccb_form_settings'] = isset( get_option( 'stm_ccb_form_settings_' . $post->ID )[0] ) ? get_option( 'stm_ccb_form_settings_' . $post->ID )[0] : get_option( 'stm_ccb_form_settings_' . $post->ID );
 				$calculator['ccb_discounts']     = Discounts::get_all_calc_discounts( $post->ID );
+				$calculator['ccb_form_fields']   = Forms::get_export_data( $post->ID );
 
 				$preset_key = get_post_meta( $post->ID, 'ccb_calc_preset_idx', true );
 				$presets    = CCBPresetGenerator::get_static_preset_from_db();

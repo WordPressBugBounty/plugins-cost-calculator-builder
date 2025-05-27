@@ -32,37 +32,70 @@ class FormFields extends DataBaseModel {
 
 	}
 
-	public static function create_default_fields( $form_id ) {
+	public static function create_form_fields( $form_id, $fields = array() ) {
 		global $wpdb;
 
-		$default_fields = array(
-			array(
-				'type'          => 'name',
-				'sort_id'       => 0,
-				'field_width'   => 12,
-				'insert_method' => 'name_attributes',
-			),
-			array(
-				'type'          => 'email',
-				'sort_id'       => 1,
-				'field_width'   => 12,
-				'insert_method' => 'email_attributes',
-			),
-			array(
-				'type'          => 'phone',
-				'sort_id'       => 2,
-				'field_width'   => 12,
-				'insert_method' => 'phone_attributes',
-			),
-			array(
-				'type'          => 'textarea',
-				'sort_id'       => 2,
-				'field_width'   => 12,
-				'insert_method' => 'textarea_attributes',
-			),
+		$default_fields = array();
+		$insert_methods = array(
+			'name'           => 'name_attributes',
+			'email'          => 'email_attributes',
+			'phone'          => 'phone_attributes',
+			'textarea'       => 'textarea_attributes',
+			'number'         => 'number_attributes',
+			'dropdown'       => 'dropdown_attributes',
+			'radio'          => 'radio_attributes',
+			'checkbox'       => 'checkbox_attributes',
+			'button'         => 'button_attributes',
+			'date-picker'    => 'date_picker_attributes',
+			'time-picker'    => 'time_picker_attributes',
+			'input-textbox'  => 'input_textbox_attributes',
+			'formatted-text' => 'formatted_text_attributes',
 		);
 
+		if ( empty( $fields ) ) {
+			$default_fields = array(
+				array(
+					'type'        => 'name',
+					'sort_id'     => 0,
+					'field_width' => 12,
+					'required'    => '1',
+				),
+				array(
+					'type'        => 'email',
+					'sort_id'     => 1,
+					'field_width' => 12,
+					'required'    => '1',
+				),
+				array(
+					'type'        => 'phone',
+					'sort_id'     => 2,
+					'field_width' => 12,
+					'required'    => '1',
+				),
+				array(
+					'type'        => 'textarea',
+					'sort_id'     => 2,
+					'field_width' => 12,
+					'required'    => '1',
+				),
+			);
+		} else {
+			foreach ( $fields as $field ) {
+				$attrs = $field['attributes'] ?? array();
+				$base  = array(
+					'type'        => $field['type'],
+					'sort_id'     => $field['sort_id'],
+					'field_width' => $field['field_width'],
+				);
+				$default_fields[] = array_merge( $base, $attrs );
+			}
+		}
+
 		foreach ( $default_fields as $field ) {
+			if ( empty( $field['type'] ) ) {
+				continue;
+			}
+
 			$form_field = array(
 				'form_id'     => $form_id,
 				'type'        => $field['type'],
@@ -71,8 +104,12 @@ class FormFields extends DataBaseModel {
 			);
 
 			self::insert( $form_field );
-			$field_id = $wpdb->insert_id;
-			FormFieldsAttributes::{$field['insert_method']}( $field_id );
+			$field_id    = $wpdb->insert_id;
+			$method_name = $insert_methods[ $field['type'] ] ?? '';
+
+			if ( ! empty( $method_name ) && ! empty( $field_id ) ) {
+				FormFieldsAttributes::{$method_name}( $field_id, $field );
+			}
 		}
 	}
 
@@ -106,7 +143,7 @@ class FormFields extends DataBaseModel {
 		// phpcs:enable
 
 		foreach ( $results as &$field ) {
-			$attributes          = explode( '|', $field['attributes'] );
+			$attributes          = explode( '|', $field['attributes'] ?? '' );
 			$field['attributes'] = array();
 			foreach ( $attributes as $attr ) {
 				$parts = explode( ':', $attr, 2 );
@@ -138,7 +175,7 @@ class FormFields extends DataBaseModel {
 		self::insert( $form_field );
 		$field_id = $wpdb->insert_id;
 
-		FormFieldsAttributes::insert_front_field_attributes( $field_id, $field['attributes'] );
+		FormFieldsAttributes::insert_front_field_attributes( $field_id, $field['attributes'] ?? array() );
 
 		return $field_id;
 	}

@@ -48,7 +48,7 @@
 							<span style="display: flex"><?php esc_html_e( 'Value', 'cost-calculator-builder' ); ?>
 								<span class="ccb-options-tooltip">
 									<i class="ccb-icon-circle-question"></i>
-									<span class="ccb-options-tooltip__text"><?php esc_html_e( 'This value can be used for calculation purposes, Use numbers only' ); ?></span>
+									<span class="ccb-options-tooltip__text"><?php esc_html_e( 'Only numerical values can be used for calculations' ); ?></span>
 								</span>
 							</span>
 						</div>

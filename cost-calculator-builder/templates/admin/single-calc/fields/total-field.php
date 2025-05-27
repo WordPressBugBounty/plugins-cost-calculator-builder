@@ -60,7 +60,7 @@
 							<input type="checkbox" v-model="totalField.formulaView" />
 							<label></label>
 						</div>
-						<h6 class="ccb-heading-5"><?php esc_html_e( 'Show the legacy formula view ', 'cost-calculator-builder' ); ?></h6>
+						<h6 class="ccb-heading-5"><?php esc_html_e( 'Legacy Formula View', 'cost-calculator-builder' ); ?></h6>
 					</div>
 				</div>
 				<div class="col-6 ccb-p-t-10" v-if="!disableFieldHiddenByDefault(totalField)">

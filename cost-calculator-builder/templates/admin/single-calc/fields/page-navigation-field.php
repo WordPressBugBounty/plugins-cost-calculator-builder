@@ -25,7 +25,7 @@
 				<div class="row ccb-p-t-15">
 					<div class="col-6">
 						<div class="ccb-select-box">
-							<span class="ccb-select-label"><?php esc_html_e( 'Navigation style', 'cost-calculator-builder' ); ?></span>
+						<span class="ccb-select-label"><?php esc_html_e( 'Navigation Style', 'cost-calculator-builder' ); ?></span>
 							<div class="ccb-select-wrapper">
 								<i class="ccb-icon-Path-3485 ccb-select-arrow"></i>
 								<select class="ccb-select" v-model="pageNavigation.pagination_type" @change="typeSelected">
@@ -46,7 +46,7 @@
 								<input type="checkbox" v-model="pageNavigation.hide_pagination_title">
 								<label></label>
 							</div>
-							<h6 class="ccb-heading-5"><?php esc_html_e( 'Hide page title in navigation', 'cost-calculator-builder' ); ?></h6>
+							<h6 class="ccb-heading-5"><?php esc_html_e( 'Hide Page Title', 'cost-calculator-builder' ); ?></h6>
 						</div>
 					</div>
 				</div>
@@ -68,7 +68,7 @@
 								<input type="checkbox" v-model="pageNavigation.summary_after_last_page" @change="disableTotalInPage"/>
 								<label></label>
 							</div>
-							<h6 class="ccb-heading-6 ccb-bold"><?php esc_html_e( 'Show summary block on the last page of multi-step calculator', 'cost-calculator-builder' ); ?></h6>
+							<h6 class="ccb-heading-6 ccb-bold"><?php esc_html_e( 'Summary on Final Page', 'cost-calculator-builder' ); ?></h6>
 							<span class="ccb-help-tip-block" style="margin-top: 2px;">
 								<span class="ccb-help-label" ><?php esc_html_e( 'Preview', 'cost-calculator-builder' ); ?></span>
 								<span class="ccb-help ccb-help-settings page-custom-help-tip" style="left: -290%; bottom: -150px;">
@@ -78,7 +78,7 @@
 								</span>
 							</span>
 						</div>
-						<span class="ccb-heading-6" style="margin-left: 56px; width: 100%; color: #768493;"><?php esc_html_e( 'The setting will be applied only when a calculator is built with Page breaker', 'cost-calculator-builder' ); ?></span>
+						<span class="ccb-heading-6" style="margin-left: 56px; width: 100%; color: #768493;"><?php esc_html_e( 'The summary block will take up the whole last page', 'cost-calculator-builder' ); ?></span>
 					</div>
 				</div>
 				<div class="row ccb-p-t-15" v-if="this.$store.getters.getPageBreakStatus" :class="{'ccb-settings-disabled': !pageNavigation.summary_after_last_page}">
@@ -88,7 +88,7 @@
 								<input type="checkbox" v-model="pageNavigation.total_in_page"/>
 								<label></label>
 							</div>
-							<h6 class="ccb-heading-6 ccb-bold"><?php esc_html_e( 'Show total summary on the page', 'cost-calculator-builder' ); ?></h6>
+							<h6 class="ccb-heading-6 ccb-bold"><?php esc_html_e( 'Summary on Each Page', 'cost-calculator-builder' ); ?></h6>
 							<span class="ccb-help-tip-block" style="margin-top: 2px;">
 								<span class="ccb-help-label" ><?php esc_html_e( 'Preview', 'cost-calculator-builder' ); ?></span>
 								<span class="ccb-help ccb-help-settings">
@@ -98,7 +98,7 @@
 								</span>
 							</span>
 						</div>
-						<span class="ccb-heading-6" style="margin-left: 56px; display: inline-block; width: 90%; color: #768493;"><?php esc_html_e( 'There will be a button on the bottom of each step for users to click and open a popup with Summary', 'cost-calculator-builder' ); ?></span>
+						<span class="ccb-heading-6" style="margin-left: 56px; display: inline-block; width: 90%; color: #768493;"><?php esc_html_e( 'Users will click a button at the bottom of each step and open a summary popup', 'cost-calculator-builder' ); ?></span>
 					</div>
 				</div>
 				<div class="row ccb-p-t-15" v-if="this.$store.getters.getPageBreakStatus && pageNavigation.total_in_page">

@@ -349,7 +349,7 @@
 			<div class="row ccb-p-t-15">
 				<div class="col-12">
 					<div class="ccb-input-wrapper">
-						<span class="ccb-input-label"><?php esc_html_e( 'Allowed number of options to select', 'cost-calculator-builder' ); ?></span>
+						<span class="ccb-input-label"><?php esc_html_e( 'Number of Options to Select', 'cost-calculator-builder' ); ?></span>
 						<input type="number" min="0" oninput="validity.valid || (value='');" class="ccb-heading-5 ccb-light" v-model.trim="toggleField.checkedLength" placeholder="<?php esc_attr_e( 'Set the max number of options allowed to select', 'cost-calculator-builder' ); ?>">
 					</div>
 				</div>

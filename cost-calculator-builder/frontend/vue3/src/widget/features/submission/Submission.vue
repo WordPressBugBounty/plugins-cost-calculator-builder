@@ -56,6 +56,7 @@ const appStore = useAppStore();
 const translationsStore = useTranslationsStore();
 
 const getSubmissionComponent = computed(() => {
+  const { setIsPaymentAfterSubmit } = usePaymentAfterSubmitStore();
   const formSettings = settings.getFormSettings;
   let paymentEnable: boolean = paymentsStatus.value;
 
@@ -70,6 +71,10 @@ const getSubmissionComponent = computed(() => {
     }
 
     if (formSettings?.summaryDisplay?.enable) {
+      if (formSettings?.payment && formSettings?.paymentMethods?.length) {
+        setIsPaymentAfterSubmit(true);
+      }
+
       return defineAsyncComponent(
         () => import("@/widget/features/submission/summary-block"),
       );
@@ -81,7 +86,6 @@ const getSubmissionComponent = computed(() => {
       );
     }
 
-    const { setIsPaymentAfterSubmit } = usePaymentAfterSubmitStore();
     setIsPaymentAfterSubmit(true);
 
     return defineAsyncComponent(

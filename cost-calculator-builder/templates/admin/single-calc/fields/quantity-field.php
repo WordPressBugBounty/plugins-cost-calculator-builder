@@ -97,7 +97,7 @@
 			<div class="row ccb-p-t-15">
 				<div class="col-6">
 					<div class="ccb-input-wrapper" :class="{ 'disabled': !quantityField.multiply && quantityField.allowCurrency || quantityField.fieldCurrency }">
-						<span class="ccb-input-label"><?php esc_html_e( 'Name of value (kg, gr, pcs)', 'cost-calculator-builder' ); ?></span>
+						<span class="ccb-input-label"><?php esc_html_e( 'Unit Name', 'cost-calculator-builder' ); ?></span>
 						<input type="text" maxlength="18" class="ccb-heading-5 ccb-light" v-model.trim="quantityField.sign" placeholder="<?php esc_attr_e( 'Enter unit symbol', 'cost-calculator-builder' ); ?>">
 					</div>
 				</div>
@@ -123,7 +123,7 @@
 							<input type="checkbox" v-model="quantityField.multiply"/>
 							<label></label>
 						</div>
-						<h6 class="ccb-heading-5"><?php esc_html_e( 'Multiply (cost per value)', 'cost-calculator-builder' ); ?></h6>
+						<h6 class="ccb-heading-5"><?php esc_html_e( 'Multiply by Unit Price', 'cost-calculator-builder' ); ?></h6>
 					</div>
 				</div>
 				<div class="col-6">
@@ -214,7 +214,7 @@
 							<input type="checkbox" v-model="quantityField.calculateHidden"/>
 							<label></label>
 						</div>
-						<h6 class="ccb-heading-5"><?php esc_html_e( 'Calculate hidden by default', 'cost-calculator-builder' ); ?></h6>
+						<h6 class="ccb-heading-5"><?php esc_html_e( 'Calculate Hidden by Default', 'cost-calculator-builder' ); ?></h6>
 					</div>
 				</div>
 				<div class="col-6 ccb-p-t-10">
@@ -232,7 +232,7 @@
 							<input type="checkbox" v-model="quantityField.fieldCurrency"/>
 							<label></label>
 						</div>
-						<h6 class="ccb-heading-5"><?php esc_html_e( 'Add a measuring unit', 'cost-calculator-builder' ); ?></h6>
+						<h6 class="ccb-heading-5"><?php esc_html_e( 'Set Measurement Unit', 'cost-calculator-builder' ); ?></h6>
 					</div>
 				</div>
 			</div>
@@ -259,7 +259,7 @@
 				</div>
 				<div class="col-4">
 					<div class="ccb-select-box">
-						<span class="ccb-select-label"><?php esc_html_e( 'Thousands separator', 'cost-calculator-builder' ); ?></span>
+						<span class="ccb-select-label"><?php esc_html_e( 'Thousands Separator', 'cost-calculator-builder' ); ?></span>
 						<div class="ccb-select-wrapper">
 							<i class="ccb-icon-Path-3485 ccb-select-arrow"></i>
 							<select class="ccb-select" v-model="fieldCurrency.thousands_separator">
@@ -273,7 +273,7 @@
 				</div>
 				<div class="col-4">
 					<div class="ccb-input-wrapper number">
-						<span class="ccb-input-label"><?php esc_html_e( 'Number of decimals', 'cost-calculator-builder' ); ?></span>
+						<span class="ccb-input-label"><?php esc_html_e( 'Number of Decimals', 'cost-calculator-builder' ); ?></span>
 						<div class="ccb-input-box">
 							<input type="number" name="option_num_after_integer" v-model="fieldCurrency.num_after_integer" min="1" max="8" placeholder="<?php esc_attr_e( 'Enter decimals', 'cost-calculator-builder' ); ?>">
 							<span class="input-number-counter up" @click="numberCounterAction('num_after_integer')"></span>
@@ -283,7 +283,7 @@
 				</div>
 				<div class="col-4">
 					<div class="ccb-select-box">
-						<span class="ccb-select-label"><?php esc_html_e( 'Decimal separator', 'cost-calculator-builder' ); ?></span>
+						<span class="ccb-select-label"><?php esc_html_e( 'Decimal Separator', 'cost-calculator-builder' ); ?></span>
 						<div class="ccb-select-wrapper">
 							<i class="ccb-icon-Path-3485 ccb-select-arrow"></i>
 							<select class="ccb-select" v-model="fieldCurrency.decimal_separator">

@@ -49,7 +49,7 @@ export function useCurrency(): IUseCurrencyResult {
     const numAfterInteger = options?.numAfterInteger || 2;
     const thousandsSeparator = options?.thousandsSeparator || ",";
     const decimalSeparator = options?.decimalSeparator || ".";
-    const currency = options?.currency || "$";
+    const currency = options?.currency || "";
     const currencyPosition = options?.currencyPosition || "left";
 
     // Ensure correct decimal places
@@ -84,7 +84,7 @@ export function useCurrency(): IUseCurrencyResult {
     const numAfterInteger = options?.numAfterInteger || 2;
     const thousandsSeparator = options?.thousandsSeparator || ",";
     const decimalSeparator = options?.decimalSeparator || ".";
-    const currency = options?.currency || "$";
+    const currency = options?.currency || "";
 
     let value = inputValue.replace(currency, "").trim();
 

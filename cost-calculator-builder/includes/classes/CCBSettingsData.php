@@ -420,7 +420,7 @@ class CCBSettingsData {
 			),
 			array(
 				'type'  => 'basic',
-				'title' => __( 'Warning texts', 'cost-calculator-builder' ),
+				'title' => __( 'Warning messages', 'cost-calculator-builder' ),
 				'slug'  => 'texts',
 				'icon'  => 'ccb-icon-Path-3601',
 			),

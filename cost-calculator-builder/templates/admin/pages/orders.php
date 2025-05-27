@@ -12,7 +12,7 @@ $invoice_texts    = array(
 	'date'              => esc_html__( 'Date:', 'cost-calculator-builder' ),
 	'contact_title'     => esc_html__( 'Contact Information', 'cost-calculator-builder' ),
 	'export_pdf_title'  => esc_html__( 'Export to PDF', 'cost-calculator-builder' ),
-	'email_quote_title' => esc_html__( 'Email Quote', 'cost-calculator-builder' ),
+	'email_quote_title' => esc_html__( 'Share Quote', 'cost-calculator-builder' ),
 	'order_form'        => array(
 		'name'           => esc_html__( 'name', 'cost-calculator-builder' ),
 		'email'          => esc_html__( 'email', 'cost-calculator-builder' ),
@@ -210,7 +210,7 @@ wp_localize_script(
 							<div class="ccb-table-body--no-content" v-if="preloader">
 								<loader></loader>
 							</div>
-							<orders-empty v-else-if="noOrders && 'list' === step" label="<?php esc_attr_e( 'No Orders yet', 'cost-calculator-builder' ); ?>" description="<?php esc_attr_e( 'Your order list seems to be empty.', 'cost-calculator-builder' ); ?>"></orders-empty>
+							<orders-empty v-else-if="noOrders && 'list' === step" label="<?php esc_attr_e( 'No Orders Yet', 'cost-calculator-builder' ); ?>" description="<?php esc_attr_e( 'Your order list is currently empty.', 'cost-calculator-builder' ); ?>"></orders-empty>
 							<template v-else-if="step === 'list'">
 								<orders-item
 										v-for="order in getOrders"
@@ -247,6 +247,9 @@ wp_localize_script(
 										<option value="10" class="hide-if-no-js"><?php esc_html_e( '10 orders per page', 'cost-calculator-builder' ); ?></option>
 										<option value="15" class="hide-if-no-js"><?php esc_html_e( '15 orders per page', 'cost-calculator-builder' ); ?></option>
 										<option value="20"><?php esc_html_e( '20 orders per page', 'cost-calculator-builder' ); ?></option>
+										<option value="50"><?php esc_html_e( '50 orders per page', 'cost-calculator-builder' ); ?></option>
+										<option value="100"><?php esc_html_e( '100 orders per page', 'cost-calculator-builder' ); ?></option>
+										<option value="200"><?php esc_html_e( '200 orders per page', 'cost-calculator-builder' ); ?></option>
 									</select>
 								</div>
 							</div>

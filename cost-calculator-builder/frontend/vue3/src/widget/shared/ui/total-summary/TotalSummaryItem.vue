@@ -42,6 +42,7 @@ const currentComponents = computed(() => {
   border-bottom: 1px dashed #ddd;
 
   &__title {
+    text-align: left;
     .description {
       font-size: 0.9em;
       padding-left: 10px;

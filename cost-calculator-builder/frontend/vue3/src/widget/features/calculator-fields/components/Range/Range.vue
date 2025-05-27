@@ -62,7 +62,7 @@
 </template>
 
 <script setup lang="ts">
-import { toRefs, computed, ref } from "vue";
+import { toRefs, computed, ref, onMounted } from "vue";
 import { IRangeField } from "@/widget/shared/types/fields";
 import Slider from "@vueform/slider";
 
@@ -94,7 +94,13 @@ const singleFieldMixins = useSingleField();
 const callbackStore = useCallbackStore();
 const currencyInstance = useCurrency();
 const translationsStore = useTranslationsStore();
-const rawInput = ref<number>(field.value.value);
+const rawInput = ref<number>(0);
+
+onMounted(() => {
+  rawInput.value = field.value.multiply
+    ? field.value.value / field.value.unit
+    : field.value.value;
+});
 
 const updateValue = (value: number, alias?: string) => {
   if (alias && alias !== field.value.alias) {

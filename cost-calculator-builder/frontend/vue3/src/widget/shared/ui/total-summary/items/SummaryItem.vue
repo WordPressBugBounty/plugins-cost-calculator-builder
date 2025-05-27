@@ -1,7 +1,7 @@
 <template>
   <div class="ccb-summary-item">
     <div class="ccb-summary-item__title">
-      <div class="title">{{ summary.label }}</div>
+      <div class="ccb-summary-title">{{ summary.label }}</div>
       <template
         v-if="
           ['checkbox', 'toggle', 'checkbox_with_img'].includes(
@@ -146,6 +146,7 @@ const { summary } = toRefs(props);
       padding-left: 10px;
       color: var(--ccb-summary-description-color);
       text-transform: none;
+      text-align: left;
     }
   }
 }

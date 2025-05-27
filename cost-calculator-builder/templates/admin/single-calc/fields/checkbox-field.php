@@ -282,7 +282,7 @@
 			</div>
 			<div class="row ccb-p-t-15">
 				<div class="col-12">
-					<span class="ccb-field-title"><?php esc_html_e( 'Allowed min & max number of options to select', 'cost-calculator-builder' ); ?></span>
+					<span class="ccb-field-title"><?php esc_html_e( 'Min and Max Number of Options to Select', 'cost-calculator-builder' ); ?></span>
 				</div>
 				<div class="col-6">
 					<div class="ccb-input-wrapper">
