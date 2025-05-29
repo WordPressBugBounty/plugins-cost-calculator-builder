@@ -52,6 +52,9 @@ defineExpose({
   &.medium {
     .calc-thank-you-page-container {
       width: 495px;
+      @media screen and (max-width: 550px) {
+        width: unset;
+      }
     }
   }
 

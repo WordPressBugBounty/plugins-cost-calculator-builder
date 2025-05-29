@@ -371,6 +371,10 @@ onMounted(() => {
     display: flex;
     gap: 10px;
     justify-content: space-between;
+
+    @media (max-width: 540px) {
+      flex-direction: column;
+    }
   }
 }
 
@@ -380,7 +384,8 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   padding: 40px 55px;
-  min-width: 410px;
+  min-width: 300px;
+  max-width: 300px;
   top: 50%;
   transform: translate(-50%, -50%);
   left: 50%;
@@ -393,9 +398,10 @@ onMounted(() => {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    max-width: 340px;
-    min-width: 340px;
+    max-width: 290px;
+    min-width: 290px;
     margin-left: 0;
+    padding: 40px 25px;
   }
 
   &.quote-success {

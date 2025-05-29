@@ -67,10 +67,13 @@ const clickHandler = () => {
     text-overflow: ellipsis;
   }
 
+  i {
+    margin-left: 6px;
+  }
+
   display: flex;
   justify-content: center;
   align-items: center;
-  column-gap: 6px;
   cursor: pointer;
   transition: 200ms linear;
 

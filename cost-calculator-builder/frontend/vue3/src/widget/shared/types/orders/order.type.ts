@@ -28,6 +28,10 @@ export interface IOrderData {
   paymentCurrency?: string;
   isPaymentAfterSubmit?: boolean;
   product_id?: number;
+  captcha?: {
+    captchaSend: boolean;
+    token: string;
+  };
 }
 
 export interface ICompleteOrderData {

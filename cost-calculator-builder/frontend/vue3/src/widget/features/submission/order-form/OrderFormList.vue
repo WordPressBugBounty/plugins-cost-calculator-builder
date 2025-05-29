@@ -7,6 +7,7 @@
     }"
   >
     <ProBadge />
+
     <template
       v-if="
         orderFormStore.getNextButtonStatus && getPaymentType !== 'woocommerce'
@@ -43,10 +44,15 @@
             :key="formField.id"
             :name="formField.type"
           />
-
           <TermsAndConditions
             v-if="settings.getFormSettings?.accessTermsEmail"
           />
+          <div
+            :id="getCalcId"
+            class="g-rec"
+            v-if="captchaStatus"
+            style="max-width: 100px"
+          ></div>
         </template>
       </template>
 
@@ -66,7 +72,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, toRefs, onMounted, ref } from "vue";
+import { computed, toRefs, ref, watch, onMounted } from "vue";
 import { useOrderForm } from "@/widget/actions/pro-features/order-form/composable/useOrderForm.ts";
 import { useSubmissionStore } from "@/widget/app/providers/stores/submissionStore.ts";
 import { usePaymentStore } from "@/widget/app/providers/stores/paymentsStore.ts";
@@ -83,10 +89,14 @@ import OrderFormItem from "./OrderFormItem.vue";
 import Button from "@/widget/shared/ui/components/Button/Button.vue";
 import TermsAndConditions from "@/widget/features/submission/order-form/terms-and-conditions/TermsAndConditions.vue";
 import ProBadge from "@/widget/shared/ui/components/Pro-badge/ProBadge.vue";
+import { IRecaptcha } from "@/widget/shared/types/settings/settings.type";
+import { useNotificationsStore } from "@/widget/app/providers/stores/notificationsStore.ts";
 
 type Props = {
   payment?: boolean;
 };
+
+const captchaIntegrated = ref(false);
 
 const props = defineProps<Props>();
 const { payment } = toRefs(props);
@@ -106,6 +116,11 @@ const formFields = computed(() => {
 
 const getMakeOrderText = computed((): string => {
   return settings.getFormSettings?.openModalBtnText || "Make Order";
+});
+
+const captchaStatus = computed((): boolean => {
+  const captcha = settings.getRecaptchaSettings;
+  return (captcha?.enable && captcha?.type === "v2") || false;
 });
 
 const getSubmitOrderText = computed((): string => {
@@ -140,6 +155,49 @@ const submitForm = () => {
   }
   // END| IF demo or live site ( demonstration only )
 
+  const captcha = settings.getRecaptchaSettings;
+  let captcha_access = true;
+  const notificationsStore = useNotificationsStore();
+
+  if (captcha?.enable) {
+    if (captcha.type === "v2") {
+      const token = orderFormStore.getCaptchaToken;
+      if (!token) {
+        notificationsStore.updateNotifications({
+          status: true,
+          type: "error",
+          message: "reCAPTCHA verification failed",
+        });
+        return;
+      }
+    } else if (captcha.type === "v3") {
+      captcha_access = false;
+      window.grecaptcha?.ready(() => {
+        window.grecaptcha
+          ?.execute(captcha.siteKey, { action: "submit" })
+          .then((token: string) => {
+            orderFormStore.setCaptchaToken(token);
+            captcha_access = true;
+            proceedWithSubmission();
+          })
+          .catch((_: Error) => {
+            notificationsStore.updateNotifications({
+              status: true,
+              type: "error",
+              message: "reCAPTCHA v3 verification failed",
+            });
+          });
+      });
+      return;
+    }
+  }
+
+  if (captcha_access) {
+    proceedWithSubmission();
+  }
+};
+
+const proceedWithSubmission = () => {
   if (getPaymentType.value === "woocommerce" || !validateOrderFormSettings()) {
     submissionStore.submissionCreateOrder();
   }
@@ -199,6 +257,14 @@ const btnDisabledStatus = computed((): boolean => {
   const fieldsStore = useFieldsStore();
   const paymentStore = usePaymentStore();
 
+  if (
+    fieldsStore.pageBreakEnabled &&
+    fieldsStore.getActivePageIndex !== fieldsStore.getPages.length - 1 &&
+    !settings.getPageBreakerSettings?.summaryAfterLastPage
+  ) {
+    return true;
+  }
+
   if (showSendData.value) return false;
   if (paymentStore.paymentType && !fieldsStore.checkRequiredFields()) {
     return true;
@@ -222,7 +288,7 @@ const nextButton = () => {
 };
 
 const getCf7Content = computed((): string => {
-  const calcId = appStore.getCalcId;
+  const calcId = getCalcId.value;
   const key: any = `ccb_front_template_${calcId}`;
   const contactFormData = window[key] as unknown as { cf7_form: string };
   if (contactFormData && "cf7_form" in contactFormData) {
@@ -232,10 +298,14 @@ const getCf7Content = computed((): string => {
   return "";
 });
 
+const getCalcId = computed((): string => {
+  return appStore.getCalcId?.toString() || "";
+});
+
 const cleanFormData = () => {};
 
 const showContactForm = () => {
-  myCf7Root.value = document.querySelector(`#ccb_app_${appStore.getCalcId}`);
+  myCf7Root.value = document.querySelector(`#ccb_app_${getCalcId.value}`);
 
   if (!myCf7Root.value) return;
 
@@ -332,13 +402,109 @@ const cfSentHandler = () => {
 const initContactFormActions = () => {
   cleanFormData();
   showContactForm();
-
   cfSentHandler();
-
   cfInitContent();
 };
 
-onMounted(() => {});
+const initRecaptcha = () => {
+  const captcha = settings.getRecaptchaSettings;
+  if (captcha?.enable && captcha?.siteKey && captcha?.secretKey) {
+    renderCaptchaFunc(captcha);
+    renderCaptchaScript(captcha);
+  }
+};
+
+const renderCaptchaFunc = (captcha: IRecaptcha) => {
+  const notificationsStore = useNotificationsStore();
+
+  if (captcha.type === "v2") {
+    const g_res = document.querySelectorAll(".g-rec");
+    window.ccbCaptchaFnc = () => {
+      g_res.forEach((element) => {
+        try {
+          const ccb_id = window?.grecaptcha?.render(element as HTMLElement, {
+            sitekey: captcha.siteKey,
+            callback: (token: string) => {
+              orderFormStore.setCaptchaToken(token);
+            },
+            "expired-callback": () => {
+              orderFormStore.setCaptchaToken("");
+            },
+          });
+
+          if (ccb_id) {
+            element.setAttribute("data-widget_id", ccb_id.toString());
+          }
+        } catch (_) {
+          notificationsStore.updateNotifications({
+            status: true,
+            type: "error",
+            message: "Error rendering reCAPTCHA",
+          });
+        }
+      });
+    };
+  } else if (captcha.type === "v3") {
+    window.ccbCaptchaFnc = () => {
+      window.grecaptcha?.ready(() => {
+        window.grecaptcha
+          ?.execute(captcha.siteKey, { action: "submit" })
+          .then((token: string) => {
+            orderFormStore.setCaptchaToken(token);
+          })
+          .catch((_: Error) => {
+            notificationsStore.updateNotifications({
+              status: true,
+              type: "error",
+              message: "Error executing reCAPTCHA v3",
+            });
+          });
+      });
+    };
+  }
+};
+
+const renderCaptchaScript = async (captcha: IRecaptcha) => {
+  if (captchaIntegrated.value && captcha?.type === "v3") return;
+
+  const src_store = {
+    v2: "https://www.google.com/recaptcha/api.js?onload=ccbCaptchaFnc&render=explicit",
+    v3: `https://www.google.com/recaptcha/api.js?render=${captcha.siteKey}`,
+  };
+
+  const script = document.createElement("script");
+  script.src = src_store[captcha.type];
+  script.setAttribute("defer", "");
+  script.setAttribute("async", "");
+
+  const firstScriptTag = document.querySelectorAll("script")[0];
+  firstScriptTag?.parentNode?.insertBefore(script, firstScriptTag);
+  captchaIntegrated.value = true;
+};
+
+const getNextButtonStatus = computed((): boolean => {
+  return orderFormStore.getNextButtonStatus;
+});
+
+watch(getNextButtonStatus, (newVal) => {
+  const captcha = settings.getRecaptchaSettings;
+  if (!newVal && captcha?.enable && captcha?.type === "v2") {
+    setTimeout(() => {
+      initRecaptcha();
+    });
+  } else if (newVal && captcha?.enable && captcha?.type === "v2") {
+    orderFormStore.setCaptchaToken("");
+  }
+});
+
+onMounted(() => {
+  const captcha = settings.getRecaptchaSettings;
+  if (captcha?.enable && captcha?.type === "v3" && !captchaIntegrated.value) {
+    setTimeout(() => {
+      initRecaptcha();
+    }, 1000);
+  }
+});
 </script>
 
 <style lang="scss">

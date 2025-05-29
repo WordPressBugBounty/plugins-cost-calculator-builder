@@ -12,6 +12,7 @@ interface IOrderFormState {
   contactFormDisabled: boolean;
   formFields: IFormField[];
   errors: Record<number, string>;
+  captchaToken: string;
 }
 
 export const useOrderFormStore = defineStore("orderForms", {
@@ -21,9 +22,14 @@ export const useOrderFormStore = defineStore("orderForms", {
     contactFormDisabled: false,
     formFields: [],
     errors: {},
+    captchaToken: "",
   }),
 
   actions: {
+    setCaptchaToken(token: string): void {
+      this.captchaToken = token;
+    },
+
     updateFormFields(fields: IFormField[]): void {
       this.formFields = fields;
     },
@@ -73,5 +79,6 @@ export const useOrderFormStore = defineStore("orderForms", {
       state.contactFormDisabled,
     getFormFields: (state: IOrderFormState): IFormField[] => state.formFields,
     getErrors: (state: IOrderFormState): Record<number, string> => state.errors,
+    getCaptchaToken: (state: IOrderFormState): string => state.captchaToken,
   },
 });

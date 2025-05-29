@@ -95,6 +95,9 @@ export const useSettingsStore = defineStore("settings", {
     getFormSettings: (state: SettingsStore): IFormFields | null =>
       state.formFields,
 
+    getRecaptchaSettings: (state: SettingsStore): IRecaptcha | null =>
+      state.recaptcha,
+
     getWarningTexts: (state: SettingsStore): IWarningTexts | null =>
       state.warningTexts,
 
@@ -206,7 +209,23 @@ export const useSettingsStore = defineStore("settings", {
       this.notice = convertedData.notice as INotice;
       this.invoice = convertedData.invoice as IInvoice;
       this.editCalcButton = convertedData.editCalcButton as IEditCalcButton;
-      this.recaptcha = convertedData.recaptchaV3 as IRecaptcha;
+
+      if (convertedData.recaptcha?.enable) {
+        let siteKey = convertedData.recaptcha?.v2?.siteKey;
+        let secretKey = convertedData.recaptcha?.v2?.secretKey;
+
+        if (convertedData.recaptcha?.type === "v3") {
+          siteKey = convertedData.recaptcha?.v3?.siteKey;
+          secretKey = convertedData.recaptcha?.v3?.secretKey;
+        }
+
+        this.recaptcha = {
+          enable: convertedData.recaptcha.enable,
+          type: convertedData.recaptcha.type === "v2" ? "v2" : "v3",
+          siteKey,
+          secretKey,
+        } as IRecaptcha;
+      }
 
       if (
         this.formFields?.summaryDisplay?.enable &&

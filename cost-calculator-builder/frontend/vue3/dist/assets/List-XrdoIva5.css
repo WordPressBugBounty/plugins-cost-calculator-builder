@@ -1,0 +1,1 @@
+.ccb-fields-list[data-v-50fcd5c0]{display:grid;gap:var(--ccb-field-spacing)}.ccb-horizontal .ccb-fields-list[data-v-50fcd5c0],.ccb-two-column .ccb-fields-list[data-v-50fcd5c0]{grid-template-columns:repeat(2,1fr)}@media (max-width: 768px){.ccb-horizontal .ccb-fields-list[data-v-50fcd5c0],.ccb-two-column .ccb-fields-list[data-v-50fcd5c0]{grid-template-columns:1fr}}

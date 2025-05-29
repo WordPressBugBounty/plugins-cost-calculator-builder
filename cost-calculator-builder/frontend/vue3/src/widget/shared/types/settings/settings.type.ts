@@ -223,6 +223,8 @@ export interface INotice {
 }
 
 export interface IRecaptcha {
+  enable: boolean;
+  type: "v2" | "v3";
   siteKey: string;
   secretKey: string;
 }

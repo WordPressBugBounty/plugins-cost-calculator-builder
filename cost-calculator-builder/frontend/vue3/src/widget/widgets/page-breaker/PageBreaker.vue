@@ -339,6 +339,8 @@ const translationsStore = useTranslationsStore();
 
 const getThankYouPageSettings = computed(() => settingsStore.thankYouPage);
 
+const pageHistory: number[] = [];
+
 const showThankYouPage = computed((): boolean => {
   return !(
     settingsStore.hasThankYouPage &&
@@ -488,11 +490,22 @@ const hideBackButton = computed(() => {
 });
 
 const activePageFieldsAliases = computed(() => {
-  return fieldsInstance.getActivePage().groupElements.map((element) => {
-    if ("alias" in element) {
-      return element.alias;
+  const allAliases: string[] = [];
+
+  for (let i = 0; i <= activePageIndex.value; i++) {
+    const page = fieldsStore.getPages[i];
+    if ("groupElements" in page) {
+      if (page?.groupElements) {
+        page.groupElements.forEach((element) => {
+          if ("alias" in element && typeof element.alias === "string") {
+            allAliases.push(element.alias);
+          }
+        });
+      }
     }
-  });
+  }
+
+  return allAliases;
 });
 
 const activePageConditionAction = computed(() => {
@@ -519,8 +532,6 @@ const pageBreakFields = computed(() => {
     });
   });
 });
-
-const pageHistory: number[] = [];
 
 const nextPage = () => {
   const pageConditionResult = checkPageFieldsConditions();

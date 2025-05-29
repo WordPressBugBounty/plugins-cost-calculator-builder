@@ -15,5 +15,9 @@
   max-width: var(--ccb-two-columns-max-width);
   margin: auto;
   padding: 10px;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
 }
 </style>

@@ -456,6 +456,24 @@ const createOrder = async (
   const paymentAfterSubmitStore = usePaymentAfterSubmitStore();
   const data: IOrderData = prepareOrderData(type, orderInputs);
 
+  const orderFormStore = useOrderFormStore();
+  if (type === "no_payments" && settingsStore.getRecaptchaSettings?.enable) {
+    const token = orderFormStore.getCaptchaToken;
+    if (!token) {
+      return {
+        success: false,
+        message: "Captcha token is required",
+      };
+    }
+
+    data.captcha = {
+      token,
+      captchaSend: true,
+    };
+
+    orderFormStore.setCaptchaToken("");
+  }
+
   if (type === "woocommerce") {
     if (!settingsStore.getWooCheckoutSettings?.productId) {
       return {

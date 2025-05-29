@@ -20,4 +20,5 @@ export interface IncomingData {
   pdf_settings: any;
   quote_settings: any;
   translations: ITranslations;
+  recaptcha: any;
 }
