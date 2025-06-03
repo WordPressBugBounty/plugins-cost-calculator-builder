@@ -326,8 +326,9 @@ class CCBFieldsHelper {
 		$not_calculable = array( 'text', 'html', 'line', 'validated_form' );
 		$true_values    = array( '1', 'true', 1, true );
 		$keys           = array( 'hidden', 'required', 'allowRound', 'allowCurrency', 'addToSummary', 'calculateHidden', 'fieldCurrency', 'multiply', 'calculatePerEach', 'allowPrice', 'uploadFromUrl', 'is_have_unselectable', 'day_price_enabled', 'autoclose_enabled', 'range', 'enabled_currency_settings' );
+
 		foreach ( $fields as $idx => $field ) {
-			if ( ! empty( $field['alias'] ) ) {
+			if ( ! empty( $field['alias'] ) && isset( $field['_id'] ) ) {
 				$field_name = preg_replace( '/_field_id.*/', '', $field['alias'] );
 
 				$field['isCalculable'] = ! in_array( $field_name, $not_calculable, true );
@@ -343,6 +344,18 @@ class CCBFieldsHelper {
 				}
 
 				$fields[ $idx ] = $field;
+			}
+
+			if ( ! empty( $field['groupElements'] ) ) {
+				$group_elements = array();
+				foreach ( $field['groupElements'] as $group_element ) {
+					if ( isset( $group_element['_id'] ) ) {
+						$group_elements[] = $group_element;
+					}
+				}
+
+				$field['groupElements'] = $group_elements;
+				$fields[ $idx ]         = $field;
 			}
 		}
 

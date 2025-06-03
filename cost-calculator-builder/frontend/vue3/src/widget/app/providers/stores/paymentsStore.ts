@@ -4,6 +4,7 @@ import { IPaymentTypes } from "@/widget/actions/pro-features/payments/paymentTyp
 import type { Stripe } from "@stripe/stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import { useFieldsStore } from "./fieldsStore";
+import { useAppStore } from "./appStore";
 
 type PaymentTypes = "" | keyof IPaymentTypes;
 
@@ -32,6 +33,13 @@ export const usePaymentStore = defineStore(`paymentStore_${randomId}`, () => {
     if (value !== paymentType.value) {
       paymentType.value = value;
       const fieldsStore = useFieldsStore();
+
+      // IF demo or live site ( demonstration only )
+      const appStore = useAppStore();
+      if (appStore.getIsLive) {
+        showForm.value = true;
+      }
+      // END| IF demo or live site ( demonstration only )
 
       if (fieldsStore.checkRequiredFields()) {
         showForm.value = true;

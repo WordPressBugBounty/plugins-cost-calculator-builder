@@ -410,6 +410,7 @@ function hide(
   if (!targetField.hidden && result) {
     addConditionHistory(targetCondition);
     targetField.hidden = true;
+    updateGroupElements(targetField);
   } else if (cHistory.length && !result) {
     removeFromConditionHistory(targetCondition);
     const check = conditionsHistory.filter(
@@ -421,6 +422,8 @@ function hide(
     if (!check.length) {
       targetField.hidden = false;
     }
+
+    updateGroupElements(targetField);
 
     setTimeout(() => {
       if (
@@ -470,6 +473,9 @@ function show(
   if (result && !cHistory.length) {
     addConditionHistory(targetCondition);
     targetField.hidden = false;
+
+    updateGroupElements(targetField);
+
     setTimeout(() => {
       if (
         targetField.calculateHidden &&
@@ -499,6 +505,8 @@ function show(
     if (!check.length) {
       targetField.hidden = true;
     }
+
+    updateGroupElements(targetField);
   }
 
   return targetField;
@@ -981,6 +989,20 @@ function prepareSetValue(field: Field, value: number) {
   }
 
   return value;
+}
+
+function updateGroupElements(targetField: Field) {
+  const fieldStore = useFieldsStore();
+  if (targetField.fieldName === "group" && "groupElements" in targetField) {
+    targetField.groupElements.forEach((elements, _) =>
+      Array.from(elements.entries()).forEach(([_, element]) => {
+        if (element.fieldName === "total") {
+          element.hidden = targetField.hidden;
+          fieldStore.updateField(element.alias, element);
+        }
+      }),
+    );
+  }
 }
 
 export function useConditions(): IConditionsResult {

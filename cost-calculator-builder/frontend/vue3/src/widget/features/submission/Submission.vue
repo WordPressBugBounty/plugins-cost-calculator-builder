@@ -16,7 +16,7 @@
       <div class="ccb-payment-after-submit-btn-wrapper">
         <Button
           v-if="showButtons"
-          :text="translationsStore.getTranslations.makePayment"
+          :text="getMakePaymentText"
           type="success"
           :on-click="paymentAfterSubmitClickAction"
           :disabled="makePaymentBtnDisabledStatus"
@@ -54,6 +54,21 @@ const paymentAfterSubmitStore = usePaymentAfterSubmitStore();
 const paymentStore = usePaymentStore();
 const appStore = useAppStore();
 const translationsStore = useTranslationsStore();
+
+const getMakePaymentText = computed((): string => {
+  const makePayment =
+    translationsStore.getTranslations.makePayment || "Make Payment";
+  if (getPaymentType.value === "woocommerce") {
+    return "Add to cart";
+  } else {
+    return makePayment;
+  }
+});
+
+const getPaymentType = computed((): string => {
+  const paymentStore = usePaymentStore();
+  return paymentStore.paymentType;
+});
 
 const getSubmissionComponent = computed(() => {
   const { setIsPaymentAfterSubmit } = usePaymentAfterSubmitStore();
@@ -129,6 +144,8 @@ const isRazorpayEnabled = computed((): boolean => {
 });
 
 const paymentsStatus = computed((): boolean => {
+  if (settings.getFormSettings?.accessEmail) return false;
+
   return (
     isPaypalEnabled.value ||
     isCashPaymentEnabled.value ||
@@ -137,7 +154,22 @@ const paymentsStatus = computed((): boolean => {
   );
 });
 
+const getPayments = computed(() => {
+  const formSettings = settings.getFormSettings;
+  let payments: string[] = [];
+  if (formSettings?.payment) {
+    payments = formSettings.paymentMethods || [];
+  }
+
+  return payments;
+});
+
 const isWooCheckoutOnlyEnabled = computed((): boolean => {
+  const formSettings = settings.getFormSettings;
+  let payments: string[] = getPayments.value;
+
+  if (formSettings?.payment && payments.length) return false;
+
   return (
     (settings.getWooCheckoutSettings?.enable && !paymentsStatus.value) || false
   );

@@ -35,9 +35,13 @@
                 class="pdf-total-summary--body-item-name"
                 style="width: 46%"
               >
-                <span class="pdf-total-summary--body-item-name-title">{{
-                  detail.label
-                }}</span>
+                <span
+                  class="pdf-total-summary--body-item-name-title"
+                  :style="{
+                    'margin-left': detail.repeaterAlias ? '10px' : '0px',
+                  }"
+                  >{{ detail.label }}</span
+                >
                 <template
                   v-if="
                     ['checkbox', 'toggle', 'checkbox_with_img'].includes(
@@ -214,7 +218,7 @@
                             >
                           </span>
                         </span>
-                        <span>{{ total.label }}</span>
+                        <span style="padding-top: 15px">{{ total.label }}</span>
                       </span>
                     </template>
                     <template v-else>
@@ -232,7 +236,7 @@
                             total.hasDiscount &&
                             total?.discount?.viewType !== 'show_with_title'
                           "
-                          >{{ getDiscountAmount(total) }} Off</span
+                          >{{ getDiscountAmount(total) }}</span
                         >
                       </span>
                     </template>
@@ -243,9 +247,17 @@
                         total?.discount?.viewType === 'show_with_title'
                       "
                     >
-                      <span style="display: flex; flex-direction: column">
+                      <span
+                        style="
+                          display: flex;
+                          flex-direction: column;
+                          align-items: flex-end;
+                        "
+                      >
                         <span>{{ getDiscountValue(total) }}</span>
-                        <span>{{ total.value }}</span>
+                        <span style="padding-top: 15px">{{
+                          total.displayValue
+                        }}</span>
                       </span>
                     </template>
                     <template v-else>
@@ -262,8 +274,9 @@
                               text-decoration: line-through;
                               margin-right: 4px;
                               display: inline-block;
+                              font-size: 80%;
                             "
-                            >{{ total.discount.extraView }}</span
+                            >{{ total.originalDisplayView }}</span
                           >
                           <span>{{ total.displayValue }}</span>
                         </span>
@@ -565,6 +578,7 @@ const getOrderDetails = computed(() => {
 
   fields.forEach((el) => {
     if ("groupElements" in el && Array.isArray(el.groupElements)) {
+      result.push(el);
       el.groupElements.forEach((inner: Map<string, Field>) => {
         result = [...result, ...(getFieldsFromMap.value(inner) as Field[])];
       });
@@ -608,11 +622,7 @@ const getTotals = computed(() => {
 const getDiscountAmount = computed<(total: any) => string | null>(() => {
   return (total) => {
     if (total.discount) {
-      if (total.discount.discountType === "percent_of_amount") {
-        return `${parseInt(total.discount.discountAmount)}%`;
-      } else {
-        return `-${total.paymentCurrency}${parseInt(total.discount.discountAmount)}`;
-      }
+      return `${total.discount.extraView}`;
     }
 
     return null;
@@ -622,7 +632,7 @@ const getDiscountAmount = computed<(total: any) => string | null>(() => {
 const getDiscountValue = computed<(total: any) => string | null>(() => {
   return (total) => {
     if (total.discount) {
-      return total.discount.discountValue || null;
+      return total.discount.extraView || null;
     }
     return null;
   };

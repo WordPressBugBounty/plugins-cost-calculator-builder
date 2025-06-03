@@ -180,6 +180,7 @@ class CCBOrderController {
 
 				foreach ( $data['orderDetails'] as $detail ) {
 					if ( ! empty( $detail['alias'] ) && str_contains( $detail['alias'], 'repeater' ) ) {
+						$order_details[] = $detail;
 						foreach ( $detail['groupElements'] as &$item ) {
 							if ( isset( $item['idx'] ) ) {
 								$item['alias'] .= '_' . $item['idx'];

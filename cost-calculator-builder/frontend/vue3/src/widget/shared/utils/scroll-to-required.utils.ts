@@ -10,7 +10,19 @@ export const scrollIntoRequired = (
     query += `[data-repeater="${repeaterIdx}"]`;
   }
 
-  const offsetTop = $(query).offset()?.top || 0;
+  const offsetTop =
+    $(query)
+      .filter(function () {
+        if (
+          $(this)
+            .parents(".ccb-horizontal, .ccb-vertical, .ccb-two-column")
+            .css("display") !== "none"
+        ) {
+          return true;
+        }
+        return false;
+      })
+      .offset()?.top || 0;
 
   const offset = offsetTop - ($(window)?.scrollTop() || 0);
   if (offset > (window?.innerHeight || 0) || offset < 20) {

@@ -175,11 +175,14 @@ export const useFieldsStore = defineStore(`fieldsStore_${randomId}`, {
             if (item.type === "Group" && item.groupElements) {
               const createdField = fieldsInstance.addField(item);
               if (createdField) {
+                createdField.hidden = item.hidden;
                 this.fields.set(item.alias, createdField);
               }
-              item.groupElements.forEach((item) => {
-                const createField = fieldsInstance.addField(item);
-                this.fields.set(item.alias, createField);
+
+              item.groupElements.forEach((inner_item) => {
+                const createField = fieldsInstance.addField(inner_item);
+                createdField.hidden = inner_item.hidden;
+                this.fields.set(inner_item.alias, createField);
               });
             } else {
               const createField = fieldsInstance.addField(item);
@@ -190,11 +193,13 @@ export const useFieldsStore = defineStore(`fieldsStore_${randomId}`, {
         } else if (field.type === "Group" && field.groupElements) {
           const createdField = fieldsInstance.addField(field);
           if (createdField) {
+            createdField.hidden = field.hidden;
             this.fields.set(field.alias, createdField);
           }
           field.groupElements.forEach((item) => {
             if (item.type === "Total") {
               const createdField = fieldsInstance.addField(item);
+              createdField.hidden = field.hidden;
               this.fields.set(item.alias, createdField);
             }
           });

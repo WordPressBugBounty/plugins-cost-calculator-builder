@@ -64,6 +64,10 @@ const getFieldsFromMap = computed(() => {
     margin-bottom: 10px;
     cursor: pointer;
 
+    &:not(:first-child) {
+      margin-top: 12px;
+    }
+
     .ccb-summary-repeater__btn {
       cursor: pointer;
       font-size: 10px;

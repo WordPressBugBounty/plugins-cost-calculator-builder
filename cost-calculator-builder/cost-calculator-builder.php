@@ -8,7 +8,7 @@
  * License: GNU General Public License v2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: cost-calculator-builder
- * Version: 3.5.6
+ * Version: 3.5.7
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 define( 'CALC_DIR', __DIR__ );
 define( 'CALC_FILE', __FILE__ );
-define( 'CALC_VERSION', '3.5.6' );
+define( 'CALC_VERSION', '3.5.7' );
 define( 'CALC_WP_TESTED_UP', '6.8.1' );
 define( 'CALC_DB_VERSION', '3.5.0' );
 define( 'CALC_PATH', dirname( CALC_FILE ) );
@@ -31,7 +31,7 @@ if ( is_admin() ) {
 		$plugin_pages   = array(
 			'cost_calculator_builder',
 			'page' => 'cost_calculator_orders',
-			'stm-support-page',
+			'stm-support-page-ccb',
 		);
 		$plugin_actions = array(
 			'stm_mailchimp_integration_add_cost-calculator-builder',

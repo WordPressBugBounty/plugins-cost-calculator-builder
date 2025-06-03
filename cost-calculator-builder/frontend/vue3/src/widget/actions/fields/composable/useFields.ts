@@ -267,7 +267,7 @@ function recalculateTotals(): void {
 
   let repeaterValue = 0;
   for (let repeater of repeaterFields) {
-    if (repeater.sumAllAvailable || repeater.enableFormula) {
+    if (repeater.sumAllAvailable) {
       if (repeater.sumAllAvailable) {
         for (const repeaterElement of repeater.groupElements) {
           for (const field of repeaterElement.values()) {
@@ -336,6 +336,23 @@ function recalculateTotals(): void {
   if (repeaterFields.length || totalFields.length) {
     const notTotalsIncludes: Record<string, IFormulaField> = {};
     const totalsIncludes: Record<string, IFormulaField> = {};
+
+    repeaterFields.forEach((repeater) => {
+      if (repeater.enableFormula) {
+        if (!repeater.originalFormula && repeater.formula) {
+          repeater.originalFormula = repeater.formula;
+        } else {
+          repeater.formula = repeater.originalFormula;
+        }
+
+        const matches = repeater.formula.match(/total_field_id_\d+/g) || [];
+        if (matches.length === 0) {
+          notTotalsIncludes[repeater.alias] = repeater;
+        } else {
+          totalsIncludes[repeater.alias] = repeater;
+        }
+      }
+    });
 
     totalFields.forEach((total) => {
       if (!total.originalFormula && total.formula) {
