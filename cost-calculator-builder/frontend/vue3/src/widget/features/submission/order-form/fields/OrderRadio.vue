@@ -93,6 +93,11 @@ onMounted(() => {
     font-weight: var(--ccb-field-weight);
     color: var(--ccb-text-color);
 
+    @media only screen and (max-width: 480px) {
+      font-size: var(--ccb-mobile-field-size);
+      font-weight: var(--ccb-mobile-field-weight);
+    }
+
     label {
       display: flex;
       flex-direction: row;

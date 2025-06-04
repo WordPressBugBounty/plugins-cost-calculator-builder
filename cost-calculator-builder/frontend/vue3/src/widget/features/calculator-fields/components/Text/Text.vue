@@ -119,8 +119,16 @@ const additionalClasses = computed(() => {
 .ccb-text-field {
   textarea {
     @include mixins.field;
+  }
+
+  textarea {
     resize: vertical;
     min-height: var(--ccb-field-button-height);
+
+    @media only screen and (max-width: 480px) {
+      padding: 12px var(--ccb-mobile-field-side-indent);
+      min-height: var(--ccb-mobile-field-button-height);
+    }
   }
 }
 

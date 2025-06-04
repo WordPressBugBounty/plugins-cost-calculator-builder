@@ -168,6 +168,10 @@ const additionalClasses = computed(() => {
     padding: 12px var(--ccb-field-side-indent);
     padding-left: max(30px, var(--ccb-field-side-indent));
 
+    @media only screen and (max-width: 480px) {
+      padding-left: max(30px, var(--ccb-mobile-field-side-indent));
+    }
+
     &.dp__input_focus {
       border-color: var(--ccb-accent-color);
     }
@@ -204,6 +208,11 @@ const additionalClasses = computed(() => {
     background: var(--ccb-date-picker-day);
     color: var(--ccb-text-color);
 
+    @media only screen and (max-width: 480px) {
+      font-size: var(--ccb-mobile-fields-button-size);
+      font-weight: var(--ccb-mobile-fields-button-weight);
+    }
+
     &:hover {
       background: color-mix(in srgb, var(--ccb-accent-color), transparent 50%);
     }
@@ -221,6 +230,11 @@ const additionalClasses = computed(() => {
     font-weight: var(--ccb-fields-button-weight);
     background: var(--ccb-accent-color) !important;
     color: var(--ccb-fields-bg-color);
+
+    @media only screen and (max-width: 480px) {
+      font-size: var(--ccb-mobile-fields-button-size);
+      font-weight: var(--ccb-mobile-fields-button-weight);
+    }
 
     &:hover {
       background: hsl(from var(--ccb-accent-color) h s calc(l - 5));

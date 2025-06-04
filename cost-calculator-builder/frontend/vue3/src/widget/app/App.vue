@@ -21,6 +21,7 @@ import { usePageConditions } from "@/widget/actions/conditions/composable/usePag
 import { useTranslationsStore } from "@/widget/app/providers/stores/translationsStore.ts";
 import Loader from "@/widget/shared/ui/components/Loader/index.ts";
 import "@vueform/slider/themes/default.css";
+import { useSubmissionStore } from "@/widget/app/providers/stores/submissionStore.ts";
 
 const appStore = useAppStore();
 const appearanceStore = useAppearanceStore();
@@ -31,6 +32,7 @@ const discountsStore = useDiscountsStore();
 const orderFormStore = useOrderFormStore();
 const pageConditions = usePageConditions();
 const translationsStore = useTranslationsStore();
+const submissonStore = useSubmissionStore();
 
 const calcId = inject("calc_id") as number;
 const key: any = `calc_data_${calcId}`;
@@ -49,6 +51,9 @@ if ("settings" in calcData) {
   settingsStore.initPdfSettings(calcData.pdf_settings);
   settingsStore.initQuoteSettings(calcData.quote_settings);
   translationsStore.initTranslations(calcData.translations);
+  appStore.setCustomThankYouPage(calcData.is_custom_thank_you_page);
+  submissonStore.setOrderId(calcData.order_id);
+  submissonStore.setOrderData(calcData.order_data);
 }
 
 const currentComponent = computed(() => {

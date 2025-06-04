@@ -1,5 +1,5 @@
 <template>
-  <div class="ccb-default-radio-image">
+  <div class="ccb-default-image-radio-withicon">
     <div
       v-for="(option, idx) in options"
       :key="idx"
@@ -72,7 +72,7 @@ const addOrRemove = (option: IOptions): void => {
 </script>
 
 <style lang="scss">
-.ccb-default-radio-image {
+.ccb-default-image-radio-withicon {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
@@ -80,6 +80,11 @@ const addOrRemove = (option: IOptions): void => {
   font-weight: var(--ccb-field-weight);
   color: var(--ccb-text-color);
   flex-direction: flex-start;
+
+  @media only screen and (max-width: 480px) {
+    font-size: var(--ccb-mobile-field-size);
+    font-weight: var(--ccb-mobile-field-weight);
+  }
 
   .ccb-radio-image {
     border: 1px solid var(--ccb-fields-border-color);
@@ -132,11 +137,20 @@ const addOrRemove = (option: IOptions): void => {
       font-weight: var(--ccb-field-weight);
       color: var(--ccb-text-color);
       word-break: break-word;
+
+      @media only screen and (max-width: 480px) {
+        font-size: var(--ccb-mobile-field-size);
+        font-weight: var(--ccb-mobile-field-weight);
+      }
     }
 
     &__price {
       font-size: var(--ccb-field-size-2);
       color: var(--ccb-fields-description-color);
+
+      @media only screen and (max-width: 480px) {
+        font-size: var(--ccb-mobile-field-size);
+      }
     }
   }
 
@@ -204,6 +218,16 @@ const addOrRemove = (option: IOptions): void => {
 .ccb-vertical-radio {
   .ccb-default-radio-image {
     flex-direction: column;
+  }
+}
+
+.ccb-horizontal {
+  .radio_with_img {
+    grid-column: 1 / span 2;
+    .ccb-radio-image {
+      max-width: 200px !important;
+      width: fit-content !important;
+    }
   }
 }
 </style>

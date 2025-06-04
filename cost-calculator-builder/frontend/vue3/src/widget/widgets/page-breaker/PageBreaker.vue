@@ -3,6 +3,7 @@
     class="ccb-page-breaker"
     :class="[{ 'summary-last-page': summaryLastPage }, currentPageStyle]"
     ref="pageBreakerRef"
+    v-if="!hideThankYouPage"
   >
     <Layout>
       <EditButton />
@@ -287,6 +288,9 @@
           />
         </template>
       </Wrapper>
+      <CCBPopup size="medium" ref="popup" v-if="appStore.isProActive">
+        <ThankYouPage />
+      </CCBPopup>
     </Layout>
   </div>
 </template>
@@ -328,9 +332,12 @@ const fieldsInstance = useFields();
 
 const { checkPageFieldsConditions, disableNextButton } = usePageConditions();
 import { useTranslationsStore } from "@/widget/app/providers/stores/translationsStore";
+import ThankYouPage from "@/widget/features/thank-you-page";
+import { useSubmissionStore } from "@/widget/app/providers/stores/submissionStore.ts";
 
 const fieldsStore = useFieldsStore();
 const settingsStore = useSettingsStore();
+const submissionStore = useSubmissionStore();
 const pageBreakerSettings = settingsStore.getPageBreakerSettings;
 
 const { hasPromocodes } = useDiscounts();
@@ -349,7 +356,12 @@ const showThankYouPage = computed((): boolean => {
 });
 
 const showNotifications = computed((): boolean => {
-  return notificationsStore.notificationStatus && !getWooStayOnPage.value;
+  return (
+    notificationsStore.notificationStatus &&
+    (notificationsStore.notificationType !== "finish" ||
+      !settingsStore.hasThankYouPage) &&
+    !getWooStayOnPage.value
+  );
 });
 
 const showWooRedirectCart = computed((): boolean => {
@@ -363,6 +375,38 @@ const getWooStayOnPage = computed((): boolean => {
     settingsStore.getWooCheckoutSettings?.redirectTo === "stay" &&
     notificationsStore.message === "Stay on page"
   );
+});
+
+const hideThankYouPage = computed((): boolean => {
+  const settings = getThankYouPageSettings.value;
+  const type = settings?.type;
+  const enable = settings?.enable;
+
+  if (
+    notificationsStore.notificationType === "finish" &&
+    settingsStore.hasThankYouPage
+  ) {
+    return getThankYouPageSettings.value?.type === "same_page";
+  }
+
+  if (notificationsStore.notificationType === "finish" && enable) {
+    if (type === "separate_page" && settings?.pageUrl) {
+      let link = settings?.pageUrl;
+      link = link.includes("?")
+        ? `${link}&order_id=${submissionStore.orderId}`
+        : `${link}?order_id=${submissionStore.orderId}`;
+
+      localStorage.setItem("ccb_previous_page", window.location.href);
+      notificationsStore.resetNotifications();
+      window.location.replace(link);
+    }
+
+    if (type === "custom_page" && settings.customButtonLink) {
+      notificationsStore.resetNotifications();
+      window.open(settings.customButtonLink, "_blank");
+    }
+  }
+  return false;
 });
 
 watch(showThankYouPage, (newValue) => {

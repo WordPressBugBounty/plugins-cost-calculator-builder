@@ -379,7 +379,18 @@ function recalculateTotals(): void {
       }
     });
   } else {
-    const total = fieldsArray.reduce((acc, field) => {
+    let result: Field[] = [];
+    fieldsArray.forEach((el) => {
+      if ("groupElements" in el && Array.isArray(el.groupElements)) {
+        el.groupElements.forEach((inner: Map<string, Field>) => {
+          result = [...result, ...(Array.from(inner.values()) as Field[])];
+        });
+      } else {
+        result.push(el);
+      }
+    });
+
+    const total = result.reduce((acc, field) => {
       acc += field.value || 0;
       return acc;
     }, 0);

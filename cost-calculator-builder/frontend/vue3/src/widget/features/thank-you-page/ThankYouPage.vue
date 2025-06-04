@@ -128,7 +128,20 @@ const showBackToCalculators = computed(
   () => getThankYouPageSettings.value?.type !== "modal",
 );
 
+const separatePageEnable = computed(() => {
+  console.log(getThankYouPageSettings);
+  return getThankYouPageSettings.value?.type === "separate_page";
+});
+
 const backToCalculatorAction = () => {
+  if (separatePageEnable) {
+    const previousPage = localStorage.getItem("ccb_previous_page");
+    if (previousPage) {
+      localStorage.removeItem("ccb_previous_page");
+      window.location.href = previousPage;
+    }
+  }
+
   const paymentStore = usePaymentStore();
   paymentStore.updatePaymentType("");
 
@@ -370,11 +383,12 @@ onMounted(() => {
             outline: none !important;
             box-shadow: none !important;
             text-decoration: none !important;
-
             transition: all linear 200ms;
 
             @media screen and (max-width: 480px) {
               padding: 0;
+              font-size: var(--ccb-mobile-fields-button-size);
+              font-weight: var(--ccb-mobile-fields-button-weight);
             }
 
             span {
@@ -387,6 +401,10 @@ onMounted(() => {
               font-size: var(--ccb-fields-button-size);
               font-style: normal;
               font-weight: 700;
+
+              @media only screen and (max-width: 480px) {
+                font-size: var(--ccb-mobile-fields-button-size);
+              }
             }
 
             i {

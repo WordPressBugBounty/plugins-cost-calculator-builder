@@ -254,6 +254,11 @@ callbackStore.add("updateDatePicker", updateValue);
     padding: 12px var(--ccb-field-side-indent);
     padding-left: max(30px, var(--ccb-field-side-indent)) !important;
 
+    @media only screen and (max-width: 480px) {
+      padding: 12px var(--ccb-mobile-field-side-indent);
+      padding-left: max(30px, var(--ccb-mobile-field-side-indent)) !important;
+    }
+
     &.dp__input_focus {
       border-color: var(--ccb-accent-color);
     }
@@ -338,10 +343,15 @@ callbackStore.add("updateDatePicker", updateValue);
       transition: 300ms ease;
       font-size: var(--ccb-fields-button-size);
       font-weight: var(--ccb-fields-button-weight);
-      border: 1px solid (var(--ccb-fields-border-color));
+      border: 1px solid var(--ccb-fields-border-color);
       margin-right: 10px;
       background: var(--ccb-date-picker-day);
       color: var(--ccb-text-color);
+
+      @media only screen and (max-width: 480px) {
+        font-size: var(--ccb-mobile-fields-button-size);
+        font-weight: var(--ccb-mobile-fields-button-weight);
+      }
 
       &:hover {
         background: color-mix(
@@ -364,6 +374,11 @@ callbackStore.add("updateDatePicker", updateValue);
       font-weight: var(--ccb-fields-button-weight);
       background: var(--ccb-accent-color);
       color: var(--ccb-fields-bg-color);
+
+      @media only screen and (max-width: 480px) {
+        font-size: var(--ccb-mobile-fields-button-size);
+        font-weight: var(--ccb-mobile-fields-button-weight);
+      }
 
       &:hover {
         background: hsl(from var(--ccb-accent-color) h s calc(l - 5));

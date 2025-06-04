@@ -9,6 +9,7 @@ interface IAppStore {
   submissionLoader: boolean;
   isLive: boolean;
   isProActive: boolean;
+  isCustomThankYouPage: boolean;
 }
 
 export const useAppStore = defineStore("app", {
@@ -21,6 +22,7 @@ export const useAppStore = defineStore("app", {
     submissionLoader: false,
     isLive: false,
     isProActive: false,
+    isCustomThankYouPage: false,
   }),
 
   getters: {
@@ -56,7 +58,15 @@ export const useAppStore = defineStore("app", {
     },
 
     updateThankYouPageStatus(value: boolean): void {
+      if (!value && this.isCustomThankYouPage) return;
       this.isThankYouPage = value;
+    },
+
+    setCustomThankYouPage(value: boolean): void {
+      this.isCustomThankYouPage = value;
+      if (value) {
+        this.isThankYouPage = value;
+      }
     },
 
     checkIfLive(): void {

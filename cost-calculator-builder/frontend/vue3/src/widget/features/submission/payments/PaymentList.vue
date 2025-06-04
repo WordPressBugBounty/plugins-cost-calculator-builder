@@ -127,10 +127,15 @@ const getPayments = computed(() => {
     }
   }
   .ccb-payments__title {
-    font-size: var(--ccb-summary-Ïtext-size);
+    font-size: var(--ccb-summary-text-size);
     font-weight: var(--ccb-field-weight);
     color: var(--ccb-text-color);
     margin-bottom: 6px;
+
+    @media only screen and (max-width: 480px) {
+      font-weight: var(--ccb-mobile-field-weight);
+      font-size: var(--ccb-mobile-summary-text-size);
+    }
   }
 
   .ccb-payments__list {
@@ -148,6 +153,11 @@ const getPayments = computed(() => {
       font-size: var(--ccb-summary-text-size);
       font-weight: var(--ccb-summary-text-weight);
       color: #00193180 !important;
+
+      @media only screen and (max-width: 480px) {
+        font-size: var(--ccb-mobile-summary-text-size);
+        font-weight: var(--ccb-mobile-summary-text-weight);
+      }
     }
   }
 }

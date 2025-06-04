@@ -145,6 +145,8 @@ export interface IWooProducts {
   isOn: boolean;
   productPrice?: number;
   currentProductId?: number;
+  isVariable?: boolean;
+  attributeKeys?: string[];
 }
 
 export interface IWooCheckout {

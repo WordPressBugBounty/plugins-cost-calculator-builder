@@ -197,16 +197,28 @@ const additionalClasses = computed(() => {
   &--option-converted {
     font-size: calc(var(--ccb-summary-text-size) - 2px);
     color: var(--ccb-text-color);
+
+    @media only screen and (max-width: 480px) {
+      font-size: calc(var(--ccb-mobile-summary-text-size) - 2px);
+    }
   }
 
   &__input {
     @include mixins.field;
+  }
+
+  &__input {
     padding-right: 10px;
 
     display: grid;
     grid-template-columns: 1fr auto;
     justify-content: space-between;
     cursor: pointer;
+
+    @media only screen and (max-width: 480px) {
+      padding: 12px var(--ccb-mobile-field-side-indent);
+      min-height: var(--ccb-mobile-field-button-height);
+    }
   }
 
   &__icon {
@@ -266,6 +278,10 @@ const additionalClasses = computed(() => {
 
         &:hover {
           background: var(--ccb-fields-hover-color) !important;
+        }
+
+        @media only screen and (max-width: 480px) {
+          font-weight: var(--ccb-mobile-field-weight);
         }
       }
     }

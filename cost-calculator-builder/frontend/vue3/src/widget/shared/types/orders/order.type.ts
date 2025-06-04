@@ -28,6 +28,7 @@ export interface IOrderData {
   paymentCurrency?: string;
   isPaymentAfterSubmit?: boolean;
   product_id?: number;
+  product_attributes?: Record<string, string>;
   captcha?: {
     captchaSend: boolean;
     token: string;
@@ -81,4 +82,17 @@ export interface IRepeaterOrderDetailsHelperResult {
 export interface IOrderDetails {
   fields: IOrderDetailsType;
   hiddenFields: IOrderDetailsType;
+}
+
+export interface IOrderDateThankYouPage {
+  id: string;
+  calc_id: string;
+  orderDetails: IOrderDetailsType;
+  formDetails: any;
+  paymentMethod: PaymentMethods;
+  orderDate: string;
+  converted: string;
+  totals: any;
+  discounts: any;
+  promocodes: string[];
 }

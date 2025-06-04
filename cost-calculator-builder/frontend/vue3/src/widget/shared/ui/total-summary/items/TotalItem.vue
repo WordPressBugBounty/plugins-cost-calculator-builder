@@ -62,6 +62,11 @@ const { summary } = toRefs(props);
   font-size: var(--ccb-grand-total-size);
   font-weight: var(--ccb-grand-total-weight);
 
+  @media only screen and (max-width: 480px) {
+    font-size: var(--ccb-mobile-grand-total-size);
+    font-weight: var(--ccb-mobile-grand-total-weight);
+  }
+
   &__item {
     display: flex;
     justify-content: space-between;

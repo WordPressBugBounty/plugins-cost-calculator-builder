@@ -38,5 +38,8 @@ const getFieldsFromMap = computed(() => {
   display: flex;
   flex-direction: column;
   gap: var(--ccb-summary-spacing);
+  @media only screen and (max-width: 480px) {
+    gap: var(--ccb-mobile-summary-spacing);
+  }
 }
 </style>

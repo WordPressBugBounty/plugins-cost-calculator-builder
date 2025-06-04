@@ -61,6 +61,11 @@ const { optionValues, changeValue, getName } = useSingleOptionChildShared(
   padding: 5px 0;
   flex-wrap: wrap;
 
+  @media only screen and (max-width: 480px) {
+    font-size: var(--ccb-mobile-field-size);
+    font-weight: var(--ccb-mobile-field-weight);
+  }
+
   &.ccb-vertical-radio {
     flex-direction: column;
   }

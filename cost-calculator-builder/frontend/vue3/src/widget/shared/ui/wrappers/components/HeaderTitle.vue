@@ -21,5 +21,10 @@ const { title } = toRefs(props);
   font-weight: var(--ccb-header-weight);
   color: var(--ccb-text-color);
   text-align: left;
+
+  @media only screen and (max-width: 480px) {
+    font-size: var(--ccb-mobile-header-size);
+    font-weight: var(--ccb-mobile-header-weight);
+  }
 }
 </style>

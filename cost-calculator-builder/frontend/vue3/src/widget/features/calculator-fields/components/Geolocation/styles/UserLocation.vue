@@ -492,6 +492,10 @@ onMounted(() => {
         font-size: var(--ccb-fields-button-size);
         padding: 11px 11px 11px 35px;
 
+        @media only screen and (max-width: 480px) {
+          font-size: var(--ccb-mobile-fields-button-size);
+        }
+
         &::placeholder {
           color: var(--ccb-text-color);
           opacity: 0.7;
@@ -520,6 +524,11 @@ onMounted(() => {
     transition: 300ms ease;
     margin-right: 14px;
     white-space: nowrap;
+    @media only screen and (max-width: 480px) {
+      min-height: var(--ccb-mobile-field-button-height);
+      font-size: var(--ccb-mobile-fields-button-size);
+      font-weight: var(--ccb-mobile-fields-button-weight);
+    }
 
     &:hover {
       background: var(--ccb-accent-color);

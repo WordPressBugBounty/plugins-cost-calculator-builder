@@ -389,16 +389,9 @@ class CCBFrontController {
 
 		wp_enqueue_style( 'ccb-icons-list', CALC_URL . '/frontend/dist/css/icon/style.css', array(), CALC_VERSION );
 		wp_enqueue_style( 'calc-builder-app', CALC_URL . '/frontend/dist/css/style.css', array(), CALC_VERSION );
-		wp_enqueue_script( 'ccb-lodash-js', 'https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js', array(), CALC_VERSION, true );
-		wp_add_inline_script( 'ccb-lodash-js', 'window.ccb_lodash = window.ccb_lodash ? window.ccb_lodash : _.noConflict();' );
 
 		$params   = shortcode_atts( array( 'id' => null ), $attr );
 		$language = substr( get_bloginfo( 'language' ), 0, 2 );
-
-		$appearance_css = CCBCssLoader::ccb_load_appearance( $params['id'] );
-		if ( ! empty( $appearance_css ) ) {
-			wp_enqueue_style( ccb_generate_random_handle(), $appearance_css, array(), CALC_VERSION );
-		}
 
 		Vite\enqueue_asset(
 			CALC_PATH . '/frontend/vue3/dist',
@@ -429,6 +422,11 @@ class CCBFrontController {
 				$order_data = apply_filters( 'ccb_order_data_by_id', $order_id );
 				if ( isset( $order_data['calc_id'] ) ) {
 					$calc_id = $order_data['calc_id'];
+
+					$appearance_css = CCBCssLoader::ccb_load_appearance( $calc_id );
+					if ( ! empty( $appearance_css ) ) {
+						wp_enqueue_style( ccb_generate_random_handle(), $appearance_css, array(), CALC_VERSION );
+					}
 				}
 			}
 

@@ -95,5 +95,9 @@ const boxStyle = computed(() => {
 <style lang="scss">
 .ccb-checkbox-image__label {
   font-size: var(--ccb-fields-button-size) !important;
+
+  @media only screen and (max-width: 480px) {
+    font-size: var(--ccb-mobile-fields-button-size) !important;
+  }
 }
 </style>

@@ -4,7 +4,10 @@ import {
   OrdersResponse,
   useOrder,
 } from "@/widget/actions/pro-features/orders/composable/useOrder";
-import { PaymentMethods } from "@/widget/shared/types/orders";
+import {
+  PaymentMethods,
+  IOrderDateThankYouPage,
+} from "@/widget/shared/types/orders";
 import { useSettingsStore } from "@/widget/app/providers/stores/settingsStore";
 import { useNotificationsStore } from "@/widget/app/providers/stores/notificationsStore";
 import { usePaymentAfterSubmitStore } from "./paymentAfterSubmit";
@@ -12,11 +15,16 @@ import { useAppStore } from "@/widget/app/providers/stores/appStore";
 import { ContactFormFields } from "@/widget/shared/types/orders/contact-form-fields.type";
 import { useOrderFormStore } from "./orderFormStore";
 
-type SubmissionState = { orderId: number | undefined; sendPaymentType: string };
+type SubmissionState = {
+  orderId: number | undefined;
+  sendPaymentType: string;
+  orderData: IOrderDateThankYouPage | undefined;
+};
 
 export const useSubmissionStore = defineStore("submission", {
   state: (): SubmissionState => ({
     orderId: undefined,
+    orderData: undefined,
     sendPaymentType: "",
   }),
 
@@ -32,6 +40,10 @@ export const useSubmissionStore = defineStore("submission", {
 
     setOrderId(id: number | undefined): void {
       this.orderId = id;
+    },
+
+    setOrderData(data: any): void {
+      this.orderData = data;
     },
 
     resetSubmissions() {
@@ -52,6 +64,18 @@ export const useSubmissionStore = defineStore("submission", {
 
       if (paymentAfterSubmitStore.getSubmit) {
         paymentAfterSubmitStore.setSubmit(false);
+      }
+
+      if (
+        settingsStore.formFields?.summaryDisplay?.enable &&
+        ["show_summary_block", "show_summary_block_with_pdf"].includes(
+          settingsStore.formFields?.summaryDisplay?.actionAfterSubmit,
+        )
+      ) {
+        if (!settingsStore.getSummaryDisplayShowSummary) {
+          settingsStore.setSummaryDisplayShowSummary(true);
+          return;
+        }
       }
 
       const {
@@ -249,6 +273,19 @@ export const useSubmissionStore = defineStore("submission", {
                 const notificationType =
                   type === "woocommerce" ? "success" : "finish";
 
+                if (
+                  res.success &&
+                  settingsStore.formFields?.summaryDisplay?.enable &&
+                  [
+                    "show_summary_block",
+                    "show_summary_block_with_pdf",
+                  ].includes(
+                    settingsStore.formFields?.summaryDisplay?.actionAfterSubmit,
+                  )
+                ) {
+                  appStore.updateThankYouPageStatus(true);
+                }
+
                 notificationsStore.updateNotifications({
                   type: res?.success ? notificationType : "error",
                   message: res.message ? res.message : res?.data?.message || "",
@@ -264,6 +301,7 @@ export const useSubmissionStore = defineStore("submission", {
 
   getters: {
     getOrderId: (state: SubmissionState): number | undefined => state.orderId,
+    getOrderData: (state: SubmissionState): any | undefined => state.orderData,
     getSendPaymentType: (state: SubmissionState): string =>
       state.sendPaymentType,
   },

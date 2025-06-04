@@ -1,8 +1,8 @@
 <template>
-  <div class="ccb-default-image-checkbox">
+  <div class="ccb-default-checkbox-image">
     <template v-for="(option, idx) in field.options">
       <label
-        :for="getName + '_' + idx"
+        :for="getName + '_' + idx + '_' + generateId"
         class="ccb-checkbox-image"
         :class="{
           selected: selectedOptions.includes(option.optionValue),
@@ -25,7 +25,7 @@
         <div class="ccb-checkbox-image__item">
           <input
             type="checkbox"
-            :id="getName + '_' + idx"
+            :id="getName + '_' + idx + '_' + generateId"
             :name="getName"
             :value="option.optionValue"
             v-model="optionValues"
@@ -70,12 +70,16 @@ const valuePrice = computed(() => {
   };
 });
 
+const generateId = computed(() => {
+  return Math.random().toString(36).substring(2, 15);
+});
+
 const { optionValues, changeValue, getName, getPriceValue, selectedOptions } =
   useMultiOptionChildShared(props, emit);
 </script>
 
-<style lang="scss">
-.ccb-default-image-checkbox {
+<style scoped lang="scss">
+.ccb-default-checkbox-image {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
@@ -83,6 +87,11 @@ const { optionValues, changeValue, getName, getPriceValue, selectedOptions } =
   font-weight: var(--ccb-field-weight);
   color: var(--ccb-text-color);
   padding: 5px 0;
+
+  @media only screen and (max-width: 480px) {
+    font-size: var(--ccb-mobile-field-size);
+    font-weight: var(--ccb-mobile-field-weight);
+  }
 
   .ccb-checkbox-image {
     border: 2px solid #eeeeee;
@@ -170,11 +179,20 @@ const { optionValues, changeValue, getName, getPriceValue, selectedOptions } =
       font-weight: var(--ccb-field-weight);
       color: var(--ccb-text-color);
       word-break: break-word;
+
+      @media only screen and (max-width: 480px) {
+        font-size: var(--ccb-mobile-field-size);
+        font-weight: var(--ccb-mobile-field-weight);
+      }
     }
 
     &__price {
       font-size: calc(var(--ccb-summary-text-size) - 2px);
       color: var(--ccb-fields-description-color);
+
+      @media only screen and (max-width: 480px) {
+        font-size: calc(var(--ccb-mobile-summary-text-size) - 2px);
+      }
     }
 
     &__item {
@@ -206,9 +224,24 @@ const { optionValues, changeValue, getName, getPriceValue, selectedOptions } =
 
 .ccb-vertical-checkbox {
   flex-direction: column;
-  .ccb-default-image-checkbox {
+  .ccb-default-checkbox-image {
     .ccb-checkbox-image {
       width: 100%;
+    }
+  }
+}
+
+.ccb-horizontal {
+  .ccb-field {
+    &.checkbox_with_img {
+      grid-column: 1 / span 2;
+      .ccb-checkbox-image {
+        max-width: 200px !important;
+        min-height: 220px;
+      }
+      .ccb-default-checkbox-image {
+        flex-direction: row;
+      }
     }
   }
 }

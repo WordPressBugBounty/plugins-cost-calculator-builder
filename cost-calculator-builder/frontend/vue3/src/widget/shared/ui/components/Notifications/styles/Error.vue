@@ -21,7 +21,7 @@ import { toRefs } from "vue";
 
 type Props = {
   message: string;
-  description: string;
+  description?: string;
 };
 
 const props = defineProps<Props>();

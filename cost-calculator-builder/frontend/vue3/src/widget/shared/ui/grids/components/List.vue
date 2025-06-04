@@ -10,6 +10,9 @@
 .ccb-fields-list {
   display: grid;
   gap: var(--ccb-field-spacing);
+  @media only screen and (max-width: 480px) {
+    gap: var(--ccb-mobile-field-spacing);
+  }
 }
 
 .ccb-horizontal,

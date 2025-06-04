@@ -21,4 +21,7 @@ export interface IncomingData {
   quote_settings: any;
   translations: ITranslations;
   recaptcha: any;
+  is_custom_thank_you_page: boolean;
+  order_id: number;
+  order_data: any;
 }

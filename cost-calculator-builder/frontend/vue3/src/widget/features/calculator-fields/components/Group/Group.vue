@@ -110,6 +110,11 @@ const additionalClasses = computed(() => {
     font-size: var(--ccb-field-size);
     font-weight: var(--ccb-field-label-weight);
     color: var(--ccb-text-color);
+
+    @media only screen and (max-width: 480px) {
+      font-size: var(--ccb-mobile-field-size);
+      font-weight: var(--ccb-mobile-field-label-weight);
+    }
   }
 
   &__icon {
@@ -118,6 +123,12 @@ const additionalClasses = computed(() => {
     justify-content: center;
     font-size: 12px;
     transition: 300ms ease;
+  }
+}
+
+.ccb-horizontal {
+  .group {
+    grid-column: 1 / span 2;
   }
 }
 </style>

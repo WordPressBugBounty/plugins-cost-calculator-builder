@@ -9,9 +9,7 @@
             value="cash"
             v-model="paymentType"
           />
-          <span class="ccb-radio-label">{{
-            translationsStore.getTranslations.cash
-          }}</span>
+          <span class="ccb-radio-label">{{ cashPaymentLabel }}</span>
         </div>
         <div class="calc-payment_header__img">
           <img
@@ -44,6 +42,13 @@ const settingsStore = useSettingsStore();
 
 const cashPaymentType = computed(() => {
   return settingsStore.getPaymentGateway?.cashPayment?.type;
+});
+
+const cashPaymentLabel = computed(() => {
+  return (
+    settingsStore.getPaymentGateway?.cashPayment?.label ||
+    translationsStore.getTranslations.cash
+  );
 });
 </script>
 

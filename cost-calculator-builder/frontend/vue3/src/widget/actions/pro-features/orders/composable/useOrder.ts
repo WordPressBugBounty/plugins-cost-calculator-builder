@@ -487,6 +487,25 @@ const createOrder = async (
       settingsStore.getWooProductsSettings?.currentProductId;
     data.product_id =
       productId === "current_product" ? currentProductId : +productId;
+
+    if (settingsStore.getWooProductsSettings?.isVariable) {
+      const attributes = settingsStore.getWooProductsSettings?.attributeKeys;
+      if (attributes?.length && attributes.length > 0) {
+        if (!data.product_attributes) {
+          data.product_attributes = {};
+        }
+
+        for (const attribute of attributes) {
+          const attr: HTMLInputElement | null = document.querySelector(
+            `[name^="${attribute}"]`,
+          );
+
+          if (attr) {
+            data.product_attributes[attribute] = attr.value;
+          }
+        }
+      }
+    }
   }
 
   if (
@@ -518,6 +537,10 @@ const createOrder = async (
 
     const response: OrdersResponse =
       await handleSubmissionRequest<OrdersResponse>(createOrderParams);
+
+    if (!response.success) {
+      return response;
+    }
 
     if (response.success) {
       if (type === "paypal") {

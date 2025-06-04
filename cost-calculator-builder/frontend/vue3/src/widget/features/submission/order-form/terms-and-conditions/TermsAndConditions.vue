@@ -111,7 +111,12 @@ const getPageLink = computed(() => {
   font-size: var(--ccb-field-size);
   font-weight: var(--ccb-field-weight);
   color: var(--ccb-text-color);
-  padding: 5px 0px;
+  padding: 5px 0;
+
+  @media only screen and (max-width: 480px) {
+    font-size: var(--ccb-mobile-field-size);
+    font-weight: var(--ccb-mobile-field-weight);
+  }
 
   label {
     display: flex;

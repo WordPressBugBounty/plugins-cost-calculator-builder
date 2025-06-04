@@ -121,6 +121,12 @@ const { summary } = toRefs(props);
   text-transform: var(--ccb-summary-text-transform);
   border-bottom: 1px dashed #ddd;
 
+  @media only screen and (max-width: 480px) {
+    font-size: var(--ccb-mobile-summary-text-size);
+    font-weight: var(--ccb-mobile-summary-text-weight);
+    text-transform: var(--ccb-mobile-summary-text-transform);
+  }
+
   &__values {
     text-transform: none;
     ul {
@@ -130,6 +136,12 @@ const { summary } = toRefs(props);
       font-size: var(--ccb-summary-text-size);
       font-weight: var(--ccb-summary-text-weight);
       text-transform: var(--ccb-summary-text-transform);
+
+      @media only screen and (max-width: 480px) {
+        font-size: var(--ccb-mobile-summary-text-size);
+        font-weight: var(--ccb-mobile-summary-text-weight);
+      }
+
       li {
         text-transform: none;
       }

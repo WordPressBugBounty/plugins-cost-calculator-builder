@@ -105,6 +105,10 @@ const isRequired = computed(() => {
     color: var(--ccb-text-color);
     padding-left: max(30px, var(--ccb-field-side-indent)) !important;
 
+    @media only screen and (max-width: 480px) {
+      padding-left: max(30px, var(--ccb-mobile-field-side-indent)) !important;
+    }
+
     &.dp__input_focus {
       border-color: var(--ccb-accent-color);
     }
@@ -134,6 +138,11 @@ const isRequired = computed(() => {
     background: var(--ccb-date-picker-day);
     color: var(--ccb-text-color);
 
+    @media only screen and (max-width: 480px) {
+      font-size: var(--ccb-mobile-fields-button-size);
+      font-weight: var(--ccb-mobile-fields-button-weight);
+    }
+
     &:hover {
       background: color-mix(in srgb, var(--ccb-accent-color), transparent 50%);
     }
@@ -151,6 +160,11 @@ const isRequired = computed(() => {
     font-weight: var(--ccb-fields-button-weight);
     background: var(--ccb-accent-color);
     color: var(--ccb-fields-bg-color);
+
+    @media only screen and (max-width: 480px) {
+      font-size: var(--ccb-mobile-fields-button-size);
+      font-weight: var(--ccb-mobile-fields-button-weight);
+    }
 
     &:hover {
       background: hsl(from var(--ccb-accent-color) h s calc(l - 5));

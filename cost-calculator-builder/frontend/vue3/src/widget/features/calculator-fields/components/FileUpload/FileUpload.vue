@@ -426,6 +426,11 @@ const additionalClasses = computed(() => {
       font-size: var(--ccb-field-size);
       font-weight: var(--ccb-field-weight);
       color: var(--ccb-text-color);
+
+      @media only screen and (max-width: 480px) {
+        font-size: var(--ccb-mobile-field-size);
+        font-weight: var(--ccb-mobile-field-weight);
+      }
     }
   }
 
@@ -475,6 +480,11 @@ const additionalClasses = computed(() => {
       transition: 300ms ease;
       font-size: var(--ccb-fields-button-size);
       font-weight: var(--ccb-fields-button-weight);
+
+      @media only screen and (max-width: 480px) {
+        font-size: var(--ccb-mobile-fields-button-size);
+        font-weight: var(--ccb-mobile-fields-button-weight);
+      }
     }
 
     .upload {
@@ -535,6 +545,11 @@ const additionalClasses = computed(() => {
       align-items: center;
       justify-content: center;
       min-height: var(--ccb-field-button-height);
+      @media only screen and (max-width: 480px) {
+        min-height: var(--ccb-mobile-field-button-height);
+        font-size: var(--ccb-mobile-fields-button-size);
+        font-weight: var(--ccb-mobile-fields-button-weight);
+      }
 
       &:hover {
         background: hsl(from var(--ccb-accent-color) h s calc(l - 5));

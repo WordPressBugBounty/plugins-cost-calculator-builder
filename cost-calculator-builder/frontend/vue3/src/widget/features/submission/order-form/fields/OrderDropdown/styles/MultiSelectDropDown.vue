@@ -182,6 +182,11 @@ onMounted(() => {
         padding: 5px 0px;
         width: 100%;
 
+        @media only screen and (max-width: 480px) {
+          font-size: var(--ccb-mobile-field-size);
+          font-weight: var(--ccb-mobile-field-weight);
+        }
+
         label {
           display: flex;
           flex-direction: row;

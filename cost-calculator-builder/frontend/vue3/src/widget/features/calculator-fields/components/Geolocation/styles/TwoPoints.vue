@@ -690,6 +690,11 @@ const locationToId = computed(() => {
     margin-right: 14px;
     min-width: 120px;
     white-space: nowrap;
+    @media only screen and (max-width: 480px) {
+      min-height: var(--ccb-mobile-field-button-height);
+      font-size: var(--ccb-mobile-fields-button-size);
+      font-weight: var(--ccb-mobile-fields-button-weight);
+    }
 
     &:hover {
       background: var(--ccb-accent-color);

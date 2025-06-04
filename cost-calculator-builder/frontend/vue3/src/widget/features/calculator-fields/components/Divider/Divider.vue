@@ -49,4 +49,11 @@ const dividerCss = computed(() => {
     width: 100%;
   }
 }
+
+.ccb-horizontal {
+  .line {
+    display: flex;
+    align-items: center;
+  }
+}
 </style>

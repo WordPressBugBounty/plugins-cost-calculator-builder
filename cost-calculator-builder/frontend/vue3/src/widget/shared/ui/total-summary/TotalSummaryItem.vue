@@ -41,6 +41,11 @@ const currentComponents = computed(() => {
   text-transform: var(--ccb-summary-text-transform);
   border-bottom: 1px dashed #ddd;
 
+  @media only screen and (max-width: 480px) {
+    font-size: var(--ccb-mobile-summary-text-size);
+    font-weight: var(--ccb-mobile-summary-text-weight);
+  }
+
   &__title {
     text-align: left;
     .description {

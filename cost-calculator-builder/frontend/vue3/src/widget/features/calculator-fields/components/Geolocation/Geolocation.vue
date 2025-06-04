@@ -108,6 +108,11 @@ const additionalClasses = computed(() => {
       flex-direction: flex-start;
       min-width: 220px;
 
+      @media only screen and (max-width: 480px) {
+        font-size: var(--ccb-mobile-field-size);
+        font-weight: var(--ccb-mobile-field-weight);
+      }
+
       &.ccb-vertical-radio {
         flex-direction: column;
       }

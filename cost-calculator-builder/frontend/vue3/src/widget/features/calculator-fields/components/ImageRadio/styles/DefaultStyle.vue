@@ -69,7 +69,7 @@ const addOrRemove = (option: IOptions): void => {
 };
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
 .ccb-default-radio-image {
   display: flex;
   flex-wrap: wrap;
@@ -78,6 +78,11 @@ const addOrRemove = (option: IOptions): void => {
   font-weight: var(--ccb-field-weight);
   color: var(--ccb-text-color);
   flex-direction: flex-start;
+
+  @media only screen and (max-width: 480px) {
+    font-size: var(--ccb-mobile-field-size);
+    font-weight: var(--ccb-mobile-field-weight);
+  }
 
   .ccb-radio-image {
     border: 2px solid var(--ccb-fields-border-color);
@@ -128,11 +133,20 @@ const addOrRemove = (option: IOptions): void => {
       font-weight: var(--ccb-field-weight);
       color: var(--ccb-text-color);
       word-break: break-word;
+
+      @media only screen and (max-width: 480px) {
+        font-size: var(--ccb-mobile-field-size);
+        font-weight: var(--ccb-mobile-field-weight);
+      }
     }
 
     &__price {
       font-size: calc(var(--ccb-summary-text-size) - 2px);
       color: var(--ccb-fields-description-color);
+
+      @media only screen and (max-width: 480px) {
+        font-size: calc(var(--ccb-mobile-summary-text-size) - 2px);
+      }
     }
   }
 
@@ -202,6 +216,19 @@ const addOrRemove = (option: IOptions): void => {
     flex-direction: column;
     .ccb-radio-image {
       width: 100%;
+    }
+  }
+}
+
+.ccb-horizontal {
+  .radio_with_img {
+    grid-column: 1 / span 2;
+    .ccb-radio-image {
+      max-width: 200px !important;
+      min-height: 220px;
+    }
+    .ccb-default-radio-image {
+      flex-direction: row;
     }
   }
 }

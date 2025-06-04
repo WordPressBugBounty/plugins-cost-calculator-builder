@@ -12,6 +12,9 @@
 
 .ccb-subtotal-wrapper {
   @include mixins.container;
+}
+
+.ccb-subtotal-wrapper {
   display: flex;
   flex-direction: column;
   gap: 20px;

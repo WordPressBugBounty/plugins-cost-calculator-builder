@@ -109,6 +109,11 @@ const getOrderId = computed(() => {
   return submissionStore.getOrderId;
 });
 
+const getOrderData = computed(() => {
+  const submissionStore = useSubmissionStore();
+  return submissionStore.getOrderData;
+});
+
 const getTitle = computed(() => {
   return item.value?.tabs?.text?.data?.title?.value || "";
 });
@@ -139,7 +144,12 @@ const upperFirst = (str: string) => {
 
 const getCustomerDetails = computed(() => {
   const orderFormStore = useOrderFormStore();
-  const formFields = orderFormStore.getFormFields;
+  let formFields = orderFormStore.getFormFields;
+
+  if (getOrderData.value?.formDetails?.fields) {
+    formFields = getOrderData.value?.formDetails?.fields;
+  }
+
   let data = [];
   if (formFields) {
     for (const detail of formFields) {

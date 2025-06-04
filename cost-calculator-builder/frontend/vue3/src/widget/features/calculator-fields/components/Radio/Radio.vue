@@ -98,5 +98,9 @@ const additionalClasses = computed(() => {
 <style lang="scss">
 .ccb-radio-label {
   font-size: var(--ccb-fields-button-size) !important;
+
+  @media only screen and (max-width: 480px) {
+    font-size: var(--ccb-mobile-fields-button-size) !important;
+  }
 }
 </style>

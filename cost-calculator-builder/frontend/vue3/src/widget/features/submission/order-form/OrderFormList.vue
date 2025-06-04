@@ -597,6 +597,11 @@ onMounted(() => {
       color: var(--ccb-fields-color);
       border: none;
       width: 100%;
+      @media only screen and (max-width: 480px) {
+        min-height: var(--ccb-mobile-field-button-height);
+        font-size: var(--ccb-mobile-fields-button-size);
+        font-weight: var(--ccb-mobile-fields-button-weight);
+      }
     }
   }
 }

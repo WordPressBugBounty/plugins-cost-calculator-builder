@@ -352,6 +352,7 @@ import { IPdfSettings } from "@/widget/shared/types/settings";
 const fieldsStore = useFieldsStore();
 import { Field, IFormulaField } from "@/widget/shared/types/fields";
 import { useCurrency } from "@/widget/actions/fields/composable/useCurrency.ts";
+import { useSubmissionStore } from "@/widget/app/providers/stores/submissionStore.ts";
 
 const currencyInstance = useCurrency();
 
@@ -572,8 +573,19 @@ const getOptionUnit = computed(() => {
 const getValue = computed(() => {
   return item.value?.tabs?.content?.data?.headingValue?.value || "";
 });
+
+const getOrderData = computed(() => {
+  const submissionStore = useSubmissionStore();
+  return submissionStore.getOrderData;
+});
+
 const getOrderDetails = computed(() => {
-  const fields = fieldsStore.getSummaryList.filter((f: Field) => !f.hidden);
+  let fields = fieldsStore.getSummaryList.filter((f: Field) => !f.hidden);
+
+  if (getOrderData.value?.orderDetails) {
+    fields = getOrderData.value?.orderDetails;
+  }
+
   let result: Field[] = [];
 
   fields.forEach((el) => {

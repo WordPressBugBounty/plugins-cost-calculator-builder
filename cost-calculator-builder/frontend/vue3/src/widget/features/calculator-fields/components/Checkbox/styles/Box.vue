@@ -54,6 +54,11 @@ const { optionValues, changeValue, getName } = useMultiOptionChildShared(
   color: var(--ccb-text-color);
   padding: 5px 0;
 
+  @media only screen and (max-width: 480px) {
+    font-size: var(--ccb-mobile-field-size);
+    font-weight: var(--ccb-mobile-field-weight);
+  }
+
   label {
     display: flex;
     flex-direction: row;

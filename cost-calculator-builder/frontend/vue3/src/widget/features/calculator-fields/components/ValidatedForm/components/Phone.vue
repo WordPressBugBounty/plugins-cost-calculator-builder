@@ -4,6 +4,7 @@
       @input="onInput"
       mode="international"
       :value="field.displayValue"
+      :inputOptions="options"
     />
   </div>
 </template>
@@ -25,6 +26,10 @@ type Props = {
 
 const props = defineProps<Props>();
 const { onInput } = useValidatedFormField(props, emit);
+
+const options = {
+  placeholder: props.field.placeholder,
+};
 </script>
 
 <style lang="scss">

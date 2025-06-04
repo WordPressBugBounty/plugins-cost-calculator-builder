@@ -195,6 +195,13 @@ const removePromocodeHandler = (idx: number): void => {
       outline: none;
       color: var(--ccb-text-color);
 
+      @media only screen and (max-width: 480px) {
+        padding: 12px var(--ccb-mobile-field-side-indent);
+        min-height: var(--ccb-mobile-field-button-height);
+        font-weight: var(--ccb-mobile-field-weight);
+        font-size: var(--ccb-mobile-fields-button-size);
+      }
+
       &:focus {
         border-color: var(--ccb-accent-color);
       }

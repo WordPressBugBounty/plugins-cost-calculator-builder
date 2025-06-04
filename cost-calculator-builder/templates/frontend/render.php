@@ -61,6 +61,20 @@ if ( ! empty( $general_settings['payment_gateway']['cards']['use_in_all'] ) && !
 	$settings['payment_gateway']['cards']['card_payments']['stripe']['secretKey']  = $general_settings['payment_gateway']['cards']['card_payments']['stripe']['secretKey'];
 }
 
+if ( ! empty( $general_settings['payment_gateway']['cash_payment']['use_in_all'] ) ) {
+	$settings['payment_gateway']['cash_payment']['label'] = $general_settings['payment_gateway']['cash_payment']['label'];
+	$settings['payment_gateway']['cash_payment']['type']  = $general_settings['payment_gateway']['cash_payment']['type'];
+}
+
+if ( ! empty( $general_settings['payment_gateway']['paypal']['use_in_all'] ) ) {
+	$settings['payment_gateway']['paypal']['integration_type'] = $general_settings['payment_gateway']['paypal']['integration_type'] ? $general_settings['payment_gateway']['paypal']['integration_type'] : $settings['payment_gateway']['paypal']['integration_type'];
+	$settings['payment_gateway']['paypal']['currency_code']    = $general_settings['payment_gateway']['paypal']['currency_code'] ? $general_settings['payment_gateway']['paypal']['currency_code'] : $settings['payment_gateway']['paypal']['currency_code'];
+	$settings['payment_gateway']['paypal']['paypal_mode']      = $general_settings['payment_gateway']['paypal']['paypal_mode'] ? $general_settings['payment_gateway']['paypal']['paypal_mode'] : $settings['payment_gateway']['paypal']['paypal_mode'];
+	$settings['payment_gateway']['paypal']['paypal_email']     = $general_settings['payment_gateway']['paypal']['paypal_email'] ? $general_settings['payment_gateway']['paypal']['paypal_email'] : $settings['payment_gateway']['paypal']['paypal_email'];
+	$settings['payment_gateway']['paypal']['client_id']        = $general_settings['payment_gateway']['paypal']['client_id'] ? $general_settings['payment_gateway']['paypal']['client_id'] : $settings['payment_gateway']['paypal']['client_id'];
+	$settings['payment_gateway']['paypal']['client_secret']    = $general_settings['payment_gateway']['paypal']['client_secret'] ? $general_settings['payment_gateway']['paypal']['client_secret'] : $settings['payment_gateway']['paypal']['client_secret'];
+}
+
 if ( ! empty( $settings['formFields']['body'] ) ) {
 	$settings['formFields']['body'] = str_replace( '<br>', PHP_EOL, $settings['formFields']['body'] );
 }
@@ -173,9 +187,22 @@ if ( is_user_logged_in() && current_user_can( 'administrator' ) && ! is_admin() 
 
 if ( is_singular( 'product' ) && function_exists( 'wc_get_product' ) ) {
 	$product = wc_get_product( get_the_ID() );
-	if ( ! empty( $product ) && ! empty( $settings['woo_products'] ) ) {
-		$settings['woo_products']['productPrice']     = $product->get_price();
-		$settings['woo_products']['currentProductId'] = $product->get_id();
+	if ( ! empty( $product ) ) {
+		if ( ! empty( $settings['woo_products'] ) ) {
+			$settings['woo_products']['productPrice']     = $product->get_price();
+			$settings['woo_products']['currentProductId'] = $product->get_id();
+		}
+
+		if ( $product->is_type( 'variable' ) ) {
+			$settings['woo_products']['isVariable'] = true;
+
+			$available_variations = $product->get_available_variations();
+
+			if ( ! empty( $available_variations ) ) {
+				$attribute_keys = array_keys( $available_variations[0]['attributes'] );
+				$settings['woo_products']['attributeKeys'] = $attribute_keys;
+			}
+		}
 	}
 }
 
@@ -194,28 +221,29 @@ if ( ! empty( $settings['woo_checkout'] ) && ! empty( $settings['woo_checkout'][
 }
 
 $data = array(
-	'id'             => $calc_id,
-	'settings'       => $settings,
-	'currency'       => ccb_parse_settings( $settings ),
-	'geolocation'    => $geolocation,
-	'fields'         => $fields,
-	'pdf_status'     => ! empty( $general_settings['invoice']['use_in_all'] ),
-	'form_fields'    => $form_fields,
-	'form_data'      => $form_data,
-	'formula'        => get_post_meta( $calc_id, 'stm-formula', true ),
-	'conditions'     => $conditions,
-	'language'       => $language,
-	'appearance'     => $appearance_data,
-	'dateFormat'     => get_option( 'date_format' ),
-	'pro_active'     => ccb_pro_active(),
-	'default_img'    => CALC_URL . '/frontend/dist/img/default.png',
-	'error_img'      => CALC_URL . '/frontend/dist/img/error.png',
-	'success_img'    => CALC_URL . '/frontend/dist/img/success.png',
-	'translations'   => $translations,
-	'discounts'      => \cBuilder\Classes\Database\Discounts::get_calc_active_discounts( $calc_id ),
-	'has_promocode'  => \cBuilder\Classes\Database\Discounts::has_active_promocode( $calc_id ),
-	'pdf_settings'   => \cBuilder\Classes\pdfManager\CCBPdfManager::ccb_get_pdf_manager_data(),
-	'quote_settings' => $general_settings['invoice'],
+	'id'                       => $calc_id,
+	'settings'                 => $settings,
+	'currency'                 => ccb_parse_settings( $settings ),
+	'geolocation'              => $geolocation,
+	'fields'                   => $fields,
+	'pdf_status'               => ! empty( $general_settings['invoice']['use_in_all'] ),
+	'form_fields'              => $form_fields,
+	'form_data'                => $form_data,
+	'formula'                  => get_post_meta( $calc_id, 'stm-formula', true ),
+	'conditions'               => $conditions,
+	'language'                 => $language,
+	'appearance'               => $appearance_data,
+	'dateFormat'               => get_option( 'date_format' ),
+	'pro_active'               => ccb_pro_active(),
+	'default_img'              => CALC_URL . '/frontend/dist/img/default.png',
+	'error_img'                => CALC_URL . '/frontend/dist/img/error.png',
+	'success_img'              => CALC_URL . '/frontend/dist/img/success.png',
+	'translations'             => $translations,
+	'discounts'                => \cBuilder\Classes\Database\Discounts::get_calc_active_discounts( $calc_id ),
+	'has_promocode'            => \cBuilder\Classes\Database\Discounts::has_active_promocode( $calc_id ),
+	'pdf_settings'             => \cBuilder\Classes\pdfManager\CCBPdfManager::ccb_get_pdf_manager_data(),
+	'quote_settings'           => $general_settings['invoice'],
+	'is_custom_thank_you_page' => false,
 );
 
 $custom_defined = false;

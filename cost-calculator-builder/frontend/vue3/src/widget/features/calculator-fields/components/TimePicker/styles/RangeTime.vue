@@ -195,6 +195,10 @@ watch([from, to], (newTime: unknown) => {
 
     span {
       font-size: var(--ccb-fields-button-size);
+
+      @media only screen and (max-width: 480px) {
+        font-size: var(--ccb-mobile-fields-button-size);
+      }
     }
   }
 

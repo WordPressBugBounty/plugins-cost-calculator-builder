@@ -3,13 +3,13 @@
     <template v-for="(option, idx) in field.options" :key="option.optionValue">
       <div class="ccb-checkbox-wrapper">
         <label
-          :for="getName + '_' + idx"
+          :for="getName + '_' + idx + '_' + generateId"
           :class="{
             'ccb-option-disabled': field.disableOptions.includes(idx),
           }"
         >
           <input
-            :id="getName + '_' + idx"
+            :id="getName + '_' + idx + '_' + generateId"
             v-model="optionValues"
             type="checkbox"
             :name="getName"
@@ -31,7 +31,7 @@
 </template>
 
 <script setup lang="ts">
-import { toRefs } from "vue";
+import { toRefs, computed } from "vue";
 import { IMultiOptionsField } from "@/widget/shared/types/fields";
 import { useMultiOptionChildShared } from "@/widget/actions/fields/composable/useMultiOptionChildShared.ts";
 import Hint from "@/widget/shared/ui/components/Hint";
@@ -48,6 +48,10 @@ type Props = {
 const props = defineProps<Props>();
 const { field } = toRefs(props);
 
+const generateId = computed(() => {
+  return Math.random().toString(36).substring(2, 15);
+});
+
 const { optionValues, changeValue, getName } = useMultiOptionChildShared(
   props,
   emit,
@@ -63,6 +67,11 @@ const { optionValues, changeValue, getName } = useMultiOptionChildShared(
   font-weight: var(--ccb-field-weight);
   color: var(--ccb-text-color);
   padding: 5px 0;
+
+  @media only screen and (max-width: 480px) {
+    font-size: var(--ccb-mobile-field-size);
+    font-weight: var(--ccb-mobile-field-weight);
+  }
 
   .ccb-checkbox-wrapper {
     display: flex;

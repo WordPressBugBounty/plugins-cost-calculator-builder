@@ -75,11 +75,18 @@ const isRequired = computed(() => {
   position: relative;
   &__input {
     @include mixins.field;
+  }
 
+  &__input {
     display: grid;
     grid-template-columns: 1fr auto;
     justify-content: space-between;
     cursor: pointer;
+
+    @media only screen and (max-width: 480px) {
+      padding: 12px var(--ccb-mobile-field-side-indent);
+      min-height: var(--ccb-mobile-field-button-height);
+    }
   }
 
   &__icon {
@@ -123,6 +130,11 @@ const isRequired = computed(() => {
         padding: 20px;
         border-bottom: 1px solid var(--ccb-fields-border-color);
         cursor: pointer;
+
+        @media only screen and (max-width: 480px) {
+          font-size: var(--ccb-mobile-field-size);
+          font-weight: var(--ccb-mobile-field-weight);
+        }
 
         &:hover {
           background: var(--ccb-fields-hover-color) !important;

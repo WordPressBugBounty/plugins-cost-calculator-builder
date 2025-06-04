@@ -92,6 +92,11 @@ const clickHandler = () => {
     color: var(--ccb-fields-color);
     border: none;
 
+    @media only screen and (max-width: 480px) {
+      font-size: var(--ccb-mobile-fields-button-size);
+      font-weight: var(--ccb-mobile-fields-button-weight);
+    }
+
     &:hover {
       background: hsl(from var(--ccb-accent-color) h s calc(l - 5));
     }
@@ -105,6 +110,11 @@ const clickHandler = () => {
     background: var(--ccb-fields-bg-color);
     color: var(--ccb-accent-color);
     border: 2px solid var(--ccb-accent-color);
+
+    @media only screen and (max-width: 480px) {
+      font-size: var(--ccb-mobile-fields-button-size);
+      font-weight: var(--ccb-mobile-fields-button-weight);
+    }
 
     &:hover {
       background-color: var(--ccb-accent-color);
@@ -140,6 +150,11 @@ const clickHandler = () => {
     text-decoration: none;
     color: var(--ccb-text-color);
     padding: 0 8px;
+  }
+
+  @media only screen and (max-width: 480px) {
+    min-height: var(--ccb-mobile-field-button-height);
+    font-size: var(--ccb-mobile-fields-button-size);
   }
 }
 </style>

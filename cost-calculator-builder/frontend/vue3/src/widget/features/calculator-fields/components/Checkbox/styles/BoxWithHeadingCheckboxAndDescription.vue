@@ -2,7 +2,7 @@
   <div class="ccb-box-checkbox">
     <template v-for="(option, idx) in field.options">
       <label
-        :for="getName + '_' + idx"
+        :for="getName + '_' + idx + '_' + generateId"
         :class="{
           'ccb-option-disabled': field.disableOptions.includes(idx),
         }"
@@ -13,7 +13,7 @@
         </span>
         <input
           type="checkbox"
-          :id="getName + '_' + idx"
+          :id="getName + '_' + idx + '_' + generateId"
           :name="getName"
           :value="option.optionValue"
           v-model="optionValues"
@@ -25,7 +25,7 @@
 </template>
 
 <script setup lang="ts">
-import { toRefs } from "vue";
+import { toRefs, computed } from "vue";
 import { IMultiOptionsField } from "@/widget/shared/types/fields";
 import { useMultiOptionChildShared } from "@/widget/actions/fields/composable/useMultiOptionChildShared.ts";
 
@@ -45,6 +45,10 @@ const { optionValues, changeValue, getName } = useMultiOptionChildShared(
   props,
   emit,
 );
+
+const generateId = computed(() => {
+  return Math.random().toString(36).substring(2, 15);
+});
 </script>
 
 <style lang="scss" scoped>
@@ -56,6 +60,11 @@ const { optionValues, changeValue, getName } = useMultiOptionChildShared(
   color: var(--ccb-text-color);
   padding: 5px 0;
   flex-wrap: wrap;
+
+  @media only screen and (max-width: 480px) {
+    font-size: var(--ccb-mobile-field-size);
+    font-weight: var(--ccb-mobile-field-weight);
+  }
 
   .ccb-checkbox-label {
     display: flex;

@@ -1,6 +1,7 @@
 <template>
   <div
     class="ccb-field"
+    :class="field.fieldName"
     :data-id="field.alias"
     :data-repeater="field.repeaterIdx"
   >

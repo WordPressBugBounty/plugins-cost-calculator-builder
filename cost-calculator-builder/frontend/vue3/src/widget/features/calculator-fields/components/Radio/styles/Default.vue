@@ -55,6 +55,11 @@ const { optionValues, changeValue, getName } = useSingleOptionChildShared(
   flex-direction: flex-start;
   flex-wrap: wrap;
 
+  @media only screen and (max-width: 480px) {
+    font-size: var(--ccb-mobile-field-size);
+    font-weight: var(--ccb-mobile-field-weight);
+  }
+
   &.ccb-vertical-radio {
     flex-direction: column;
   }
@@ -122,6 +127,12 @@ const { optionValues, changeValue, getName } = useSingleOptionChildShared(
 .ccb-vertical-radio {
   .ccb-default-radio {
     flex-direction: column;
+  }
+}
+
+.ccb-horizontal {
+  .ccb-default-radio {
+    flex-direction: row;
   }
 }
 </style>

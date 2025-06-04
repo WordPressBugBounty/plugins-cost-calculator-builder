@@ -519,6 +519,11 @@ onMounted(() => {
       cursor: pointer;
       line-height: 21.99px;
 
+      @media only screen and (max-width: 480px) {
+        font-size: var(--ccb-mobile-field-size);
+        font-weight: var(--ccb-mobile-field-weight);
+      }
+
       &.required {
         &:after {
           content: "*";
@@ -544,6 +549,12 @@ onMounted(() => {
       margin-bottom: 20px;
       height: 40px;
       outline: none;
+      @media only screen and (max-width: 480px) {
+        padding: 0 var(--ccb-mobile-field-side-indent);
+        min-height: var(--ccb-mobile-field-button-height);
+        font-weight: var(--ccb-mobile-field-weight);
+        font-size: var(--ccb-mobile-fields-button-size);
+      }
       &:focus {
         border-color: var(--ccb-accent-color);
       }

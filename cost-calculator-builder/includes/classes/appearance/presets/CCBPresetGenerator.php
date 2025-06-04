@@ -298,8 +298,8 @@ class CCBPresetGenerator {
 				'typography'            => array(
 					'header_font_size'           => $mobile_typography['header_font_size']['value'],
 					'header_font_weight'         => $mobile_typography['header_font_weight']['value'],
-					'summary_header_size'        => $desktop_typography['summary_header_size']['value'],
-					'summary_header_font_weight' => $desktop_typography['summary_header_font_weight']['value'],
+					'summary_header_size'        => $mobile_typography['summary_header_size']['value'],
+					'summary_header_font_weight' => $mobile_typography['summary_header_font_weight']['value'],
 					'label_font_size'            => $mobile_typography['label_font_size']['value'],
 					'label_font_weight'          => $mobile_typography['label_font_weight']['value'],
 					'description_font_size'      => $mobile_typography['description_font_size']['value'],

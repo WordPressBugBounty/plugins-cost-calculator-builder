@@ -81,6 +81,9 @@ const toggleBody = () => {
     padding-top: 10px;
     display: grid;
     gap: var(--ccb-summary-spacing);
+    @media only screen and (max-width: 480px) {
+      gap: var(--ccb-mobile-summary-spacing);
+    }
 
     &--disable-option-unit {
       .description {
@@ -100,6 +103,11 @@ const toggleBody = () => {
     border-radius: var(--ccb-fields-border-radius);
     text-transform: var(--ccb-summary-text-transform);
     text-align: left;
+
+    @media only screen and (max-width: 480px) {
+      font-size: var(--ccb-mobile-summary-header-size);
+      font-weight: var(--ccb-mobile-summary-header-weight);
+    }
   }
 
   .ccb-summary-list__accordion-btn {

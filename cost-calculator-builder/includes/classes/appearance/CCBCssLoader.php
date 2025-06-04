@@ -131,6 +131,10 @@ class CCBCssLoader {
 		$ccb_horizontal_max_width  = $desktop_sizes['container_horizontal_max_width']['value'] . 'px';
 		$ccb_two_columns_max_width = $desktop_sizes['container_two_column_max_width']['value'] . 'px';
 
+		// Sizes Mobile
+		$mobile_sizes                   = self::$appearance['mobile']['elements_sizes']['data'];
+		$ccb_mobile_field_button_height = $mobile_sizes['field_and_buttons_height']['value'] . 'px';
+
 		// Spacing & Positions
 		$desktop_spacing_and_positions = self::$appearance['desktop']['spacing_and_positions']['data'];
 		$ccb_field_side_indent         = $desktop_spacing_and_positions['field_side_indents']['value'] . 'px';
@@ -145,6 +149,21 @@ class CCBCssLoader {
 		$ccb_container_padding_bottom  = $desktop_spacing_and_positions['container_padding']['value'][2] . 'px';
 		$ccb_container_padding_left    = $desktop_spacing_and_positions['container_padding']['value'][1] . 'px';
 		$ccb_container_padding_right   = $desktop_spacing_and_positions['container_padding']['value'][3] . 'px';
+
+		// Spacing & Positions Mobile
+		$mobile_spacing_and_positions = self::$appearance['mobile']['spacing_and_positions']['data'];
+		$ccb_mobile_field_side_indent         = $mobile_spacing_and_positions['field_side_indents']['value'] . 'px';
+		$ccb_mobile_field_spacing             = $mobile_spacing_and_positions['field_spacing']['value'] . 'px';
+		$ccb_mobile_summary_spacing           = $mobile_spacing_and_positions['field_spacing']['value'] / 2 . 'px';
+		$ccb_mobile_summary_group_spacing     = $mobile_spacing_and_positions['field_spacing']['value'] / 2 / 2 . 'px';
+		$ccb_mobile_container_margin_top      = $mobile_spacing_and_positions['container_margin']['value'][0] . 'px';
+		$ccb_mobile_container_margin_bottom   = $mobile_spacing_and_positions['container_margin']['value'][1] . 'px';
+		$ccb_mobile_container_margin_left     = $mobile_spacing_and_positions['container_margin']['value'][2] . 'px';
+		$ccb_mobile_container_margin_right    = $mobile_spacing_and_positions['container_margin']['value'][3] . 'px';
+		$ccb_mobile_container_padding_top     = $mobile_spacing_and_positions['container_padding']['value'][0] . 'px';
+		$ccb_mobile_container_padding_bottom  = $mobile_spacing_and_positions['container_padding']['value'][2] . 'px';
+		$ccb_mobile_container_padding_left    = $mobile_spacing_and_positions['container_padding']['value'][1] . 'px';
+		$ccb_mobile_container_padding_right   = $mobile_spacing_and_positions['container_padding']['value'][3] . 'px';
 
 		// custom variables
 		$ccb_fields_bg_color           = $ccb_fields_color;
@@ -235,8 +254,8 @@ class CCBCssLoader {
 					--ccb-mobile-description-size:    $ccb_mobile_description_size;
 					--ccb-mobile-description-weight:  $ccb_mobile_description_weight;
 
-					--ccb-mobile-summary-size:        $ccb_mobile_summary_size;
-					--ccb-mobile-summary-weight:      $ccb_mobile_summary_weight;
+					--ccb-mobile-summary-header-size:   $ccb_mobile_summary_size;
+					--ccb-mobile-summary-header-weight: $ccb_mobile_summary_weight;
 
 					--ccb-mobile-summary-text-size:   $ccb_mobile_summary_text_size;
 					--ccb-mobile-summary-text-weight: $ccb_mobile_summary_text_weight;
@@ -266,10 +285,11 @@ class CCBCssLoader {
 			        --ccb-container-shadow-y-offset: $ccb_container_shadow_y_offset;
 			        --ccb-container-shadow-color:    $ccb_container_shadow_color;
 
-			        --ccb-field-button-height:       $ccb_field_button_height;
-			        --ccb-vertical-max-width:        $ccb_vertical_max_width;
-			        --ccb-horizontal-max-width:      $ccb_horizontal_max_width;
-			        --ccb-two-columns-max-width:     $ccb_two_columns_max_width;
+			        --ccb-field-button-height:        $ccb_field_button_height;
+			        --ccb-vertical-max-width:         $ccb_vertical_max_width;
+			        --ccb-horizontal-max-width:       $ccb_horizontal_max_width;
+			        --ccb-two-columns-max-width:      $ccb_two_columns_max_width;
+			        --ccb-mobile-field-button-height: $ccb_mobile_field_button_height;
 
 			        --ccb-field-side-indent:         $ccb_field_side_indent;
 			        --ccb-field-spacing:             $ccb_field_spacing;
@@ -284,6 +304,19 @@ class CCBCssLoader {
 			        --ccb-container-padding-bottom:  $ccb_container_padding_bottom;
 			        --ccb-container-padding-left:    $ccb_container_padding_left;
 			        --ccb-container-padding-right:   $ccb_container_padding_right;
+
+			        --ccb-mobile-field-side-indent:        $ccb_mobile_field_side_indent;
+			        --ccb-mobile-field-spacing:            $ccb_mobile_field_spacing;
+					--ccb-mobile-summary-spacing:          $ccb_mobile_summary_spacing;
+					--ccb-mobile-summary-group-spacing:    $ccb_mobile_summary_group_spacing;
+			        --ccb-mobile-container-margin-top:     $ccb_mobile_container_margin_top;
+			        --ccb-mobile-container-margin-bottom:  $ccb_mobile_container_margin_bottom;
+			        --ccb-mobile-container-margin-left:    $ccb_mobile_container_margin_left;
+			        --ccb-mobile-container-margin-right:   $ccb_mobile_container_margin_right;
+			        --ccb-mobile-container-padding-top:    $ccb_mobile_container_padding_top;
+			        --ccb-mobile-container-padding-bottom: $ccb_mobile_container_padding_bottom;
+			        --ccb-mobile-container-padding-left:   $ccb_mobile_container_padding_left;
+			        --ccb-mobile-container-padding-right:  $ccb_mobile_container_padding_right;
 
 			        --ccb-date-picker-day:           $ccb_date_picker_day;
 					--ccb-date-picker-picket-day:    $ccb_date_picker_picket_day;
