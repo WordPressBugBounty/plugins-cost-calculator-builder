@@ -129,7 +129,6 @@ const showBackToCalculators = computed(
 );
 
 const separatePageEnable = computed(() => {
-  console.log(getThankYouPageSettings);
   return getThankYouPageSettings.value?.type === "separate_page";
 });
 

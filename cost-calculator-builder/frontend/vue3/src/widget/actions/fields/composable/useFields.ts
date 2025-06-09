@@ -38,6 +38,7 @@ import { IPageBreakerField } from "@/widget/shared/types/fields/fields.type";
 import { useFieldsStore } from "@/widget/app/providers/stores/fieldsStore.ts";
 import { useConditionsStore } from "@/widget/app/providers/stores/conditionsStore";
 
+const discountStore = useDiscounts();
 let timeout: ReturnType<typeof setTimeout> | null = null;
 
 interface IFieldsResult {
@@ -61,8 +62,6 @@ interface IFieldsResult {
   parseContactFormDescriptions: () => string;
   parseContactFormTotals: (formulas: string[]) => string;
 }
-
-const discountStore = useDiscounts();
 
 function addField(
   data: ISourceField,
@@ -381,12 +380,14 @@ function recalculateTotals(): void {
   } else {
     let result: Field[] = [];
     fieldsArray.forEach((el) => {
-      if ("groupElements" in el && Array.isArray(el.groupElements)) {
-        el.groupElements.forEach((inner: Map<string, Field>) => {
-          result = [...result, ...(Array.from(inner.values()) as Field[])];
-        });
-      } else {
-        result.push(el);
+      if (!el.hidden || el.calculateHidden) {
+        if ("groupElements" in el && Array.isArray(el.groupElements)) {
+          el.groupElements.forEach((inner: Map<string, Field>) => {
+            result = [...result, ...(Array.from(inner.values()) as Field[])];
+          });
+        } else {
+          result.push(el);
+        }
       }
     });
 

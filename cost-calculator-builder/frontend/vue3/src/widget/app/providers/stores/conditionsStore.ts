@@ -1,5 +1,9 @@
 import { defineStore } from "pinia";
-import { IConditionList, IConditionsStore } from "@/widget/shared/types/app";
+import {
+  ICondition,
+  IConditionList,
+  IConditionsStore,
+} from "@/widget/shared/types/app";
 import { useConditions } from "@/widget/actions/conditions/composable/useConditions.ts";
 import { WooMetaAction } from "@/widget/shared/types/fields";
 import { useSettingsStore } from "@/widget/app/providers/stores/settingsStore.ts";
@@ -7,6 +11,7 @@ import { useWooProducts } from "@/widget/actions/woo-products/composable/useWooP
 
 interface IConditionsStoreResult {
   conditions: IConditionsStore;
+  conditionsHistory: ICondition[];
 }
 
 const conditionInstance = useConditions();
@@ -14,6 +19,7 @@ const conditionInstance = useConditions();
 export const useConditionsStore = defineStore("conditions", {
   state: (): IConditionsStoreResult => ({
     conditions: {} as IConditionsStore,
+    conditionsHistory: [],
   }),
 
   actions: {
@@ -40,6 +46,16 @@ export const useConditionsStore = defineStore("conditions", {
 
     triggerCondition(): void {
       conditionInstance.triggerCondition();
+    },
+
+    updateConditionHistory(conditions: ICondition[]): void {
+      this.conditionsHistory = conditions;
+    },
+  },
+
+  getters: {
+    getConditionHistory(): ICondition[] {
+      return this.conditionsHistory;
     },
   },
 });

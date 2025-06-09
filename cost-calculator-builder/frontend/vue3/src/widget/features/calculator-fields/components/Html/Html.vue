@@ -22,4 +22,14 @@ const additionalClasses = computed(() => {
 });
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+.ccb-field {
+  img {
+    max-width: 100%;
+    max-height: 100%;
+    height: auto;
+    width: auto;
+    display: block;
+  }
+}
+</style>

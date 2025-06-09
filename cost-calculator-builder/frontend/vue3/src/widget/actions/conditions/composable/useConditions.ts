@@ -18,8 +18,6 @@ import { useCallbackStore } from "@/widget/app/providers/stores/callbackStore.ts
 import { useAppStore } from "@/widget/app/providers/stores/appStore.ts";
 import { useConditionsStore } from "@/widget/app/providers/stores/conditionsStore.ts";
 
-let conditionsHistory: ICondition[] = [];
-
 const multipleOptionsField: string[] = [
   "checkbox",
   "checkbox_with_img",
@@ -413,7 +411,9 @@ function hide(
     updateGroupElements(targetField);
   } else if (cHistory.length && !result) {
     removeFromConditionHistory(targetCondition);
-    const check = conditionsHistory.filter(
+
+    const conditionsStore = useConditionsStore();
+    const check = conditionsStore.getConditionHistory.filter(
       (d) =>
         d.optionTo === targetCondition.optionTo &&
         d.action === targetCondition.action,
@@ -448,8 +448,9 @@ function hideAndLeaveTotal(
     addConditionHistory(targetCondition);
     targetField.hideAndLeaveTotal = true;
   } else if (cHistory.length && !result) {
+    const conditionsStore = useConditionsStore();
     removeFromConditionHistory(targetCondition);
-    const check = conditionsHistory.filter(
+    const check = conditionsStore.getConditionHistory.filter(
       (d) =>
         d.optionTo === targetCondition.optionTo &&
         d.action === targetCondition.action,
@@ -469,7 +470,6 @@ function show(
   targetCondition: ICondition,
 ): Field {
   const cHistory = checkInConditionHistory(targetCondition);
-
   if (result && !cHistory.length) {
     addConditionHistory(targetCondition);
     targetField.hidden = false;
@@ -477,26 +477,21 @@ function show(
     updateGroupElements(targetField);
 
     setTimeout(() => {
-      if (
-        targetField.calculateHidden &&
-        targetCondition.optionFrom !== targetCondition.optionTo
-      ) {
+      if (targetCondition.optionFrom !== targetCondition.optionTo) {
         applyConditionForField(targetField.alias);
       }
     });
   } else if (cHistory.length && !result) {
     setTimeout(() => {
-      if (
-        targetField.calculateHidden &&
-        targetCondition.optionFrom !== targetCondition.optionTo
-      ) {
+      if (targetCondition.optionFrom !== targetCondition.optionTo) {
         applyConditionForField(targetField.alias);
       }
     });
 
     removeFromConditionHistory(targetCondition);
 
-    const check = conditionsHistory.filter(
+    const conditionsStore = useConditionsStore();
+    const check = conditionsStore.getConditionHistory.filter(
       (d) =>
         d.optionTo === targetCondition.optionTo &&
         d.action === targetCondition.action,
@@ -581,7 +576,8 @@ function disable(
         targetField.disableOptions,
       );
     } else {
-      const check = conditionsHistory.filter(
+      const conditionsStore = useConditionsStore();
+      const check = conditionsStore.getConditionHistory.filter(
         (d) =>
           d.optionTo === targetCondition.optionTo &&
           d.action === targetCondition.action,
@@ -895,17 +891,24 @@ function selectOption(
 }
 
 function addConditionHistory(data: ICondition): ICondition[] {
+  const conditionsStore = useConditionsStore();
+  const conditionsHistory = conditionsStore.getConditionHistory;
+
   const check = checkInConditionHistory(data);
 
   if (!check.length) {
     conditionsHistory.push(data);
   }
 
+  conditionsStore.updateConditionHistory(conditionsHistory);
+
   return conditionsHistory;
 }
 
 function removeFromConditionHistory(data: ICondition): ICondition[] {
-  const idx = conditionsHistory.findIndex(
+  const conditionsStore = useConditionsStore();
+  const conditionsHistory = conditionsStore.getConditionHistory;
+  const idx = conditionsStore.getConditionHistory.findIndex(
     (d) =>
       d.optionTo === data.optionTo &&
       d.optionFrom === data.optionFrom &&
@@ -917,11 +920,14 @@ function removeFromConditionHistory(data: ICondition): ICondition[] {
     conditionsHistory.splice(idx, 1);
   }
 
+  conditionsStore.updateConditionHistory(conditionsHistory);
+
   return conditionsHistory;
 }
 
 function checkInConditionHistory(data: ICondition) {
-  return conditionsHistory.filter(
+  const conditionsStore = useConditionsStore();
+  return conditionsStore.getConditionHistory.filter(
     (d) =>
       d.optionTo === data.optionTo &&
       d.optionFrom === data.optionFrom &&
@@ -931,6 +937,8 @@ function checkInConditionHistory(data: ICondition) {
 }
 
 function conditionHistoryLeaveOnlyCurrent(data: ICondition) {
+  const conditionsStore = useConditionsStore();
+  const conditionsHistory = conditionsStore.getConditionHistory;
   const indexesToRemove = [];
   for (let i = 0; i < conditionsHistory.length; i++) {
     const current = conditionsHistory[i];
@@ -947,6 +955,8 @@ function conditionHistoryLeaveOnlyCurrent(data: ICondition) {
   for (let i = indexesToRemove.length - 1; i >= 0; i--) {
     conditionsHistory.splice(indexesToRemove[i], 1);
   }
+
+  conditionsStore.updateConditionHistory(conditionsHistory);
 }
 
 function evaluateExpression(expression: (boolean | string)[]): boolean {

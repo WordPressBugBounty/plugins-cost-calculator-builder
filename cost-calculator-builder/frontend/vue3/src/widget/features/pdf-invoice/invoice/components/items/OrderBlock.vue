@@ -296,9 +296,7 @@
                     <span v-if="showPaymentMethod && getPaymentMethodType">
                       Payment method: {{ getPaymentMethodType }}
                     </span>
-                    <span v-if="getGrandTotalAmount">{{
-                      getGrandTotalAmount
-                    }}</span>
+                    <span v-if="showGrandTotal">{{ getGrandTotalAmount }}</span>
                   </span>
                 </div>
                 <div

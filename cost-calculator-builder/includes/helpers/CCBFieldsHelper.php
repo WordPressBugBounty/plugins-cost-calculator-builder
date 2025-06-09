@@ -363,7 +363,7 @@ class CCBFieldsHelper {
 	}
 
 	public static function ccb_apply_style_for_all( $fields = array(), $settings = array() ) {
-		$keys = array( 'radio', 'checkbox', 'toggle', 'range-button', 'radio_with_img', 'checkbox_with_img' );
+		$keys = array( 'radio', 'checkbox', 'toggle', 'range-button', 'radio_with_img', 'checkbox_with_img', 'group' );
 
 		if ( ccb_pro_active() ) {
 			foreach ( $keys as $key ) {
@@ -373,8 +373,10 @@ class CCBFieldsHelper {
 					if ( ! is_null( $main_field ) ) {
 						foreach ( $fields as $idx => $field ) {
 							$field_type = preg_replace( '/_field_id.*/', '', $field['alias'] );
-							if ( $field_type === $key ) {
+							if ( $field_type === $key && isset( $main_field['styles'] ) ) {
 								$fields[ $idx ]['styles'] = $main_field['styles'];
+							} else {
+								$fields[ $idx ]['accordion'] = $main_field['accordion'];
 							}
 						}
 					}
@@ -382,11 +384,13 @@ class CCBFieldsHelper {
 			}
 		} else {
 			foreach ( $fields as $idx => $field ) {
-				if ( ! empty( $field['styles'] ) ) {
+				if ( ! empty( $field['styles'] ) && isset( $field['styles'] ) ) {
 					$fields[ $idx ]['styles'] = array(
 						'box_style' => 'vertical',
 						'style'     => 'default',
 					);
+				} else {
+					$fields[ $idx ]['accordion'] = false;
 				}
 			}
 		}

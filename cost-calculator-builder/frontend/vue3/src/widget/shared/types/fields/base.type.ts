@@ -166,6 +166,7 @@ export interface ISourceField {
   // group
   collapse: boolean;
   collapsible: boolean;
+  accordion: boolean;
   icon: string;
   showTitle: boolean;
 

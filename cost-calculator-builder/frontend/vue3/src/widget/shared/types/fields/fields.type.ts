@@ -82,6 +82,7 @@ export interface IRepeaterField extends IFormulaField {
 
 export interface IGroupField extends IBaseField {
   collapse: boolean;
+  accordion: boolean;
   collapsible: boolean;
   hidden: boolean;
   icon: string;

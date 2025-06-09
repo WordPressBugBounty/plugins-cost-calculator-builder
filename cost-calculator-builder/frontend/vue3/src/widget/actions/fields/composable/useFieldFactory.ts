@@ -474,6 +474,7 @@ export function createGroupField(data: ISourceField): IGroupField {
     ...createField(data),
     groupElements: [groupElements],
     collapse: data.collapse || false,
+    accordion: data.accordion || false,
     collapsible: data.collapsible || false,
     icon: data.icon || "",
     showTitle: data.showTitle || false,
