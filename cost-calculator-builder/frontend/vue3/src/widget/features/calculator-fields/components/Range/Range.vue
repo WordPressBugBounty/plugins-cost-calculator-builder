@@ -37,17 +37,12 @@
     </div>
 
     <div class="ccb-field-input__wrapper">
-      <Slider
-        style="margin: 10px 0"
+      <component
+        :is="currentComponents"
+        :field="field"
+        @update:modelValue="updateValue"
         v-model="rawInput"
-        :format="getFormatValue"
-        :min="field.min"
-        :max="field.max"
-        :step="field.step"
-        :disabled="field.disabled"
-        @change="updateValue"
-        show-tooltip="focus"
-      ></Slider>
+      />
     </div>
 
     <div
@@ -62,9 +57,8 @@
 </template>
 
 <script setup lang="ts">
-import { toRefs, computed, ref, onMounted } from "vue";
+import { toRefs, computed, ref, onMounted, defineAsyncComponent } from "vue";
 import { IRangeField } from "@/widget/shared/types/fields";
-import Slider from "@vueform/slider";
 
 import { useFieldsStore } from "@/widget/app/providers/stores/fieldsStore.ts";
 import { useAppearanceStore } from "@/widget/app/providers/stores/appearanceStore.ts";
@@ -97,9 +91,28 @@ const translationsStore = useTranslationsStore();
 const rawInput = ref<number>(0);
 
 onMounted(() => {
-  rawInput.value = field.value.multiply
-    ? field.value.value / field.value.unit
-    : field.value.value;
+  rawInput.value = field.value.value;
+
+  updateValue(rawInput.value);
+});
+
+const currentComponents = computed(() => {
+  const style = field.value?.styles?.style || "default";
+  if (style === "default") {
+    return defineAsyncComponent(() => import("./styles/Default.vue"));
+  } else if (style === "small") {
+    return defineAsyncComponent(() => import("./styles/Small.vue"));
+  } else if (style === "flat-minimal") {
+    return defineAsyncComponent(() => import("./styles/Flat.vue"));
+  } else if (style === "modern") {
+    return defineAsyncComponent(() => import("./styles/Modern.vue"));
+  } else if (style === "input") {
+    return defineAsyncComponent(() => import("./styles/Input.vue"));
+  } else if (style === "multi-point") {
+    return defineAsyncComponent(() => import("./styles/MultiPoint.vue"));
+  }
+
+  return "";
 });
 
 const updateValue = (value: number, alias?: string) => {
@@ -164,11 +177,6 @@ const additionalClasses = computed(() => {
   return field.value?.additionalStyles || "";
 });
 
-const getFormatValue = (num: number): string => {
-  const rounded = num.toFixed(2);
-  return parseFloat(rounded).toString();
-};
-
 callbackStore.add("updateRange", updateValue);
 </script>
 
@@ -184,7 +192,7 @@ callbackStore.add("updateRange", updateValue);
   .slider-tooltip,
   .slider-handle,
   .slider-connect {
-    background-color: var(--ccb-accent-color) !important;
+    background-color: var(--ccb-accent-color);
   }
 
   .slider-connects {

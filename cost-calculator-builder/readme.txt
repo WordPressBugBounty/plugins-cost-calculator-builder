@@ -6,7 +6,7 @@ Tags: cost calculator, calculator, calculator form builder, cost estimation, shi
 Requires at least: 6.2
 Requires PHP: 8.0
 Tested up to: 6.8.1
-Stable tag: 3.5.9
+Stable tag: 3.5.10
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -168,6 +168,12 @@ Also, you can import the demo sample using Tools -> Import -> WordPress Import.
 Demo sample XML file included in plugin archive.
 
 == Changelog ==
+
+= 3.5.10 =
+- New: Introduced 5 new styles for the Basic Slider element to enhance customization and visual variety.
+- New: Added a "Slider Scale Points" setting for the Basic Slider, allowing you to define intermediate scale markers for custom values or steps. 
+- New: Added a “Snap to Scale Points” option to the Basic Slider, enabling the handle to jump directly between defined markers for faster, more precise selection.
+- Fix: Fixed an issue where the Basic Slider showed an incorrect subtotal when a Default Range Value was set.
 
 = 3.5.9 =
 - Fix: Fixed minor bugs.

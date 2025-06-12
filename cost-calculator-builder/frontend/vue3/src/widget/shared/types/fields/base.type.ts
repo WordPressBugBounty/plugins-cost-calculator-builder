@@ -104,6 +104,8 @@ export interface ISourceField {
   unitSymbol?: string;
   multiply?: boolean;
   multipliedTotal?: boolean;
+  scalePoints?: string;
+  jump?: boolean;
 
   // time & datepicker extra properties
   type?: string;

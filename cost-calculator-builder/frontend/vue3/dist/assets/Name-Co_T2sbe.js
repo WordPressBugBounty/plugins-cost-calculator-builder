@@ -1,0 +1,2 @@
+import{u as d}from"./useValidatedFormField-BmTvEBCn.js";import{d as i,c,o as u,l as m,u as e}from"./runtime-dom.esm-bundler-B-pJJbN8.js";const _={class:"ccb-field__input-wrapper"},f=["placeholder","value"],B=i({__name:"Name",props:{field:{}},emits:["update"],setup(s,{emit:l}){const n=l,p=s,{field:t,onInput:o}=d(p,n);return(h,a)=>(u(),c("div",_,[m("input",{type:"text",placeholder:e(t).placeholder,onInput:a[0]||(a[0]=(...r)=>e(o)&&e(o)(...r)),value:e(t).displayValue},null,40,f)]))}});export{B as default};
+//# sourceMappingURL=Name-Co_T2sbe.js.map

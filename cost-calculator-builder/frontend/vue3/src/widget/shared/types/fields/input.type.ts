@@ -25,6 +25,11 @@ export interface IRangeField extends IBaseInputField {
   min: number;
   max: number;
   multipliedTotal: boolean;
+  styles: {
+    style: string;
+  };
+  scalePoints: string;
+  jump: boolean;
 }
 
 export interface IMultiRangeField extends IRangeField {

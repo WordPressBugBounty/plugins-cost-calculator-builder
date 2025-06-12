@@ -23,9 +23,7 @@
               >*</span
             ></span
           >
-          <span>
-            {{ getSignValue }}
-          </span>
+          <span> {{ getSignValue }} </span>
           <ProBadge />
         </span>
       </div>
@@ -41,17 +39,12 @@
     </div>
 
     <div class="ccb-field-input__wrapper">
-      <Slider
-        style="margin: 10px 0"
-        :value="values"
-        :format="getFormatValue"
-        :min="field.min"
-        :max="field.max"
-        :step="field.step"
-        :disabled="field.disabled"
-        @change="updateValue"
-        show-tooltip="focus"
-      ></Slider>
+      <component
+        :is="currentComponents"
+        :field="field"
+        @update:modelValue="updateValue"
+        v-model="values"
+      />
     </div>
 
     <div
@@ -66,7 +59,7 @@
 </template>
 
 <script setup lang="ts">
-import { toRefs, computed, ref, onMounted } from "vue";
+import { toRefs, computed, ref, onMounted, defineAsyncComponent } from "vue";
 import { IMultiRangeField } from "@/widget/shared/types/fields";
 import { useCurrency } from "@/widget/actions/fields/composable/useCurrency.ts";
 import { useFieldsStore } from "@/widget/app/providers/stores/fieldsStore.ts";
@@ -77,7 +70,6 @@ import { useConditionsStore } from "@/widget/app/providers/stores/conditionsStor
 import RequiredHint from "@/widget/shared/ui/components/Required-hint/RequiredHint.vue";
 import ProBadge from "@/widget/shared/ui/components/Pro-badge/ProBadge.vue";
 import { useTranslationsStore } from "@/widget/app/providers/stores/translationsStore";
-import Slider from "@vueform/slider";
 
 import { useFields } from "@/widget/actions/fields/composable/useFields.ts";
 import { usePageConditions } from "@/widget/actions/conditions/composable/usePageConditions.ts";
@@ -102,6 +94,25 @@ const conditionsStore = useConditionsStore();
 
 const values = ref<number[]>(field.value.values || [0, 50]);
 const originalValue = ref<number>(0);
+
+const currentComponents = computed(() => {
+  const style = field.value?.styles?.style || "default";
+  if (style === "default") {
+    return defineAsyncComponent(() => import("./styles/Default.vue"));
+  } else if (style === "small") {
+    return defineAsyncComponent(() => import("./styles/Small.vue"));
+  } else if (style === "flat-minimal") {
+    return defineAsyncComponent(() => import("./styles/Flat.vue"));
+  } else if (style === "modern") {
+    return defineAsyncComponent(() => import("./styles/Modern.vue"));
+  } else if (style === "input") {
+    return defineAsyncComponent(() => import("./styles/Input.vue"));
+  } else if (style === "multi-point") {
+    return defineAsyncComponent(() => import("./styles/MultiPoint.vue"));
+  }
+
+  return "";
+});
 
 const updateValue = (inputValues: number[], alias?: string) => {
   if (alias && alias !== field.value.alias) {

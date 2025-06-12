@@ -1,0 +1,2 @@
+import{_ as u}from"./_plugin-vue_export-helper-DlAUqK2U.js";import{c as e,o as d,l}from"./runtime-dom.esm-bundler-B-pJJbN8.js";const i={},o={class:"ccb-loader-segment"};function s(t,n){return d(),e("div",o,n[0]||(n[0]=[l("div",null,null,-1),l("div",null,null,-1),l("div",null,null,-1),l("div",null,null,-1),l("div",null,null,-1),l("div",null,null,-1),l("div",null,null,-1),l("div",null,null,-1),l("div",null,null,-1),l("div",null,null,-1),l("div",null,null,-1),l("div",null,null,-1)]))}const v=u(i,[["render",s]]);export{v as default};
+//# sourceMappingURL=segment-BilZA9Gu.js.map

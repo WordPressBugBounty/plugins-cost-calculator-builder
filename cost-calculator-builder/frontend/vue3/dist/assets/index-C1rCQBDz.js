@@ -1,0 +1,2 @@
+import{d as o,B as l,f as c,c as r,o as i,u as d,E as u}from"./runtime-dom.esm-bundler-B-pJJbN8.js";const f=["innerHTML"],_=o({__name:"Html",props:{field:{}},setup(t){const n=t,{field:s}=l(n),a=c(()=>{var e;return((e=s.value)==null?void 0:e.additionalStyles)||""});return(e,m)=>(i(),r("div",{class:u(["ccb-field",{[a.value]:!0}]),innerHTML:d(s).htmlContent},null,10,f))}});export{_ as default};
+//# sourceMappingURL=index-C1rCQBDz.js.map

@@ -160,6 +160,7 @@ const additionalClasses = computed(() => {
     display: flex;
     flex-direction: column;
     gap: 12px;
+    padding: 0 10px;
   }
 
   &__body {

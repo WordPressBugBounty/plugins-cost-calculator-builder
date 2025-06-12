@@ -126,6 +126,9 @@ export function createRangeField(data: ISourceField): IRangeField {
     unitSymbol: data.unitSymbol || "",
     unitPosition: data.unitPosition || "right",
     multipliedTotal: data.multipliedTotal || false,
+    styles: data.styles || { style: "default" },
+    scalePoints: data.scalePoints || "",
+    jump: data.jump || false,
   });
 
   field.displayValue = singleFieldMixins.getCommonFieldDisplayView(
@@ -181,6 +184,9 @@ export function createMultiRangeField(data: ISourceField): IMultiRangeField {
     unitSymbol: data.unitSymbol || "",
     unitPosition: data.unitPosition || "right",
     multipliedTotal: data.multipliedTotal || false,
+    styles: data.styles || { style: "default" },
+    scalePoints: data.scalePoints || "",
+    jump: data.jump || false,
   });
 
   field.displayValue = singleFieldMixins.getCommonFieldDisplayView(

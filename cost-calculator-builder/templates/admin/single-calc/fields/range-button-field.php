@@ -15,12 +15,16 @@
 							<?php esc_html_e( 'Element', 'cost-calculator-builder' ); ?>
 							<span class="ccb-fields-required" v-if="errorsCount > 0">{{ errorsCount }}</span>
 						</div>
+						<div class="ccb-edit-field-switch-item ccb-default-title" :class="{active: tab === 'style'}" @click="tab = 'style'">
+							<?php esc_html_e( 'Styles', 'cost-calculator-builder' ); ?>
+						</div>
 						<div class="ccb-edit-field-switch-item ccb-default-title" :class="{active: tab === 'options'}" @click="tab = 'options'">
 							<?php esc_html_e( 'Settings', 'cost-calculator-builder' ); ?>
 						</div>
 					</div>
 				</div>
 			</div>
+
 			<template v-if="tab === 'main'">
 				<div class="row ccb-p-t-15">
 					<div class="col-12">
@@ -64,7 +68,7 @@
 				</div>
 				<div class="row ccb-p-t-15">
 					<div class="col-6">
-						<div class="ccb-input-wrapper number">
+						<div class="ccb-input-wrapper number" :class="{ 'disabled': rangeField.jump && rangeField.styles.style !== 'default' }">
 							<span class="ccb-input-label"><?php esc_html_e( 'Range Step', 'cost-calculator-builder' ); ?></span>
 							<div class="ccb-input-box">
 								<input type="text" class="ccb-heading-5 ccb-light" :class="{'ccb-input-required': isObjectHasPath(errors, ['step'] ) && errors.step}" name="step" min="0" step="1" @input="() => fixErrorByKey('step')" v-model="rangeField.step" placeholder="<?php esc_attr_e( 'Enter step', 'cost-calculator-builder' ); ?>">
@@ -84,6 +88,20 @@
 							</div>
 							<span class="ccb-error-tip default" v-if="isObjectHasPath(errors, ['default'] ) && errors.default" v-html="errors.default"></span>
 						</div>
+					</div>
+				</div>
+				<div class="row ccb-p-t-15">
+					<div class="col-12" v-if="rangeField.styles.style !== 'input' && rangeField.styles.style !== 'default'" style="position: relative;">
+						<div class="ccb-input-wrapper">
+							<span class="ccb-input-label" style="position: relative;">
+								<?php esc_html_e( 'Slider Scale Points', 'cost-calculator-builder' ); ?>
+								<span class="ccb-options-tooltip" style="position: absolute; top: -3px; right: -26px;">
+									<i class="ccb-icon-circle-question"></i>
+								<span class="ccb-options-tooltip__text"><?php esc_html_e( 'Define the specific data points that will be highlighted in a slider. Enter values separated by commas. Use dots for decimal numbers. Example: 7.5 , 10, 13.5' ); ?></span>
+							</span>
+							</span>
+							<input type="text" maxlength="100" class="ccb-heading-5 ccb-light" v-model.trim="rangeField.scalePoints" placeholder="<?php esc_attr_e( 'Enter scale points', 'cost-calculator-builder' ); ?>">						</div>
+						<span class="ccb-error-tip default" v-if="isObjectHasPath(errors, ['scalePoints'] ) && errors.scalePoints" v-html="errors.scalePoints"></span>
 					</div>
 				</div>
 				<div class="row ccb-p-t-15">
@@ -109,13 +127,27 @@
 					</div>
 				</div>
 				<div class="row ccb-p-t-15">
-					<div class="col-6">
+					<div class="col-12">
 						<div class="list-header">
 							<div class="ccb-switch">
 								<input type="checkbox" v-model="rangeField.multiply"/>
 								<label></label>
 							</div>
 							<h6 class="ccb-heading-5"><?php esc_html_e( 'Multiply by Unit Price', 'cost-calculator-builder' ); ?></h6>
+						</div>
+					</div>
+					<div class="col-12 ccb-p-t-10" v-if="rangeField.styles.style !== 'input' && rangeField.styles.style !== 'default'">
+						<div class="list-header">
+							<div class="ccb-switch">
+								<input type="checkbox" v-model="rangeField.jump"/>
+								<label></label>
+							</div>
+							<h6 class="ccb-heading-5" style="position: relative;">
+								<?php esc_html_e( 'Jump between scale points', 'cost-calculator-builder' ); ?>
+								<span class="ccb-options-tooltip" style="position: absolute; top: -3px; right: -26px;">
+									<i class="ccb-icon-circle-question"></i>
+								<span class="ccb-options-tooltip__text"><?php esc_html_e( 'When enabled, the slider will snap to the defined scale points, preventing users from selecting in-between values.' ); ?></span>
+							</h6>
 						</div>
 					</div>
 				</div>
@@ -169,7 +201,30 @@
 					</div>
 				</div>
 			</template>
-			<template v-else>
+			<template v-if="tab === 'style'">
+				<div class="row ccb-p-t-15" style="align-items: flex-end !important;" v-if="rangeField.styles">
+					<div class="col-6">
+						<div class="ccb-select-box">
+							<span class="ccb-select-label"><?php esc_html_e( 'Style', 'cost-calculator-builder' ); ?></span>
+							<div class="ccb-select-wrapper">
+								<i class="ccb-icon-Path-3485 ccb-select-arrow"></i>
+								<select class="ccb-select" v-model="rangeField.styles.style" style="padding-right: 30px !important;">
+									<option v-for="opt in getRangeStyles" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
+								</select>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row ccb-p-t-15">
+					<div class="col-12">
+						<div class="ccb-style-preview">
+							<span class="ccb-style-preview-header"><?php esc_html_e( 'Style preview', 'cost-calculator-builder' ); ?></span>
+							<img :src="getCurrentImage">
+						</div>
+					</div>
+				</div>
+			</template>
+			<template v-if="tab === 'options'">
 				<div class="row ccb-p-t-15">
 					<div class="col-6 ccb-p-t-10">
 						<div class="list-header">
@@ -236,65 +291,65 @@
 							<h6 class="ccb-heading-5"><?php esc_html_e( 'Add a measuring unit', 'cost-calculator-builder' ); ?></h6>
 						</div>
 					</div>
-				</div>
-				<div class="row row-currency" :class="{'disabled': !rangeField.fieldCurrency}">
-				<div class="col-4">
-					<div class="ccb-input-wrapper">
-						<span class="ccb-input-label"><?php esc_html_e( 'Unit Symbol', 'cost-calculator-builder' ); ?></span>
-						<input type="text" maxlength="18" v-model="fieldCurrency.currency" placeholder="<?php esc_attr_e( 'Enter unit symbol', 'cost-calculator-builder' ); ?>">
 					</div>
-				</div>
-				<div class="col-4">
-					<div class="ccb-select-box">
-						<span class="ccb-select-label"><?php esc_html_e( 'Position', 'cost-calculator-builder' ); ?></span>
-						<div class="ccb-select-wrapper">
-							<i class="ccb-icon-Path-3485 ccb-select-arrow"></i>
-							<select class="ccb-select" v-model="fieldCurrency.currencyPosition">
-								<option value="left"><?php esc_html_e( 'Left', 'cost-calculator-builder' ); ?></option>
-								<option value="right"><?php esc_html_e( 'Right', 'cost-calculator-builder' ); ?></option>
-								<option value="left_with_space"><?php esc_html_e( 'Left with space', 'cost-calculator-builder' ); ?></option>
-								<option value="right_with_space"><?php esc_html_e( 'Right with space', 'cost-calculator-builder' ); ?></option>
-							</select>
+					<div class="row row-currency" :class="{'disabled': !rangeField.fieldCurrency}">
+					<div class="col-4">
+						<div class="ccb-input-wrapper">
+							<span class="ccb-input-label"><?php esc_html_e( 'Unit Symbol', 'cost-calculator-builder' ); ?></span>
+							<input type="text" maxlength="18" v-model="fieldCurrency.currency" placeholder="<?php esc_attr_e( 'Enter unit symbol', 'cost-calculator-builder' ); ?>">
+						</div>
+					</div>
+					<div class="col-4">
+						<div class="ccb-select-box">
+							<span class="ccb-select-label"><?php esc_html_e( 'Position', 'cost-calculator-builder' ); ?></span>
+							<div class="ccb-select-wrapper">
+								<i class="ccb-icon-Path-3485 ccb-select-arrow"></i>
+								<select class="ccb-select" v-model="fieldCurrency.currencyPosition">
+									<option value="left"><?php esc_html_e( 'Left', 'cost-calculator-builder' ); ?></option>
+									<option value="right"><?php esc_html_e( 'Right', 'cost-calculator-builder' ); ?></option>
+									<option value="left_with_space"><?php esc_html_e( 'Left with space', 'cost-calculator-builder' ); ?></option>
+									<option value="right_with_space"><?php esc_html_e( 'Right with space', 'cost-calculator-builder' ); ?></option>
+								</select>
+							</div>
+						</div>
+					</div>
+					<div class="col-4">
+						<div class="ccb-select-box">
+							<span class="ccb-select-label"><?php esc_html_e( 'Thousands separator', 'cost-calculator-builder' ); ?></span>
+							<div class="ccb-select-wrapper">
+								<i class="ccb-icon-Path-3485 ccb-select-arrow"></i>
+								<select class="ccb-select" v-model="fieldCurrency.thousands_separator">
+									<option value=","><?php esc_html_e( ' Comma ', 'cost-calculator-builder' ); ?></option>
+									<option value="."><?php esc_html_e( ' Dot ', 'cost-calculator-builder' ); ?></option>
+									<option value="'"><?php esc_html_e( ' Apostrophe ', 'cost-calculator-builder' ); ?></option>
+									<option value=" "><?php esc_html_e( ' Space ', 'cost-calculator-builder' ); ?></option>
+								</select>
+							</div>
+						</div>
+					</div>
+					<div class="col-4">
+						<div class="ccb-input-wrapper number">
+							<span class="ccb-input-label"><?php esc_html_e( 'Number of decimals', 'cost-calculator-builder' ); ?></span>
+							<div class="ccb-input-box">
+								<input type="number" name="option_num_after_integer" v-model="fieldCurrency.num_after_integer" min="1" max="8" placeholder="<?php esc_attr_e( 'Enter decimals', 'cost-calculator-builder' ); ?>">
+								<span class="input-number-counter up" @click="numberCounterAction('num_after_integer')"></span>
+								<span class="input-number-counter down" @click="numberCounterAction('num_after_integer', '-')"></span>
+							</div>
+						</div>
+					</div>
+					<div class="col-4">
+						<div class="ccb-select-box">
+							<span class="ccb-select-label"><?php esc_html_e( 'Decimal separator', 'cost-calculator-builder' ); ?></span>
+							<div class="ccb-select-wrapper">
+								<i class="ccb-icon-Path-3485 ccb-select-arrow"></i>
+								<select class="ccb-select" v-model="fieldCurrency.decimal_separator">
+									<option value=","><?php esc_html_e( ' Comma ', 'cost-calculator-builder' ); ?></option>
+									<option value="."><?php esc_html_e( ' Dot ', 'cost-calculator-builder' ); ?></option>
+								</select>
+							</div>
 						</div>
 					</div>
 				</div>
-				<div class="col-4">
-					<div class="ccb-select-box">
-						<span class="ccb-select-label"><?php esc_html_e( 'Thousands separator', 'cost-calculator-builder' ); ?></span>
-						<div class="ccb-select-wrapper">
-							<i class="ccb-icon-Path-3485 ccb-select-arrow"></i>
-							<select class="ccb-select" v-model="fieldCurrency.thousands_separator">
-								<option value=","><?php esc_html_e( ' Comma ', 'cost-calculator-builder' ); ?></option>
-								<option value="."><?php esc_html_e( ' Dot ', 'cost-calculator-builder' ); ?></option>
-								<option value="'"><?php esc_html_e( ' Apostrophe ', 'cost-calculator-builder' ); ?></option>
-								<option value=" "><?php esc_html_e( ' Space ', 'cost-calculator-builder' ); ?></option>
-							</select>
-						</div>
-					</div>
-				</div>
-				<div class="col-4">
-					<div class="ccb-input-wrapper number">
-						<span class="ccb-input-label"><?php esc_html_e( 'Number of decimals', 'cost-calculator-builder' ); ?></span>
-						<div class="ccb-input-box">
-							<input type="number" name="option_num_after_integer" v-model="fieldCurrency.num_after_integer" min="1" max="8" placeholder="<?php esc_attr_e( 'Enter decimals', 'cost-calculator-builder' ); ?>">
-							<span class="input-number-counter up" @click="numberCounterAction('num_after_integer')"></span>
-							<span class="input-number-counter down" @click="numberCounterAction('num_after_integer', '-')"></span>
-						</div>
-					</div>
-				</div>
-				<div class="col-4">
-					<div class="ccb-select-box">
-						<span class="ccb-select-label"><?php esc_html_e( 'Decimal separator', 'cost-calculator-builder' ); ?></span>
-						<div class="ccb-select-wrapper">
-							<i class="ccb-icon-Path-3485 ccb-select-arrow"></i>
-							<select class="ccb-select" v-model="fieldCurrency.decimal_separator">
-								<option value=","><?php esc_html_e( ' Comma ', 'cost-calculator-builder' ); ?></option>
-								<option value="."><?php esc_html_e( ' Dot ', 'cost-calculator-builder' ); ?></option>
-							</select>
-						</div>
-					</div>
-				</div>
-			</div>
 				<div class="row ccb-p-t-15">
 					<div class="col-12">
 						<div class="ccb-input-wrapper">

@@ -1,0 +1,2 @@
+import{_ as s}from"./_plugin-vue_export-helper-DlAUqK2U.js";import{c as t,o as c,l as a,G as o}from"./runtime-dom.esm-bundler-B-pJJbN8.js";const r={},n={class:"ccb-block"},d={class:"ccb-subtotal-wrapper"};function f(e,l){return c(),t("div",n,[a("div",d,[o(e.$slots,"default",{},void 0,!0)]),o(e.$slots,"notifications",{},void 0,!0)])}const p=s(r,[["render",f],["__scopeId","data-v-2fd8f1fd"]]);export{p as default};
+//# sourceMappingURL=SubTotalWrapper-CB2JI90G.js.map
