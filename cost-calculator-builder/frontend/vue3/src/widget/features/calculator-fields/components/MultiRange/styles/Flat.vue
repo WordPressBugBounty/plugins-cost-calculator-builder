@@ -232,7 +232,7 @@ watch(realValue, (val) => {
 
   .custom-marks {
     position: absolute;
-    left: 10px;
+    right: 11px;
     top: 40px;
     width: 96%;
   }

@@ -286,7 +286,7 @@ watch(realValue, (val) => {
       top: 4px;
       cursor: pointer;
       box-shadow: none !important;
-      margin-left: 2px;
+      margin-left: 3px;
 
       &:focus {
         outline: none;

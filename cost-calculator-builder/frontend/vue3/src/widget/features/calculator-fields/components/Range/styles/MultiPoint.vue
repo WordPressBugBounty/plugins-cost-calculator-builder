@@ -94,6 +94,7 @@ const scalePoints = computed(() => {
 
 const handleClick = (point: number) => {
   if (jump.value && scalePoints.value.includes(point)) {
+    DinamicLabel.value = point.toString();
     emit("update:modelValue", point);
   }
 };
@@ -109,6 +110,7 @@ watch(
   () => props.modelValue,
   (val) => {
     realValue.value = val;
+    DinamicLabel.value = val.toString();
   },
 );
 
@@ -122,6 +124,10 @@ let observer: MutationObserver;
 let DinamicLabel = ref("0");
 
 onMounted(() => {
+  if (field.value.defaultValue) {
+    DinamicLabel.value = field.value.defaultValue.toString();
+  }
+
   const tooltipEl = document.querySelector(
     `[data-id="${field.value.alias}"] .slider-tooltip`,
   );
@@ -240,9 +246,10 @@ watch(realValue, (val) => {
 
   .custom-marks {
     position: absolute;
-    left: 0;
+    right: -13px;
     top: 13px;
-    width: 100%;
+    width: 105%;
+    transform: scaleX(0.94);
   }
 
   .mark {

@@ -104,6 +104,7 @@ const getFormatValue = (num: number): string => {
 
 const handleClick = (point: number) => {
   if (jump.value && scalePoints.value.includes(point)) {
+    DinamicLabel.value = point.toString();
     emit("update:modelValue", point);
   }
 };
@@ -113,6 +114,10 @@ let observer: MutationObserver;
 let DinamicLabel = ref("0");
 
 onMounted(() => {
+  if (field.value.defaultValue) {
+    DinamicLabel.value = field.value.defaultValue.toString();
+  }
+
   const tooltipEl = document.querySelector(
     `[data-id="${field.value.alias}"] .slider-tooltip`,
   );
@@ -140,6 +145,7 @@ onBeforeUnmount(() => {
 watch(
   () => props.modelValue,
   (val) => {
+    DinamicLabel.value = val.toString();
     realValue.value = val;
   },
 );
@@ -206,7 +212,7 @@ watch(realValue, (val) => {
       font-size: 12px;
       font-weight: 500;
       line-height: 100%;
-      padding-top: 23px;
+      padding-top: 22px;
       pointer-events: none;
     }
   }
@@ -301,7 +307,7 @@ watch(realValue, (val) => {
       top: 4px;
       cursor: pointer;
       box-shadow: none !important;
-      margin-left: 2px;
+      margin-left: 3px;
 
       &:focus {
         outline: none;
