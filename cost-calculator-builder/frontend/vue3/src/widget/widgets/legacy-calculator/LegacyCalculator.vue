@@ -262,9 +262,9 @@ const hideThankYouPage = computed((): boolean => {
       window.location.replace(link);
     }
 
-    if (type === "custom_page" && settings.customButtonLink) {
+    if (type === "custom_page" && settings.customPageLink) {
       notificationsStore.resetNotifications();
-      window.open(settings.customButtonLink, "_blank");
+      window.open(settings.customPageLink, "_blank");
     }
   }
   return false;

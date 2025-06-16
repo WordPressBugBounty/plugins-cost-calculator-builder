@@ -375,7 +375,7 @@ class CCBFieldsHelper {
 							$field_type = preg_replace( '/_field_id.*/', '', $field['alias'] );
 							if ( $field_type === $key && isset( $main_field['styles'] ) ) {
 								$fields[ $idx ]['styles'] = $main_field['styles'];
-							} else {
+							} elseif ( isset( $main_field['accordion'] ) ) {
 								$fields[ $idx ]['accordion'] = $main_field['accordion'];
 							}
 						}

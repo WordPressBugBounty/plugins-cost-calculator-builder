@@ -388,3 +388,9 @@ export interface IQuoteSettings {
 export interface IEditCalcButton {
   editCalcUrl: string;
 }
+
+export interface StripeData {
+  enable: boolean;
+  secretKey: string;
+  publishKey: string;
+}

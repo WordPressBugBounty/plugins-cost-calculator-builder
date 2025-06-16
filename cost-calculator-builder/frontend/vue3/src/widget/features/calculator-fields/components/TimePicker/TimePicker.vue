@@ -73,10 +73,13 @@ const conditionsStore = useConditionsStore();
 const translationsStore = useTranslationsStore();
 
 const getRangeType = computed(() => {
-  return field.value.range || false;
+  return typeof field.value.range === "string"
+    ? field.value.range === "1"
+    : field.value.range;
 });
 
 const getMinInterval = computed(() => {
+  if (!field.value.useInterval) return "";
   return field.value.minInterval || "1h";
 });
 

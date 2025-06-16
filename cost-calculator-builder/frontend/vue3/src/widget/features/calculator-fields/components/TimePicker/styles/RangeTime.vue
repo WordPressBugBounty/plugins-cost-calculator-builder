@@ -52,10 +52,13 @@ const props = defineProps<{
 const emit = defineEmits(["update:modelValue"]);
 
 const parseInterval = (interval: string): number => {
-  const match = interval.match(/^(\d+)(h|m)$/);
-  if (!match) return 0;
-  const [, value, unit] = match;
-  return unit === "h" ? parseInt(value) * 60 : parseInt(value);
+  const hoursMatch = interval.match(/(\d+)h/);
+  const minutesMatch = interval.match(/(\d+)m/);
+
+  const hours = hoursMatch ? parseInt(hoursMatch[1]) * 60 : 0;
+  const minutes = minutesMatch ? parseInt(minutesMatch[1]) : 0;
+
+  return hours + minutes;
 };
 
 const from = ref<Date | { hours: number; minutes: number; seconds: number }>(
@@ -128,15 +131,25 @@ const handleFromUpdate = (newTime: {
 
   const fromDate = toDateFromTimeObject(newTime);
 
-  const interval = parseInterval(props.minInterval);
-  const newToDate = new Date(fromDate);
-  newToDate.setMinutes(newToDate.getMinutes() + interval);
+  if (props.minInterval) {
+    const interval = parseInterval(props.minInterval);
+    if ("hours" in to.value) {
+      const toDate = toDateFromTimeObject(to.value);
+      const diff = Math.abs(fromDate.getTime() - toDate.getTime()) / 1000 / 60;
+      if (interval < diff) {
+        return;
+      }
+    }
 
-  to.value = {
-    hours: newToDate.getHours(),
-    minutes: newToDate.getMinutes(),
-    seconds: 0,
-  };
+    const newToDate = new Date(fromDate);
+    newToDate.setMinutes(newToDate.getMinutes() + interval);
+
+    to.value = {
+      hours: newToDate.getHours(),
+      minutes: newToDate.getMinutes(),
+      seconds: 0,
+    };
+  }
 };
 
 const handleToUpdate = (newTime: {
@@ -147,16 +160,25 @@ const handleToUpdate = (newTime: {
   to.value = newTime;
 
   const toDate = toDateFromTimeObject(newTime);
+  if (props.minInterval) {
+    const interval = parseInterval(props.minInterval);
+    if ("hours" in from.value) {
+      const fromDate = toDateFromTimeObject(from.value);
+      const diff = (toDate.getTime() - fromDate.getTime()) / 1000 / 60;
+      if (interval < diff) {
+        return;
+      }
+    }
 
-  const interval = parseInterval(props.minInterval);
-  const newFromDate = new Date(toDate);
-  newFromDate.setMinutes(newFromDate.getMinutes() - interval);
+    const newFromDate = new Date(toDate);
+    newFromDate.setMinutes(newFromDate.getMinutes() - interval);
 
-  from.value = {
-    hours: newFromDate.getHours(),
-    minutes: newFromDate.getMinutes(),
-    seconds: 0,
-  };
+    from.value = {
+      hours: newFromDate.getHours(),
+      minutes: newFromDate.getMinutes(),
+      seconds: 0,
+    };
+  }
 };
 
 watch([from, to], (newTime: unknown) => {

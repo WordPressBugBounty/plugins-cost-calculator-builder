@@ -2,9 +2,9 @@ import { ref } from "vue";
 import { defineStore } from "pinia";
 import { IPaymentTypes } from "@/widget/actions/pro-features/payments/paymentTypeRegistry.ts";
 import type { Stripe } from "@stripe/stripe-js";
-import { loadStripe } from "@stripe/stripe-js";
 import { useFieldsStore } from "./fieldsStore";
 import { useAppStore } from "./appStore";
+import { StripeData } from "@/widget/shared/types/settings/settings.type.ts";
 
 type PaymentTypes = "" | keyof IPaymentTypes;
 
@@ -19,9 +19,22 @@ export const usePaymentStore = defineStore(`paymentStore_${randomId}`, () => {
   const paymentIntentId = ref<string>("");
   const paymentAfterSubmitStoredPm = ref<string>("");
 
-  const initializeStripe = async (key: string): Promise<void> => {
-    if (!stripeInstance.value) {
-      stripeInstance.value = await loadStripe(key);
+  const initializeStripe = async (
+    stripeData: StripeData | null,
+  ): Promise<void> => {
+    if (
+      !stripeInstance.value &&
+      stripeData?.enable &&
+      stripeData?.publishKey &&
+      stripeData?.secretKey
+    ) {
+      try {
+        const { loadStripe } = await import("@stripe/stripe-js");
+        stripeInstance.value = await loadStripe(stripeData.publishKey);
+      } catch (error) {
+        console.error("Failed to load Stripe:", error);
+        stripeInstance.value = null;
+      }
     }
   };
 

@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { convertKeysToCamelCase } from "@/widget/shared/utils/convert-case-to-camel-case.utils.ts";
+import { StripeData } from "@/widget/shared/types/settings/settings.type.ts";
 
 import {
   ICurrency,
@@ -103,6 +104,10 @@ export const useSettingsStore = defineStore("settings", {
 
     getPaymentGateway: (state: SettingsStore): IPaymentGateway | null =>
       state.paymentGateway,
+
+    getStripeData: (state: SettingsStore): StripeData | null => {
+      return state.paymentGateway?.cards?.cardPayments?.stripe as StripeData;
+    },
 
     getStripePublishKey: (state: SettingsStore): string => {
       const stripeData = state.paymentGateway?.cards?.cardPayments?.stripe;

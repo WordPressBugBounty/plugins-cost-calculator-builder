@@ -1,5 +1,5 @@
 <template>
-  <div class="ccb-total-row">
+  <div class="ccb-total-row" :class="summary.additionalStyles || ''">
     <div
       class="ccb-total-row__discount"
       v-if="

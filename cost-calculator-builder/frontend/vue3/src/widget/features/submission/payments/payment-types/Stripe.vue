@@ -43,7 +43,8 @@ const cardComponent = ref<HTMLElement | null>(null);
 const stripeElements = ref<StripeElements | null>(null);
 
 onMounted(async () => {
-  await paymentStore.initializeStripe(settingsStore.getStripePublishKey);
+  const stripeData = settingsStore.getStripeData;
+  await paymentStore.initializeStripe(stripeData);
 
   stripeLoaded.value = true;
   if (paymentStore.stripeInstance) {
