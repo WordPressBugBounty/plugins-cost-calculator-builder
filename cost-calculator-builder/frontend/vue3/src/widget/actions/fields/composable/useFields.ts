@@ -383,10 +383,17 @@ function recalculateTotals(): void {
       if (!el.hidden || el.calculateHidden) {
         if ("groupElements" in el && Array.isArray(el.groupElements)) {
           el.groupElements.forEach((inner: Map<string, Field>) => {
-            result = [...result, ...(Array.from(inner.values()) as Field[])];
+            const values = Array.from(inner.values()) as Field[];
+            values.forEach((value) => {
+              if (!result.some((r) => r.alias === value.alias)) {
+                result.push(value);
+              }
+            });
           });
         } else {
-          result.push(el);
+          if (!result.some((r) => r.alias === el.alias)) {
+            result.push(el);
+          }
         }
       }
     });
@@ -468,7 +475,19 @@ const evaluateFormula = (total: IFormulaField): void => {
 
 function getField(alias: string): Field | undefined {
   const fieldsStore = useFieldsStore();
-  return fieldsStore.fields.get(alias);
+  let fields: Field[] = [];
+
+  fieldsStore.getFields.forEach((el) => {
+    if ("groupElements" in el && Array.isArray(el.groupElements)) {
+      fields.push(el);
+      el.groupElements.forEach((inner: Map<string, Field>) => {
+        fields = [...fields, ...(Array.from(inner.values()) as Field[])];
+      });
+    } else {
+      fields.push(el);
+    }
+  });
+  return fields.find((field) => field.alias === alias);
 }
 
 function setPageBreakEnabled(bool: boolean): void {

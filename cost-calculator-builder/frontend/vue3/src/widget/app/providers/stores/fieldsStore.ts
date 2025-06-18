@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 import {
   Field,
   IDefaultTotal,
+  IGroupField,
   IRepeaterField,
   ISourceField,
 } from "@/widget/shared/types/fields";
@@ -63,27 +64,41 @@ export const useFieldsStore = defineStore(`fieldsStore_${randomId}`, {
       const settings = useSettingsStore();
 
       if (Array.isArray(this.getFields)) {
-        let fields: Field[] = this.getFields.filter(
-          (f: { fieldName: string; addToSummary: boolean }) => {
-            const excludeFields = ["total", "line", "html"];
-
-            if (excludeFields.includes(f.fieldName) || !f.addToSummary) {
-              return false;
-            }
-
-            return true;
-          },
-        );
+        const excludeFields = ["total", "line", "html"];
+        let result: Field[] = [];
+        this.getFields.forEach((f: Field | IGroupField) => {
+          if (excludeFields.includes(f.fieldName) || !f.addToSummary) {
+            return;
+          }
+          if (f.fieldName === "group" && "groupElements" in f) {
+            (f as IGroupField).groupElements.forEach((groupFieldMap) => {
+              Array.from(groupFieldMap.values()).forEach((field) => {
+                if (
+                  !excludeFields.includes(field.fieldName) &&
+                  field.addToSummary
+                ) {
+                  result.push(field);
+                }
+              });
+            });
+          } else {
+            result.push(f);
+          }
+        });
 
         if (!settings.general?.hideEmpty) {
-          fields = fields.filter((f) =>
+          result = result.filter((f) =>
             ["validated_form", "text"].includes(f.fieldName)
               ? f.displayValue
-              : f.value || f.fieldName === "repeater",
+              : f.fieldName === "geolocation" &&
+                  "geoType" in f &&
+                  f.geoType === "multiplyLocation"
+                ? f.displayValue
+                : f.value,
           );
         }
 
-        return fields;
+        return result;
       }
 
       return [];

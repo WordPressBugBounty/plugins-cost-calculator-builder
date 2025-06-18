@@ -31,6 +31,14 @@
 					</div>
 				</div>
 			</div>
+			<div class="row ccb-p-t-15">
+				<div class="col-12">
+					<div class="ccb-input-wrapper">
+						<span class="ccb-input-label"><?php esc_html_e( 'Description', 'cost-calculator-builder' ); ?></span>
+						<input type="text" class="ccb-heading-5 ccb-light" placeholder="<?php esc_attr_e( 'Enter field description', 'cost-calculator-builder' ); ?>" v-model.trim="totalField.description">
+					</div>
+				</div>
+			</div>
 			<div class="row ccb-p-t-15" v-if="errorMessage.length > 0">
 				<div class="col-12">
 					<div class="ccb-formula-message-errors">

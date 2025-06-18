@@ -229,8 +229,8 @@ const setLocation = () => {
 
 const getDisplayValue = computed(() => {
   let displayValue =
-    field.value.selectedPoint.label ??
-    field.value.selectedPoint.addressName ??
+    field.value.selectedPoint.label ||
+    field.value.selectedPoint.addressName ||
     "";
 
   return displayValue.length > 15

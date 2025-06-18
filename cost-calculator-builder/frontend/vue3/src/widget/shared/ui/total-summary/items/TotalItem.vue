@@ -14,7 +14,7 @@
     </div>
     <div class="ccb-total-row__item">
       <div class="ccb-total-row__name">
-        <span>{{ summary.label }}</span>
+        <span>{{ summaryLabel }}</span>
         <span
           class="discount"
           v-if="
@@ -39,12 +39,20 @@
         <span>{{ summary.displayValue }}</span>
       </div>
     </div>
+    <div
+      class="ccb-total-row__description"
+      v-if="summary.description && summary.description.length > 0"
+      v-html="summary.description"
+    ></div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { toRefs } from "vue";
+import { computed, toRefs } from "vue";
 import { IFormulaField } from "@/widget/shared/types/fields";
+import { useTranslationsStore } from "@/widget/app/providers/stores/translationsStore";
+
+const translationsStore = useTranslationsStore();
 
 type Props = {
   summary: IFormulaField;
@@ -52,6 +60,12 @@ type Props = {
 
 const props = defineProps<Props>();
 const { summary } = toRefs(props);
+
+const summaryLabel = computed(() => {
+  return summary.value.label === "Total"
+    ? translationsStore.getTranslations.total
+    : summary.value.label;
+});
 </script>
 
 <style lang="scss">
@@ -65,6 +79,13 @@ const { summary } = toRefs(props);
   @media only screen and (max-width: 480px) {
     font-size: var(--ccb-mobile-grand-total-size);
     font-weight: var(--ccb-mobile-grand-total-weight);
+  }
+
+  &__description {
+    font-size: 0.75em;
+    color: var(--ccb-text-color);
+    font-weight: 400;
+    margin-top: 5px;
   }
 
   &__item {

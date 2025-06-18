@@ -542,7 +542,21 @@ const activePageFieldsAliases = computed(() => {
       if (page?.groupElements) {
         page.groupElements.forEach((element) => {
           if ("alias" in element && typeof element.alias === "string") {
-            allAliases.push(element.alias);
+            if (
+              "groupElements" in element &&
+              Array.isArray(element.groupElements)
+            ) {
+              element.groupElements.forEach((groupElement: any) => {
+                if (
+                  "alias" in groupElement &&
+                  typeof groupElement.alias === "string"
+                ) {
+                  allAliases.push(groupElement.alias);
+                }
+              });
+            } else {
+              allAliases.push(element.alias);
+            }
           }
         });
       }

@@ -221,22 +221,64 @@ const getUsedFiles = (): IFileData[] => {
 const getClearFields = (): Field[] => {
   const { getFields } = useFields();
   const settings = useSettingsStore();
-  return getFields().filter(
-    (f: Field) =>
-      f.alias &&
-      !["total", "html", "line", "page_break"].includes(f.fieldName) &&
-      (f.fieldName === "repeater" ||
-        f.fieldName === "group" ||
-        f.addToSummary === true ||
-        f.addToSummary === false ||
-        f.alias.indexOf("file") !== -1) &&
-      (!f.hidden || f.calculateHidden) &&
+  const fields = getFields();
+  const result: Field[] = [];
+  const uniqueAliases = new Set<string>();
+
+  for (const field of fields) {
+    if (field.fieldName === "group" && "groupElements" in field) {
+      field.groupElements.forEach((element) => {
+        for (const [_, existingField] of element.entries()) {
+          if (
+            existingField.alias &&
+            !uniqueAliases.has(existingField.alias) &&
+            !["total", "html", "line", "page_break"].includes(
+              existingField.fieldName,
+            ) &&
+            (existingField.addToSummary === true ||
+              existingField.addToSummary === false ||
+              existingField.alias.indexOf("file") !== -1) &&
+            (!existingField.hidden || existingField.calculateHidden) &&
+            (!settings.general?.hideEmptyForOrdersPdfEmails
+              ? ["validated_form", "text"].includes(existingField.fieldName)
+                ? existingField.displayValue
+                : existingField.fieldName === "geolocation" &&
+                    "geoType" in existingField &&
+                    existingField.geoType === "multiplyLocation"
+                  ? existingField.displayValue
+                  : existingField.value
+              : true)
+          ) {
+            uniqueAliases.add(existingField.alias);
+            result.push(existingField as Field);
+          }
+        }
+      });
+    } else if (
+      field.alias &&
+      !uniqueAliases.has(field.alias) &&
+      !["total", "html", "line", "page_break"].includes(field.fieldName) &&
+      (field.fieldName === "repeater" ||
+        field.addToSummary === true ||
+        field.addToSummary === false ||
+        field.alias.indexOf("file") !== -1) &&
+      (!field.hidden || field.calculateHidden) &&
       (!settings.general?.hideEmptyForOrdersPdfEmails
-        ? ["validated_form", "text"].includes(f.fieldName)
-          ? f.displayValue
-          : f.value
-        : true),
-  );
+        ? ["validated_form", "text"].includes(field.fieldName)
+          ? field.displayValue
+          : field.fieldName === "geolocation" &&
+              "geoType" in field &&
+              field.geoType === "multiplyLocation"
+            ? field.displayValue
+            : field.value
+        : true)
+    ) {
+      uniqueAliases.add(field.alias);
+      result.push(field);
+    }
+  }
+
+  return result;
 };
 
 const getOrderDetails = (): IOrderDetails => {
@@ -320,6 +362,16 @@ const orderDetailsHelper = (fields: Field[]): IOrderDetailsType => {
         ...(typeof field.repeaterIdx !== "undefined"
           ? {
               idx: field.repeaterIdx,
+            }
+          : {}),
+        ...(typeof field.repeaterAlias !== "undefined"
+          ? {
+              repeaterAlias: field.repeaterAlias,
+            }
+          : {}),
+        ...(field.fieldName === "geolocation" && "geoType" in field
+          ? {
+              geoType: field.geoType,
             }
           : {}),
       };

@@ -38,7 +38,11 @@
                 <span
                   class="pdf-total-summary--body-item-name-title"
                   :style="{
-                    'margin-left': detail.repeaterAlias ? '10px' : '0px',
+                    'margin-left':
+                      detail.repeaterAlias !== undefined &&
+                      !detail.repeaterAlias.includes('group')
+                        ? '10px'
+                        : '0px',
                   }"
                   >{{ detail.label }}</span
                 >
