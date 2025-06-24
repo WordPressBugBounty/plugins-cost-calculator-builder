@@ -12,7 +12,7 @@ interface IAppStore {
   isCustomThankYouPage: boolean;
 }
 
-export const useAppStore = defineStore("app", {
+export const useAppStore = defineStore("app_store", {
   state: (): IAppStore => ({
     appLoader: true,
     isThankYouPage: false,

@@ -6,7 +6,7 @@ import {
 } from "@/widget/shared/types/settings";
 import { useSettingsStore } from "./settingsStore";
 
-export const useNotificationsStore = defineStore("notifications", () => {
+export const useNotificationsStore = defineStore("notifications_store", () => {
   const settingsStore = useSettingsStore();
   const notificationStatus = ref<boolean>(false);
   const message = ref<string>("");

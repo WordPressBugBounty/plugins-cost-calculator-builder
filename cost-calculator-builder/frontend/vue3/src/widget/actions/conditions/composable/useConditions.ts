@@ -17,6 +17,7 @@ import { useDatePickerFieldHelper } from "@/widget/actions/fields/composable/use
 import { useCallbackStore } from "@/widget/app/providers/stores/callbackStore.ts";
 import { useAppStore } from "@/widget/app/providers/stores/appStore.ts";
 import { useConditionsStore } from "@/widget/app/providers/stores/conditionsStore.ts";
+import { useFields } from "../../fields/composable/useFields";
 
 const multipleOptionsField: string[] = [
   "checkbox",
@@ -66,9 +67,8 @@ function triggerCondition() {
     return;
   }
 
-  const fieldStore = useFieldsStore();
-
-  for (const field of fieldStore.getFields) {
+  const fieldsInstance = useFields();
+  for (const field of fieldsInstance.getFields()) {
     applyConditionForField(field.alias);
   }
 }
@@ -83,6 +83,7 @@ function applyConditionForField(fieldAlias: string): void {
 
   const affectedFields = Object.keys(conditionsStore.conditions[fieldAlias]);
   const triggerField: Field | undefined = fieldStore.getField(fieldAlias);
+
   if (!triggerField) return;
 
   for (const affectedAlias of affectedFields) {

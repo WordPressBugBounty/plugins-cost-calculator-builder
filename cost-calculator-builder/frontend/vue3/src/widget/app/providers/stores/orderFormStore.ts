@@ -15,7 +15,7 @@ interface IOrderFormState {
   captchaToken: string;
 }
 
-export const useOrderFormStore = defineStore("orderForms", {
+export const useOrderFormStore = defineStore("order_form_store", {
   state: (): IOrderFormState => ({
     nextButtonStatus: true,
     nextButton: false,

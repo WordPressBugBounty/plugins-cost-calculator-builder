@@ -1,0 +1,2 @@
+import{u as i}from"./useValidatedFormField-C81FDVgk.js";import{d,c,o as u,l as m,u as e}from"./runtime-dom.esm-bundler-DVhL8Vyv.js";const _={class:"ccb-field__input-wrapper"},f=["placeholder","value"],B=d({__name:"Email",props:{field:{}},emits:["update"],setup(s,{emit:l}){const n=l,p=s,{field:t,onInput:o}=i(p,n);return(h,a)=>(u(),c("div",_,[m("input",{type:"text",placeholder:e(t).placeholder,onInput:a[0]||(a[0]=(...r)=>e(o)&&e(o)(...r)),value:e(t).displayValue},null,40,f)]))}});export{B as default};
+//# sourceMappingURL=Email-DIPCvqdD.js.map

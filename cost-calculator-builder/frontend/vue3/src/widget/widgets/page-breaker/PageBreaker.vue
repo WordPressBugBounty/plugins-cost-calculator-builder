@@ -209,7 +209,7 @@
               iconPosition="after"
               class="next-btn"
               v-if="hideNextButton"
-              :disabled="disableNextButton"
+              :disabled="pageBreakerStore.getDisableNextButton"
             ></Button>
           </div>
         </div>
@@ -315,22 +315,19 @@ import Button from "@/widget/shared/ui/components/Button/Button.vue";
 import { useSettingsStore } from "@/widget/app/providers/stores/settingsStore.ts";
 import CCBPopup from "@/widget/shared/ui/components/Popup/Popup.vue";
 import { Field } from "@/widget/shared/types/fields";
-import { usePageConditions } from "@/widget/actions/conditions/composable/usePageConditions.ts";
-import { useFields } from "@/widget/actions/fields/composable/useFields.ts";
 import { useAppearanceStore } from "@/widget/app/providers/stores/appearanceStore";
 import { useAppStore } from "@/widget/app/providers/stores/appStore.ts";
 import HeaderTitle from "@/widget/shared/ui/wrappers/components/HeaderTitle.vue";
 import PdfInvoice from "@/widget/features/pdf-invoice/send-quote";
 import WooRedirectCart from "@/widget/shared/ui/wrappers/components/WooRedirectCart.vue";
 import { useOrderFormStore } from "@/widget/app/providers/stores/orderFormStore.ts";
+import { usePageBreakerStore } from "@/widget/app/providers/stores/pageBreakerStore.ts";
 
 const appStore = useAppStore();
 const orderFormStore = useOrderFormStore();
 const appearanceStore = useAppearanceStore();
+const pageBreakerStore = usePageBreakerStore();
 
-const fieldsInstance = useFields();
-
-const { checkPageFieldsConditions, disableNextButton } = usePageConditions();
 import { useTranslationsStore } from "@/widget/app/providers/stores/translationsStore";
 import ThankYouPage from "@/widget/features/thank-you-page";
 import { useSubmissionStore } from "@/widget/app/providers/stores/submissionStore.ts";
@@ -499,13 +496,12 @@ const getStickyId = computed(() => {
 });
 
 const prevBtnText = computed(() => {
-  const page = fieldsInstance.getActivePage();
-
+  const page = fieldsStore.getActivePage;
   return page ? page.previousBtnLabel : "Back";
 });
 
 const nextBtnText = computed(() => {
-  const page = fieldsInstance.getActivePage();
+  const page = fieldsStore.getActivePage;
   return page.nextBtnLabel;
 });
 
@@ -538,7 +534,7 @@ const activePageFieldsAliases = computed(() => {
 
   for (let i = 0; i <= activePageIndex.value; i++) {
     const page = fieldsStore.getPages[i];
-    if ("groupElements" in page) {
+    if (page && "groupElements" in page) {
       if (page?.groupElements) {
         page.groupElements.forEach((element) => {
           if ("alias" in element && typeof element.alias === "string") {
@@ -567,7 +563,7 @@ const activePageFieldsAliases = computed(() => {
 });
 
 const activePageConditionAction = computed(() => {
-  return fieldsInstance.getActivePage().action;
+  return fieldsStore.getActivePage.action;
 });
 
 const hideNextButton = computed(() => {
@@ -578,7 +574,7 @@ const hideNextButton = computed(() => {
 });
 
 const pageBreakFields = computed(() => {
-  const activePage = fieldsInstance.getActivePage();
+  const activePage = fieldsStore.getActivePage;
   if (!activePage?.groupElements) {
     return [];
   }
@@ -592,7 +588,7 @@ const pageBreakFields = computed(() => {
 });
 
 const nextPage = () => {
-  const pageConditionResult = checkPageFieldsConditions();
+  const pageConditionResult = pageBreakerStore.checkPageFieldsConditions();
 
   if (fieldsStore.checkPageRequiredFields(pageBreakFields.value)) {
     if (pageConditionResult) {
@@ -609,8 +605,8 @@ const nextPage = () => {
           fieldsStore.updateActivePageIndex(nextPageIndex);
         }
       } else if (activePageConditionAction.value === "jump_to") {
-        const pageIndex = fieldsInstance.getPageIndex(
-          fieldsInstance.getActivePage().pageTo,
+        const pageIndex = fieldsStore.getPageIndex(
+          fieldsStore.getActivePage.pageTo,
         );
         if (pageIndex !== undefined) {
           pageHistory.push(activePageIndex.value);

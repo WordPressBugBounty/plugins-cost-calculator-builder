@@ -5,6 +5,8 @@ import { scrollIntoRequired } from "@/widget/shared/utils/scroll-to-required.uti
 import { useAppStore } from "@/widget/app/providers/stores/appStore";
 import { useFieldsStore } from "@/widget/app/providers/stores/fieldsStore";
 
+let timeout: ReturnType<typeof setTimeout> | null = null;
+
 interface IUseFieldsRequiredResult {
   hasRequiredFields: (fields: Field[]) => boolean;
   resetRequiredFields: () => void;
@@ -203,6 +205,7 @@ const resetRequiredFields = (): void => {
 };
 
 const filterRequiredFields = (fieldsData: Field[]): Field[] => {
+  const fieldsStore = useFieldsStore();
   let fields: Field[] = fieldsData;
   fieldsData.forEach((field: Field) => {
     if (field.fieldName === "repeater" && "groupElements" in field) {
@@ -230,11 +233,35 @@ const filterRequiredFields = (fieldsData: Field[]): Field[] => {
 
   if (fields.length) {
     const appStore = useAppStore();
-    scrollIntoRequired(
-      fields[0].alias,
-      fields[0].repeaterIdx,
-      appStore.getCalcId || 0,
-    );
+    if (fieldsStore.getPageBreakEnabled) {
+      const pageBreakerFieldAliases: string[] =
+        fieldsStore.getActivePage?.groupElements?.map((element) => {
+          if ("alias" in element) {
+            return element.alias as string;
+          }
+          return "";
+        }) || [];
+
+      fields = fields.filter((field) =>
+        pageBreakerFieldAliases.includes(field.alias),
+      );
+    }
+
+    fields = fields.filter((field: Field) => !field.hidden);
+
+    if (fields.length > 0) {
+      if (timeout) {
+        clearTimeout(timeout);
+      }
+
+      timeout = setTimeout(() => {
+        scrollIntoRequired(
+          fields[0].alias,
+          fields[0].repeaterIdx,
+          appStore.getCalcId || 0,
+        );
+      }, 300);
+    }
   }
 
   return fields;

@@ -86,8 +86,7 @@ import RequiredHint from "@/widget/shared/ui/components/Required-hint/RequiredHi
 import { useTranslationsStore } from "@/widget/app/providers/stores/translationsStore";
 import { useSettingsStore } from "@/widget/app/providers/stores/settingsStore.ts";
 import { isFloat } from "@/widget/shared/utils/is-float.utils";
-import { usePageConditions } from "@/widget/actions/conditions/composable/usePageConditions.ts";
-import { useFields } from "@/widget/actions/fields/composable/useFields.ts";
+import { usePageBreakerStore } from "@/widget/app/providers/stores/pageBreakerStore.ts";
 
 type Props = {
   field: IQuantityField;
@@ -105,9 +104,7 @@ const fieldStore = useFieldsStore();
 const conditionsStore = useConditionsStore();
 const singleFieldMixins = useSingleField();
 const translationsStore = useTranslationsStore();
-
-const fieldsInstance = useFields();
-const pageConditions = usePageConditions();
+const pageBreakerStore = usePageBreakerStore();
 
 const rawInput = ref<string>(field.value.value.toString());
 const isEditing = ref<boolean>(false);
@@ -156,10 +153,10 @@ const updateValue = (
   fieldStore.updateField(field.value.alias, field.value);
   conditionsStore.applyConditionForField(field.value.alias);
   if (
-    fieldsInstance.getPageBreakEnabled() &&
-    fieldsInstance.getActivePage().action === "not_skip"
+    fieldStore.getPageBreakEnabled &&
+    fieldStore.getActivePage.action === "not_skip"
   ) {
-    pageConditions.checkPageFieldsConditions();
+    pageBreakerStore.checkPageFieldsConditions();
   }
 };
 

@@ -67,11 +67,7 @@ import { useGeolocationFieldHelper } from "@/widget/actions/fields/composable/us
 import { Loader } from "@googlemaps/js-api-loader";
 import { useCurrency } from "@/widget/actions/fields/composable/useCurrency.ts";
 import { useTranslationsStore } from "@/widget/app/providers/stores/translationsStore";
-import { useFields } from "@/widget/actions/fields/composable/useFields.ts";
-import { usePageConditions } from "@/widget/actions/conditions/composable/usePageConditions.ts";
-
-const fieldsInstance = useFields();
-const pageConditions = usePageConditions();
+import { usePageBreakerStore } from "@/widget/app/providers/stores/pageBreakerStore.ts";
 
 type Props = {
   field: IGeolocationField;
@@ -85,6 +81,7 @@ const conditionsStore = useConditionsStore();
 const singleFieldMixins = useSingleField();
 const currencyInstance = useCurrency();
 const translationsStore = useTranslationsStore();
+const pageBreakerStore = usePageBreakerStore();
 
 const popup = ref();
 
@@ -391,10 +388,10 @@ const resetValue = () => {
   fieldStore.updateField(field.value.alias, field.value);
   conditionsStore.applyConditionForField(field.value.alias);
   if (
-    fieldsInstance.getPageBreakEnabled() &&
-    fieldsInstance.getActivePage().action === "not_skip"
+    fieldStore.getPageBreakEnabled &&
+    fieldStore.getActivePage.action === "not_skip"
   ) {
-    pageConditions.checkPageFieldsConditions();
+    pageBreakerStore.checkPageFieldsConditions();
   }
 };
 
@@ -411,10 +408,10 @@ const updateValue = () => {
   fieldStore.updateField(field.value.alias, field.value);
   conditionsStore.applyConditionForField(field.value.alias);
   if (
-    fieldsInstance.getPageBreakEnabled() &&
-    fieldsInstance.getActivePage().action === "not_skip"
+    fieldStore.getPageBreakEnabled &&
+    fieldStore.getActivePage.action === "not_skip"
   ) {
-    pageConditions.checkPageFieldsConditions();
+    pageBreakerStore.checkPageFieldsConditions();
   }
 };
 

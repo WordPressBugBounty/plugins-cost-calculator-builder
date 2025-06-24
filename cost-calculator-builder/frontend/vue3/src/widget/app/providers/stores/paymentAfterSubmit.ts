@@ -2,7 +2,7 @@ import { computed, ref } from "vue";
 import { defineStore } from "pinia";
 
 export const usePaymentAfterSubmitStore = defineStore(
-  "paymentAfterSubmitStore",
+  "payment_after_submit_store",
   () => {
     const submit = ref<boolean>(false);
     const lastOrderId = ref<undefined | number>();

@@ -93,11 +93,7 @@ import { IGeolocationField } from "@/widget/shared/types/fields";
 import { useGeolocationFieldHelper } from "@/widget/actions/fields/composable/useGeolocationFieldHelper.ts";
 import { Loader } from "@googlemaps/js-api-loader";
 import { useTranslationsStore } from "@/widget/app/providers/stores/translationsStore";
-import { useFields } from "@/widget/actions/fields/composable/useFields.ts";
-import { usePageConditions } from "@/widget/actions/conditions/composable/usePageConditions.ts";
-
-const fieldsInstance = useFields();
-const pageConditions = usePageConditions();
+import { usePageBreakerStore } from "@/widget/app/providers/stores/pageBreakerStore.ts";
 
 type Props = {
   field: IGeolocationField;
@@ -111,6 +107,7 @@ const conditionsStore = useConditionsStore();
 const fieldStore = useFieldsStore();
 const currencyInstance = useCurrency();
 const translationsStore = useTranslationsStore();
+const pageBreakerStore = usePageBreakerStore();
 
 const popup = ref();
 
@@ -310,10 +307,10 @@ const updateValue = () => {
   conditionsStore.applyConditionForField(field.value.alias);
 
   if (
-    fieldsInstance.getPageBreakEnabled() &&
-    fieldsInstance.getActivePage().action === "not_skip"
+    fieldStore.getPageBreakEnabled &&
+    fieldStore.getActivePage.action === "not_skip"
   ) {
-    pageConditions.checkPageFieldsConditions();
+    pageBreakerStore.checkPageFieldsConditions();
   }
 
   hidePopup();
@@ -354,10 +351,10 @@ const clearLocation = () => {
   conditionsStore.applyConditionForField(field.value.alias);
 
   if (
-    fieldsInstance.getPageBreakEnabled() &&
-    fieldsInstance.getActivePage().action === "not_skip"
+    fieldStore.getPageBreakEnabled &&
+    fieldStore.getActivePage.action === "not_skip"
   ) {
-    pageConditions.checkPageFieldsConditions();
+    pageBreakerStore.checkPageFieldsConditions();
   }
 
   hidePopup();
@@ -368,7 +365,7 @@ const setMarker = async (
   latLng: google.maps.LatLngLiteral,
 ) => {
   if (type === "from" && markers.value.from) {
-    markers.value.from.map = null; // Вместо setMap(null)
+    markers.value.from.map = null;
     markers.value.from = null;
   } else if (type === "to" && markers.value.to) {
     markers.value.to.map = null;

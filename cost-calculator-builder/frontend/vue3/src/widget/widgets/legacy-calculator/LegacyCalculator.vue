@@ -140,10 +140,6 @@ import { useNotificationsStore } from "@/widget/app/providers/stores/notificatio
 import { useSettingsStore } from "@/widget/app/providers/stores/settingsStore.ts";
 import { useSubmissionStore } from "@/widget/app/providers/stores/submissionStore.ts";
 import { useAppearanceStore } from "@/widget/app/providers/stores/appearanceStore";
-import { useFields } from "@/widget/actions/fields/composable/useFields.ts";
-
-const fieldsInstance = useFields();
-const pageBreakEnabled = fieldsInstance.getPageBreakEnabled();
 
 const appStore = useAppStore();
 const fieldsStore = useFieldsStore();
@@ -154,11 +150,11 @@ const appearanceStore = useAppearanceStore();
 const { hasPromocodes } = useDiscounts();
 
 const popup = ref();
-
+const pageBreakEnabled = computed(() => fieldsStore.getPageBreakEnabled);
 const actionsRef = ref<HTMLElement | null>(null);
 
 const isLiveDemoLayout = computed(() => {
-  return appStore.getIsLive && !pageBreakEnabled;
+  return appStore.getIsLive && !pageBreakEnabled.value;
 });
 
 const flexWrap = computed(() => {

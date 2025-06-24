@@ -108,7 +108,7 @@ import Wrapper from "@/widget/shared/ui/wrappers/Wrapper.vue";
 
 .skeleton-dots {
   flex-grow: 1;
-  height: 2px; /* Высота для точек */
+  height: 2px;
   background-color: #f0f0f0;
   animation: pulse 1.5s infinite ease-in-out;
 }

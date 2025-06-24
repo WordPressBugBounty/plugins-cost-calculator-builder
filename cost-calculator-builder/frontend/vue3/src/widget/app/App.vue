@@ -17,11 +17,12 @@ import { useConditionsStore } from "@/widget/app/providers/stores/conditionsStor
 import { useDiscountsStore } from "@/widget/app/providers/stores/discountsStore.ts";
 import { IncomingData } from "@/widget/shared/types/app";
 import { useOrderFormStore } from "@/widget/app/providers/stores/orderFormStore.ts";
-import { usePageConditions } from "@/widget/actions/conditions/composable/usePageConditions.ts";
 import { useTranslationsStore } from "@/widget/app/providers/stores/translationsStore.ts";
 import Loader from "@/widget/shared/ui/components/Loader/index.ts";
 import "@vueform/slider/themes/default.css";
 import { useSubmissionStore } from "@/widget/app/providers/stores/submissionStore.ts";
+import { useMainStore } from "@/widget/app/providers/stores/mainStore.ts";
+import { usePageBreakerStore } from "@/widget/app/providers/stores/pageBreakerStore.ts";
 
 const appStore = useAppStore();
 const appearanceStore = useAppearanceStore();
@@ -30,15 +31,17 @@ const fieldsStore = useFieldsStore();
 const conditionsStore = useConditionsStore();
 const discountsStore = useDiscountsStore();
 const orderFormStore = useOrderFormStore();
-const pageConditions = usePageConditions();
+const pageBreakerStore = usePageBreakerStore();
 const translationsStore = useTranslationsStore();
 const submissonStore = useSubmissionStore();
+const mainStore = useMainStore();
 
 const calcId = inject("calc_id") as number;
 const key: any = `calc_data_${calcId}`;
 const calcData = window[key] as unknown as IncomingData;
 
 if ("settings" in calcData) {
+  mainStore.setCalcId(+calcId);
   appStore.setProStatus(calcData.pro_active);
   appStore.setCalcId(+calcId);
   appStore.setCalcId(calcData.settings.calc_id);
@@ -69,7 +72,7 @@ onMounted(() => {
   fieldsStore.initFields(calcData.fields);
   fieldsStore.initPageBreaker(calcData.fields);
   discountsStore.initDiscounts(calcData.discounts);
-  pageConditions.initPageConditions();
+  pageBreakerStore.initPageConditions();
 
   window.addEventListener("load", () => {
     setTimeout(() => appStore.updateAppLoader(false), 0);

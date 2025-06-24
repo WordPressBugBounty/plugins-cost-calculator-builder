@@ -5,13 +5,14 @@
 </template>
 
 <script lang="ts" setup>
+import { computed } from "vue";
 import LegacyCalculator from "@/widget/widgets/legacy-calculator";
 import PageBreaker from "@/widget/widgets/page-breaker";
-import { useFields } from "@/widget/actions/fields/composable/useFields.ts";
 import BoxStyles from "@/widget/shared/ui/components/Box-styles/BoxStyles.vue";
 import { useAppStore } from "@/widget/app/providers/stores/appStore.ts";
+import { useFieldsStore } from "@/widget/app/providers/stores/fieldsStore.ts";
 
 const appStore = useAppStore();
-const fieldsInstance = useFields();
-const pageBreakEnabled = fieldsInstance.getPageBreakEnabled();
+const fieldsStore = useFieldsStore();
+const pageBreakEnabled = computed(() => fieldsStore.getPageBreakEnabled);
 </script>

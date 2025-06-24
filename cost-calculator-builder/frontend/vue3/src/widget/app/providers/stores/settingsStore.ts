@@ -46,7 +46,7 @@ interface SettingsStore {
   summaryDisplayShowSummary: boolean;
 }
 
-export const useSettingsStore = defineStore("settings", {
+export const useSettingsStore = defineStore("settings_store", {
   state: (): SettingsStore => ({
     general: null,
     currency: null,

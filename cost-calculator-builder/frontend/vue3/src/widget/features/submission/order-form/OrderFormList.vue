@@ -81,7 +81,6 @@ import { useOrderFormStore } from "@/widget/app/providers/stores/orderFormStore.
 import { useSettingsStore } from "@/widget/app/providers/stores/settingsStore.ts";
 import { useFieldsStore } from "@/widget/app/providers/stores/fieldsStore";
 import { useAppStore } from "@/widget/app/providers/stores/appStore.ts";
-import { useFields } from "@/widget/actions/fields/composable/useFields.ts";
 import { ContactFormFields } from "@/widget/shared/types/orders/contact-form-fields.type";
 import { parseHtml } from "@/widget/shared/utils/html-parser.utils";
 import DemoNotice from "@/widget/shared/ui/components/Demo-notice/DemoNotice.vue";
@@ -108,7 +107,7 @@ const settings = useSettingsStore();
 const appStore = useAppStore();
 const myCf7Root = ref<HTMLElement | null>(null);
 const allowContactForm = ref<boolean>(false);
-const fieldsInstance = useFields();
+const fieldsStore = useFieldsStore();
 
 const formFields = computed(() => {
   return orderFormStore.getFormFields;
@@ -254,7 +253,6 @@ const showButton = computed((): boolean => {
 });
 
 const btnDisabledStatus = computed((): boolean => {
-  const fieldsStore = useFieldsStore();
   const paymentStore = usePaymentStore();
 
   if (
@@ -274,8 +272,6 @@ const btnDisabledStatus = computed((): boolean => {
 });
 
 const nextButton = () => {
-  const fieldsStore = useFieldsStore();
-
   if (fieldsStore.checkRequiredFields()) {
     orderFormStore.updateNextButtonStatus(false);
     orderFormStore.updateNextButton(true);
@@ -363,7 +359,7 @@ const cfInitContent = () => {
     const $form = myCf7Root.value?.querySelector(".wpcf7-form");
 
     if (text.indexOf("[ccb-subtotal]") !== -1) {
-      let subtotal: string = fieldsInstance.parseContactFormDescriptions();
+      let subtotal: string = fieldsStore.parseContactFormDescriptions();
       let regex = "[ccb-subtotal]";
       text = text.replaceAll(regex, subtotal);
     }
@@ -371,7 +367,7 @@ const cfInitContent = () => {
     const formFormulas = settings.getFormSettings?.formulas?.map(
       (f) => f.alias,
     );
-    const totalSubtotals = fieldsInstance.parseContactFormTotals(formFormulas);
+    const totalSubtotals = fieldsStore.parseContactFormTotals(formFormulas);
     const regexPattern = /\[ccb-total(?:-\d+)?\]/g;
     text = text.replaceAll(regexPattern, `${totalSubtotals}\n`);
 

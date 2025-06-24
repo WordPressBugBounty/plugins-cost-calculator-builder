@@ -7,9 +7,9 @@ import {
 import { computed, ref } from "vue";
 import { IFormulaField, IRepeaterField } from "@/widget/shared/types/fields";
 import { useCurrency } from "@/widget/actions/fields/composable/useCurrency.ts";
-import { useFields } from "@/widget/actions/fields/composable/useFields.ts";
 import { useConditions } from "@/widget/actions/conditions/composable/useConditions.ts";
 import { ComputedRef } from "vue-demi";
+import { useFieldsStore } from "@/widget/app/providers/stores/fieldsStore.ts";
 
 const discounts = ref<DiscountsStore>({});
 const originalDiscounts = ref<OriginalDiscountsStore>({});
@@ -199,25 +199,25 @@ function parseAppliedDiscount(
 }
 
 function applyPromocode(promocode: string): void {
-  const { recalculateTotals } = useFields();
+  const fieldStore = useFieldsStore();
   const { triggerCondition } = useConditions();
 
   if (!promocodes.value.includes(promocode)) {
     promocodes.value.push(promocode);
-    recalculateTotals();
+    fieldStore.recalculateTotals();
     triggerCondition();
-    recalculateTotals();
+    fieldStore.recalculateTotals();
   }
 }
 
 function removePromocode(idx: number): void {
-  const { recalculateTotals } = useFields();
+  const fieldStore = useFieldsStore();
   const { triggerCondition } = useConditions();
   promocodes.value = promocodes.value.filter((_, i: number) => i !== idx);
 
-  recalculateTotals();
+  fieldStore.recalculateTotals();
   triggerCondition();
-  recalculateTotals();
+  fieldStore.recalculateTotals();
 }
 
 function hasPromocodes(): boolean {

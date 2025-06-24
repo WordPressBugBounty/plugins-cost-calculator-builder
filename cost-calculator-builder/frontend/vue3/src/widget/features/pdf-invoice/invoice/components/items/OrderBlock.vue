@@ -440,9 +440,11 @@ const generateQRCode = (link: string) => {
 const getGrandTotalAmount = computed(() => {
   let sumTotal = 0;
 
-  fieldsStore.getTotalsList.forEach((total) => {
-    sumTotal += total?.value || 0;
-  });
+  fieldsStore.getTotalsList
+    .filter((f) => f)
+    .forEach((total) => {
+      sumTotal += total?.value || 0;
+    });
 
   const settings = currencyInstance.getCurrencyOptions();
   const currency = settings.currency;
@@ -630,7 +632,7 @@ const showQrCode = computed(() => {
 
 const getTotals = computed(() => {
   const result = fieldsStore.getTotalsList as IFormulaField[];
-  return result?.filter((f) => !f.hidden);
+  return result?.filter((f) => f)?.filter((f) => !f?.hidden);
 });
 
 const getDiscountAmount = computed<(total: any) => string | null>(() => {

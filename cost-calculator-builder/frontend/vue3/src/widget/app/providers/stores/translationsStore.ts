@@ -6,7 +6,7 @@ type TranslationsState = {
   translations: ITranslations;
 };
 
-export const useTranslationsStore = defineStore("translations", {
+export const useTranslationsStore = defineStore("translations_store", {
   state: (): TranslationsState => ({
     translations: {} as ITranslations,
   }),

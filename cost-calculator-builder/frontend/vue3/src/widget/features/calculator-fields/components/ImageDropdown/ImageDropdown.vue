@@ -100,11 +100,7 @@ import { ISingleOptionsField, IOptions } from "@/widget/shared/types/fields";
 import ProBadge from "@/widget/shared/ui/components/Pro-badge/ProBadge.vue";
 import RequiredHint from "@/widget/shared/ui/components/Required-hint/RequiredHint.vue";
 import { useTranslationsStore } from "@/widget/app/providers/stores/translationsStore";
-import { useFields } from "@/widget/actions/fields/composable/useFields.ts";
-import { usePageConditions } from "@/widget/actions/conditions/composable/usePageConditions.ts";
-
-const fieldsInstance = useFields();
-const pageConditions = usePageConditions();
+import { usePageBreakerStore } from "@/widget/app/providers/stores/pageBreakerStore.ts";
 
 type Props = {
   field: ISingleOptionsField;
@@ -120,6 +116,7 @@ const translationsStore = useTranslationsStore();
 
 const isBodyVisible = ref<boolean>(false);
 const conditionsStore = useConditionsStore();
+const pageBreakerStore = usePageBreakerStore();
 
 const dropdownWrapper = ref<HTMLElement | null>(null);
 
@@ -167,10 +164,10 @@ const selectValue = (option: IOptions | undefined, toggle: boolean = true) => {
     conditionsStore.applyConditionForField(field.value.alias);
 
     if (
-      fieldsInstance.getPageBreakEnabled() &&
-      fieldsInstance.getActivePage().action === "not_skip"
+      fieldStore.getPageBreakEnabled &&
+      fieldStore.getActivePage.action === "not_skip"
     ) {
-      pageConditions.checkPageFieldsConditions();
+      pageBreakerStore.checkPageFieldsConditions();
     }
   }
 

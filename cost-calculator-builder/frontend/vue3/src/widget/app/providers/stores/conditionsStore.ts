@@ -9,14 +9,12 @@ import { WooMetaAction } from "@/widget/shared/types/fields";
 import { useSettingsStore } from "@/widget/app/providers/stores/settingsStore.ts";
 import { useWooProducts } from "@/widget/actions/woo-products/composable/useWooProducts.ts";
 
-interface IConditionsStoreResult {
+export interface IConditionsStoreResult {
   conditions: IConditionsStore;
   conditionsHistory: ICondition[];
 }
 
-const conditionInstance = useConditions();
-
-export const useConditionsStore = defineStore("conditions", {
+export const useConditionsStore = defineStore("conditions_store", {
   state: (): IConditionsStoreResult => ({
     conditions: {} as IConditionsStore,
     conditionsHistory: [],
@@ -28,6 +26,7 @@ export const useConditionsStore = defineStore("conditions", {
     },
 
     initConditions(conditions: IConditionList[] = []): void {
+      const conditionInstance = useConditions();
       conditionInstance.addConditions(conditions);
     },
 
@@ -41,10 +40,12 @@ export const useConditionsStore = defineStore("conditions", {
     },
 
     applyConditionForField(alias: string): void {
+      const conditionInstance = useConditions();
       conditionInstance.applyConditionForField(alias);
     },
 
     triggerCondition(): void {
+      const conditionInstance = useConditions();
       conditionInstance.triggerCondition();
     },
 

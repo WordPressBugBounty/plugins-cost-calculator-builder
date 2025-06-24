@@ -8,9 +8,7 @@ import { StripeData } from "@/widget/shared/types/settings/settings.type.ts";
 
 type PaymentTypes = "" | keyof IPaymentTypes;
 
-const randomId = Math.random().toString(36).substring(2, 15);
-
-export const usePaymentStore = defineStore(`paymentStore_${randomId}`, () => {
+export const usePaymentStore = defineStore("payment_store", () => {
   const stripeInstance = ref<Stripe | null>(null);
   const cardComponent = ref<any>(null);
   const paymentType = ref<PaymentTypes>("");

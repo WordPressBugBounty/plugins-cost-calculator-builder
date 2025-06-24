@@ -95,11 +95,7 @@ import { Loader } from "@googlemaps/js-api-loader";
 import { useTranslationsStore } from "@/widget/app/providers/stores/translationsStore";
 
 import { useCallbackStore } from "@/widget/app/providers/stores/callbackStore.ts";
-import { useFields } from "@/widget/actions/fields/composable/useFields.ts";
-import { usePageConditions } from "@/widget/actions/conditions/composable/usePageConditions.ts";
-
-const fieldsInstance = useFields();
-const pageConditions = usePageConditions();
+import { usePageBreakerStore } from "@/widget/app/providers/stores/pageBreakerStore.ts";
 
 type Props = {
   field: IGeolocationField & {
@@ -117,6 +113,7 @@ const fieldStore = useFieldsStore();
 const conditionsStore = useConditionsStore();
 const translationsStore = useTranslationsStore();
 const callbackStore = useCallbackStore();
+const pageBreakerStore = usePageBreakerStore();
 
 const props = defineProps<Props>();
 const { field } = toRefs(props);
@@ -248,10 +245,10 @@ const updateValue = (alias?: string) => {
   conditionsStore.applyConditionForField(field.value.alias);
 
   if (
-    fieldsInstance.getPageBreakEnabled() &&
-    fieldsInstance.getActivePage().action === "not_skip"
+    fieldStore.getPageBreakEnabled &&
+    fieldStore.getActivePage.action === "not_skip"
   ) {
-    pageConditions.checkPageFieldsConditions();
+    pageBreakerStore.checkPageFieldsConditions();
   }
 };
 

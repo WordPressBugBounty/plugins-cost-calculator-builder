@@ -3,18 +3,14 @@ import { IMultiOptionsField, IOptions } from "@/widget/shared/types/fields";
 import { useFieldsStore } from "@/widget/app/providers/stores/fieldsStore.ts";
 import { useSingleField } from "@/widget/actions/fields/composable/useSingleField.ts";
 import { useConditionsStore } from "@/widget/app/providers/stores/conditionsStore.ts";
-import { useFields } from "@/widget/actions/fields/composable/useFields.ts";
-import { usePageConditions } from "@/widget/actions/conditions/composable/usePageConditions.ts";
-
-const fieldsInstance = useFields();
-const pageConditions = usePageConditions();
+import { usePageBreakerStore } from "@/widget/app/providers/stores/pageBreakerStore.ts";
 
 export function useMultiOptionsFieldShared(props: {
   field: IMultiOptionsField;
 }) {
   const { field } = toRefs(props);
   const conditionsStore = useConditionsStore();
-
+  const pageBreakerStore = usePageBreakerStore();
   const fieldStore = useFieldsStore();
   const singleFieldInstance = useSingleField();
 
@@ -64,10 +60,10 @@ export function useMultiOptionsFieldShared(props: {
     conditionsStore.applyConditionForField(field.value.alias);
 
     if (
-      fieldsInstance.getPageBreakEnabled() &&
-      fieldsInstance.getActivePage().action === "not_skip"
+      fieldStore.getPageBreakEnabled &&
+      fieldStore.getActivePage.action === "not_skip"
     ) {
-      pageConditions.checkPageFieldsConditions();
+      pageBreakerStore.checkPageFieldsConditions();
     }
   };
 

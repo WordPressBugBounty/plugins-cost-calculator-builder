@@ -6,7 +6,7 @@ Tags: cost calculator, calculator, calculator form builder, cost estimation, shi
 Requires at least: 6.2
 Requires PHP: 8.0
 Tested up to: 6.8.1
-Stable tag: 3.5.13
+Stable tag: 3.5.14
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -168,6 +168,9 @@ Also, you can import the demo sample using Tools -> Import -> WordPress Import.
 Demo sample XML file included in plugin archive.
 
 == Changelog ==
+
+= 3.5.14 =
+- Fix: Fixed an issue where Summary Details would not appear when more than two calculators were embedded on the same page.
 
 = 3.5.13 =
 - Enhancement: Added a new Description setting for the Formula element that can be useful for providing additional information such as calculation notes or details for order summaries.

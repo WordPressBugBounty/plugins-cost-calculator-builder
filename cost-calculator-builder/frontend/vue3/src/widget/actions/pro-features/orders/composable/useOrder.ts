@@ -11,7 +11,6 @@ import {
   PaymentMethods,
 } from "@/widget/shared/types/orders";
 import { handleSubmissionRequest } from "@/widget/shared/api/handleOrderSubmission.ts";
-import { useFields } from "@/widget/actions/fields/composable/useFields.ts";
 import {
   Field,
   IFileUploadField,
@@ -25,6 +24,8 @@ import { useSubmissionStore } from "@/widget/app/providers/stores/submissionStor
 import { useSettingsStore } from "@/widget/app/providers/stores/settingsStore.ts";
 import { ContactFormFields } from "@/widget/shared/types/orders/contact-form-fields.type";
 import { useOrderFormStore } from "@/widget/app/providers/stores/orderFormStore.ts";
+import { useFieldsStore } from "@/widget/app/providers/stores/fieldsStore.ts";
+
 type OrdersResponseData = {
   success: boolean;
   message: string;
@@ -161,13 +162,13 @@ const prepareOrderData = (
 };
 
 const getUsedFiles = (): IFileData[] => {
-  const { getFields } = useFields();
+  const fieldStore = useFieldsStore();
 
-  let pureFields: IFileUploadField[] = getFields().filter(
+  let pureFields: IFileUploadField[] = fieldStore.getFields.filter(
     (f) => f.fieldName === "file_upload",
   ) as IFileUploadField[];
 
-  let repeaterFields: IRepeaterField[] = getFields().filter(
+  let repeaterFields: IRepeaterField[] = fieldStore.getFields.filter(
     (f) => f.fieldName === "repeater",
   ) as IRepeaterField[];
 
@@ -219,9 +220,9 @@ const getUsedFiles = (): IFileData[] => {
 };
 
 const getClearFields = (): Field[] => {
-  const { getFields } = useFields();
+  const fieldStore = useFieldsStore();
   const settings = useSettingsStore();
-  const fields = getFields();
+  const fields = fieldStore.getFields;
   const result: Field[] = [];
   const uniqueAliases = new Set<string>();
 

@@ -6,7 +6,7 @@ import { IFormulaField } from "@/widget/shared/types/fields";
 
 const discountInstance = useDiscounts();
 
-export const useDiscountsStore = defineStore("discounts", {
+export const useDiscountsStore = defineStore("discounts_store", {
   state: () => ({}),
 
   getters: {

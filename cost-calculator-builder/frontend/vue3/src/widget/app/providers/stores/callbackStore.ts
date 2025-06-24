@@ -1,6 +1,6 @@
-import { defineStore } from 'pinia';
+import { defineStore } from "pinia";
 
-export const useCallbackStore = defineStore('callbackStore', {
+export const useCallbackStore = defineStore("callback_store", {
   state: () => ({
     callbacks: {} as Record<string, (...args: any[]) => void>,
   }),
