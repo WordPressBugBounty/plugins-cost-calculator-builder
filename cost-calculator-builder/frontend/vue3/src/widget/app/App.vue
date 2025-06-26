@@ -68,6 +68,7 @@ const currentComponent = computed(() => {
 onMounted(() => {
   appStore.checkIfLive();
   conditionsStore.initConditions(calcData.conditions);
+  settingsStore.initLang(calcData.language);
   conditionsStore.initWooProductsConditions();
   fieldsStore.initFields(calcData.fields);
   fieldsStore.initPageBreaker(calcData.fields);

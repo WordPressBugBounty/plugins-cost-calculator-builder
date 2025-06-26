@@ -1,7 +1,7 @@
 <template>
-  <div class="ccb-user-location">
-    <div class="ccb-user-location__input-wrapper">
-      <button class="ccb-user-location__action" @click="showPopup">
+  <div class="ccb-multiply-location">
+    <div class="ccb-multiply-location__input-wrapper">
+      <button class="ccb-multiply-location__action" @click="showPopup">
         <span class="icon">
           <i class="ccb-icon-location"></i>
         </span>
@@ -9,11 +9,11 @@
           translationsStore.getTranslations.openMap
         }}</span>
       </button>
-      <div class="ccb-user-location__description">
+      <div class="ccb-multiply-location__description">
         <span v-if="!field.selectedPoint.addressName">{{
           translationsStore.getTranslations.chooseFromMap
         }}</span>
-        <span v-else class="ccb-user-location__adressname">
+        <span v-else class="ccb-multiply-location__adressname">
           {{ field.selectedPoint.addressName }}
         </span>
       </div>
@@ -281,8 +281,8 @@ onMounted(() => {
 });
 </script>
 
-<style lang="scss">
-.ccb-user-location {
+<style lang="scss" scoped>
+.ccb-multiply-location {
   @media (max-width: 540px) {
     .ccb-location-modal {
       &__body {
@@ -290,11 +290,17 @@ onMounted(() => {
         flex-direction: column;
         box-sizing: border-box;
         width: 100%;
+        height: 400px;
+      }
+
+      &__map {
+        width: 100% !important;
       }
 
       &__sidebar {
         height: 170px;
         box-sizing: border-box;
+        width: 100% !important;
       }
 
       &__locations {
@@ -323,6 +329,21 @@ onMounted(() => {
           }
         }
       }
+    }
+  }
+
+  @media (max-width: 820px) {
+    .ccb-location-modal__sidebar {
+      width: 32%;
+      padding: 25px 17px;
+    }
+
+    .ccb-location-modal__body {
+      width: 100%;
+    }
+
+    .ccb-location-modal__map {
+      width: 75%;
     }
   }
 

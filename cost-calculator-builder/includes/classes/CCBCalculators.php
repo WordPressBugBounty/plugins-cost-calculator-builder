@@ -78,6 +78,72 @@ class CCBCalculators {
 		);
 	}
 
+	public static function getProducts() {
+		check_ajax_referer( 'calc_load_more_products', 'nonce' );
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( __( 'You are not allowed to run this action', 'cost-calculator-builder' ) );
+		}
+
+		$product_ids = array();
+
+		$page     = ! empty( $_GET['page'] ) ? (int) $_GET['page'] : 1;
+		$search   = ! empty( $_GET['search'] ) ? $_GET['search'] : '';
+		$per_page = ! empty( $_GET['per_page'] ) ? $_GET['per_page'] : 5;
+
+		if ( ! empty( $_GET['product_ids'] ) ) {
+			$product_ids = explode( ',', $_GET['product_ids'] );
+		}
+
+		$data = ccb_woo_products( $page, $per_page, $search, $product_ids );
+
+		$products     = $data['items'];
+		$total_count  = $data['total'];
+		$loaded_count = $page * $per_page;
+
+		wp_send_json(
+			array(
+				'products' => $products,
+				'has_more' => $loaded_count < $total_count,
+				'page'     => $page,
+				'success'  => true,
+			)
+		);
+	}
+
+	public static function get_wp_pages() {
+		check_ajax_referer( 'calc_load_pages', 'nonce' );
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( __( 'You are not allowed to run this action', 'cost-calculator-builder' ) );
+		}
+
+		$page_ids = array();
+
+		$page     = ! empty( $_GET['page'] ) ? (int) $_GET['page'] : 1;
+		$search   = ! empty( $_GET['search'] ) ? $_GET['search'] : '';
+		$per_page = ! empty( $_GET['per_page'] ) ? $_GET['per_page'] : 5;
+
+		if ( ! empty( $_GET['page_ids'] ) ) {
+			$page_ids = explode( ',', $_GET['page_ids'] );
+		}
+
+		$data = ccb_all_available_pages( $page, $per_page, $search, $page_ids );
+
+		$pages        = $data['items'];
+		$total_count  = $data['total'];
+		$loaded_count = $page * $per_page;
+
+		wp_send_json(
+			array(
+				'pages'    => $pages,
+				'has_more' => $loaded_count < $total_count,
+				'page'     => $page,
+				'success'  => true,
+			)
+		);
+	}
+
 	public static function edit_calc() {
 		check_ajax_referer( 'ccb_edit_calc', 'nonce' );
 
@@ -88,6 +154,7 @@ class CCBCalculators {
 		$params = array(
 			'discount'    => $_GET['discount'] ?? '',
 			'page_params' => self::get_filter_data( $_GET ),
+			'product_ids' => ! empty( $_GET['product_ids'] ) ? $_GET['product_ids'] : array(),
 		);
 
 		$params['calc_id'] = ! empty( $_GET['calc_id'] ) ? sanitize_text_field( $_GET['calc_id'] ) : '';
@@ -198,10 +265,11 @@ class CCBCalculators {
 				}
 			}
 
+			$settings = CCBSettingsData::get_calc_single_settings( $calc_id );
 			/* pro-features */
-			$result['pages']      = ccb_all_available_pages();
+			$result['pages']      = self::fetch_page_ids( $settings );
 			$result['forms']      = ccb_contact_forms();
-			$result['products']   = ccb_woo_products();
+			$result['products']   = self::fetch_product_ids( $settings );
 			$result['categories'] = ccb_woo_categories();
 
 			if ( ccb_pro_active() ) {
@@ -224,8 +292,6 @@ class CCBCalculators {
 					)
 				);
 			}
-
-			$settings = CCBSettingsData::get_calc_single_settings( $calc_id );
 
 			if ( isset( $settings[0]['general'] ) ) {
 				$settings = $settings[0];
@@ -263,6 +329,17 @@ class CCBCalculators {
 		}
 
 		return $result;
+	}
+
+	public static function fetch_product_ids( $settings ) {
+		$products = ccb_woo_products( 1, 5, '', $settings['woo_products']['product_ids'] );
+		return $products['items'] ?? array();
+	}
+
+	public static function fetch_page_ids( $settings ) {
+		$ids   = array_column( $settings['sticky_calc']['pages'], 'id' ) ?? array();
+		$pages = ccb_all_available_pages( 1, 5, '', $ids );
+		return $pages['items'] ?? array();
 	}
 
 	/**
@@ -394,7 +471,7 @@ class CCBCalculators {
 			'url'               => admin_url( 'admin.php' ) . '?page=cost_calculator_builder&action=edit&id=' . $id,
 			'success'           => true,
 			'forms'             => ccb_contact_forms(),
-			'products'          => ccb_woo_products(),
+			'products'          => ccb_woo_products()['items'] ?? array(),
 			'categories'        => ccb_woo_categories(),
 			'fields'            => CCBFieldsHelper::fields(),
 			'order_form_fields' => CCBOrderFormFieldsHelper::order_form_fields(),
@@ -646,8 +723,7 @@ class CCBCalculators {
 			$result['calculators'] = $calculators;
 
 			/* pro-features */
-			$result['forms']    = ccb_contact_forms();
-			$result['products'] = ccb_woo_products();
+			$result['forms'] = ccb_contact_forms();
 		}
 
 		wp_send_json( $result );

@@ -61,4 +61,5 @@ export interface ITranslations {
   message: string;
   hasBeenAddedCart: string;
   viewCart: string;
+  select: string;
 }

@@ -161,7 +161,7 @@ const getDistanceView = computed(() => {
   );
 
   let cost = field.value.useCurrency ? `${formattedEachCost}` : num;
-  return `Distance: ${distance.value} ${getMeasure()} x ${cost}`;
+  return `${translationsStore.getTranslations.distance}: ${distance.value} ${getMeasure()} x ${cost}`;
 });
 
 const searchInputId = computed(() => {
@@ -446,7 +446,7 @@ onMounted(() => {
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .ccb-user-location {
   .ccb-popup {
     z-index: 999;
@@ -468,7 +468,21 @@ onMounted(() => {
     }
   }
 
+  @media (max-width: 400px) {
+    .ccb-location-modal {
+      &__footer {
+        display: flex;
+        flex-direction: column;
+      }
+    }
+  }
+
   .ccb-location-modal__body {
+    @media (max-width: 768px) {
+      max-height: 400px;
+      width: 100%;
+    }
+
     position: relative;
     .ccb-location-modal__search {
       left: 16px;

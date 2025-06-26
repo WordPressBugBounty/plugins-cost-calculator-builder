@@ -105,6 +105,7 @@ class CCBTranslations {
 			'enter_message'          => esc_html__( 'Enter message', 'cost-calculator-builder' ),
 			'email'                  => esc_html__( 'Email', 'cost-calculator-builder' ),
 			'message'                => esc_html__( 'Message', 'cost-calculator-builder' ),
+			'select'                 => esc_html__( 'Select', 'cost-calculator-builder' ),
 		);
 
 		return apply_filters( 'ccb_frontend_translations', $translations );

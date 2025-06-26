@@ -24,4 +24,5 @@ export interface IncomingData {
   is_custom_thank_you_page: boolean;
   order_id: number;
   order_data: any;
+  language: string;
 }

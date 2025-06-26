@@ -28,6 +28,7 @@
         :auto-apply="true"
         :range="field.attributes.range"
         v-model="date"
+        :locale="currentLang"
         :format="format"
         @update:model-value="updateValueHandler"
       />
@@ -45,6 +46,7 @@ import { useOrderForm } from "@/widget/actions/pro-features/order-form/composabl
 import { useOrderFormFieldsRequired } from "@/widget/actions/pro-features/order-form/composable/useOrderFormFieldsRequired.ts";
 import { useTranslationsStore } from "@/widget/app/providers/stores/translationsStore";
 import RequiredHint from "@/widget/shared/ui/components/Required-hint/RequiredHint.vue";
+import { useSettingsStore } from "@/widget/app/providers/stores/settingsStore.ts";
 
 type Props = {
   field: IFormField;
@@ -55,6 +57,7 @@ const { field } = toRefs(props);
 
 const { checkFieldRequired } = useOrderFormFieldsRequired();
 const translationsStore = useTranslationsStore();
+const settingStore = useSettingsStore();
 
 const isRequired = computed(() => {
   return checkFieldRequired(field.value);
@@ -62,12 +65,16 @@ const isRequired = computed(() => {
 
 const { displayValueHelper } = useDatePickerFieldHelper();
 
-const format = () => displayValueHelper(date.value);
+const currentLang = computed(() => {
+  return settingStore.getLanguage;
+});
+
+const format = () => displayValueHelper(date.value, currentLang.value);
 const date = ref<Date>();
 
 const updateValueHandler = (modelData: Date | Date[]) => {
   const { updateValue } = useOrderForm();
-  const value = displayValueHelper(modelData);
+  const value = displayValueHelper(modelData, currentLang.value);
   updateValue(field.value.id, value);
 };
 </script>

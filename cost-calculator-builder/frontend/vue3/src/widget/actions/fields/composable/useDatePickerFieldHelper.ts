@@ -1,11 +1,14 @@
 import { IDatePickerField } from "@/widget/shared/types/fields";
-import moment from "moment";
+import moment from "moment/min/moment-with-locales";
 import DateFormatter from "php-date-formatter";
 import { useAppStore } from "@/widget/app/providers/stores/appStore.ts";
 
 interface IUseDatePickerFieldHelper {
   parseDate: (str: string) => Date;
-  displayValueHelper: (innerDate: Date | Date[] | undefined) => string;
+  displayValueHelper: (
+    innerDate: Date | Date[] | undefined,
+    locale?: string,
+  ) => string;
   getDaysDifference: (
     start: Date,
     end: Date,
@@ -61,15 +64,20 @@ const getDaysDifference = (
   return Math.max(0, result - disabledDays);
 };
 
-const displayValueHelper = (innerDate: Date | Date[] | undefined): string => {
+const displayValueHelper = (
+  innerDate: Date | Date[] | undefined,
+  locale: string = "en",
+): string => {
   if (!innerDate) return "";
+  moment.locale(locale);
 
   const appStore = useAppStore();
   const dateFormat = appStore.getDateFormat ? appStore.getDateFormat : "M j, Y";
+  const localeData = moment.localeData();
   const fmt = new DateFormatter({
     dateSettings: {
-      months: moment.months(),
-      monthsShort: moment.monthsShort(),
+      months: localeData.months(),
+      monthsShort: localeData.monthsShort(),
     },
   });
 

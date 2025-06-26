@@ -351,11 +351,13 @@ import { toRefs, defineProps, computed, ref } from "vue";
 import { useFieldsStore } from "@/widget/app/providers/stores/fieldsStore.ts";
 import QRCode from "qrcode";
 import { IPdfSettings } from "@/widget/shared/types/settings";
+import { useSettingsStore } from "@/widget/app/providers/stores/settingsStore.ts";
 const fieldsStore = useFieldsStore();
 import { Field, IFormulaField } from "@/widget/shared/types/fields";
 import { useCurrency } from "@/widget/actions/fields/composable/useCurrency.ts";
 import { useSubmissionStore } from "@/widget/app/providers/stores/submissionStore.ts";
 
+const settingsStore = useSettingsStore();
 const currencyInstance = useCurrency();
 
 type Props = {
@@ -603,6 +605,17 @@ const getOrderDetails = computed(() => {
     }
   });
 
+  if (!settingsStore.general?.hideEmptyForOrdersPdfEmails) {
+    result = result.filter((f) =>
+      ["validated_form", "text"].includes(f.fieldName)
+        ? f.displayValue
+        : f.fieldName === "geolocation" &&
+            "geoType" in f &&
+            f.geoType === "multiplyLocation"
+          ? f.displayValue
+          : f.value,
+    );
+  }
   return result;
 });
 

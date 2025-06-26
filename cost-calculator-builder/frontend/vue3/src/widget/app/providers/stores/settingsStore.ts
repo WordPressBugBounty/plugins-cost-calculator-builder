@@ -44,6 +44,7 @@ interface SettingsStore {
   quoteSettings: IQuoteSettings | null;
   termsAndConditionsTrigger: boolean;
   summaryDisplayShowSummary: boolean;
+  language: string;
 }
 
 export const useSettingsStore = defineStore("settings_store", {
@@ -68,6 +69,7 @@ export const useSettingsStore = defineStore("settings_store", {
     quoteSettings: null,
     termsAndConditionsTrigger: false,
     summaryDisplayShowSummary: false,
+    language: "",
   }),
 
   getters: {
@@ -166,6 +168,10 @@ export const useSettingsStore = defineStore("settings_store", {
     getSummaryDisplayShowSummary(state: SettingsStore): boolean {
       return state.summaryDisplayShowSummary;
     },
+
+    getLanguage(state: SettingsStore): string {
+      return state.language;
+    },
   },
 
   actions: {
@@ -239,6 +245,10 @@ export const useSettingsStore = defineStore("settings_store", {
       ) {
         this.thankYouPage.enable = false;
       }
+    },
+
+    initLang(language: string) {
+      this.language = language;
     },
 
     setSummaryDisplayShowSummary(value: boolean): void {

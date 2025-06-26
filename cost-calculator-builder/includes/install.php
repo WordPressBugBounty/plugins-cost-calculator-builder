@@ -22,6 +22,8 @@ function ccb_add_nonces() {
 
 function ccb_add_admin_nonces() {
 	$variables = array(
+		'calc_load_more_products'    => wp_create_nonce( 'calc_load_more_products' ),
+		'calc_load_pages'            => wp_create_nonce( 'calc_load_pages' ),
 		'ccb_ajax_add_feedback'      => wp_create_nonce( 'ccb_ajax_add_feedback' ),
 		'ccb_create_id'              => wp_create_nonce( 'ccb_create_id' ),
 		'ccb_edit_calc'              => wp_create_nonce( 'ccb_edit_calc' ),

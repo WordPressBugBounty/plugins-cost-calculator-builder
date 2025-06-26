@@ -31,6 +31,7 @@
     <div class="ccb-field__input-wrapper">
       <VueDatePicker
         v-model="date"
+        :locale="currentLang"
         :auto-apply="field.autoCloseEnabled"
         :range="field.range"
         :placeholder="getPlaceholder"
@@ -39,6 +40,8 @@
         :disabled-dates="getTotalDisableDate"
         :min-date="getMinDate"
         :format="format"
+        :select-text="translationsStore.getTranslations.select"
+        :cancel-text="translationsStore.getTranslations.cancel"
         @update:model-value="updateValue"
       />
     </div>
@@ -68,6 +71,8 @@ import { useCallbackStore } from "@/widget/app/providers/stores/callbackStore.ts
 import ProBadge from "@/widget/shared/ui/components/Pro-badge/ProBadge.vue";
 import RequiredHint from "@/widget/shared/ui/components/Required-hint/RequiredHint.vue";
 import { useTranslationsStore } from "@/widget/app/providers/stores/translationsStore";
+import { useSettingsStore } from "@/widget/app/providers/stores/settingsStore.ts";
+
 type Props = {
   field: IDatePickerField;
 };
@@ -81,11 +86,16 @@ const conditionsStore = useConditionsStore();
 const singleFieldMixins = useSingleField();
 const callbackStore = useCallbackStore();
 const translationsStore = useTranslationsStore();
+const settingStore = useSettingsStore();
 
 const { parseDate, getDaysDifference, displayValueHelper } =
   useDatePickerFieldHelper();
 
-const format = () => displayValueHelper(date.value);
+const currentLang = computed(() => {
+  return settingStore.getLanguage;
+});
+
+const format = () => displayValueHelper(date.value, currentLang.value);
 const date = computed({
   get() {
     return field.value.selectedDate;
@@ -100,7 +110,9 @@ const isRequired = computed(() => {
 });
 
 const getPlaceholder = computed(() => {
-  return field.value.placeholder ? field.value.placeholder : "Select Date";
+  return field.value.placeholder
+    ? field.value.placeholder
+    : translationsStore.getTranslations.selectDate;
 });
 
 const getDisabledWeekDays = computed(() => {
@@ -170,7 +182,7 @@ const getTotalDisableDate = computed(() => {
 
 const getDisplayValue = computed(() => {
   if (!field.value.dayPriceEnabled) {
-    return displayValueHelper(date.value);
+    return displayValueHelper(date.value, currentLang.value);
   }
 
   return field.value.useCurrency || field.value.fieldCurrency
@@ -180,7 +192,9 @@ const getDisplayValue = computed(() => {
 
 const getExtraDisplayValue = computed(() => {
   if (field.value.dayPriceEnabled) {
-    const result: string[] = [displayValueHelper(date.value)];
+    const result: string[] = [
+      displayValueHelper(date.value, currentLang.value),
+    ];
     const value =
       field.value.useCurrency || field.value.fieldCurrency
         ? singleFieldMixins.getCommonFieldDisplayView(field.value)

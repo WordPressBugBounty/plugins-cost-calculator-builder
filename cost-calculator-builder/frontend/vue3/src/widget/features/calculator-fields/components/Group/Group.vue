@@ -164,7 +164,7 @@ const additionalClasses = computed(() => {
   }
 
   &__body {
-    overflow: hidden;
+    overflow: visible;
     transition:
       max-height 0.4s ease,
       opacity 0.4s ease;

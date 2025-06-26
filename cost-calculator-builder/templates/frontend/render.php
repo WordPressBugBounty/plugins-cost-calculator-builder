@@ -200,6 +200,7 @@ if ( is_singular( 'product' ) && function_exists( 'wc_get_product' ) ) {
 
 			if ( ! empty( $available_variations ) ) {
 				$attribute_keys = array_keys( $available_variations[0]['attributes'] );
+
 				$settings['woo_products']['attributeKeys'] = $attribute_keys;
 			}
 		}

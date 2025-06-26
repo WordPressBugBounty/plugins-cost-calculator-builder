@@ -1,7 +1,7 @@
 <template>
-  <div class="ccb-user-location">
-    <div class="ccb-user-location__input-wrapper">
-      <button class="ccb-user-location__action" @click="showPopup">
+  <div class="ccb-two-points-location">
+    <div class="ccb-two-points-location__input-wrapper">
+      <button class="ccb-two-points-location__action" @click="showPopup">
         <span class="icon">
           <i class="ccb-icon-location"></i>
         </span>
@@ -9,11 +9,11 @@
           translationsStore.getTranslations.openMap
         }}</span>
       </button>
-      <div class="ccb-user-location__description">
+      <div class="ccb-two-points-location__description">
         <span v-if="!showInfo">{{
           translationsStore.getTranslations.chooseFromMap
         }}</span>
-        <span v-else class="ccb-user-location__adressname">
+        <span v-else class="ccb-two-points-location__adressname">
           <span>{{ translationsStore.getTranslations.from }}:</span>
           {{ addressNames.from.addressName }} <br />
           <span>{{ translationsStore.getTranslations.to }}:</span>
@@ -271,12 +271,12 @@ const updateValue = () => {
   );
   field.value.displayValue = getDisplayValue.value;
   field.value.extraDisplayView = [
-    `From: ${
+    `${translationsStore.getTranslations.from}: ${
       addressNames.value.from.addressName.length > 30
         ? addressNames.value.from.addressName.slice(0, 30) + "..."
         : addressNames.value.from.addressName
     }`,
-    `To: ${
+    `${translationsStore.getTranslations.toDestination}: ${
       addressNames.value.to.addressName.length > 34
         ? addressNames.value.to.addressName.slice(0, 34) + "..."
         : addressNames.value.to.addressName
@@ -579,7 +579,7 @@ const getDistanceView = computed(() => {
   );
 
   let cost = field.value.useCurrency ? `${formattedEachCost}` : num;
-  return `Distance: ${distance.value} ${getMeasure()} x ${cost}`;
+  return `${translationsStore.getTranslations.distance}: ${distance.value} ${getMeasure()} x ${cost}`;
 });
 
 const showInfo = computed(() => {
@@ -614,8 +614,14 @@ const locationToId = computed(() => {
 });
 </script>
 
-<style lang="scss">
-.ccb-user-location {
+<style lang="scss" scoped>
+.ccb-two-points-location {
+  @media (max-width: 1024px) {
+    .ccb-location-modal__body {
+      height: 500px;
+    }
+  }
+
   @media (max-width: 768px) {
     .ccb-location-modal {
       &__body {
@@ -639,7 +645,7 @@ const locationToId = computed(() => {
       }
 
       &__map {
-        height: 390px;
+        height: 268px;
       }
 
       &__inputs,
@@ -666,6 +672,28 @@ const locationToId = computed(() => {
     }
   }
 
+  @media (max-width: 400px) {
+    .ccb-location-modal__sidebar {
+      height: 200px;
+      padding: 17px;
+    }
+
+    .ccb-location-modal__body {
+      height: 400px;
+    }
+
+    .ccb-location-modal__map {
+      height: 201px;
+    }
+
+    .ccb-location-modal {
+      &__footer {
+        display: flex;
+        flex-direction: column;
+      }
+    }
+  }
+
   &__input-wrapper {
     display: flex;
     justify-content: flex-start;
@@ -685,8 +713,8 @@ const locationToId = computed(() => {
     cursor: pointer;
     transition: 300ms ease;
     margin-right: 14px;
-    min-width: 120px;
     white-space: nowrap;
+
     @media only screen and (max-width: 480px) {
       min-height: var(--ccb-mobile-field-button-height);
       font-size: var(--ccb-mobile-fields-button-size);

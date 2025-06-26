@@ -1,6 +1,6 @@
 <template>
   <div
-    class="ccb-field ccb-field-quantity"
+    class="ccb-field ccb-field-geolocation"
     :class="{
       required: isRequired,
       'ccb-field-disabled': field.disabled,

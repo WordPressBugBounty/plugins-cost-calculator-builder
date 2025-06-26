@@ -30,6 +30,8 @@ class CCBAjaxAction {
 
 	public static function init() {
 		self::addAction( 'calc_create_id', array( CCBCalculators::class, 'create_calc_id' ) );
+		self::addAction( 'calc_get_products', array( CCBCalculators::class, 'getProducts' ) );
+		self::addAction( 'calc_get_wp_pages', array( CCBCalculators::class, 'get_wp_pages' ) );
 		self::addAction( 'calc_edit_calc', array( CCBCalculators::class, 'edit_calc' ) );
 		self::addAction( 'calc_delete_calc', array( CCBCalculators::class, 'delete_calc' ) );
 		self::addAction( 'calc_save_custom', array( CCBCalculators::class, 'save_custom' ) );

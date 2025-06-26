@@ -220,12 +220,80 @@ function ccb_parse_settings( $settings ) {
  *
  * @return array
  */
-function ccb_woo_products() {
-	return get_posts(
-		array(
+function ccb_woo_products( $page = 1, $per_page = 5, $search = '', $product_ids = array() ) {
+	$offset          = $page * $per_page;
+	$selected_offset = $offset - count( $product_ids );
+	$product_ids     = array_filter( array_map( 'absint', (array) $product_ids ) );
+	$items           = array();
+	$new_product_ids = array();
+
+	if ( count( $product_ids ) > 0 ) {
+		foreach ( $product_ids as $key => $product_id ) {
+			if ( $key < $offset ) {
+				$new_product_ids[] = $product_id;
+			}
+		}
+
+		if ( ! empty( $product_ids ) ) {
+			$selected_args = array(
+				'post_type'      => 'product',
+				'post_status'    => 'publish',
+				'post__in'       => $new_product_ids,
+				'orderby'        => 'post__in',
+				's'              => $search,
+				'posts_per_page' => $offset,
+				'paged'          => 1,
+			);
+
+			$selected_query        = new WP_Query( $selected_args );
+			$selected_products_all = $selected_query->posts;
+
+			foreach ( $selected_products_all as $selected_product ) {
+				$items[] = array(
+					'ID'         => $selected_product->ID,
+					'post_title' => $selected_product->post_title,
+					'post_name'  => $selected_product->post_name,
+					'guid'       => $selected_product->guid,
+				);
+			}
+		}
+	}
+
+	if ( $selected_offset > 0 ) {
+		$other_args = array(
 			'post_type'      => 'product',
-			'posts_per_page' => -1,
-		)
+			'post_status'    => 'publish',
+			's'              => $search,
+			'post__not_in'   => $product_ids,
+			'posts_per_page' => $selected_offset,
+		);
+
+		$other_query    = new WP_Query( $other_args );
+		$other_products = $other_query->posts;
+
+		foreach ( $other_products as $selected_product ) {
+			$items[] = array(
+				'ID'         => $selected_product->ID,
+				'post_title' => $selected_product->post_title,
+				'post_name'  => $selected_product->post_name,
+				'guid'       => $selected_product->guid,
+			);
+		}
+	}
+
+	$total_args = array(
+		'post_type'      => 'product',
+		'post_status'    => 'publish',
+		'fields'         => 'all',
+		'posts_per_page' => 1,
+	);
+
+	$total_query = new WP_Query( $total_args );
+	$total_found = $total_query->found_posts;
+
+	return array(
+		'items' => $items,
+		'total' => $total_found,
 	);
 }
 
@@ -248,28 +316,92 @@ function ccb_woo_categories() {
  *
  * @return array
  */
-function ccb_all_available_pages() {
-	$pages = get_posts(
-		array(
-			'post_type'      => 'page',
-			'post_status'    => 'publish',
-			'posts_per_page' => -1,
-		)
-	);
+function ccb_all_available_pages( $page = 1, $per_page = 5, $search = '', $page_ids = array() ) {
+	$offset          = $page * $per_page;
+	$selected_offset = $offset - count( $page_ids );
+	$page_ids        = array_filter( array_map( 'absint', (array) $page_ids ) );
+	$items           = array();
+	$new_page_ids    = array();
 
-	$available_pages = array();
-	if ( count( $pages ) ) {
-		foreach ( $pages as $page ) {
-			$available_pages[] = array(
-				'id'      => $page->ID,
-				'title'   => strlen( $page->post_title ) < 21 ? $page->post_title : substr( $page->post_title, 0, 20 ) . '...',
-				'link'    => get_permalink( $page->ID ),
-				'tooltip' => $page->post_title,
+	if ( count( $page_ids ) > 0 ) {
+		foreach ( $page_ids as $key => $page_id ) {
+			if ( $key < $offset ) {
+				$new_page_ids[] = $page_id;
+			}
+		}
+
+		if ( ! empty( $new_page_ids ) ) {
+			$selected_args = array(
+				'post_type'      => 'page',
+				'post_status'    => 'publish',
+				'post__in'       => $new_page_ids,
+				'orderby'        => 'post__in',
+				's'              => $search,
+				'posts_per_page' => $offset,
+				'paged'          => 1,
 			);
+
+			$selected_query = new WP_Query( $selected_args );
+
+			if ( $selected_query->have_posts() ) {
+				while ( $selected_query->have_posts() ) {
+					$selected_query->the_post();
+					$page    = $selected_query->post;
+					$items[] = array(
+						'id'      => $page->ID,
+						'title'   => strlen( $page->post_title ) < 21 ? $page->post_title : substr( $page->post_title, 0, 20 ) . '...',
+						'link'    => get_permalink( $page->ID ),
+						'tooltip' => $page->post_title,
+					);
+				}
+				wp_reset_postdata();
+			}
 		}
 	}
 
-	return $available_pages;
+	if ( $selected_offset > 0 ) {
+		$other_args = array(
+			'post_type'      => 'page',
+			'post_status'    => 'publish',
+			's'              => $search,
+			'post__not_in'   => $page_ids,
+			'posts_per_page' => $selected_offset,
+		);
+
+		$other_query = new WP_Query( $other_args );
+
+		if ( $other_query->have_posts() ) {
+			while ( $other_query->have_posts() ) {
+				$other_query->the_post();
+				$page    = $other_query->post;
+				$items[] = array(
+					'id'      => $page->ID,
+					'title'   => strlen( $page->post_title ) < 21 ? $page->post_title : substr( $page->post_title, 0, 20 ) . '...',
+					'link'    => get_permalink( $page->ID ),
+					'tooltip' => $page->post_title,
+				);
+			}
+			wp_reset_postdata();
+		}
+	}
+
+	$total_args = array(
+		'post_type'      => 'page',
+		'post_status'    => 'publish',
+		'posts_per_page' => 1,
+	);
+
+	if ( ! empty( $search ) ) {
+		$total_args['s'] = sanitize_text_field( $search );
+	}
+
+	$total_query = new WP_Query( $total_args );
+	$total_found = $total_query->found_posts;
+
+	return array(
+		'items' => $items,
+		'total' => $total_found,
+	);
 }
 
 /**
