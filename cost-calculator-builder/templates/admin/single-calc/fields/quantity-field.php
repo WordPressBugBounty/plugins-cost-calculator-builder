@@ -15,6 +15,9 @@
 							<?php esc_html_e( 'Element', 'cost-calculator-builder' ); ?>
 							<span class="ccb-fields-required" v-if="errorsCount > 0">{{ errorsCount }}</span>
 						</div>
+						<div class="ccb-edit-field-switch-item ccb-default-title" :class="{active: tab === 'style'}" @click="tab = 'style'">
+							<?php esc_html_e( 'Styles', 'cost-calculator-builder' ); ?>
+						</div>
 						<div class="ccb-edit-field-switch-item ccb-default-title" :class="{active: tab === 'settings'}" @click="tab = 'settings'">
 							<?php esc_html_e( 'Settings', 'cost-calculator-builder' ); ?>
 						</div>
@@ -158,6 +161,77 @@
 					</div>
 				</div>
 			</div>
+		</div>
+		<div class="container" v-show="tab === 'style'">
+			<?php if ( defined( 'CCB_PRO' ) ) : ?>
+				<div class="row ccb-p-t-15" style="align-items: flex-end !important;" v-if="quantityField.styles">
+					<div class="col-6">
+						<div class="ccb-select-box">
+							<span class="ccb-select-label"><?php esc_html_e( 'Style', 'cost-calculator-builder' ); ?></span>
+							<div class="ccb-select-wrapper">
+								<i class="ccb-icon-Path-3485 ccb-select-arrow"></i>
+								<select class="ccb-select" v-model="quantityField.styles.style" style="padding-right: 30px !important;">
+									<option v-for="opt in getQuantityStyles" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
+								</select>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row ccb-p-t-15">
+					<div class="col-12">
+						<div class="ccb-style-preview">
+							<span class="ccb-style-preview-header"><?php esc_html_e( 'Style preview', 'cost-calculator-builder' ); ?></span>
+							<img :src="getCurrentImage">
+						</div>
+					</div>
+				</div>
+				<div class="row ccb-p-t-15" v-if="quantityField.styles && quantityField.styles.style !== 'default'">
+				<div class="col-6">
+					<div class="ccb-select-box">
+							<span class="ccb-select-label"><?php esc_html_e( 'Buttons position', 'cost-calculator-builder' ); ?></span>
+							<div class="ccb-select-wrapper">
+								<i class="ccb-icon-Path-3485 ccb-select-arrow"></i> 
+								<select class="ccb-select big" v-model="quantityField.buttonsPosition">
+									<option value="right" selected="selected"><?php esc_html_e( 'Right Side', 'cost-calculator-builder' ); ?></option>
+									<option value="both"><?php esc_html_e( 'Both Sides', 'cost-calculator-builder' ); ?></option>
+								</select>
+							</div>
+						</div>
+					</div>
+					<div class="col-6" style="padding-top: 27px;">
+						<div class="list-header">
+							<div class="ccb-switch">
+								<input type="checkbox" v-model="quantityField.separation">
+								<label></label>
+							</div> 
+							<h6 class="ccb-heading-5"><?php esc_html_e( 'Separation', 'cost-calculator-builder' ); ?></h6>
+						</div>
+					</div>
+				</div>
+			<?php else : ?>
+				<div class="row ccb-p-t-15">
+					<div class="calc-styles-pro-container">
+						<div class="calc-styles-pro-header">
+							<div class="calc-styles-pro-header-left">
+								<span class="calc-styles-pro-icon-box">
+									<i class="ccb-icon-Lock-filled"></i>
+								</span>
+								<span class="calc-styles-pro-header-box">
+									<span class="ccb-heading-4 ccb-bold"><?php esc_html_e( 'Unlock PRO element styles', 'cost-calculator-builder' ); ?></span>
+								</span>
+							</div>
+							<div class="calc-styles-pro-header-right">
+								<a href="https://stylemixthemes.com/cost-calculator-plugin/pricing/?utm_source=calcwpadmin&utm_medium=freetoprobutton&utm_campaign=checkbox_styles&licenses=1&billing_cycle=annual" target="_blank">
+									<?php esc_html_e( 'Get Pro', 'cost-calculator-builder' ); ?>
+								</a>
+							</div>
+						</div>
+						<div class="calc-styles-pro-content">
+							<img src="<?php echo esc_attr( CALC_URL . '/frontend/dist/img/styles/checkbox/checkbox-pro.gif' ); ?>">
+						</div>
+					</div>
+				</div>
+			<?php endif; ?>
 		</div>
 		<div class="container" v-show="tab === 'settings'">
 			<div class="row ccb-p-t-15">

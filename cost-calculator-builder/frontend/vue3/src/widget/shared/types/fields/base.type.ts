@@ -84,6 +84,8 @@ export interface ISourceField {
   // quantity field properties
   hideMinMax?: boolean;
   enabledCurrencySettings?: boolean;
+  buttonsPosition?: "right" | "both";
+  separation?: boolean;
 
   // options field properties
   summaryView?: SummaryView;

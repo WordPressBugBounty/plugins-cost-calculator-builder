@@ -19,6 +19,11 @@ export interface IQuantityField extends IBaseInputField {
   placeholder: string;
   hideMinMax: boolean;
   enabledCurrencySettings: boolean;
+  styles: {
+    style: string;
+  };
+  buttonsPosition: "right" | "both";
+  separation: boolean;
 }
 
 export interface IRangeField extends IBaseInputField {

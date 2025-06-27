@@ -91,6 +91,9 @@ export function createQuantityField(data: ISourceField): IQuantityField {
     unit: data.unit || 1,
     unitSymbol: data.unitSymbol || "",
     unitPosition: data.unitPosition || "right",
+    styles: data.styles || { style: "default" },
+    buttonsPosition: data.buttonsPosition || "right",
+    separation: data.separation || false,
     enabledCurrencySettings: data.enabledCurrencySettings || false,
   });
 

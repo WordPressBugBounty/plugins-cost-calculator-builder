@@ -39,24 +39,16 @@
       </div>
     </div>
 
-    <div class="ccb-field__input-wrapper">
-      <input
-        type="text"
-        :value="formattedValue"
-        :placeholder="field.placeholder"
-        @input="onInput"
-        @focus="onFocus"
-        @focusout="parseField"
-        @blur="onBlur"
-        @keypress="intValueFilter"
-      />
-      <div class="ccb-input-counter up" @click="increment">
-        <i class="ccb-icon-Path-3486"></i>
-      </div>
-      <div class="ccb-input-counter down" @click="decrement">
-        <i class="ccb-icon-Path-3485"></i>
-      </div>
-    </div>
+    <component
+      :is="getStyleComponent"
+      :field="field"
+      :value="formattedValue"
+      @input="onInput"
+      @focus="onFocus"
+      @focusout="parseField"
+      @blur="onBlur"
+      @keypress="intValueFilter"
+    />
 
     <div
       v-if="appearanceStore.getAppearanceDescriptionPosition === 'after'"
@@ -74,7 +66,7 @@
 </template>
 
 <script setup lang="ts">
-import { toRefs, computed, ref, onMounted } from "vue";
+import { toRefs, computed, ref, onMounted, defineAsyncComponent } from "vue";
 import { IQuantityField } from "@/widget/shared/types/fields";
 import { useAppearanceStore } from "@/widget/app/providers/stores/appearanceStore.ts";
 import { useFieldsStore } from "@/widget/app/providers/stores/fieldsStore.ts";
@@ -117,6 +109,16 @@ const formattedValue = computed(() => {
   let value = field.value.round ? Math.round(+rawInput.value) : +rawInput.value;
 
   return parseQuantityValue(value.toString());
+});
+
+const getStyleComponent = computed(() => {
+  if (field.value.styles.style === "default") {
+    return defineAsyncComponent(() => import(`./styles/Default.vue`));
+  }
+
+  if (field.value.styles.style === "buttons") {
+    return defineAsyncComponent(() => import(`./styles/Buttons.vue`));
+  }
 });
 
 onMounted(() => {
@@ -191,24 +193,6 @@ const onBlur = () => {
 
 const parseField = () => {
   rawInput.value = parseQuantityValue(rawInput.value);
-};
-
-const increment = () => {
-  let newValue =
-    Math.round((Number(rawInput.value) + Number(field.value.step)) * 100) / 100;
-
-  updateValue(true, newValue);
-};
-
-const decrement = () => {
-  let newValue =
-    Math.round((Number(rawInput.value) - Number(field.value.step)) * 100) / 100;
-
-  if (newValue < 0) {
-    return;
-  }
-
-  updateValue(true, newValue);
 };
 
 const checkMinMaxRequired = () => {
