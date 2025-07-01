@@ -478,12 +478,12 @@ onMounted(() => {
   }
 
   .ccb-location-modal__body {
+    position: relative;
     @media (max-width: 768px) {
       max-height: 400px;
       width: 100%;
     }
 
-    position: relative;
     .ccb-location-modal__search {
       left: 16px;
       position: absolute;

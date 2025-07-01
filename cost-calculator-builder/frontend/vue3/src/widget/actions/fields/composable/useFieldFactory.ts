@@ -216,6 +216,7 @@ export function createMultiOptionsField(
     minAllowedOptions: data?.minChecked || 0,
     maxAllowedOptions: data?.checkedLength || data.options?.length || 0,
     disableOptions: [],
+    showValueInOption: data.showValueInOption || false,
   });
 
   const options: IOptions[] = data.options.map((f: IOptions, idx: number) => {

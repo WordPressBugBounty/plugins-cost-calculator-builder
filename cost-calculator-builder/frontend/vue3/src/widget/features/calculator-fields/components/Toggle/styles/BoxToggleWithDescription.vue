@@ -24,9 +24,10 @@
       </div>
       <div class="ccb-toggle-item__label-wrap">
         <span class="ccb-toggle-item__label">{{ option.optionText }}</span>
-        <span class="ccb-toggle-item__description">{{
-          option.optionHint
-        }}</span>
+        <span
+          class="ccb-toggle-item__description"
+          v-html="option.optionHint"
+        ></span>
       </div>
     </label>
   </div>

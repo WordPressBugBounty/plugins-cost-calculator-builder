@@ -84,8 +84,14 @@ const getMinInterval = computed(() => {
 });
 
 const getDefaultValue = computed(() => {
-  const hours = field.value.placeholderHours || "";
-  const minutes = field.value.placeholderTime || "";
+  const hours =
+    field.value.placeholderHours.length > 0
+      ? field.value.placeholderHours
+      : new Date().getHours();
+  const minutes =
+    field.value.placeholderTime.length > 0
+      ? field.value.placeholderTime
+      : new Date().getMinutes();
 
   return { hours: hours, minutes: minutes, seconds: 0 };
 });
@@ -114,10 +120,12 @@ const selectedTime = ref<{
 
 onMounted(() => {
   selectedTime.value = {
-    hours: Number(getDefaultValue.value.hours) || new Date().getHours(),
-    minutes: Number(getDefaultValue.value.minutes) || new Date().getMinutes(),
+    hours: Number(getDefaultValue.value.hours),
+    minutes: Number(getDefaultValue.value.minutes),
     seconds: 0,
   };
+  field.value.displayValue = getDisplayValue.value;
+  fieldStore.updateField(field.value.alias, field.value);
 });
 
 const getDisplayValue = computed(() => {

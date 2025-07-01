@@ -102,7 +102,7 @@ if ( ! empty( $settings['formFields'] ) && ! empty( $settings['texts']['form_fie
 	$settings['texts']['form_fields'] = apply_filters( 'ccb_contact_form_add_text_form_fields', $settings['texts']['form_fields'] );
 }
 
-if ( ! empty( $general_settings['form_fields']['use_in_all'] ) ) {
+if ( ! empty( $general_settings['form_fields']['use_in_all'] ) && ! empty( $settings['formFields']['summary_display']['enable'] ) ) {
 	if ( ! empty( $general_settings['form_fields']['summary_display']['use_in_all'] ) ) {
 		$settings['formFields']['summary_display']           = $general_settings['form_fields']['summary_display'];
 		$settings['formFields']['summary_display']['enable'] = true;

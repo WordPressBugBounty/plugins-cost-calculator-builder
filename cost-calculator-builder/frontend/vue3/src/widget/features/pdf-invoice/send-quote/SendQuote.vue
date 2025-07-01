@@ -320,7 +320,9 @@ const actionsClass = computed(() => {
 });
 
 const initListeners = () => {
-  window.addEventListener("ccbDownLoadPdf", () => generatePdf());
+  if (appStore.isThankYouPage) {
+    window.addEventListener("ccbDownLoadPdf", () => generatePdf());
+  }
   window.addEventListener("ccbOpenModal", () => showPopup());
 };
 

@@ -123,15 +123,27 @@ export const useFieldsStore = () => {
           });
 
           if (!settings.general?.hideEmpty) {
-            result = result.filter((f) =>
-              ["validated_form", "text"].includes(f.fieldName)
-                ? f.displayValue
-                : f.fieldName === "geolocation" &&
-                    "geoType" in f &&
-                    f.geoType === "multiplyLocation"
-                  ? f.displayValue
-                  : f.value,
-            );
+            result = result.filter((f) => {
+              if ("selectedOption" in f && Array.isArray(f.selectedOption)) {
+                return f.selectedOption.length > 0;
+              } else if (
+                "selectedOption" in f &&
+                !Array.isArray(f.selectedOption) &&
+                f.selectedOption
+              ) {
+                return f.selectedOption.optionValue;
+              } else if (["validated_form", "text"].includes(f.fieldName)) {
+                return f.displayValue;
+              } else if (
+                f.fieldName === "geolocation" &&
+                "geoType" in f &&
+                f.geoType === "multiplyLocation"
+              ) {
+                return f.displayValue;
+              } else {
+                return f.value;
+              }
+            });
           }
 
           return result;
@@ -365,57 +377,54 @@ export const useFieldsStore = () => {
         let repeaterValue = 0;
         for (let repeater of repeaterFields) {
           if (repeater.sumAllAvailable) {
-            if (repeater.sumAllAvailable) {
-              for (const repeaterElement of repeater.groupElements) {
-                for (const field of repeaterElement.values()) {
-                  repeaterValue += field.value || 0;
-                }
+            for (const repeaterElement of repeater.groupElements) {
+              for (const field of repeaterElement.values()) {
+                repeaterValue += field.value || 0;
               }
-
-              repeater.value = repeaterValue;
-              repeater.originalValue = repeaterValue;
-              repeater.displayValue = currencyFormatter.formatCurrency(
-                repeaterValue,
-                currencyFormatter.getCurrencyOptions(repeater),
-              );
-            } else {
-              let i: number = 0;
-              const repeaterFormulas: Record<string, string> = {};
-
-              if (!repeater.originalFormula) {
-                repeater.originalFormula = repeater.formula;
-              }
-
-              for (const repeaterElement of repeater.groupElements) {
-                repeaterFormulas[i] = repeater.originalFormula;
-                const fieldsAliasList =
-                  repeaterFormulas[i].match(/\w+_field_id_\d+/g) || [];
-
-                fieldsAliasList.forEach((alias: string) => {
-                  for (const field of repeaterElement.values()) {
-                    if (field.alias === alias) {
-                      let value = field.value || 0;
-                      repeaterFormulas[i] = repeaterFormulas[i].replace(
-                        new RegExp("\\b" + alias + "\\b", "g"),
-                        value.toString(),
-                      );
-                    }
-                  }
-                });
-
-                i++;
-              }
-
-              repeater.formula = Object.keys(repeaterFormulas)
-                .map(
-                  (key: string): string => `(${repeaterFormulas[key].trim()})`,
-                )
-                .join(" + ");
-
-              repeater.originalValue = eval(repeater.formula);
-              repeater.value = repeater.originalValue;
-              repeater = this.applyDiscounts(repeater) as IRepeaterField;
             }
+
+            repeater.value = repeaterValue;
+            repeater.originalValue = repeaterValue;
+            repeater.displayValue = currencyFormatter.formatCurrency(
+              repeaterValue,
+              currencyFormatter.getCurrencyOptions(repeater),
+            );
+          } else {
+            let i: number = 0;
+            const repeaterFormulas: Record<string, string> = {};
+
+            if (!repeater.originalFormula) {
+              repeater.originalFormula = repeater.formula;
+            }
+
+            for (const repeaterElement of repeater.groupElements) {
+              repeaterFormulas[i] = repeater.originalFormula;
+              const fieldsAliasList =
+                repeaterFormulas[i].match(/\w+_field_id_\d+/g) || [];
+
+              fieldsAliasList.forEach((alias: string) => {
+                for (const field of repeaterElement.values()) {
+                  if (field.alias === alias) {
+                    let value = field.value || 0;
+                    repeaterFormulas[i] = repeaterFormulas[i].replace(
+                      new RegExp("\\b" + alias + "\\b", "g"),
+                      value.toString(),
+                    );
+                  }
+                }
+              });
+
+              i++;
+            }
+
+            repeater.formula = Object.keys(repeaterFormulas)
+              .map((key: string): string => `(${repeaterFormulas[key].trim()})`)
+              .join(" + ");
+
+            const res = eval(repeater.formula);
+            repeater.originalValue = res;
+            repeater.value = res;
+            repeater = this.applyDiscounts(repeater) as IRepeaterField;
           }
 
           repeater.displayValue = currencyFormatter.formatCurrency(
@@ -435,24 +444,6 @@ export const useFieldsStore = () => {
         if (repeaterFields.length || totalFields.length) {
           const notTotalsIncludes: Record<string, IFormulaField> = {};
           const totalsIncludes: Record<string, IFormulaField> = {};
-
-          repeaterFields.forEach((repeater) => {
-            if (repeater.enableFormula) {
-              if (!repeater.originalFormula && repeater.formula) {
-                repeater.originalFormula = repeater.formula;
-              } else {
-                repeater.formula = repeater.originalFormula;
-              }
-
-              const matches =
-                repeater.formula.match(/total_field_id_\d+/g) || [];
-              if (matches.length === 0) {
-                notTotalsIncludes[repeater.alias] = repeater;
-              } else {
-                totalsIncludes[repeater.alias] = repeater;
-              }
-            }
-          });
 
           totalFields.forEach((total) => {
             if (!total.originalFormula && total.formula) {

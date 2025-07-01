@@ -606,15 +606,27 @@ const getOrderDetails = computed(() => {
   });
 
   if (!settingsStore.general?.hideEmptyForOrdersPdfEmails) {
-    result = result.filter((f) =>
-      ["validated_form", "text"].includes(f.fieldName)
-        ? f.displayValue
-        : f.fieldName === "geolocation" &&
-            "geoType" in f &&
-            f.geoType === "multiplyLocation"
-          ? f.displayValue
-          : f.value,
-    );
+    result = result.filter((f) => {
+      if ("selectedOption" in f && Array.isArray(f.selectedOption)) {
+        return f.selectedOption.length > 0;
+      } else if (
+        "selectedOption" in f &&
+        !Array.isArray(f.selectedOption) &&
+        f.selectedOption
+      ) {
+        return f.selectedOption.optionValue;
+      } else if (["validated_form", "text"].includes(f.fieldName)) {
+        return f.displayValue;
+      } else if (
+        f.fieldName === "geolocation" &&
+        "geoType" in f &&
+        f.geoType === "multiplyLocation"
+      ) {
+        return f.displayValue;
+      } else {
+        return f.value;
+      }
+    });
   }
   return result;
 });

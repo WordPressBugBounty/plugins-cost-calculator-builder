@@ -6,7 +6,7 @@ Tags: cost calculator, calculator, calculator form builder, cost estimation, shi
 Requires at least: 6.2
 Requires PHP: 8.0
 Tested up to: 6.8.1
-Stable tag: 3.5.16
+Stable tag: 3.5.17
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -168,6 +168,11 @@ Also, you can import the demo sample using Tools -> Import -> WordPress Import.
 Demo sample XML file included in plugin archive.
 
 == Changelog ==
+
+= 3.5.17 =
+- Fix: Fixed multi-option elements not appearing in the Summary Block when “Label Only (No Calculation)” was enabled and “Zero values in summary list” was disabled.
+- Fix: Fixed Appearance settings and buttons becoming unclickable on screen widths of 1415px or less.
+- Fix: Fixed HTML tags not rendering correctly in the Hint fields of Switch Toggle and Checkbox elements.
 
 = 3.5.16 =
 - New: Introduced a new “Side Buttons” style for the Quantity element for more easier and intuitive value adjustment.

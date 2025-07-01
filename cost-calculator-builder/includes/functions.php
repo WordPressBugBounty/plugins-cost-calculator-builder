@@ -530,7 +530,8 @@ function ccb_sync_settings_from_general_settings( $settings, $general_settings, 
 					$settings['formFields'][ $form_field_key ] = $form_field_value;
 				}
 			}
-			if ( 'summary_display' === $form_field_key ) {
+
+			if ( 'summary_display' === $form_field_key && ! empty( $settings['summary_display']['enable'] ) ) {
 				if ( ! empty( $general_settings_cloned['form_fields']['summary_display']['use_in_all'] ) ) {
 					$settings['formFields'][ $form_field_key ] = $form_field_value;
 				}

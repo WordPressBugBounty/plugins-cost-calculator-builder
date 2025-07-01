@@ -13,10 +13,11 @@
         <span class="ccb-order-required-mark" v-if="field.required">*</span>
       </label>
       <input
-        type="number"
+        type="tel"
         :placeholder="field.placeholder"
         v-model="field.value"
         @input="updateValue"
+        pattern="[0-9+]*"
       />
     </div>
   </div>
@@ -25,7 +26,6 @@
 <script lang="ts" setup>
 import { IFormField } from "@/widget/shared/types/fields";
 import { toRefs, computed } from "vue";
-import { useOrderForm } from "@/widget/actions/pro-features/order-form/composable/useOrderForm.ts";
 import { useOrderFormFieldsRequired } from "@/widget/actions/pro-features/order-form/composable/useOrderFormFieldsRequired.ts";
 import { useTranslationsStore } from "@/widget/app/providers/stores/translationsStore";
 import { useSettingsStore } from "@/widget/app/providers/stores/settingsStore";
@@ -53,11 +53,22 @@ const warningTextPhoneField = computed(() => {
   );
 });
 
-const updateValue = (e: Event): void => {
-  const { updateValue } = useOrderForm();
-  const target = e.target as HTMLInputElement;
-  const value: string = target.value;
-  updateValue(field.value.id, value);
+const updateValue = (event: Event) => {
+  const input = event.target as HTMLInputElement;
+  let value = input.value;
+
+  value = value.replace(/[^0-9+]/g, "");
+
+  if (value.includes("+")) {
+    if (value.indexOf("+") !== 0) {
+      value = value.replace(/\+/g, "");
+    }
+    if ((value.match(/\+/g) || []).length > 1) {
+      value = "+" + value.replace(/\+/g, "");
+    }
+  }
+
+  field.value.value = value;
 };
 
 const isRequired = computed(() => {

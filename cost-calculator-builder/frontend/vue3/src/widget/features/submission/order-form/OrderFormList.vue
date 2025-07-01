@@ -354,6 +354,8 @@ const cfSentCallback = (event: any): void => {
 };
 
 const cfInitContent = () => {
+  const fieldsStore = useFieldsStore();
+
   if (settings.getFormSettings?.contactFormId) {
     let text = settings.getFormSettings?.body;
     const $form = myCf7Root.value?.querySelector(".wpcf7-form");
@@ -367,7 +369,18 @@ const cfInitContent = () => {
     const formFormulas = settings.getFormSettings?.formulas?.map(
       (f) => f.alias,
     );
-    const totalSubtotals = fieldsStore.parseContactFormTotals(formFormulas);
+
+    let totalSubtotals = fieldsStore.parseContactFormTotals(formFormulas);
+
+    if (!totalSubtotals) {
+      totalSubtotals =
+        fieldsStore.getTotalsList
+          .map((item) => item.displayValue)
+          .filter(Boolean)
+          .map((value) => (Array.isArray(value) ? value.join(", ") : value))
+          .find(Boolean) ?? "";
+    }
+
     const regexPattern = /\[ccb-total(?:-\d+)?\]/g;
     text = text.replaceAll(regexPattern, `${totalSubtotals}\n`);
 

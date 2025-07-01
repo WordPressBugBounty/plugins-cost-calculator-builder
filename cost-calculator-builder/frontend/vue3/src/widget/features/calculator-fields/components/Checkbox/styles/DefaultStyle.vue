@@ -21,7 +21,7 @@
         <div class="ccb-toggle-item__postfix" v-if="option.optionHint">
           <Hint>
             <template #content>
-              {{ option.optionHint }}
+              <span v-html="option.optionHint"></span>
             </template>
           </Hint>
         </div>

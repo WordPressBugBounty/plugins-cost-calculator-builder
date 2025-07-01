@@ -16,10 +16,10 @@
             <span class="ccb-checkbox-image__label">{{
               option.optionText
             }}</span>
-            <span class="ccb-checkbox-image__price"
-              >{{ translationsStore.getTranslations.price }}:
-              {{ valuePrice(Number(getPriceValue(option))) }}</span
-            >
+            <span class="ccb-checkbox-image__price" v-if="showPrice">
+              {{ translationsStore.getTranslations.price }}:
+              {{ valuePrice(Number(getPriceValue(option))) }}
+            </span>
           </div>
         </div>
         <div class="ccb-checkbox-image__item">
@@ -74,8 +74,14 @@ const generateId = computed(() => {
   return Math.random().toString(36).substring(2, 15);
 });
 
-const { optionValues, changeValue, getName, getPriceValue, selectedOptions } =
-  useMultiOptionChildShared(props, emit);
+const {
+  optionValues,
+  changeValue,
+  getName,
+  getPriceValue,
+  selectedOptions,
+  showPrice,
+} = useMultiOptionChildShared(props, emit);
 </script>
 
 <style scoped lang="scss">

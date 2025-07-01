@@ -9,7 +9,7 @@
       >
         <span class="ccb-checkbox-label">
           <span class="label">{{ option.optionText }}</span>
-          <span class="description">{{ option.optionHint }}</span>
+          <span class="description" v-html="option.optionHint"></span>
         </span>
         <input
           type="checkbox"

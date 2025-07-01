@@ -221,7 +221,6 @@ const getUsedFiles = (): IFileData[] => {
 
 const getClearFields = (): Field[] => {
   const fieldStore = useFieldsStore();
-  const settings = useSettingsStore();
   const fields = fieldStore.getFields;
   const result: Field[] = [];
   const uniqueAliases = new Set<string>();
@@ -240,15 +239,7 @@ const getClearFields = (): Field[] => {
               existingField.addToSummary === false ||
               existingField.alias.indexOf("file") !== -1) &&
             (!existingField.hidden || existingField.calculateHidden) &&
-            (!settings.general?.hideEmptyForOrdersPdfEmails
-              ? ["validated_form", "text"].includes(existingField.fieldName)
-                ? existingField.displayValue
-                : existingField.fieldName === "geolocation" &&
-                    "geoType" in existingField &&
-                    existingField.geoType === "multiplyLocation"
-                  ? existingField.displayValue
-                  : existingField.value
-              : true)
+            hideEmptyFields(existingField)
           ) {
             uniqueAliases.add(existingField.alias);
             result.push(existingField as Field);
@@ -264,15 +255,7 @@ const getClearFields = (): Field[] => {
         field.addToSummary === false ||
         field.alias.indexOf("file") !== -1) &&
       (!field.hidden || field.calculateHidden) &&
-      (!settings.general?.hideEmptyForOrdersPdfEmails
-        ? ["validated_form", "text"].includes(field.fieldName)
-          ? field.displayValue
-          : field.fieldName === "geolocation" &&
-              "geoType" in field &&
-              field.geoType === "multiplyLocation"
-            ? field.displayValue
-            : field.value
-        : true)
+      hideEmptyFields(field)
     ) {
       uniqueAliases.add(field.alias);
       result.push(field);
@@ -681,6 +664,37 @@ const razorpayPaymentReceived = async (
   };
 
   await handleSubmissionRequest(createOrderParams);
+};
+
+const hideEmptyFields = (existingField: Field): string | boolean => {
+  const settings = useSettingsStore();
+
+  if (!settings.general?.hideEmptyForOrdersPdfEmails) {
+    if (
+      "selectedOption" in existingField &&
+      Array.isArray(existingField.selectedOption)
+    ) {
+      return (existingField.selectedOption.length > 0) as boolean;
+    } else if (
+      "selectedOption" in existingField &&
+      !Array.isArray(existingField.selectedOption) &&
+      existingField.selectedOption
+    ) {
+      return (existingField.selectedOption.optionValue || "") as string;
+    } else if (["validated_form", "text"].includes(existingField.fieldName)) {
+      return (existingField.displayValue || "") as string;
+    } else if (
+      existingField.fieldName === "geolocation" &&
+      "geoType" in existingField &&
+      existingField.geoType === "multiplyLocation"
+    ) {
+      return (existingField.displayValue || "") as string;
+    } else {
+      return (existingField.value || "") as string;
+    }
+  }
+
+  return true;
 };
 
 export function useOrder(): IOrderResult {

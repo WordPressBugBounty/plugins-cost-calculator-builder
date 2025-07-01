@@ -27,6 +27,7 @@ export interface IMultiOptionsField extends Omit<IBaseField, "displayValue"> {
   minAllowedOptions: number;
   maxAllowedOptions: number;
   disableOptions: number[];
+  showValueInOption: boolean;
 }
 
 export type FieldWithMultipleDisplayView =

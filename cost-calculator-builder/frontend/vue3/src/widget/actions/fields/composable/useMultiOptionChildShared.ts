@@ -64,6 +64,10 @@ export function useMultiOptionChildShared(
     return {};
   });
 
+  const showPrice = computed(() => {
+    return field.value.showValueInOption || false;
+  });
+
   onMounted(() => {
     if (Array.isArray(values.value)) {
       optionValues.value = values.value;
@@ -77,5 +81,6 @@ export function useMultiOptionChildShared(
     getPriceValue,
     selectedOptions,
     getImageStyles,
+    showPrice,
   };
 }
