@@ -542,6 +542,9 @@ const activePageFieldsAliases = computed(() => {
               "groupElements" in element &&
               Array.isArray(element.groupElements)
             ) {
+              if (element.alias.includes("repeater")) {
+                allAliases.push(element.alias);
+              }
               element.groupElements.forEach((groupElement: any) => {
                 if (
                   "alias" in groupElement &&

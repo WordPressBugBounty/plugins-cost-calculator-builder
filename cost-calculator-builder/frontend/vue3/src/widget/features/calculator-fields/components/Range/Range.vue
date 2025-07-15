@@ -88,7 +88,9 @@ const rawInput = ref<number>(0);
 const pageBreakerStore = usePageBreakerStore();
 
 onMounted(() => {
-  rawInput.value = field.value.value;
+  rawInput.value = field.value.originalValue
+    ? field.value.originalValue
+    : field.value.min;
 
   updateValue(rawInput.value);
 });
@@ -118,6 +120,7 @@ const updateValue = (value: number, alias?: string) => {
   }
 
   rawInput.value = value;
+  field.value.originalValue = value;
 
   if (field.value.multiply) {
     value = value * field.value.unit;
@@ -156,7 +159,11 @@ const getSignValue = computed(() => {
   }
 
   if (field.value.useCurrency || field.value.fieldCurrency) {
-    return field.value.displayValue;
+    if (field.value.unitPosition === "left") {
+      return `${field.value.sign} ${rawInput.value}`;
+    }
+
+    return `${rawInput.value} ${field.value.sign}`;
   }
 
   if (field.value.unitPosition === "left") {

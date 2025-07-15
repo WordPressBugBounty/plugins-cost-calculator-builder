@@ -8,7 +8,7 @@
  * License: GNU General Public License v2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: cost-calculator-builder
- * Version: 3.5.17
+ * Version: 3.5.18
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 define( 'CALC_DIR', __DIR__ );
 define( 'CALC_FILE', __FILE__ );
-define( 'CALC_VERSION', '3.5.17' );
+define( 'CALC_VERSION', '3.5.18' );
 define( 'CALC_WP_TESTED_UP', '6.8.1' );
 define( 'CALC_DB_VERSION', '3.5.0' );
 define( 'CALC_PATH', dirname( CALC_FILE ) );
@@ -57,12 +57,7 @@ if ( is_admin() ) {
 					'is_pro'       => $is_pro_exist,
 				);
 				if ( function_exists( 'wp_get_current_user' ) ) {
-					add_action(
-						'init',
-						function () use ( $init_data ) {
-							stm_mailchimp_admin_init( $init_data );
-						}
-					);
+					stm_mailchimp_admin_init( $init_data );
 				}
 			}
 		}

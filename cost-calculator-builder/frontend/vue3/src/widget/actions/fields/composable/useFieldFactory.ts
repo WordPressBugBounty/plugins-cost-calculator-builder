@@ -95,6 +95,7 @@ export function createQuantityField(data: ISourceField): IQuantityField {
     buttonsPosition: data.buttonsPosition || "right",
     separation: data.separation || false,
     enabledCurrencySettings: data.enabledCurrencySettings || false,
+    originalValue: value,
   });
 
   field.displayValue = singleFieldMixins.getCommonFieldDisplayView(
@@ -115,7 +116,6 @@ export function createRangeField(data: ISourceField): IRangeField {
 
   const field = reactive<IRangeField>({
     ...createField(data),
-
     value: round ? Math.round(value) : value,
     step: Number(data.step) || 1,
     round,
@@ -123,7 +123,6 @@ export function createRangeField(data: ISourceField): IRangeField {
     max: Number(data.maxValue) || 100,
     extraDisplayView: "",
     sign: data.sign || "",
-
     multiply: data.multiply || false,
     unit: data.unit || 1,
     unitSymbol: data.unitSymbol || "",
@@ -132,6 +131,7 @@ export function createRangeField(data: ISourceField): IRangeField {
     styles: data.styles || { style: "default" },
     scalePoints: data.scalePoints || "",
     jump: data.jump || false,
+    originalValue: value,
   });
 
   field.displayValue = singleFieldMixins.getCommonFieldDisplayView(
@@ -181,7 +181,6 @@ export function createMultiRangeField(data: ISourceField): IMultiRangeField {
     defaultRight,
     sign: data.sign || "",
     values: [defaultLeft, defaultRight],
-
     multiply: data.multiply || false,
     unit: data.unit || 1,
     unitSymbol: data.unitSymbol || "",
@@ -190,6 +189,7 @@ export function createMultiRangeField(data: ISourceField): IMultiRangeField {
     styles: data.styles || { style: "default" },
     scalePoints: data.scalePoints || "",
     jump: data.jump || false,
+    originalValue: value,
   });
 
   field.displayValue = singleFieldMixins.getCommonFieldDisplayView(
@@ -430,9 +430,14 @@ export function createTimePickerField(data: ISourceField): ITimePickerField {
 }
 
 export function createFormulaField(data: ISourceField): IFormulaField {
+  let formula = data.costCalcFormula || "0";
+  if (data.legacyFormula) {
+    formula = data.legacyFormula || "0";
+  }
+
   return reactive<IFormulaField>({
     ...createField(data),
-    formula: data.costCalcFormula || "0",
+    formula,
     originalFormula: "",
   });
 }

@@ -239,7 +239,7 @@ const {
 
 .ccb-horizontal {
   .ccb-field {
-    &.checkbox_with_img {
+    &.ccb_field_with_checkbox_with_img {
       grid-column: 1 / span 2;
       .ccb-checkbox-image {
         max-width: 200px !important;

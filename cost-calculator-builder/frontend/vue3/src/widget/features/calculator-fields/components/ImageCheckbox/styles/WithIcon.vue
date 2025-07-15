@@ -58,7 +58,7 @@ const { optionValues, changeValue, getName, selectedOptions, getImageStyles } =
   useMultiOptionChildShared(props, emit);
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .ccb-default-image-checkbox-withicon {
   display: flex;
   flex-wrap: wrap;
@@ -209,7 +209,7 @@ const { optionValues, changeValue, getName, selectedOptions, getImageStyles } =
 }
 
 .ccb-horizontal {
-  .checkbox_with_img {
+  .ccb_field_with_checkbox_with_img {
     grid-column: 1 / span 2;
     .ccb-checkbox-image {
       max-width: 200px !important;

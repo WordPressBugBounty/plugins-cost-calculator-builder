@@ -48,6 +48,7 @@
       @focusout="parseField"
       @blur="onBlur"
       @keypress="intValueFilter"
+      :key="forceUpdateKey"
     />
 
     <div
@@ -98,8 +99,9 @@ const singleFieldMixins = useSingleField();
 const translationsStore = useTranslationsStore();
 const pageBreakerStore = usePageBreakerStore();
 
-const rawInput = ref<string>(field.value.value.toString());
+const rawInput = ref<string>(field.value.originalValue.toString());
 const isEditing = ref<boolean>(false);
+const forceUpdateKey = ref<number>(0);
 
 const formattedValue = computed(() => {
   if (isEditing.value) return rawInput.value;
@@ -121,12 +123,6 @@ const getStyleComponent = computed(() => {
   }
 });
 
-onMounted(() => {
-  rawInput.value = field.value.multiply
-    ? (field.value.value / field.value.unit).toString()
-    : field.value.value.toString();
-});
-
 const updateValue = (
   updateWithValue = false,
   numericValue: number,
@@ -141,6 +137,7 @@ const updateValue = (
 
   if (updateWithValue && typeof numericValue !== "undefined") {
     field.value.value = numericValue;
+    field.value.originalValue = numericValue;
   }
 
   if (field.value.multiply) {
@@ -371,6 +368,11 @@ const getRangeRequiredText = computed(() => {
 });
 
 callbackStore.add("updateQuantity", updateValue);
+
+onMounted(() => {
+  rawInput.value = field.value.originalValue.toString();
+  updateValue(false, field.value.originalValue);
+});
 </script>
 
 <style lang="scss" scoped>

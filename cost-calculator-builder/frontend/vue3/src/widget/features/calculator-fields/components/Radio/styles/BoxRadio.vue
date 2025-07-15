@@ -45,7 +45,7 @@ const { optionValues, changeValue, getName } = useSingleOptionChildShared(
 );
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .ccb-vertical-radio {
   .ccb-box-radio {
     flex-direction: column;

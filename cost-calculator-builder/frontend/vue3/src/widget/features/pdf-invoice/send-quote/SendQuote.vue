@@ -1,5 +1,5 @@
 <template>
-  <div class="ccb-pdf-invoice" v-if="showPdfButton" ref="pdfInvoiceRef">
+  <div class="ccb-pdf-invoice" ref="pdfInvoiceRef">
     <div
       class="ccb-pdf-invoice__actions"
       :class="actionsClass"
@@ -290,7 +290,19 @@ const generatePdfBtnText = computed<string>(() => {
 });
 
 const showShareBtn = computed(() => {
-  return settingsStore.getInvoice?.emailButton;
+  const summaryDisplay = settingsStore.getFormSettings?.summaryDisplay;
+  if (
+    (summaryDisplay?.enable &&
+      summaryDisplay?.actionAfterSubmit !== "show_summary_block_with_pdf") ||
+    !settingsStore.getInvoice?.useInAll
+  ) {
+    return false;
+  }
+  const notificationsStore = useNotificationsStore();
+  return (
+    !settingsStore.getInvoice?.showAfterPayment ||
+    notificationsStore.notificationType === "finish"
+  );
 });
 
 const pdfName = computed(() => {

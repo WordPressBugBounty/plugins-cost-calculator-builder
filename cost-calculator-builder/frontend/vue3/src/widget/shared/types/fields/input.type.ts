@@ -24,6 +24,7 @@ export interface IQuantityField extends IBaseInputField {
   };
   buttonsPosition: "right" | "both";
   separation: boolean;
+  originalValue: number;
 }
 
 export interface IRangeField extends IBaseInputField {
@@ -35,6 +36,7 @@ export interface IRangeField extends IBaseInputField {
   };
   scalePoints: string;
   jump: boolean;
+  originalValue: number;
 }
 
 export interface IMultiRangeField extends IRangeField {

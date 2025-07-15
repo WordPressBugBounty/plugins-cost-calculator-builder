@@ -103,6 +103,9 @@ export const useFieldsStore = () => {
           const excludeFields = ["total", "line", "html"];
           let result: Field[] = [];
           fields.forEach((f: Field | IGroupField) => {
+            if (f.fieldName.includes("repeater")) {
+              f.addToSummary = true;
+            }
             if (excludeFields.includes(f.fieldName) || !f.addToSummary) {
               return;
             }
@@ -335,6 +338,7 @@ export const useFieldsStore = () => {
                 field.value || 0,
                 currencyFormatter.getCurrencyOptions(field),
               );
+
               this.fields.set(alias, field);
             }
           }
@@ -421,7 +425,7 @@ export const useFieldsStore = () => {
               .map((key: string): string => `(${repeaterFormulas[key].trim()})`)
               .join(" + ");
 
-            const res = eval(repeater.formula);
+            const res = this.validateTotal(eval(repeater.formula));
             repeater.originalValue = res;
             repeater.value = res;
             repeater = this.applyDiscounts(repeater) as IRepeaterField;
@@ -543,7 +547,7 @@ export const useFieldsStore = () => {
           }
         });
 
-        const newValue = eval(total.formula);
+        let newValue = this.validateTotal(eval(total.formula));
         const oldValue = total.value;
 
         total.originalValue = newValue;
@@ -705,6 +709,18 @@ export const useFieldsStore = () => {
         }
 
         return subtotal;
+      },
+
+      validateTotal(total: number): number {
+        if (isNaN(total)) {
+          return 0;
+        }
+
+        if (total === -Infinity) {
+          return 0;
+        }
+
+        return total;
       },
     },
   });

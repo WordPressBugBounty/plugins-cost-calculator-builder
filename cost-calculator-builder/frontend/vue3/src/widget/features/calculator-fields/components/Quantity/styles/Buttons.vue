@@ -17,22 +17,32 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { ref, computed, toRefs } from "vue";
 import { IQuantityField } from "@/widget/shared/types/fields";
 import { watch } from "vue";
 
 type Props = {
   field: IQuantityField;
+  value: string;
 };
 
 const props = defineProps<Props>();
-const value = ref<string>(props.field.value.toString());
+const { field } = toRefs(props);
+
+const value = ref<string>(props.value);
 const emit = defineEmits(["input"]);
+
+watch(
+  () => props.value,
+  (newValue) => {
+    value.value = newValue;
+  },
+);
 
 const increment = () => {
   let newValue =
-    Math.round((Number(value.value) + Number(props.field.step)) * 100) / 100;
-  if (newValue <= props.field.max) {
+    Math.round((Number(value.value) + Number(field.value.step)) * 100) / 100;
+  if (newValue <= field.value.max) {
     value.value = newValue.toString();
     emit("input", { target: { value: newValue } });
   }
@@ -40,19 +50,19 @@ const increment = () => {
 
 const decrement = () => {
   let newValue =
-    Math.round((Number(value.value) - Number(props.field.step)) * 100) / 100;
-  if (newValue >= props.field.min) {
+    Math.round((Number(value.value) - Number(field.value.step)) * 100) / 100;
+  if (newValue >= field.value.min) {
     value.value = newValue.toString();
     emit("input", { target: { value: newValue } });
   }
 };
 
 const separation = computed(() => {
-  return props.field.separation;
+  return field.value.separation;
 });
 
 const buttonsPosition = computed(() => {
-  return props.field.buttonsPosition === "right"
+  return field.value.buttonsPosition === "right"
     ? "ccb-quantity-buttons--right"
     : "ccb-quantity-buttons--both";
 });

@@ -71,7 +71,7 @@ const addOrRemove = (option: IOptions): void => {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .ccb-default-image-radio-withicon {
   display: flex;
   flex-wrap: wrap;
@@ -222,7 +222,7 @@ const addOrRemove = (option: IOptions): void => {
 }
 
 .ccb-horizontal {
-  .radio_with_img {
+  .ccb_field_with_radio_with_img {
     grid-column: 1 / span 2;
     .ccb-radio-image {
       max-width: 200px !important;

@@ -164,8 +164,12 @@ const getSignValue = computed(() => {
         );
   }
 
-  if (field.value.useCurrency) {
-    return field.value.displayValue;
+  if (field.value.useCurrency || field.value.fieldCurrency) {
+    if (field.value.unitPosition === "left") {
+      return `${field.value.sign} ${originalValue.value}`;
+    }
+
+    return `${originalValue.value} ${field.value.sign}`;
   }
 
   return singleFieldMixins.parseCommonFieldSign(

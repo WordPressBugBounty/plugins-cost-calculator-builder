@@ -254,8 +254,22 @@ export const useSubmissionStore = () => {
                 const RazorpayConstructor = window.Razorpay as unknown as new (
                   options: any,
                 ) => any;
-                const rzp = new RazorpayConstructor(data);
+                const rzp = new RazorpayConstructor({
+                  ...data,
+                  modal: {
+                    ondismiss() {
+                      appStore.setSubmissionLoader(false);
+                      notificationsStore.updateNotifications({
+                        type: "error",
+                        message: "Payment cancelled",
+                        status: true,
+                      });
+                    },
+                  },
+                });
+
                 rzp?.on("payment.failed", (res: any): void => {
+                  appStore.setSubmissionLoader(false);
                   notificationsStore.updateNotifications({
                     type: "error",
                     message:

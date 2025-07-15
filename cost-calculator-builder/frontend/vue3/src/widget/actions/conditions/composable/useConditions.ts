@@ -647,25 +647,25 @@ function setValue(
 ): Field {
   if (result) {
     const value: number = Number(targetCondition?.setVal || 0);
+    const parseValue = prepareSetValue(targetField, value);
 
-    targetField.value = prepareSetValue(targetField, value);
+    if ("originalValue" in targetField) {
+      targetField.originalValue = parseValue;
+    }
+
     const callbackStore = useCallbackStore();
 
     if (result && targetField.fieldName === "quantity") {
       callbackStore.runCallback(
         "updateQuantity",
         true,
-        targetField.value,
+        parseValue,
         targetField.alias,
       );
     }
 
     if (result && targetField.fieldName === "range") {
-      callbackStore.runCallback(
-        "updateRange",
-        targetField.value,
-        targetField.alias,
-      );
+      callbackStore.runCallback("updateRange", parseValue, targetField.alias);
     }
   }
 

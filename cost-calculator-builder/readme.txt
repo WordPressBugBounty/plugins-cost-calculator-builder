@@ -4,9 +4,9 @@ Contributors: Stylemix
 Donate link: https://stylemixthemes.com
 Tags: cost calculator, calculator, calculator form builder, cost estimation, shipping calculator, taxi fare calculator, price calculator, tax calculation, cost, calc, cost calc, calc builder
 Requires at least: 6.2
-Requires PHP: 8.0
+Requires PHP: 8.3.0
 Tested up to: 6.8.1
-Stable tag: 3.5.17
+Stable tag: 3.5.18
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -168,6 +168,13 @@ Also, you can import the demo sample using Tools -> Import -> WordPress Import.
 Demo sample XML file included in plugin archive.
 
 == Changelog ==
+
+= 3.5.18 =
+- Fix: Fixed “Legacy Formula View” in the Formula element not calculating totals in the summary.
+- Fix: Fixed Math.log() not working in the Formula element when using "Legacy Formula View".
+- Fix: Fixed an issue where Radio elements changed styles when any option was selected.
+- Fix: Fixed Quantity styles conflicting with third-party themes.
+- Fix: Fixed Basic Slider showing a multiplied value even when “Show Subtotal with Multiplied Value” was disabled.
 
 = 3.5.17 =
 - Fix: Fixed multi-option elements not appearing in the Summary Block when “Label Only (No Calculation)” was enabled and “Zero values in summary list” was disabled.

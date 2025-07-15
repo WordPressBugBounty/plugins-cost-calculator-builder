@@ -1,0 +1,2 @@
+import{T as o}from"./ThankYouPage-BIV5N0nH.js";import{d as e,h as r,o as a,u as t}from"./runtime-dom.esm-bundler-DVhL8Vyv.js";import"./widget-BZ4u_pNQ.js";import"./translationsStore-Crbl8s4V.js";import"./jquery-C7OTzgKr.js";import"./_plugin-vue_export-helper-DlAUqK2U.js";const h=e({__name:"ThankYouPage",setup(n){return(p,m)=>(a(),r(t(o)))}});export{h as default};
+//# sourceMappingURL=index-DHkZSExN.js.map
