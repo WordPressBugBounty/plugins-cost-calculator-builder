@@ -4,9 +4,9 @@ Contributors: Stylemix
 Donate link: https://stylemixthemes.com
 Tags: cost calculator, calculator, calculator form builder, cost estimation, shipping calculator, taxi fare calculator, price calculator, tax calculation, cost, calc, cost calc, calc builder
 Requires at least: 6.2
-Requires PHP: 8.3.0
-Tested up to: 6.8.1
-Stable tag: 3.5.18
+Requires PHP: 8.0.3
+Tested up to: 6.8.2
+Stable tag: 3.5.19
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -168,6 +168,11 @@ Also, you can import the demo sample using Tools -> Import -> WordPress Import.
 Demo sample XML file included in plugin archive.
 
 == Changelog ==
+
+= 3.5.19 =
+- Fix: Fixed the Submit, PDF Download, and Share Quote buttons appearing in a single row.
+- Fix: Fixed the Share Quote button displaying even when disabled in Global Settings.
+- Fix: Fixed the Submit button shrinking to half size even when no additional buttons were present.
 
 = 3.5.18 =
 - Fix: Fixed “Legacy Formula View” in the Formula element not calculating totals in the summary.

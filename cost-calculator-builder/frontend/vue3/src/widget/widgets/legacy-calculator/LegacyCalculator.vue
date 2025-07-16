@@ -175,7 +175,9 @@ const activeActionCount = computed(() => {
 });
 
 const showShareBtn = computed(() => {
-  return settingsStore.getInvoice?.emailButton;
+  return (
+    settingsStore.getInvoice?.useInAll && settingsStore.getInvoice?.emailButton
+  );
 });
 
 const showWooRedirectCart = computed((): boolean => {

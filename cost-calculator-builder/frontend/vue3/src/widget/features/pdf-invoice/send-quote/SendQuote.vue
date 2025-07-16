@@ -1,5 +1,9 @@
 <template>
-  <div class="ccb-pdf-invoice" ref="pdfInvoiceRef">
+  <div
+    class="ccb-pdf-invoice"
+    ref="pdfInvoiceRef"
+    v-if="showPdfButton || showShareBtn"
+  >
     <div
       class="ccb-pdf-invoice__actions"
       :class="actionsClass"
@@ -300,8 +304,9 @@ const showShareBtn = computed(() => {
   }
   const notificationsStore = useNotificationsStore();
   return (
-    !settingsStore.getInvoice?.showAfterPayment ||
-    notificationsStore.notificationType === "finish"
+    settingsStore.getInvoice.emailButton &&
+    (!settingsStore.getInvoice?.showAfterPayment ||
+      notificationsStore.notificationType === "finish")
   );
 });
 
