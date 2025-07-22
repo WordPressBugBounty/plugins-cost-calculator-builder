@@ -519,7 +519,6 @@ function ccb_sync_settings_from_general_settings( $settings, $general_settings, 
 
 	if ( ! empty( $general_settings['currency']['use_in_all'] ) ) {
 		$settings['currency'] = $general_settings['currency'];
-		unset( $settings['currency']['use_in_all'] );
 	}
 
 	if ( ! empty( $general_settings_cloned['form_fields']['use_in_all'] ) ) {
@@ -535,6 +534,14 @@ function ccb_sync_settings_from_general_settings( $settings, $general_settings, 
 				if ( ! empty( $general_settings_cloned['form_fields']['summary_display']['use_in_all'] ) ) {
 					$settings['formFields'][ $form_field_key ] = $form_field_value;
 				}
+			}
+
+			if ( 'openModalBtnText' === $form_field_key && ! empty( $form_field_value ) ) {
+				$settings['formFields'][ $form_field_key ] = $form_field_value;
+			}
+
+			if ( 'submitBtnText' === $form_field_key && ! empty( $form_field_value ) ) {
+				$settings['formFields'][ $form_field_key ] = $form_field_value;
 			}
 		}
 	}

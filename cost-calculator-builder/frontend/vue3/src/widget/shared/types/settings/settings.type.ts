@@ -34,6 +34,7 @@ interface IFormulas {
 }
 
 export interface ICurrency {
+  useInAll: boolean;
   currency: string;
   numAfterInteger: number;
   decimalSeparator: string;

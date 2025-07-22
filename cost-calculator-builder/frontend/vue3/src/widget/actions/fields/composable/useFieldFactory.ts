@@ -431,7 +431,7 @@ export function createTimePickerField(data: ISourceField): ITimePickerField {
 
 export function createFormulaField(data: ISourceField): IFormulaField {
   let formula = data.costCalcFormula || "0";
-  if (data.legacyFormula) {
+  if (data.formulaView && data.legacyFormula) {
     formula = data.legacyFormula || "0";
   }
 

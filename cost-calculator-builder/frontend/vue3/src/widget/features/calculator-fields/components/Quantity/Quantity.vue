@@ -162,6 +162,9 @@ const updateValue = (
 const onInput = (event: Event) => {
   const target = event.target as HTMLInputElement;
 
+  if (target.value.includes(",")) {
+    target.value = target.value.replace(",", ".");
+  }
   let value = field.value.round
     ? Math.round(parseFloat(target.value))
     : parseFloat(target.value);
@@ -221,6 +224,11 @@ const toFixedCount = computed(() => {
   return count;
 });
 
+const toFixedNoRound = (num: number, decimals: number): number => {
+  const factor = Math.pow(10, decimals);
+  return Math.floor(num * factor) / factor;
+};
+
 const parseQuantityValue = (value: number | string): string => {
   if (typeof value === "number" && value < 0) {
     value = 0;
@@ -230,7 +238,7 @@ const parseQuantityValue = (value: number | string): string => {
 
   if (!field.value.enabledCurrencySettings) {
     const floatVal = parseFloat(value);
-    return floatVal.toFixed(toFixedCount.value);
+    return toFixedNoRound(floatVal, toFixedCount.value).toString();
   }
 
   if (isNaN(Number(value)) || value.length === 0) {
@@ -259,10 +267,10 @@ const parseQuantityValue = (value: number | string): string => {
   }
 
   if (numAfterInteger > 0) {
-    numericValue = parseFloat(
-      numericValue.toFixed(parseInt(numAfterInteger.toString())),
+    numericValue = toFixedNoRound(
+      numericValue,
+      parseInt(numAfterInteger.toString()),
     );
-
     value = numericValue.toFixed(numAfterInteger);
 
     // Set decimal separator

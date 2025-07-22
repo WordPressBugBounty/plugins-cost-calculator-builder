@@ -224,6 +224,9 @@ onMounted(() => {
   .slider-tooltip {
     color: var(--ccb-fields-color) !important;
     border-color: var(--ccb-accent-color) !important;
+    @media (max-width: 1024px) {
+      display: block !important;
+    }
   }
 
   .slider-handle:focus {

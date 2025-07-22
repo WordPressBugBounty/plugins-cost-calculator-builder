@@ -3,6 +3,7 @@ import {
   FieldWithMultipleDisplayView,
 } from "@/widget/shared/types/fields";
 import { useCurrency } from "./useCurrency.ts";
+import { useSettingsStore } from "@/widget/app/providers/stores/settingsStore.ts";
 
 interface IUseSingleFieldResult {
   getMultipleOptionsFieldDisplayView: (
@@ -75,13 +76,22 @@ function getCommonFieldDisplayView(
   if ("originalValue" in field) {
     originalValue = field.originalValue?.toString() || "";
   }
-
+  const settingsStore = useSettingsStore();
   let displayValue = field.value?.toString();
 
-  if (field.useCurrency || field.fieldCurrency) {
+  if (
+    field.useCurrency ||
+    field.fieldCurrency ||
+    settingsStore.getCurrencySettings?.useInAll
+  ) {
     displayValue = currencyInstance.formatCurrency(
       field.value || 0,
       currencyInstance.getCurrencyOptions(field),
+    );
+  } else {
+    displayValue = displayValue?.replace(
+      ".",
+      currencyInstance.getCurrencyOptions(field).decimalSeparator,
     );
   }
 
@@ -111,7 +121,7 @@ function getCommonFieldDisplayView(
         field.useCurrency || field.fieldCurrency
           ? displayValue
           : parseCommonFieldSign(
-              field.value?.toString() || "",
+              displayValue?.toString() || "",
               field.sign,
               field.unitPosition,
             );

@@ -6,7 +6,7 @@ Tags: cost calculator, calculator, calculator form builder, cost estimation, shi
 Requires at least: 6.2
 Requires PHP: 8.0.3
 Tested up to: 6.8.2
-Stable tag: 3.5.19
+Stable tag: 3.5.20
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -168,6 +168,12 @@ Also, you can import the demo sample using Tools -> Import -> WordPress Import.
 Demo sample XML file included in plugin archive.
 
 == Changelog ==
+
+= 3.5.20 =
+Fix: Fixed tooltips for the Basic Slider not being visible on mobile and tablet views.
+Fix: Fixed Decimal Separator option “Comma” not working in the Quantity field.
+Fix: Fixed Order Form global settings not applying in certain cases.
+Fix: Fixed statements from Legacy Formula View executing even when the setting was disabled.
 
 = 3.5.19 =
 - Fix: Fixed the Submit, PDF Download, and Share Quote buttons appearing in a single row.

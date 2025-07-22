@@ -97,6 +97,8 @@ export interface ISourceField {
   // formula field properties
   costCalcFormula: string;
   legacyFormula?: string;
+  formulaView?: boolean;
+
   // range & multi range properties
   defaultLeft?: number;
   defaultRight?: number;
