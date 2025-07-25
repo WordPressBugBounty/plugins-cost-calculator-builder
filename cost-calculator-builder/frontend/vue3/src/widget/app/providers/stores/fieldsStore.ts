@@ -1,23 +1,25 @@
+import { inject } from "vue";
 import { defineStore } from "pinia";
 import {
   Field,
   IDefaultTotal,
+  IFormulaField,
   IGroupField,
   IRepeaterField,
   ISourceField,
-  IFormulaField,
 } from "@/widget/shared/types/fields";
 import { useFields } from "@/widget/actions/fields/composable/useFields.ts";
 import { useSettingsStore } from "./settingsStore";
 import { useFieldsRequired } from "@/widget/actions/fields/composable/useFieldsRequired.ts";
 import { useAppStore } from "./appStore";
-import { inject } from "vue";
 import { useCurrency } from "@/widget/actions/fields/composable/useCurrency";
 import { useSubmissionStore } from "@/widget/app/providers/stores/submissionStore.ts";
 import { useOrderFormStore } from "@/widget/app/providers/stores/orderFormStore.ts";
 import { usePaymentAfterSubmitStore } from "@/widget/app/providers/stores/paymentAfterSubmit";
 import { useDiscounts } from "@/widget/actions/discounts/composable/useDiscounts.ts";
 import { IPageBreakerField } from "@/widget/shared/types/fields/fields.type";
+import { getNonce } from "@/widget/shared/utils/nonce.utils.ts";
+import { handleCalcAnalyticsRequest } from "@/widget/shared/api/handlerCalcAnalytics.ts";
 
 interface IFieldsStore {
   fields: Map<string, Field>;
@@ -27,6 +29,7 @@ interface IFieldsStore {
   pageBreakEnabled: boolean;
   requiredFields: Field[];
   timeout: ReturnType<typeof setTimeout> | null;
+  interacted: boolean;
 }
 
 const randomId = Math.random().toString(36).substring(2, 15);
@@ -50,6 +53,7 @@ export const useFieldsStore = () => {
       pageBreakEnabled: false,
       requiredFields: [],
       timeout: null,
+      interacted: false,
     }),
 
     getters: {
@@ -189,6 +193,10 @@ export const useFieldsStore = () => {
       getDefaultTotals(): IDefaultTotal | null {
         return this.defaultTotals;
       },
+
+      getInteracted(): boolean {
+        return this.interacted;
+      },
     },
 
     actions: {
@@ -305,10 +313,28 @@ export const useFieldsStore = () => {
         fieldsInstance.triggerConditions();
       },
 
-      updateField(alias: string, field: Field): void {
+      updateField(
+        alias: string,
+        field: Field,
+        fromCondition: boolean = false,
+      ): void {
         const paymentAfterSubmitStore = usePaymentAfterSubmitStore();
         const settingsStore = useSettingsStore();
         const summaryDisplay = settingsStore.getFormSettings?.summaryDisplay;
+
+        setTimeout(() => {
+          if (!this.getInteracted && !fromCondition) {
+            handleCalcAnalyticsRequest({
+              action: "ccb_calc_interactions",
+              nonce: getNonce("ccb_calc_interactions"),
+              data: {
+                calc_id: appStore.getCalcId || 0,
+              },
+            });
+
+            this.setInteracted(true);
+          }
+        }, 1000);
 
         if (paymentAfterSubmitStore.getSubmit) {
           paymentAfterSubmitStore.setSubmit(false);
@@ -709,6 +735,10 @@ export const useFieldsStore = () => {
         }
 
         return subtotal;
+      },
+
+      setInteracted(interacted: boolean): void {
+        this.interacted = interacted;
       },
 
       validateTotal(total: number): number {

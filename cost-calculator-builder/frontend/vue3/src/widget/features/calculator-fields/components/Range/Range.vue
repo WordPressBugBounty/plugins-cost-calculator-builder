@@ -92,7 +92,7 @@ onMounted(() => {
     ? field.value.originalValue
     : field.value.min;
 
-  updateValue(rawInput.value);
+  updateValue(rawInput.value, undefined, true);
 });
 
 const currentComponents = computed(() => {
@@ -114,7 +114,11 @@ const currentComponents = computed(() => {
   return "";
 });
 
-const updateValue = (value: number, alias?: string) => {
+const updateValue = (
+  value: number,
+  alias?: string,
+  fromCondition?: boolean,
+) => {
   if (alias && alias !== field.value.alias) {
     return;
   }
@@ -133,7 +137,7 @@ const updateValue = (value: number, alias?: string) => {
     rawInput.value.toString(),
   );
 
-  fieldStore.updateField(field.value.alias, field.value);
+  fieldStore.updateField(field.value.alias, field.value, fromCondition);
   conditionsStore.applyConditionForField(field.value.alias);
 
   if (

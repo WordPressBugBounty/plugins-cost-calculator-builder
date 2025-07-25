@@ -139,6 +139,9 @@ class CCBUpdates {
 			'ccb_update_total_number_of_decimals',
 			'ccb_add_field_disable_options',
 		),
+		'3.5.21' => array(
+			'ccb_add_analytics_tables',
+		),
 	);
 
 	public static function init() {

@@ -14,6 +14,8 @@ use cBuilder\Classes\Database\FormFieldsAttributes;
 use cBuilder\Classes\Database\Promocodes;
 use cBuilder\Classes\pdfManager\CCBPdfManager;
 use cBuilder\Classes\pdfManager\CCBPdfManagerTemplates;
+use cBuilder\Classes\Database\AnalyticsViews;
+use cBuilder\Classes\Database\AnalyticsInteractions;
 
 class CCBUpdatesCallbacks {
 
@@ -1480,6 +1482,19 @@ class CCBUpdatesCallbacks {
 				}
 			}
 			update_post_meta( $calculator->ID, 'stm-formula', $formula );
+		}
+	}
+
+	public static function ccb_add_analytics_tables() {
+		global $wpdb;
+		$views_table = AnalyticsViews::_table();
+		if ( ! $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s;', $views_table ) ) ) { // phpcs:ignore
+			AnalyticsViews::create_table();
+		}
+
+		$interactions_table = AnalyticsInteractions::_table();
+		if ( ! $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s;', $interactions_table ) ) ) { // phpcs:ignore
+			AnalyticsInteractions::create_table();
 		}
 	}
 }

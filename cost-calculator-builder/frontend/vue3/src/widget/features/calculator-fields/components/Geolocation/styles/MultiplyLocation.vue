@@ -235,13 +235,13 @@ const getDisplayValue = computed(() => {
     : displayValue;
 });
 
-const updateValue = (alias?: string) => {
+const updateValue = (alias?: string, fromCondition?: boolean) => {
   if (alias && alias !== field.value.alias) {
     return;
   }
 
   field.value.displayValue = getDisplayValue.value;
-  fieldStore.updateField(field.value.alias, field.value);
+  fieldStore.updateField(field.value.alias, field.value, fromCondition);
   conditionsStore.applyConditionForField(field.value.alias);
 
   if (
@@ -254,7 +254,7 @@ const updateValue = (alias?: string) => {
 
 callbackStore.add("updateGeolocation", (alias) => {
   setTimeout(() => {
-    updateValue(alias);
+    updateValue(alias, true);
   }, 100);
 });
 

@@ -33,7 +33,7 @@ export default defineConfig({
     alias: {
       '@/styles': '/assets',
       '@/images': '/assets/images',
-      '@/admin/': fileURLToPath(new URL('./src/admin/', import.meta.url)),
+      '@/admin': fileURLToPath(new URL('./src/admin/', import.meta.url)),
       '@/widget': fileURLToPath(new URL('./src/widget/', import.meta.url)),
       '@/sticky': fileURLToPath(new URL('./src/sticky/', import.meta.url)),
 

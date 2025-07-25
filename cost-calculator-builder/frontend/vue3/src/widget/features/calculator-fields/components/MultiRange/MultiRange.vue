@@ -110,7 +110,11 @@ const currentComponents = computed(() => {
   return "";
 });
 
-const updateValue = (inputValues: number[], alias?: string) => {
+const updateValue = (
+  inputValues: number[],
+  alias?: string,
+  fromCondition?: boolean,
+) => {
   if (alias && alias !== field.value.alias) {
     return;
   }
@@ -139,7 +143,7 @@ const updateValue = (inputValues: number[], alias?: string) => {
     field.value,
     (right - left).toString(),
   );
-  fieldStore.updateField(field.value.alias, field.value);
+  fieldStore.updateField(field.value.alias, field.value, fromCondition);
   conditionsStore.applyConditionForField(field.value.alias);
 
   if (

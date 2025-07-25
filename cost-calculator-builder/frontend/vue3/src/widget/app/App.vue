@@ -1,6 +1,6 @@
 <template>
   <div class="ccb-app-container">
-    <div v-show="!appStore.getAppLoader">
+    <div v-show="!appStore.getAppLoader" :data-calc-id="currenctCalcId">
       <component :is="currentComponent" />
     </div>
     <Loader v-show="appStore.getAppLoader" />
@@ -8,7 +8,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, defineAsyncComponent, computed, inject } from "vue";
+import { onMounted, defineAsyncComponent, computed, inject, ref } from "vue";
 import { useAppStore } from "@/widget/app/providers/stores/appStore.ts";
 import { useAppearanceStore } from "@/widget/app/providers/stores/appearanceStore.ts";
 import { useSettingsStore } from "@/widget/app/providers/stores/settingsStore.ts";
@@ -19,10 +19,13 @@ import { IncomingData } from "@/widget/shared/types/app";
 import { useOrderFormStore } from "@/widget/app/providers/stores/orderFormStore.ts";
 import { useTranslationsStore } from "@/widget/app/providers/stores/translationsStore.ts";
 import Loader from "@/widget/shared/ui/components/Loader/index.ts";
-import "@vueform/slider/themes/default.css";
 import { useSubmissionStore } from "@/widget/app/providers/stores/submissionStore.ts";
 import { useMainStore } from "@/widget/app/providers/stores/mainStore.ts";
 import { usePageBreakerStore } from "@/widget/app/providers/stores/pageBreakerStore.ts";
+import { handleCalcAnalyticsRequest } from "@/widget/shared/api/handlerCalcAnalytics";
+import { getNonce } from "@/widget/shared/utils/nonce.utils";
+
+import "@vueform/slider/themes/default.css";
 
 const appStore = useAppStore();
 const appearanceStore = useAppearanceStore();
@@ -39,6 +42,7 @@ const mainStore = useMainStore();
 const calcId = inject("calc_id") as number;
 const key: any = `calc_data_${calcId}`;
 const calcData = window[key] as unknown as IncomingData;
+const currenctCalcId = ref(calcId);
 
 if ("settings" in calcData) {
   mainStore.setCalcId(+calcId);
@@ -76,7 +80,33 @@ onMounted(() => {
   pageBreakerStore.initPageConditions();
 
   window.addEventListener("load", () => {
-    setTimeout(() => appStore.updateAppLoader(false), 0);
+    setTimeout(() => {
+      appStore.updateAppLoader(false);
+
+      setTimeout(() => {
+        const appElement = document.querySelector(
+          `.ccb-app-container [data-calc-id="${currenctCalcId.value}"]`,
+        ) as HTMLElement;
+
+        const isVisible =
+          appElement &&
+          !!(
+            appElement?.offsetWidth ||
+            appElement?.offsetHeight ||
+            appElement?.getClientRects()?.length
+          );
+
+        if (isVisible) {
+          handleCalcAnalyticsRequest({
+            action: "ccb_calc_views",
+            nonce: getNonce("ccb_calc_views"),
+            data: {
+              calc_id: currenctCalcId.value,
+            },
+          });
+        }
+      }, 1000);
+    }, 0);
   });
 });
 </script>

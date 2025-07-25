@@ -351,7 +351,7 @@ function applyConditionForField(fieldAlias: string): void {
       }
     }
 
-    fieldStore.updateField(targetField.alias, targetField);
+    fieldStore.updateField(targetField.alias, targetField, true);
   }
 }
 
@@ -624,6 +624,7 @@ function unset(
         "updateDatePicker",
         targetField.selectedDate,
         targetField.alias,
+        true,
       );
     }
   }
@@ -661,11 +662,17 @@ function setValue(
         true,
         parseValue,
         targetField.alias,
+        true,
       );
     }
 
     if (result && targetField.fieldName === "range") {
-      callbackStore.runCallback("updateRange", parseValue, targetField.alias);
+      callbackStore.runCallback(
+        "updateRange",
+        parseValue,
+        targetField.alias,
+        true,
+      );
     }
   }
 
@@ -709,6 +716,7 @@ function setPeriod(
           "updateMultiRange",
           targetField.values,
           targetField.alias,
+          true,
         );
       }
     } else if (targetField.fieldName === "datePicker") {
@@ -1009,7 +1017,7 @@ function updateGroupElements(targetField: Field) {
       Array.from(elements.entries()).forEach(([_, element]) => {
         if (element.fieldName === "total") {
           element.hidden = targetField.hidden;
-          fieldStore.updateField(element.alias, element);
+          fieldStore.updateField(element.alias, element, true);
         }
       }),
     );

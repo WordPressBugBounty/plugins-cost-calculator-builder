@@ -1,0 +1,2 @@
+import{_ as s}from"./_plugin-vue_export-helper-DlAUqK2U.js";import{l as c,o,n as r,B as t}from"./pinia-Bf90yW2D.js";const a={},d={class:"ccb-block"},n={class:"ccb-fields-wrapper"};function _(e,l){return o(),c("div",d,[r("div",n,[t(e.$slots,"default",{},void 0,!0)])])}const p=s(a,[["render",_],["__scopeId","data-v-f3667571"]]);export{p as default};
+//# sourceMappingURL=FieldsWrapper-DpmQfdWN.js.map

@@ -26,6 +26,8 @@ register_activation_hook(
 			\cBuilder\Classes\Database\FormFieldsAttributes::create_table();
 			\cBuilder\Classes\Database\FormFieldsAttributes::maybe_create_trigger();
 			\cBuilder\Classes\CCBCalculatorTemplates::render_templates();
+			\cBuilder\Classes\Database\AnalyticsViews::create_table();
+			\cBuilder\Classes\Database\AnalyticsInteractions::create_table();
 		}
 
 		\cBuilder\Classes\CCBUpdates::init();

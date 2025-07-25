@@ -80,10 +80,7 @@ const getSubmissionComponent = computed(() => {
   }
 
   if (!isWooCheckoutOnlyEnabled.value && formSettings?.accessEmail) {
-    let payments: string[] = [];
-    if (formSettings?.payment) {
-      payments = formSettings.paymentMethods || [];
-    }
+    let payments: string[] = getPayments.value;
 
     if (formSettings?.summaryDisplay?.enable) {
       if (formSettings?.payment && formSettings?.paymentMethods?.length) {

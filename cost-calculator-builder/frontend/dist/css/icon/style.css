@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'ccb-fonts';
-  src:  url('fonts/ccb-fonts.eot?n1thnz');
-  src:  url('fonts/ccb-fonts.eot?n1thnz#iefix') format('embedded-opentype'),
-    url('fonts/ccb-fonts.ttf?n1thnz') format('truetype'),
-    url('fonts/ccb-fonts.woff?n1thnz') format('woff'),
-    url('fonts/ccb-fonts.svg?n1thnz#ccb-fonts') format('svg');
+  src:  url('fonts/ccb-fonts.eot?hqhktk');
+  src:  url('fonts/ccb-fonts.eot?hqhktk#iefix') format('embedded-opentype'),
+    url('fonts/ccb-fonts.ttf?hqhktk') format('truetype'),
+    url('fonts/ccb-fonts.woff?hqhktk') format('woff'),
+    url('fonts/ccb-fonts.svg?hqhktk#ccb-fonts') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -25,6 +25,10 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.ccb-icon-Dashboard-chart:before {
+  content: "\ea29";
+  color: #fff;
+}
 .ccb-icon-icon-code:before {
   content: "\ea0c";
   color: #1ab163;

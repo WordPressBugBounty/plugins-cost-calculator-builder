@@ -1,8 +1,8 @@
-import { SubmitsAPI } from "@/widget/shared/api/SubmitsAPI.ts";
+import { WidgetAPI } from "@/widget/shared/api/WidgetAPI";
 import { ISubmitsRequestParams } from "@/widget/shared/types/orders";
 
 export async function handleSubmissionRequest<T>(
   params: ISubmitsRequestParams,
 ): Promise<T> {
-  return await SubmitsAPI.makeRequest(params);
+  return await WidgetAPI.makeRequest(params);
 }

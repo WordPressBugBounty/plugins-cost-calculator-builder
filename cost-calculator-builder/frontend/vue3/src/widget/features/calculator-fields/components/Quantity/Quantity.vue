@@ -127,6 +127,7 @@ const updateValue = (
   updateWithValue = false,
   numericValue: number,
   alias?: string,
+  fromCondition?: boolean,
 ) => {
   if (alias && alias !== field.value.alias) {
     return;
@@ -149,7 +150,7 @@ const updateValue = (
     rawInput.value,
   );
 
-  fieldStore.updateField(field.value.alias, field.value);
+  fieldStore.updateField(field.value.alias, field.value, fromCondition);
   conditionsStore.applyConditionForField(field.value.alias);
   if (
     fieldStore.getPageBreakEnabled &&
@@ -161,8 +162,7 @@ const updateValue = (
 
 const onInput = (event: Event) => {
   const target = event.target as HTMLInputElement;
-
-  if (target.value.includes(",")) {
+  if (target.value?.toString()?.includes(",")) {
     target.value = target.value.replace(",", ".");
   }
   let value = field.value.round
@@ -379,7 +379,7 @@ callbackStore.add("updateQuantity", updateValue);
 
 onMounted(() => {
   rawInput.value = field.value.originalValue.toString();
-  updateValue(false, field.value.originalValue);
+  updateValue(false, field.value.originalValue, undefined, true);
 });
 </script>
 

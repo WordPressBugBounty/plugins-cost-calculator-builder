@@ -10,8 +10,11 @@ use cBuilder\Classes\Database\Forms;
 use cBuilder\Classes\pdfManager\CCBPdfManager;
 use cBuilder\Classes\pdfManager\CCBPdfManagerHelper;
 use cBuilder\Classes\pdfManager\CCBPdfManagerTemplates;
+use cBuilder\Helpers\CCBCleanHelper;
 use cBuilder\Helpers\CCBFieldsHelper;
 use cBuilder\Helpers\CCBOrderFormFieldsHelper;
+use cBuilder\Classes\Database\AnalyticsViews;
+use cBuilder\Classes\Database\AnalyticsInteractions;
 
 class CCBCalculators {
 
@@ -1579,6 +1582,69 @@ class CCBCalculators {
 			$result['success']           = true;
 			$result['message']           = 'Template deleted successfully';
 			$result['data']['templates'] = CCBPdfManagerTemplates::ccb_get_templates_list();
+		}
+
+		wp_send_json( $result );
+	}
+
+	public static function ccb_calc_views() {
+		check_ajax_referer( 'ccb_calc_views', 'nonce' );
+
+		$result = array(
+			'success' => false,
+			'message' => 'Invalid data',
+		);
+
+		if ( isset( $_POST['data'] ) ) {
+			$data = ccb_convert_from_btoa( $_POST['data'] );
+			if ( ! ccb_is_convert_correct( $data ) ) {
+				wp_send_json( $result );
+			}
+		}
+
+		$data = CCBCleanHelper::cleanData( (array) json_decode( stripslashes( $data ) ) );
+
+		if ( isset( $data['calc_id'] ) ) {
+			$calc_id    = intval( $data['calc_id'] );
+			$ip_address = $_SERVER['REMOTE_ADDR'];
+
+			$views = AnalyticsViews::create_calculator_views( $calc_id, $ip_address );
+
+			if ( $views ) {
+				$result['success'] = true;
+				$result['message'] = 'Success';
+			}
+		}
+
+		wp_send_json( $result );
+	}
+
+	public static function ccb_calc_interactions() {
+		check_ajax_referer( 'ccb_calc_interactions', 'nonce' );
+
+		$result = array(
+			'success' => false,
+			'message' => 'Invalid data',
+		);
+
+		if ( isset( $_POST['data'] ) ) {
+			$data = ccb_convert_from_btoa( $_POST['data'] );
+			if ( ! ccb_is_convert_correct( $data ) ) {
+				wp_send_json( $result );
+			}
+		}
+
+		$data = CCBCleanHelper::cleanData( (array) json_decode( stripslashes( $data ) ) );
+
+		if ( isset( $data['calc_id'] ) ) {
+			$calc_id = intval( $data['calc_id'] );
+
+			$interactions = AnalyticsInteractions::create_calculator_interactions( $calc_id );
+
+			if ( $interactions ) {
+				$result['success'] = true;
+				$result['message'] = 'Success';
+			}
 		}
 
 		wp_send_json( $result );

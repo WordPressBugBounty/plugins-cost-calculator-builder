@@ -125,7 +125,7 @@ onMounted(() => {
     seconds: 0,
   };
   field.value.displayValue = getDisplayValue.value;
-  fieldStore.updateField(field.value.alias, field.value);
+  fieldStore.updateField(field.value.alias, field.value, true);
 });
 
 const getDisplayValue = computed(() => {

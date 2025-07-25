@@ -1,0 +1,2 @@
+import{d,t as c,c as s,l as n,o as u,n as v,M as m,A as p,u as f}from"./pinia-Bf90yW2D.js";const h=d({__name:"Divider",props:{field:{}},setup(t){const r=t,{field:e}=c(r),a=s(()=>e.value.len||"100%"),i=s(()=>e.value.size||"1px"),l=s(()=>e.value.style||"solid"),o=s(()=>({width:a.value,borderBottom:i.value+" "+l.value+" var(--ccb-fields-border-color)"}));return(_,b)=>(u(),n("div",{class:p(["ccb-field ccb-divider",f(e).additionalStyles])},[v("div",{class:"ccb-divider__item",style:m({...o.value})},null,4)],2))}});export{h as default};
+//# sourceMappingURL=index-DNYMCskE.js.map

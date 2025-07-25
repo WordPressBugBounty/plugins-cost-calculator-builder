@@ -8,7 +8,7 @@
  * License: GNU General Public License v2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: cost-calculator-builder
- * Version: 3.5.20
+ * Version: 3.5.21
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -17,9 +17,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 define( 'CALC_DIR', __DIR__ );
 define( 'CALC_FILE', __FILE__ );
-define( 'CALC_VERSION', '3.5.20' );
+define( 'CALC_VERSION', '3.5.21' );
 define( 'CALC_WP_TESTED_UP', '6.8.2' );
-define( 'CALC_DB_VERSION', '3.5.0' );
+define( 'CALC_DB_VERSION', '3.5.21' );
 define( 'CALC_PATH', dirname( CALC_FILE ) );
 define( 'CALC_URL', plugins_url( '', CALC_FILE ) );
 
@@ -107,6 +107,8 @@ require_once CALC_PATH . '/includes/classes/models/FormFieldsAttributes.php';
 require_once CALC_PATH . '/includes/classes/models/Payments.php';
 require_once CALC_PATH . '/includes/classes/models/Discounts.php';
 require_once CALC_PATH . '/includes/classes/models/Condition.php';
+require_once CALC_PATH . '/includes/classes/models/AnalyticsViews.php';
+require_once CALC_PATH . '/includes/classes/models/AnalyticsInteractions.php';
 require_once CALC_PATH . '/includes/classes/models/Promocodes.php';
 require_once CALC_PATH . '/includes/helpers/CCBCleanHelper.php';
 require_once CALC_PATH . '/includes/helpers/CCBConditionsHelper.php';

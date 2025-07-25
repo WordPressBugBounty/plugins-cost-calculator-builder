@@ -59,9 +59,10 @@
 
 <script setup lang="ts">
 import { toRefs, computed } from "vue";
-import { useAppearanceStore } from "@/widget/app/providers/stores/appearanceStore.ts";
 import VueDatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
+
+import { useAppearanceStore } from "@/widget/app/providers/stores/appearanceStore.ts";
 import { IDatePickerField } from "@/widget/shared/types/fields";
 import { useFieldsStore } from "@/widget/app/providers/stores/fieldsStore.ts";
 import { useConditionsStore } from "@/widget/app/providers/stores/conditionsStore.ts";
@@ -238,7 +239,11 @@ const getValue = computed(() => {
   return val * field.value.dayPrice;
 });
 
-const updateValue = (modelData: Date | Date[], alias?: string) => {
+const updateValue = (
+  modelData: Date | Date[],
+  alias?: string,
+  fromCondition?: boolean,
+) => {
   if (alias && alias !== field.value.alias) {
     return;
   }
@@ -247,7 +252,7 @@ const updateValue = (modelData: Date | Date[], alias?: string) => {
   field.value.value = getValue.value;
   field.value.displayValue = getDisplayValue.value;
   field.value.extraDisplayView = getExtraDisplayValue.value;
-  fieldStore.updateField(field.value.alias, field.value);
+  fieldStore.updateField(field.value.alias, field.value, fromCondition);
   conditionsStore.applyConditionForField(field.value.alias);
 };
 

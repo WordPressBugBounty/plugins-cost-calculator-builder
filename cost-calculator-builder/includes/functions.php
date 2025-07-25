@@ -439,9 +439,8 @@ function ccb_pro_active() {
 	return ( defined( 'CCB_PRO_VERSION' ) );
 }
 
-function ccb_all_calculators() {
-	$lists = array( esc_html__( 'select', 'cost-calculator-builder' ) => 'Select' );
-	$args  = array(
+function ccb_all_calculators_data() {
+	$args = array(
 		'post_type'      => 'cost-calc',
 		'posts_per_page' => -1,
 		'post_status'    => 'publish',
@@ -449,6 +448,30 @@ function ccb_all_calculators() {
 
 	$data = new \WP_Query( $args );
 	$data = $data->posts;
+
+	return $data;
+}
+
+function ccb_all_calculators_data_list() {
+	$lists = array();
+	$data  = ccb_all_calculators_data();
+
+	if ( count( $data ) > 0 ) {
+		foreach ( $data as $value ) {
+			$lists[] = array(
+				'id'    => $value->ID,
+				'label' => $value->post_title,
+				'slug'  => $value->post_name,
+			);
+		}
+	}
+
+	return $lists;
+}
+
+function ccb_all_calculators() {
+	$lists = array( esc_html__( 'select', 'cost-calculator-builder' ) => 'Select' );
+	$data  = ccb_all_calculators_data();
 
 	if ( count( $data ) > 0 ) {
 		foreach ( $data as $value ) {
@@ -636,6 +659,21 @@ function my_admin_bar_menu( $wp_admin_bar ) {
 				),
 			)
 		);
+
+		$show_analytics = apply_filters( 'ccb_maybe_show_analytics_menu', false );
+		if ( $show_analytics ) {
+			$wp_admin_bar->add_menu(
+				array(
+					'parent' => 'ccb-admin-menu',
+					'id'     => 'ccb-admin-menu-items-analytics',
+					'title'  => __( 'Analytics', 'cost-calculator-builder' ),
+					'href'   => get_admin_url( null, 'admin.php?page=cost_calculator_analytics' ),
+					'meta'   => array(
+						'class' => 'ccb-admin-menu-item',
+					),
+				)
+			);
+		}
 	}
 
 	$wp_admin_bar->add_menu(
@@ -1043,4 +1081,135 @@ function ccb_generate_random_handle( $length = 10 ): string {
 	}
 
 	return $str;
+}
+
+function ccb_is_valid_ip( $ip ) {
+	return filter_var( $ip, FILTER_VALIDATE_IP ) !== false;
+}
+
+function ccb_get_date_range_for_period_pro( $period, $custom_date = null ) {
+	$from  = null;
+	$to    = null;
+	$today = new \DateTimeImmutable( 'today' );
+
+	switch ( $period ) {
+		case 'today':
+			$from = $today->setTime( 0, 0, 0 );
+			$to   = $today->setTime( 23, 59, 59 );
+			break;
+		case 'yesterday':
+			$from = $today->modify( '-1 day' )->setTime( 0, 0, 0 );
+			$to   = $today->modify( '-1 day' )->setTime( 23, 59, 59 );
+			break;
+		case 'last_7_days':
+			$from = $today->modify( '-6 days' )->setTime( 0, 0, 0 );
+			$to   = $today->setTime( 23, 59, 59 );
+			break;
+		case 'last_30_days':
+			$from = $today->modify( '-29 days' )->setTime( 0, 0, 0 );
+			$to   = $today->setTime( 23, 59, 59 );
+			break;
+		case 'last_90_days':
+			$from = $today->modify( '-89 days' )->setTime( 0, 0, 0 );
+			$to   = $today->setTime( 23, 59, 59 );
+			break;
+		case 'last_year':
+			$from = $today->modify( '-1 year' )->setTime( 0, 0, 0 );
+			$to   = $today->setTime( 23, 59, 59 );
+			break;
+		case 'custom':
+			$date_string = $custom_date;
+
+			if ( ! empty( $date_string ) ) {
+				if ( strpos( $date_string, ' - ' ) !== false ) {
+					$dates = explode( ' - ', $date_string );
+					if ( count( $dates ) === 2 ) {
+						try {
+							$from = \DateTimeImmutable::createFromFormat( 'd/m/Y', trim( $dates[0] ) );
+							$to   = \DateTimeImmutable::createFromFormat( 'd/m/Y', trim( $dates[1] ) );
+
+							if ( $from ) {
+								$from = $from->setTime( 0, 0, 0 );
+							}
+							if ( $to ) {
+								$to = $to->setTime( 23, 59, 59 );
+							}
+						} catch ( Exception $e ) {
+							$from = null;
+							$to   = null;
+						}
+					}
+				} else {
+					try {
+						$from = \DateTimeImmutable::createFromFormat( 'd/m/Y', trim( $date_string ) );
+						if ( $from ) {
+							$to   = $from->setTime( 23, 59, 59 );
+							$from = $from->setTime( 0, 0, 0 );
+						}
+					} catch ( Exception $e ) {
+						$from = null;
+						$to   = null;
+					}
+				}
+			}
+			break;
+		case 'all':
+		default:
+			break;
+	}
+
+	return array(
+		'from' => $from,
+		'to'   => $to,
+	);
+}
+function ccb_convert_to_k( $number ) {
+	$number = (int) $number;
+
+	if ( $number > 1000 ) {
+		return ( $number / 1000 ) . 'k';
+	}
+
+	return $number;
+}
+
+function ccb_get_cart_series( $series ) {
+	if ( 1 === count( $series ) ) {
+		return array( $series[0], 0 );
+	} elseif ( 0 === count( $series ) ) {
+		return array( 0, 0 );
+	}
+
+	return $series;
+}
+
+function ccb_get_optimal_grouping_for_custom_period( $from, $to ) {
+	if ( ! $from || ! $to ) {
+		return 'week';
+	}
+
+	$diff      = $to->diff( $from );
+	$totalDays = $diff->days;
+
+	if ( $totalDays <= 2 ) {
+		return 'hour';
+	} elseif ( $totalDays <= 7 ) {
+		return 'day';
+	} elseif ( $totalDays <= 31 ) {
+		return 'week';
+	} elseif ( $totalDays <= 365 ) {
+		return 'month';
+	} else {
+		return 'year';
+	}
+}
+
+function ccb_smart_format( $value, $precision = 2 ) {
+	$float = round( floatval( $value ), $precision );
+
+	if ( 0.0 === fmod( $float, 1.0 ) ) {
+		return (int) $float;
+	}
+
+	return $float;
 }

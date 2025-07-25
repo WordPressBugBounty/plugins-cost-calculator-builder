@@ -40,6 +40,19 @@ function cBuilder_admin_enqueue() {
 				'in-footer' => true,
 			)
 		);
+
+		wp_localize_script(
+			'ccb-admin-bundle',
+			'ccb_ajax_window',
+			array(
+				'ajax_url'     => admin_url( 'admin-ajax.php' ),
+				'dateFormat'   => get_option( 'date_format' ),
+				'language'     => substr( get_bloginfo( 'language' ), 0, 2 ),
+				'plugin_url'   => CALC_URL,
+				'translations' => array_merge( \cBuilder\Classes\CCBTranslations::get_frontend_translations(), \cBuilder\Classes\CCBTranslations::get_backend_translations() ),
+				'pro_active'   => ccb_pro_active(),
+			)
+		);
 	} elseif ( isset( $_GET['page'] ) && ( $_GET['page'] === 'cost_calculator_gopro' ) ) { //phpcs:ignore
 		wp_enqueue_style( 'ccb-calc-font', CALC_URL . '/frontend/dist/css/font/font.css', array(), CALC_VERSION );
 		wp_enqueue_style( 'ccb-admin-gopro-css', CALC_URL . '/frontend/dist/css/gopro.css', array(), CALC_VERSION );

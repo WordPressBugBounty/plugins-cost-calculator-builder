@@ -2,6 +2,7 @@
 $support_url  = 'https://support.stylemixthemes.com/tickets/new/support?item_id=29';
 $current_page = isset( $_GET['page'] ) ? sanitize_text_field( $_GET['page'] ) : 'cost_calculator_orders'; // phpcs:ignore WordPress.Security.NonceVerification
 $current_page = isset( $_GET['tab'] ) && sanitize_text_field( $_GET['tab'] ) === 'settings' ? 'cost_calculator_builder_settings' : $current_page; // phpcs:ignore WordPress.Security.NonceVerification
+// phpcs:disable
 $header_pages = array(
 	'calculators' => array(
 		'icon'  => 'ccb-icon-Union-18',
@@ -15,6 +16,12 @@ $header_pages = array(
 		'title' => __( 'Orders', 'cost-calculator-builder' ),
 		'key'   => 'cost_calculator_orders',
 	),
+	// 'analytics'   => array(
+	// 	'icon'  => 'ccb-icon-Dashboard-chart',
+	// 	'link'  => get_admin_url() . 'admin.php?page=cost_calculator_analytics',
+	// 	'title' => __( 'Analytics', 'cost-calculator-builder' ),
+	// 	'key'   => 'cost_calculator_analytics',
+	// ),
 	'settings'    => array(
 		'icon'  => 'ccb-icon-Union-28',
 		'link'  => get_admin_url() . 'admin.php?page=cost_calculator_builder&tab=settings',
@@ -39,6 +46,7 @@ if ( defined( 'CCB_PRO' ) ) {
 		'key'   => 'cost_calculator_builder-account',
 	);
 }
+// phpcs:enable
 
 ?>
 

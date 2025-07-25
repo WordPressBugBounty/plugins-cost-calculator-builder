@@ -25,6 +25,7 @@ import { useSettingsStore } from "@/widget/app/providers/stores/settingsStore.ts
 import { ContactFormFields } from "@/widget/shared/types/orders/contact-form-fields.type";
 import { useOrderFormStore } from "@/widget/app/providers/stores/orderFormStore.ts";
 import { useFieldsStore } from "@/widget/app/providers/stores/fieldsStore.ts";
+import { getNonce } from "@/widget/shared/utils/nonce.utils";
 
 type OrdersResponseData = {
   success: boolean;
@@ -58,18 +59,6 @@ interface IOrderResult {
     currency: string,
   ) => Promise<void>;
 }
-
-const getNonces = (): Record<string, string> => {
-  if (
-    "ccb_frontend_nonces" in window &&
-    typeof window.ccb_frontend_nonces === "object" &&
-    window.ccb_frontend_nonces !== null
-  ) {
-    return window.ccb_frontend_nonces;
-  }
-
-  return window.ccb_nonces || {};
-};
 
 const prepareOrderData = (
   type: PaymentMethods,
@@ -407,11 +396,6 @@ const orderDetailsHelper = (fields: Field[]): IOrderDetailsType => {
   }
 
   return data;
-};
-
-const getNonce = (key: string): string => {
-  const data: Record<string, any> = getNonces();
-  return data[key].toString() || "";
 };
 
 const makePayment = async (

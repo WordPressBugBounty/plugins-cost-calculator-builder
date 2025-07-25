@@ -59,6 +59,8 @@ class CCBAjaxAction {
 		self::addAction( 'calc_config_settings', array( CCBCalculators::class, 'calc_config_settings' ) );
 		self::addAction( 'calc_delete_payment', array( CCBCalculators::class, 'calc_delete_payment' ) );
 		self::addAction( 'ccb_update_banner', array( CCBCalculators::class, 'ccb_update_banner' ) );
+		self::addAction( 'ccb_calc_views', array( CCBCalculators::class, 'ccb_calc_views' ), true );
+		self::addAction( 'ccb_calc_interactions', array( CCBCalculators::class, 'ccb_calc_interactions' ), true );
 
 		self::addAction( 'calc_save_as_template', array( CCBCalculatorTemplates::class, 'calc_save_as_template' ) );
 		self::addAction( 'calc_get_templates_list', array( CCBCalculatorTemplates::class, 'calc_get_all_templates' ) );
