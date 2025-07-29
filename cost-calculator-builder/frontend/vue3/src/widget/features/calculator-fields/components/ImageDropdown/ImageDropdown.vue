@@ -9,10 +9,7 @@
     }"
   >
     <div class="ccb-field__label">
-      <RequiredHint
-        v-if="isRequired"
-        :text="translationsStore.getTranslations.requiredField"
-      />
+      <RequiredHint v-if="isRequired" :text="requiredWarningText" />
       <div class="ccb-field__title">
         {{ field.label
         }}<span v-if="field.required" class="ccb-field-required-mark">*</span
@@ -101,6 +98,7 @@ import ProBadge from "@/widget/shared/ui/components/Pro-badge/ProBadge.vue";
 import RequiredHint from "@/widget/shared/ui/components/Required-hint/RequiredHint.vue";
 import { useTranslationsStore } from "@/widget/app/providers/stores/translationsStore";
 import { usePageBreakerStore } from "@/widget/app/providers/stores/pageBreakerStore.ts";
+import { useSettingsStore } from "@/widget/app/providers/stores/settingsStore.ts";
 
 type Props = {
   field: ISingleOptionsField;
@@ -119,6 +117,11 @@ const conditionsStore = useConditionsStore();
 const pageBreakerStore = usePageBreakerStore();
 
 const dropdownWrapper = ref<HTMLElement | null>(null);
+
+const requiredWarningText = computed(() => {
+  const settingStore = useSettingsStore();
+  return settingStore.getWarningTexts?.requiredMsg || "";
+});
 
 const toggleBody = () => {
   if (!isBodyVisible.value) {

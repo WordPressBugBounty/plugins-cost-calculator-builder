@@ -8,10 +8,7 @@
     }"
   >
     <div class="ccb-field__label">
-      <RequiredHint
-        v-if="isRequired"
-        :text="translationsStore.getTranslations.requiredField"
-      />
+      <RequiredHint v-if="isRequired" :text="requiredWarningText" />
       <div class="ccb-field__title">
         <span class="ccb-field__title--title-box">
           <span
@@ -67,8 +64,8 @@ import { useSingleField } from "@/widget/actions/fields/composable/useSingleFiel
 import { useCallbackStore } from "@/widget/app/providers/stores/callbackStore.ts";
 import { useCurrency } from "@/widget/actions/fields/composable/useCurrency.ts";
 import RequiredHint from "@/widget/shared/ui/components/Required-hint/RequiredHint.vue";
-import { useTranslationsStore } from "@/widget/app/providers/stores/translationsStore";
 import { usePageBreakerStore } from "@/widget/app/providers/stores/pageBreakerStore.ts";
+import { useSettingsStore } from "@/widget/app/providers/stores/settingsStore.ts";
 
 type Props = {
   field: IRangeField;
@@ -83,7 +80,6 @@ const conditionsStore = useConditionsStore();
 const singleFieldMixins = useSingleField();
 const callbackStore = useCallbackStore();
 const currencyInstance = useCurrency();
-const translationsStore = useTranslationsStore();
 const rawInput = ref<number>(0);
 const pageBreakerStore = usePageBreakerStore();
 
@@ -93,6 +89,11 @@ onMounted(() => {
     : field.value.min;
 
   updateValue(rawInput.value, undefined, true);
+});
+
+const requiredWarningText = computed(() => {
+  const settingStore = useSettingsStore();
+  return settingStore.getWarningTexts?.requiredMsg || "";
 });
 
 const currentComponents = computed(() => {

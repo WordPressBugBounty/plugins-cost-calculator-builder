@@ -21,10 +21,7 @@
           v-else-if="requiredType === 'upload_url'"
           :text="translationsStore.getTranslations.wrongFileUrl"
         />
-        <RequiredHint
-          v-else
-          :text="translationsStore.getTranslations.requiredField"
-        />
+        <RequiredHint v-else :text="requiredWarningText" />
       </template>
 
       <div class="ccb-field__title">
@@ -152,6 +149,7 @@ import Hint from "@/widget/shared/ui/components/Hint";
 import RequiredHint from "@/widget/shared/ui/components/Required-hint";
 import Button from "@/widget/shared/ui/components/Button";
 import ProBadge from "@/widget/shared/ui/components/Pro-badge/ProBadge.vue";
+import { useSettingsStore } from "@/widget/app/providers/stores/settingsStore.ts";
 
 type Props = {
   field: IFileUploadField;
@@ -175,6 +173,11 @@ const requiredType = ref<string>("");
 const allowList = ref<boolean>(false);
 
 const changeUploadUrl = () => (requiredType.value = "");
+
+const requiredWarningText = computed(() => {
+  const settingStore = useSettingsStore();
+  return settingStore.getWarningTexts?.requiredMsg || "";
+});
 
 const computedMaxAttachedFiles = computed(() => {
   return field.value.maxAttachedFiles || 1;

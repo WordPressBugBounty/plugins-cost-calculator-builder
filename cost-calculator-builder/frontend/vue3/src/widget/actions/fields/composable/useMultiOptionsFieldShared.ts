@@ -4,6 +4,7 @@ import { useFieldsStore } from "@/widget/app/providers/stores/fieldsStore.ts";
 import { useSingleField } from "@/widget/actions/fields/composable/useSingleField.ts";
 import { useConditionsStore } from "@/widget/app/providers/stores/conditionsStore.ts";
 import { usePageBreakerStore } from "@/widget/app/providers/stores/pageBreakerStore.ts";
+import { useSettingsStore } from "@/widget/app/providers/stores/settingsStore";
 
 export function useMultiOptionsFieldShared(props: {
   field: IMultiOptionsField;
@@ -84,6 +85,11 @@ export function useMultiOptionsFieldShared(props: {
     updateValue(selectedOptions.value);
   };
 
+  const requiredWarningText = computed(() => {
+    const settingStore = useSettingsStore();
+    return settingStore.getWarningTexts?.requiredMsg || "";
+  });
+
   return {
     style,
     selectedOptions,
@@ -92,5 +98,6 @@ export function useMultiOptionsFieldShared(props: {
     isRequired,
     fieldValue,
     getKey,
+    requiredWarningText,
   };
 }

@@ -14,11 +14,7 @@
           :field="field"
           :text="getRangeRequiredText"
         />
-        <RequiredHint
-          v-else
-          :field="field"
-          :text="translationsStore.getTranslations.requiredField"
-        />
+        <RequiredHint v-else :field="field" :text="requiredWarningText" />
       </div>
       <div class="ccb-field__title">
         <span>{{ field.label }}</span>
@@ -102,6 +98,11 @@ const pageBreakerStore = usePageBreakerStore();
 const rawInput = ref<string>(field.value.originalValue.toString());
 const isEditing = ref<boolean>(false);
 const forceUpdateKey = ref<number>(0);
+
+const requiredWarningText = computed(() => {
+  const settingStore = useSettingsStore();
+  return settingStore.getWarningTexts?.requiredMsg || "";
+});
 
 const formattedValue = computed(() => {
   if (isEditing.value) return rawInput.value;

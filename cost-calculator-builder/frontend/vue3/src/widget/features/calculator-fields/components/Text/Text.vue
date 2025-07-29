@@ -14,11 +14,7 @@
           :field="field"
           :text="`${translationsStore.getTranslations.allowedLimitIs} ${field.numberOfCharacters} ${translationsStore.getTranslations.characters}`"
         />
-        <RequiredHint
-          v-else
-          :field="field"
-          :text="translationsStore.getTranslations.requiredField"
-        />
+        <RequiredHint v-else :field="field" :text="requiredWarningText" />
       </div>
       <div class="ccb-field__title">
         <span>{{ field.label }}</span>
@@ -61,6 +57,8 @@ import { useFieldsStore } from "@/widget/app/providers/stores/fieldsStore.ts";
 import { useAppearanceStore } from "@/widget/app/providers/stores/appearanceStore.ts";
 import RequiredHint from "@/widget/shared/ui/components/Required-hint/RequiredHint.vue";
 import { useTranslationsStore } from "@/widget/app/providers/stores/translationsStore";
+import { useSettingsStore } from "@/widget/app/providers/stores/settingsStore.ts";
+
 type Props = {
   field: ITextField;
 };
@@ -73,6 +71,11 @@ const appearanceStore = useAppearanceStore();
 const translationsStore = useTranslationsStore();
 
 const requitedType = ref<string>("required");
+
+const requiredWarningText = computed(() => {
+  const settingStore = useSettingsStore();
+  return settingStore.getWarningTexts?.requiredMsg || "";
+});
 
 const updateValue = (value: string) => {
   requitedType.value = "required";

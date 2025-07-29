@@ -8,10 +8,7 @@
     }"
   >
     <div class="ccb-field__label">
-      <RequiredHint
-        v-if="isRequired"
-        :text="translationsStore.getTranslations.requiredField"
-      />
+      <RequiredHint v-if="isRequired" :text="requiredWarningText" />
       <div class="ccb-field__title">
         {{ field.label
         }}<span v-if="field.required" class="ccb-field-required-mark">*</span
@@ -91,6 +88,10 @@ const settingStore = useSettingsStore();
 
 const { parseDate, getDaysDifference, displayValueHelper } =
   useDatePickerFieldHelper();
+
+const requiredWarningText = computed(() => {
+  return settingStore.getWarningTexts?.requiredMsg || "";
+});
 
 const currentLang = computed(() => {
   return settingStore.getLanguage;

@@ -258,6 +258,7 @@ const sendQuote = (pdf: any) => {
     data.pdfName = pdfName.value;
     const hashData = customBtoa(data);
     formData.append("data", hashData);
+    formData.append("calcId", appStore.getCalcId?.toString() ?? "");
 
     const result = await fetch((window as any).ajax_window.ajax_url, {
       method: "POST",

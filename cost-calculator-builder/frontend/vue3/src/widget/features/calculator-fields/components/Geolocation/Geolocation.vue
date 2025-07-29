@@ -8,7 +8,7 @@
     }"
   >
     <div class="ccb-field__label">
-      <RequiredHint text="This field is required" v-if="isRequired" />
+      <RequiredHint :text="requiredWarningText" v-if="isRequired" />
       <div class="ccb-field__title">
         {{ field.label
         }}<span v-if="field.required" class="ccb-field-required-mark">*</span
@@ -48,6 +48,7 @@ import { useAppearanceStore } from "@/widget/app/providers/stores/appearanceStor
 import ProBadge from "@/widget/shared/ui/components/Pro-badge/ProBadge.vue";
 import RequiredHint from "@/widget/shared/ui/components/Required-hint/RequiredHint.vue";
 import { useFieldsStore } from "@/widget/app/providers/stores/fieldsStore.ts";
+import { useSettingsStore } from "@/widget/app/providers/stores/settingsStore.ts";
 
 const fieldStore = useFieldsStore();
 
@@ -59,6 +60,11 @@ const props = defineProps<Props>();
 const { field } = toRefs(props);
 
 const appearanceStore = useAppearanceStore();
+
+const requiredWarningText = computed(() => {
+  const settingStore = useSettingsStore();
+  return settingStore.getWarningTexts?.requiredMsg || "";
+});
 
 const getLocationType = computed(() => {
   return field.value?.geoType;

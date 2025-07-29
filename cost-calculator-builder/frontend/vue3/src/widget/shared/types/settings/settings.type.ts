@@ -119,6 +119,7 @@ export interface IFormFields {
 }
 
 export interface IWarningTexts {
+  requiredMsg: string;
   formFields: {
     emailField: string;
     emailFormat: string;

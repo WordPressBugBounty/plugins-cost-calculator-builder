@@ -221,6 +221,15 @@ if ( ! empty( $settings['woo_checkout'] ) && ! empty( $settings['woo_checkout'][
 	}
 }
 
+if ( ! is_plugin_active( 'woocommerce/woocommerce.php' ) ) {
+	$settings['woo_products']['enable'] = '';
+	$settings['woo_checkout']['enable'] = '';
+
+	if ( ! empty( $settings['formFields']['paymentMethods'] ) && in_array( 'woo_checkout', $settings['formFields']['paymentMethods'] ) ) {
+		$settings['formFields']['paymentMethods'] = array_diff( $settings['formFields']['paymentMethods'], array( 'woo_checkout' ) );
+	}
+}
+
 $data = array(
 	'id'                       => $calc_id,
 	'settings'                 => $settings,

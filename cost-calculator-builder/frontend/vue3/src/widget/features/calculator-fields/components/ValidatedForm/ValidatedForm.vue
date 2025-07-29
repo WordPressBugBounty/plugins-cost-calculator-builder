@@ -17,10 +17,7 @@
           v-else-if="requiredType === 'invalid_url'"
           :text="translationsStore.getTranslations.enterValidUrl"
         />
-        <RequiredHint
-          v-else
-          :text="translationsStore.getTranslations.requiredField"
-        />
+        <RequiredHint v-else :text="requiredWarningText" />
       </div>
       <div class="ccb-field__title">
         {{ field.label
@@ -63,6 +60,7 @@ import { validateUrl } from "@/widget/shared/utils/validate-url.utils";
 import ProBadge from "@/widget/shared/ui/components/Pro-badge/ProBadge.vue";
 import RequiredHint from "@/widget/shared/ui/components/Required-hint/RequiredHint.vue";
 import { useTranslationsStore } from "@/widget/app/providers/stores/translationsStore";
+import { useSettingsStore } from "@/widget/app/providers/stores/settingsStore.ts";
 
 type Props = {
   field: IValidatedFormField;
@@ -76,6 +74,11 @@ const requiredType = ref<string>("");
 const appearanceStore = useAppearanceStore();
 const translationsStore = useTranslationsStore();
 const fieldStore = useFieldsStore();
+
+const requiredWarningText = computed(() => {
+  const settingStore = useSettingsStore();
+  return settingStore.getWarningTexts?.requiredMsg || "";
+});
 
 const currentComponents = computed(() => {
   const type = field.value?.fieldType;

@@ -9,10 +9,7 @@
     }"
   >
     <div class="ccb-field__label">
-      <RequiredHint
-        v-if="isRequired"
-        :text="translationsStore.getTranslations.requiredField"
-      />
+      <RequiredHint v-if="isRequired" :text="requiredWarningText" />
       <div class="ccb-field__title">
         {{ field.label
         }}<span v-if="field.required" class="ccb-field-required-mark">*</span>
@@ -54,7 +51,7 @@ import { IMultiOptionsField } from "@/widget/shared/types/fields";
 import { useAppearanceStore } from "@/widget/app/providers/stores/appearanceStore.ts";
 import { useMultiOptionsFieldShared } from "@/widget/actions/fields/composable/useMultiOptionsFieldShared.ts";
 import RequiredHint from "@/widget/shared/ui/components/Required-hint/RequiredHint.vue";
-import { useTranslationsStore } from "@/widget/app/providers/stores/translationsStore";
+
 type Props = {
   field: IMultiOptionsField;
 };
@@ -63,8 +60,8 @@ const props = defineProps<Props>();
 const { field } = toRefs(props);
 
 const appearanceStore = useAppearanceStore();
-const translationsStore = useTranslationsStore();
-const { applyChanges, isRequired, fieldValue } =
+
+const { applyChanges, isRequired, fieldValue, requiredWarningText } =
   useMultiOptionsFieldShared(props);
 
 const currentComponents = computed(() => {

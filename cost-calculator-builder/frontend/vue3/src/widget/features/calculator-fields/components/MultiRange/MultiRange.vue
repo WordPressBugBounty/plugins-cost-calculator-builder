@@ -8,10 +8,7 @@
     }"
   >
     <div class="ccb-field__label">
-      <RequiredHint
-        v-if="isRequired"
-        :text="translationsStore.getTranslations.requiredField"
-      />
+      <RequiredHint v-if="isRequired" :text="requiredWarningText" />
       <div class="ccb-field__title">
         <span
           class="ccb-field__title--title-box"
@@ -69,8 +66,8 @@ import { useCallbackStore } from "@/widget/app/providers/stores/callbackStore.ts
 import { useConditionsStore } from "@/widget/app/providers/stores/conditionsStore.ts";
 import RequiredHint from "@/widget/shared/ui/components/Required-hint/RequiredHint.vue";
 import ProBadge from "@/widget/shared/ui/components/Pro-badge/ProBadge.vue";
-import { useTranslationsStore } from "@/widget/app/providers/stores/translationsStore";
 import { usePageBreakerStore } from "@/widget/app/providers/stores/pageBreakerStore.ts";
+import { useSettingsStore } from "@/widget/app/providers/stores/settingsStore.ts";
 
 type Props = {
   field: IMultiRangeField;
@@ -84,12 +81,16 @@ const fieldStore = useFieldsStore();
 const appearanceStore = useAppearanceStore();
 const singleFieldMixins = useSingleField();
 const callbackStore = useCallbackStore();
-const translationsStore = useTranslationsStore();
 const conditionsStore = useConditionsStore();
 const pageBreakerStore = usePageBreakerStore();
 
 const values = ref<number[]>(field.value.values || [0, 50]);
 const originalValue = ref<number>(0);
+
+const requiredWarningText = computed(() => {
+  const settingStore = useSettingsStore();
+  return settingStore.getWarningTexts?.requiredMsg || "";
+});
 
 const currentComponents = computed(() => {
   const style = field.value?.styles?.style || "default";
