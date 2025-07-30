@@ -121,14 +121,18 @@ class CCBBuilderAdminMenu {
 				array( $this, 'calc_orders_page_demo' )
 			);
 
-			add_submenu_page(
-				'cost_calculator_builder',
-				esc_html__( 'Analytics', 'cost-calculator-builder' ),
-				esc_html__( 'Analytics', 'cost-calculator-builder' ),
-				'manage_options',
-				'cost_calculator_analytics',
-				array( $this, 'cost_calculator_analytics_demo' )
-			);
+			$show_analytics = apply_filters( 'ccb_maybe_show_analytics_menu', false );
+
+			if ( $show_analytics ) {
+				add_submenu_page(
+					'cost_calculator_builder',
+					esc_html__( 'Analytics', 'cost-calculator-builder' ),
+					esc_html__( 'Analytics', 'cost-calculator-builder' ),
+					'manage_options',
+					'cost_calculator_analytics',
+					array( $this, 'cost_calculator_analytics_demo' )
+				);
+			}
 
 			add_submenu_page(
 				'cost_calculator_builder',
