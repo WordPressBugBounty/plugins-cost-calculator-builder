@@ -168,6 +168,7 @@ class CCBCssLoader {
 		// custom variables
 		$ccb_fields_bg_color           = $ccb_fields_color;
 		$ccb_fields_bg_color_alpha     = self::generate_color( $ccb_accent_color, '1A' );
+		$ccb_orders_notice_color       = self::generate_color( $ccb_accent_color, '33' );
 		$ccb_fields_border_color       = self::generate_color( $ccb_text_color, '1A' );
 		$ccb_container_dark_color      = self::generate_color( $ccb_text_color, '1D' );
 		$ccb_fields_description_color  = self::generate_color( $ccb_text_color, '80' );
@@ -219,6 +220,7 @@ class CCBCssLoader {
 			        --ccb-summary-description-color: $ccb_summary_description_color;
 			        --ccb-toggle-label-bg:           $ccb_toggle_label_bg;
 			        --ccb-fields-bg-color-alpha:     $ccb_fields_bg_color_alpha;
+			        --ccb-orders-notice-color:       $ccb_orders_notice_color;
 
 			        --ccb-header-size:			     $ccb_header_size;
 			        --ccb-header-weight:			 $ccb_header_weight;

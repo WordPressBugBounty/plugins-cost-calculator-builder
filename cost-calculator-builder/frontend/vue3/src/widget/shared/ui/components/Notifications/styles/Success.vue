@@ -33,7 +33,7 @@ const { message } = toRefs(props);
     width: 42px;
     height: 42px;
     border-radius: 50%;
-    background-color: rgba(26, 177, 99, 0.1);
+    background-color: var(--ccb-fields-bg-color-alpha);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -42,7 +42,7 @@ const { message } = toRefs(props);
     .calc-notice-icon-content {
       width: 22px;
       height: 22px;
-      background-color: #1ab163;
+      background-color: var(--ccb-accent-color);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -59,13 +59,13 @@ const { message } = toRefs(props);
 
   @keyframes pulse {
     0% {
-      box-shadow: 0 0 0 0 rgba(26, 177, 99, 0.5);
+      box-shadow: 0 0 0 0 var(--ccb-accent-color);
     }
     70% {
-      box-shadow: 0 0 0 10px rgba(26, 177, 99, 0);
+      box-shadow: 0 0 0 10px transparent;
     }
     100% {
-      box-shadow: 0 0 0 0 rgba(26, 177, 99, 0);
+      box-shadow: 0 0 0 0 transparent;
     }
   }
 
@@ -89,7 +89,7 @@ const { message } = toRefs(props);
     .calc-notice-title {
       font-size: 14px;
       font-weight: 700;
-      color: #00b163;
+      color: var(--ccb-accent-color);
     }
 
     .calc-notice-description {

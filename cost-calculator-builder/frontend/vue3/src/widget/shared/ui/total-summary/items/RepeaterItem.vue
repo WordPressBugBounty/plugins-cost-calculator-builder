@@ -4,6 +4,7 @@
       <div
         class="ccb-summary-repeater__header"
         @click="collapseStore[idx] = !collapseStore[idx]"
+        v-if="getFieldsFromMap(elements).length > 0"
       >
         <div
           class="ccb-summary-repeater__btn"
@@ -19,7 +20,10 @@
         class="ccb-summary-repeater__list"
         :class="{ hidden: collapseStore[idx] }"
       >
-        <template v-for="element in getFieldsFromMap(elements)">
+        <template
+          v-if="getFieldsFromMap(elements).length > 0"
+          v-for="element in getFieldsFromMap(elements)"
+        >
           <Transition name="fade">
             <TotalSummaryItem
               item-type="summary"
@@ -48,7 +52,7 @@ const collapseStore = ref<Record<number, boolean>>({});
 
 const getFieldsFromMap = computed(() => {
   return (data: Map<string, Field>): Field[] => {
-    return Array.from(data.values());
+    return Array.from(data.values()).filter((item: Field) => item.addToSummary);
   };
 });
 </script>

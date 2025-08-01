@@ -43,13 +43,12 @@ const getCurrentComponents = computed(() => {
 <style scoped lang="scss">
 .ccb-notifications {
   padding: 20px;
-  border: 1px solid #0019311a !important;
   border-radius: 8px;
   margin-top: 10px;
   box-shadow: 0 0 0 #cccccc !important;
   &.finish,
   &.success {
-    background-color: #00b16333;
+    background-color: var(--ccb-orders-notice-color);
   }
 }
 </style>

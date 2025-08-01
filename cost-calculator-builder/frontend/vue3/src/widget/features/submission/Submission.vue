@@ -87,6 +87,22 @@ const getSubmissionComponent = computed(() => {
         setIsPaymentAfterSubmit(true);
       }
 
+      if (
+        formSettings?.summaryDisplay?.actionAfterSubmit ===
+          "show_summary_block_with_pdf" ||
+        formSettings?.summaryDisplay?.actionAfterSubmit === "show_summary_block"
+      ) {
+        if (
+          settings.getSummaryDisplayShowSummary &&
+          formSettings?.payment &&
+          formSettings?.paymentMethods?.length
+        ) {
+          return defineAsyncComponent(
+            () => import("@/widget/features/submission/payments"),
+          );
+        }
+      }
+
       return defineAsyncComponent(
         () => import("@/widget/features/submission/summary-block"),
       );

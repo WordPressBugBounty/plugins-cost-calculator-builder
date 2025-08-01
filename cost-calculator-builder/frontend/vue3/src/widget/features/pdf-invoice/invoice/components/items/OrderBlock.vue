@@ -628,6 +628,7 @@ const getOrderDetails = computed(() => {
       }
     });
   }
+  result = result.filter((f) => f.addToSummary);
   return result;
 });
 

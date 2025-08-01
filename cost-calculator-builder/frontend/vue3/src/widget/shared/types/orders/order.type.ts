@@ -64,6 +64,7 @@ export interface IOrderDetailsHelperResult {
     label: string;
     value: string;
     converted: string;
+    optionValue?: string;
   }[];
   summary_value?: string | string[];
   summary_view?: string;

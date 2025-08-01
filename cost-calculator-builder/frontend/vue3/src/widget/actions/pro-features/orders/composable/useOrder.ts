@@ -288,6 +288,7 @@ const orderDetailsHelper = (fields: Field[]): IOrderDetailsType => {
         groupTitle: field.label,
         groupElements: orderDetailsHelper(elements),
         length: (field as IRepeaterField).groupElements?.length,
+        value: field.displayValue,
       });
     } else if (field.fieldName === "group") {
       (field as IGroupField).groupElements.forEach((element) => {
@@ -318,6 +319,7 @@ const orderDetailsHelper = (fields: Field[]): IOrderDetailsType => {
                 label: option.optionText,
                 value: option.optionConverted,
                 converted: option.optionConverted,
+                optionValue: option.optionValue,
               }));
             }
           }
@@ -350,7 +352,12 @@ const orderDetailsHelper = (fields: Field[]): IOrderDetailsType => {
       };
 
       if ("selectedOption" in field && Array.isArray(field.selectedOption)) {
-        item.temps = field.selectedOption.map((o: IOptions) => o.optionValue);
+        item.options = field.selectedOption.map((o: IOptions) => ({
+          label: o.optionText,
+          value: o.optionConverted,
+          converted: o.optionConverted,
+          optionValue: o.optionValue,
+        }));
       }
 
       if (
@@ -358,7 +365,14 @@ const orderDetailsHelper = (fields: Field[]): IOrderDetailsType => {
         field.selectedOption &&
         !Array.isArray(field.selectedOption)
       ) {
-        item.temps = [field?.selectedOption.optionValue];
+        item.options = [
+          {
+            label: field.selectedOption.optionText,
+            value: field.selectedOption.optionConverted,
+            converted: field.selectedOption.optionConverted,
+            optionValue: field.selectedOption.optionValue,
+          },
+        ];
       }
 
       if (
@@ -373,6 +387,7 @@ const orderDetailsHelper = (fields: Field[]): IOrderDetailsType => {
             label: option.optionText,
             value: option.optionConverted,
             converted: option.optionConverted,
+            optionValue: option.optionValue,
           }));
         }
       }

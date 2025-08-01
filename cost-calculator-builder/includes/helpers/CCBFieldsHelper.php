@@ -370,6 +370,7 @@ class CCBFieldsHelper {
 				if ( ! empty( $settings['general']['styles'][ $key ] ) ) {
 					$alias      = $settings['general']['styles'][ $key ];
 					$main_field = self::ccb_find_field( $alias, $fields );
+
 					if ( ! is_null( $main_field ) ) {
 						foreach ( $fields as $idx => $field ) {
 							$field_type = preg_replace( '/_field_id.*/', '', $field['alias'] );
@@ -377,6 +378,9 @@ class CCBFieldsHelper {
 								$fields[ $idx ]['styles'] = $main_field['styles'];
 							} elseif ( isset( $main_field['accordion'] ) ) {
 								$fields[ $idx ]['accordion'] = $main_field['accordion'];
+							}
+							if ( ! empty( $field['groupElements'] ) ) {
+								$fields[ $idx ]['groupElements'] = self::ccb_apply_style_for_all( $field['groupElements'], $settings );
 							}
 						}
 					}
@@ -391,6 +395,9 @@ class CCBFieldsHelper {
 					);
 				} else {
 					$fields[ $idx ]['accordion'] = false;
+				}
+				if ( ! empty( $field['groupElements'] ) ) {
+					$fields[ $idx ]['groupElements'] = self::ccb_apply_style_for_all( $field['groupElements'], $settings );
 				}
 			}
 		}

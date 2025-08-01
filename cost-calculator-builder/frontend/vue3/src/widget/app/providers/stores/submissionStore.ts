@@ -75,6 +75,16 @@ export const useSubmissionStore = () => {
         ) {
           if (!settingsStore.getSummaryDisplayShowSummary) {
             settingsStore.setSummaryDisplayShowSummary(true);
+
+            if (
+              settingsStore.formFields?.summaryDisplay?.actionAfterSubmit ===
+                "show_summary_block_with_pdf" ||
+              settingsStore.formFields?.summaryDisplay?.actionAfterSubmit ===
+                "show_summary_block"
+            ) {
+              paymentAfterSubmitStore.setSubmit(true);
+            }
+
             return;
           }
         }
