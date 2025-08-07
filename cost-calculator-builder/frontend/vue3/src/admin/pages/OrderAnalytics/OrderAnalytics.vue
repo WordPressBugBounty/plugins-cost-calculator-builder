@@ -95,6 +95,7 @@ const analyticsOptions = computed<AnalyticsOptions[]>(() => {
           ),
         },
       ],
+      deleted: false,
     },
     {
       label: "Calculators",

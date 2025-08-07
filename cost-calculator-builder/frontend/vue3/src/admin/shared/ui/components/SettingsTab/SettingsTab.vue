@@ -32,9 +32,15 @@
           }"
         >
           <i :class="page.icon" v-if="page.icon"></i>
-          <span class="ccb-settings-tab__sidebar-options-item-label">{{
-            page.label
-          }}</span>
+          <span class="ccb-settings-tab__sidebar-options-item-label">
+            {{ page.label }}
+          </span>
+          <span
+            class="ccb-settings-tab__sidebar-options-item-label-deleted"
+            v-if="page.deleted"
+          >
+            deleted
+          </span>
         </div>
       </div>
     </div>
@@ -116,14 +122,13 @@ onMounted(() => {
       &-item {
         display: flex;
         align-items: center;
-        padding: 10px 18px 10px 15px;
+        padding: 0 18px 0 15px;
         cursor: pointer;
         width: 100%;
-        // background: #fff;
-        // border-left: 3px solid #1ab163;
         border-left: 3px solid transparent;
         height: 40px;
         align-items: center;
+        position: relative;
 
         i {
           // color: #1ab163;
@@ -140,6 +145,18 @@ onMounted(() => {
           overflow: hidden;
           text-overflow: ellipsis;
           max-width: 180px;
+          position: relative;
+        }
+
+        &-label-deleted {
+          position: absolute;
+          right: 0;
+          top: 0;
+          font-size: 10px;
+          background: #ff0000;
+          color: #fff;
+          padding: 2px 4px;
+          border-radius: 4px;
         }
       }
     }

@@ -660,7 +660,7 @@ function my_admin_bar_menu( $wp_admin_bar ) {
 			)
 		);
 
-		$show_analytics = apply_filters( 'ccb_maybe_show_analytics_menu', false );
+		$show_analytics = apply_filters( 'ccb_maybe_show_analytics_menu', true );
 		if ( $show_analytics ) {
 			$wp_admin_bar->add_menu(
 				array(

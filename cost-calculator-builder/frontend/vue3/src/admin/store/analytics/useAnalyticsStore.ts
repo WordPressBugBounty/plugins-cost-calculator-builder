@@ -200,6 +200,7 @@ export const useAnalyticsStore = defineStore("analytics", {
               ),
             ),
             id: parseInt(calculator.id),
+            deleted: calculator.deleted,
           }));
         }
       });

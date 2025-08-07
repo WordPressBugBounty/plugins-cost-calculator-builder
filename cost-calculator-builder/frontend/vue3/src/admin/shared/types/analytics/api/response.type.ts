@@ -53,6 +53,7 @@ export interface IFetchCalculatorsResponse {
       id: string;
       label: string;
       icon: string;
+      deleted: boolean;
       component: any;
     }[];
   };

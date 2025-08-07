@@ -89,12 +89,12 @@ class CCBBuilderAdminMenu {
 				array( $this, 'calc_orders_page' )
 			);
 
-			$show_analytics = apply_filters( 'ccb_maybe_show_analytics_menu', false );
+			$show_analytics = apply_filters( 'ccb_maybe_show_analytics_menu', true );
 			if ( $show_analytics ) {
 				add_submenu_page(
 					'cost_calculator_builder',
 					esc_html__( 'Analytics', 'cost-calculator-builder' ),
-					esc_html__( 'Analytics', 'cost-calculator-builder' ) . ' <span class="ccb-menu-badge">NEW</span>',
+					esc_html__( 'Analytics', 'cost-calculator-builder' ) . ' <span class="ccb-menu-badge" style="display: none;">NEW</span>',
 					'manage_options',
 					'cost_calculator_analytics',
 					array( $this, 'render_analytics' )
@@ -121,7 +121,7 @@ class CCBBuilderAdminMenu {
 				array( $this, 'calc_orders_page_demo' )
 			);
 
-			$show_analytics = apply_filters( 'ccb_maybe_show_analytics_menu', false );
+			$show_analytics = apply_filters( 'ccb_maybe_show_analytics_menu', true );
 
 			if ( $show_analytics ) {
 				add_submenu_page(
@@ -244,7 +244,7 @@ class CCBBuilderAdminMenu {
 				display: inline-block;
 				animation: ccb-badge-pulse 2s infinite;
 				height: 20px;
-				display: flex;
+				display: flex !important;
 				align-items: center;
 				justify-content: center;
 			}

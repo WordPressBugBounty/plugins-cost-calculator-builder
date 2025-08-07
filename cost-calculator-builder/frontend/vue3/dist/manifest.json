@@ -126,24 +126,6 @@
     "file": "assets/color-filter.utils-DukMf1cu.js",
     "name": "color-filter.utils"
   },
-  "_index-BBNVpmsR.js": {
-    "file": "assets/index-BBNVpmsR.js",
-    "name": "index",
-    "isDynamicEntry": true,
-    "imports": [
-      "_pinia-Bf90yW2D.js",
-      "__plugin-vue_export-helper-DlAUqK2U.js",
-      "_vue-datepicker-BwVPix_-.js"
-    ],
-    "dynamicImports": [
-      "src/admin/widgets/Analytics/pages/SinglePage.vue",
-      "src/admin/widgets/Analytics/pages/Dashboard.vue"
-    ],
-    "css": [
-      "assets/index-DpTziW5W.css",
-      "assets/main-CWmBI_q2.css"
-    ]
-  },
   "_index-BTgoT8-b.js": {
     "file": "assets/index-BTgoT8-b.js",
     "name": "index",
@@ -151,6 +133,10 @@
       "src/widget/main.ts",
       "_pinia-Bf90yW2D.js"
     ]
+  },
+  "_index-ChG-KUZ6.css": {
+    "file": "assets/index-ChG-KUZ6.css",
+    "src": "_index-ChG-KUZ6.css"
   },
   "_index-DTQuhSeG.js": {
     "file": "assets/index-DTQuhSeG.js",
@@ -218,13 +204,27 @@
       "assets/index-DyYIn9dk.css"
     ]
   },
-  "_index-DpTziW5W.css": {
-    "file": "assets/index-DpTziW5W.css",
-    "src": "_index-DpTziW5W.css"
-  },
   "_index-DyYIn9dk.css": {
     "file": "assets/index-DyYIn9dk.css",
     "src": "_index-DyYIn9dk.css"
+  },
+  "_index-zJ5WwVDM.js": {
+    "file": "assets/index-zJ5WwVDM.js",
+    "name": "index",
+    "isDynamicEntry": true,
+    "imports": [
+      "_pinia-Bf90yW2D.js",
+      "__plugin-vue_export-helper-DlAUqK2U.js",
+      "_vue-datepicker-BwVPix_-.js"
+    ],
+    "dynamicImports": [
+      "src/admin/widgets/Analytics/pages/SinglePage.vue",
+      "src/admin/widgets/Analytics/pages/Dashboard.vue"
+    ],
+    "css": [
+      "assets/index-ChG-KUZ6.css",
+      "assets/main-CWmBI_q2.css"
+    ]
   },
   "_jquery-C7OTzgKr.js": {
     "file": "assets/jquery-C7OTzgKr.js",
@@ -384,7 +384,7 @@
     "isDynamicEntry": true
   },
   "src/admin/main.ts": {
-    "file": "assets/admin-Dw8Bnd3u.js",
+    "file": "assets/admin-HUzHsC5f.js",
     "name": "admin",
     "src": "src/admin/main.ts",
     "isEntry": true,
@@ -393,7 +393,7 @@
     ],
     "dynamicImports": [
       "src/admin/pages/OrderAnalyticsDemo/index.ts",
-      "_index-BBNVpmsR.js",
+      "_index-zJ5WwVDM.js",
       "src/admin/pages/CalculatorList/index.ts"
     ],
     "css": [
@@ -424,13 +424,13 @@
     ]
   },
   "src/admin/shared/ui/components/charts/BarChart.vue": {
-    "file": "assets/BarChart-f1-pRx18.js",
+    "file": "assets/BarChart-CUCOBqU7.js",
     "name": "BarChart",
     "src": "src/admin/shared/ui/components/charts/BarChart.vue",
     "isDynamicEntry": true,
     "imports": [
       "_vue3-apexcharts-MBY3P6gO.js",
-      "_index-BBNVpmsR.js",
+      "_index-zJ5WwVDM.js",
       "_pinia-Bf90yW2D.js",
       "__plugin-vue_export-helper-DlAUqK2U.js",
       "_vue-datepicker-BwVPix_-.js"
@@ -440,13 +440,13 @@
     ]
   },
   "src/admin/shared/ui/components/charts/ColumnsChart.vue": {
-    "file": "assets/ColumnsChart-BoxUMsVM.js",
+    "file": "assets/ColumnsChart-Dra1CrgD.js",
     "name": "ColumnsChart",
     "src": "src/admin/shared/ui/components/charts/ColumnsChart.vue",
     "isDynamicEntry": true,
     "imports": [
       "_vue3-apexcharts-MBY3P6gO.js",
-      "_index-BBNVpmsR.js",
+      "_index-zJ5WwVDM.js",
       "_periods-ayGdDR-m.js",
       "_pinia-Bf90yW2D.js",
       "__plugin-vue_export-helper-DlAUqK2U.js",
@@ -457,13 +457,13 @@
     ]
   },
   "src/admin/shared/ui/components/charts/LinearChart.vue": {
-    "file": "assets/LinearChart-RHPH1JEx.js",
+    "file": "assets/LinearChart-PqW3TRSS.js",
     "name": "LinearChart",
     "src": "src/admin/shared/ui/components/charts/LinearChart.vue",
     "isDynamicEntry": true,
     "imports": [
       "_vue3-apexcharts-MBY3P6gO.js",
-      "_index-BBNVpmsR.js",
+      "_index-zJ5WwVDM.js",
       "_periods-ayGdDR-m.js",
       "_pinia-Bf90yW2D.js",
       "__plugin-vue_export-helper-DlAUqK2U.js",
@@ -474,13 +474,13 @@
     ]
   },
   "src/admin/shared/ui/components/charts/PieChart.vue": {
-    "file": "assets/PieChart-Bls84Vet.js",
+    "file": "assets/PieChart-BVZ2iAyK.js",
     "name": "PieChart",
     "src": "src/admin/shared/ui/components/charts/PieChart.vue",
     "isDynamicEntry": true,
     "imports": [
       "_vue3-apexcharts-MBY3P6gO.js",
-      "_index-BBNVpmsR.js",
+      "_index-zJ5WwVDM.js",
       "_pinia-Bf90yW2D.js",
       "__plugin-vue_export-helper-DlAUqK2U.js",
       "_vue-datepicker-BwVPix_-.js"
@@ -491,14 +491,14 @@
     ]
   },
   "src/admin/widgets/Analytics/pages/Dashboard.vue": {
-    "file": "assets/Dashboard-B6fvaJR1.js",
+    "file": "assets/Dashboard-BD-bZnrw.js",
     "name": "Dashboard",
     "src": "src/admin/widgets/Analytics/pages/Dashboard.vue",
     "isDynamicEntry": true,
     "imports": [
       "_pinia-Bf90yW2D.js",
       "_vue3-apexcharts-MBY3P6gO.js",
-      "_index-BBNVpmsR.js",
+      "_index-zJ5WwVDM.js",
       "__plugin-vue_export-helper-DlAUqK2U.js",
       "_vue-datepicker-BwVPix_-.js"
     ],
@@ -514,13 +514,13 @@
     ]
   },
   "src/admin/widgets/Analytics/pages/SinglePage.vue": {
-    "file": "assets/SinglePage-BwoH4t1G.js",
+    "file": "assets/SinglePage-D_HXdajg.js",
     "name": "SinglePage",
     "src": "src/admin/widgets/Analytics/pages/SinglePage.vue",
     "isDynamicEntry": true,
     "imports": [
       "_pinia-Bf90yW2D.js",
-      "_index-BBNVpmsR.js",
+      "_index-zJ5WwVDM.js",
       "__plugin-vue_export-helper-DlAUqK2U.js",
       "_vue3-apexcharts-MBY3P6gO.js",
       "_vue-datepicker-BwVPix_-.js"

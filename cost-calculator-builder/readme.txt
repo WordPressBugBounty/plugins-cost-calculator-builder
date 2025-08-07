@@ -6,55 +6,63 @@ Tags: cost calculator, calculator, calculator form builder, cost estimation, shi
 Requires at least: 6.2
 Requires PHP: 8.0.3
 Tested up to: 6.8.2
-Stable tag: 3.5.24
+Stable tag: 3.5.25
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
 == Description ==
 
-WP Cost Calculator – If you're searching for a smart, simple tool that allows you to easily create price estimation forms to give your clients the opportunity to get information about your services and product costs, you are in the right place.
+[WP Cost Calculator](https://stylemixthemes.com/cost-calculator-plugin/) is a simple and powerful tool that lets you create price estimation forms. Easily give your clients information about your services and product costs. 
 
-WP Cost Calculator helps you build any type of estimation form in a few easy steps. This Calculator WordPress plugin offers its own drag-n-drop calculation form builder. Moreover, you can create an unlimited number of calculation forms and insert them on any page or post.
+This tool helps you build any type of estimation form in minutes. The Calculator WordPress plugin has its own drag-and-drop form builder. You can create an unlimited number of calculation forms and embed them into any page or post with no coding.
 
-⭐ [WP Cost Calculator PRO](https://stylemixthemes.com/cost-calculator-plugin/pricing/?utm_source=wporg-calc&utm_medium=en&utm_campaign=2021)
-⭐ [WP Cost Calculator Demo](https://stylemixthemes.com/cost-calculator/)
+⭐ [Cost Calculator PRO](https://stylemixthemes.com/cost-calculator-plugin/pricing/?utm_source=wporg-calc&utm_medium=en&utm_campaign=2025)
+⭐ [Live Demo](https://stylemixthemes.com/cost-calculator/)
 ⭐ [Documentation](https://docs.stylemixthemes.com/cost-calculator-builder/)
-⭐ [Join Facebook Community](https://www.facebook.com/groups/costcalculator/)
+⭐ [Facebook Community](https://www.facebook.com/groups/costcalculator/)
 
-Our Calculator plugin for WordPress is intuitive and super easy for visitors to your WordPress website. Cost Calculator is especially suitable if your services or products have variable costs, and there are many options to estimate those costs.
+Our calculator plugin for WordPress is intuitive and beginner-friendly. Cost Calculator is especially suitable if your services or products have variable costs. 
+
+🎯 **Perfect for:**
+Freelancers, creative agencies, local services, salons, repair shops, real estate pros, educational institutions, and more.
 
 https://youtu.be/jHxgukfRkZk
 
-If you need to make a price calculator to determine your project costs, this tool is for you. Need a loan calculator? Just install our plugin. Table order? Easy. The possibilities are unlimited. Let WP Cost Calculator become your virtual assistant and increase your website's conversion rate.
+If you need to make a price calculator to estimate your project costs, this tool is for you. Need a loan calculator? A service quote form? An order estimator? This plugin can handle it all—fast. 
 
-10 Various WordPress Calculator Elements:
-○      Input Text Box
-○      Total / Subtotal
-○      Quantity Box
-○      Dropdown Box
-○      Toggle Button
-○      Radio Button
+Let WP Cost Calculator become your virtual assistant and boost conversions on your website.
+
+🧩 **10 Core WordPress Calculator Elements:**
+○      Text field
+○      Formula
+○      Quantity field
+○      Dropdown 
+○      Switch toggle 
+○      Radio select
 ○      Checkbox
-○      Range Slider
-○      HTML Code
-○      Horizontal Line
+○      Basic slider
+○      HTML 
+○      Divider
 
-Another bunch of custom elements are available in Pro version:
-○      Multi Range
-○      File Upload
-○      Image Dropdown
-○      Image Checkbox
-○      Image Radio
-○      Date Picker
-○      Time Picker
+🚀 **More advanced elements in Cost Calculator Pro:**
+○      Multi range
+○      File upload
+○      Image dropdown
+○      Image checkbox
+○      Image radio
+○      Date picker
+○      Time picker
 ○      Repeater
-○      Group Field
+○      Group 
 ○      Geolocation
-○      Validated Form
+○      Validated form
+○      Page breaker
 
-There are groups of elements that have different appearance styles both vertically and horizontally:
+🎨 **Element Style options:**
 
-**Radio Buttons:**
+Show input options in multiple formats—vertically or horizontally.
+
+**Radio select:**
 ○      Default
 ○      Boxed
 ○      Boxed with radio
@@ -66,82 +74,113 @@ There are groups of elements that have different appearance styles both vertical
 ○      Boxed with description
 ○      Boxed with checkbox and description
 
-**Toggle Buttons:**
+**Switch toggle buttons:**
 ○      Default
 ○      Boxed with toggle and description
 
-[Cost Calculator Builder PRO](https://stylemixthemes.com/cost-calculator-plugin/?utm_source=wporg-calc&utm_medium=en&utm_campaign=2021) - Cost Calculator Premium version includes the following features and functions:
-○      WooCommerce Integration - Let your customers calculate the price of your WooCommerce products depending on cost calculator variables and custom formulas.
-○      PayPal - Get paid with an online payment method using PayPal accounts.
-○      Stripe - Accepts payments with credit/debit cards and digital wallets.
-○      Razorpay - Offer diversity with support from various Indian payment methods.
-○      Cash payments - Give flexibility to customers with cash payment options.
-○      Discounts - Set up and launch discounts for a specific period of time or using a promo code.
-○      Condition system - It allows form fields to show, hide, or be disabled based on conditions logic being met.
-○      Orders Dashboard - Track, operate and confirm your customers’ orders in Dashboard.
-○      Contact Form 7 Integration - This Calculator integrates with Contact Form 7 for best customer experience.
-○      Custom Webhooks - You can connect the calculator with millions of apps and services by using Zapier, Make, IFTTT, and so on to automate the business workflows after payments, form submissions, or email sending.
-○      reCAPTCHA - Ensure the security and reject internet bots by enabling ReCaptcha.
-○      Repeater Element - Let your customers calculate costs for several items or people in a single form.
-○      Date Picker Calculator Element - Include a compact calendar with a range of days to the calculator.
-○      Time Picker Element - Let users choose a specific time or a range of time for providing a service or making an appointment.
-○      Multi Range Slider Calculator Element - Use this one for defining the chunk of values on the slider range.
-○      File Upload Calculator Element - Set a module where the users may attach any type of file onto the calculator.
-○      Image Dropdown Calculator Element - Engage the users placing the select form with a set of images.
-○      PDF Entries - Create custom professional PDF invoices or select from library of templates, enabling customers to download, print, or send invoices with ease.
-○      Email Quotes - Save time and seamlessly send an automatically generated invoice/order (after calculations) to the recipient via email address with a click of a button.
-○      Image Checkbox - Add colorful pictures to elements like Checkboxes. So, the variety of options will be accompanied by a visual appearance of the item.
-○      Image Radio - Works exactly the same as the Image Checkbox, but with Radio Buttons.
-○      Repeater - A feature in the Cost Calculator for figuring out costs for lots of items or people at once, like for group orders or events.
-○      Group Field - This feature lets you group fields together. Depending on what your customer does, different groups of fields show up.
-○      Geolocation - This feature asks where your customer is to start calculating. Or they can pick two points on a map to see the distance and cost between them.
-○      Validated Form - A feature that lets users create forms with fields for emails, numbers, and URLs.
+**Quantity:**
+○      Default
+○      Side buttons
 
-[Watch the Plugin Demo here](https://stylemixthemes.com/cost-calculator/?utm_source=wporg-calc&utm_medium=en&utm_campaign=2021)
+**Basic slider & Multi range:**
+○      Default
+○      Small
+○      Multi point
+○      Flat minimal
+○      Modern
+○      Input
 
-[Documentation](https://docs.stylemixthemes.com/cost-calculator-builder/)
+**Page breaker:**
+○      Circle steps with line
+○      Circle tabs 
+○      Rectangle steps with line
+○      Rectangle tabs 
+○      Progress with circle
+○      Progress with bar
+○      Hidden
+
+**Image checkbox & Image radio:**
+○      Default
+○      Box with icon
+○      Vertical
+○      Horizontal
+
+## 🌟Cost Calculator Builder PRO Features
+The Premium version includes the following features:
+
+○      [Analytics](https://stylemixthemes.com/cost-calculator-plugin/analytics/) – See how each calculator and field performs with views, submissions, and revenue stats in one place. 
+○      [Conditional system](https://stylemixthemes.com/cost-calculator-plugin/conditions/) – Show/hide or enable/disable fields based on user input.
+○      [Repeater](https://stylemixthemes.com/cost-calculator-plugin/repeater-and-group-field/) – Let users repeat a group of fields to calculate costs for multiple items, people, or services. 
+○      [Group Field](https://stylemixthemes.com/cost-calculator-plugin/repeater-and-group-field/) – Group fields together and display them conditionally based on selected options. 
+○      [Validated Form](https://stylemixthemes.com/cost-calculator-plugin/validate-form/) – Lets users create forms with fields for emails, numbers, and URLs. 
+○      [Email Templates](https://stylemixthemes.com/cost-calculator-plugin/form-estimation-email/) – Send personalized emails to clients after form submissions. 
+○      [WooCommerce Integration](https://stylemixthemes.com/cost-calculator-plugin/woocommerce/) – Let customers calculate the price of your WooCommerce products depending on cost calculator variables and custom formulas.
+○      [Page Breaker](https://stylemixthemes.com/cost-calculator-plugin/step-by-step/) – Improve long forms by splitting them into multiple steps.
+○      [PayPal](https://stylemixthemes.com/cost-calculator-plugin/payment-methods/) – Get paid online using PayPal accounts. 
+○      [Stripe](https://stylemixthemes.com/cost-calculator-plugin/payment-methods/) – Accepts payments with credit/debit cards and digital wallets.
+○      [Razorpay](https://stylemixthemes.com/cost-calculator-plugin/payment-methods/) – Add support for various Indian payment methods. 
+○      [Cash payments](https://stylemixthemes.com/cost-calculator-plugin/payment-methods/) – Give flexibility to customers with cash payment options. 
+○      [File Upload](https://stylemixthemes.com/cost-calculator-plugin/files/) – Set a module where the users attach any type of file to the calculator.
+○      [Sticky Calculator](https://stylemixthemes.com/cost-calculator-plugin/sticky-calculator/) – Add a floating button or sticky banner that keeps the calculator visible as users scroll.
+○      [Discounts](https://stylemixthemes.com/cost-calculator-plugin/discounts-feature/) – Offer discounts for a specific period or by using a promo code.
+○      [Geolocation](https://stylemixthemes.com/cost-calculator-plugin/geolocation-element/) – Automatically detect the user’s location or allow them to calculate cost by selecting two points on the map. 
+○      [PDF Entries](https://stylemixthemes.com/cost-calculator-plugin/pdf/) – Generate downloadable and printable PDF invoices from user submissions.
+○      [Orders Dashboard](https://stylemixthemes.com/cost-calculator-plugin/orders/) – Track and manage your customers’ orders in Dashboard. 
+○      [Order Form Manager](https://stylemixthemes.com/cost-calculator-plugin/custom-order-form/) – Collect and process customer order details.
+○      Contact Form 7 Integration – Seamless communication with your customers.
+○      [Custom Webhooks](https://stylemixthemes.com/cost-calculator-plugin/custom-webhooks/) – Automate business workflows with Zapier, Make, IFTTT, and more.
+○      [reCAPTCHA](https://docs.stylemixthemes.com/cost-calculator-builder/cost-calculator-settings/global-settings/recaptcha) – Protect forms from spam and bots using Google reCAPTCHA.
+○      [Date Picker](https://docs.stylemixthemes.com/cost-calculator-builder/calculator-elements/date-picker-pro-feature) – Add a compact calendar with a range of days to your calculator.
+○      [Time Picker](https://docs.stylemixthemes.com/cost-calculator-builder/calculator-elements/time-picker-pro-feature) – Allow to choose a specific time or a time range to provide a service or make an appointment.
+○      [Multi-Range Slider](https://docs.stylemixthemes.com/cost-calculator-builder/calculator-elements/multi-range) – Let users select a range of values using two adjustable handles.
+○      [Image Dropdown](https://docs.stylemixthemes.com/cost-calculator-builder/calculator-elements/drop-down-with-image) – Show dropdown options with images for more visual selections.
+○      [Share Quote Form](https://stylemixthemes.com/cost-calculator-plugin/form-estimation-email/) – Send a generated invoice/order (after calculations) to a client’s email in one click.
+○      [Image Checkbox](https://docs.stylemixthemes.com/cost-calculator-builder/calculator-elements/checkbox-1) – Improve checkbox options by showing images next to each item.
+○      [Image Radio](https://docs.stylemixthemes.com/cost-calculator-builder/calculator-elements/radio-button-1) – Similar to image checkboxes, but only one option can be selected.
+
+[Explore the Plugin Demo here](https://stylemixthemes.com/cost-calculator/?utm_source=wporg-calc&utm_medium=en&utm_campaign=2025)
 
 https://www.youtube.com/watch?v=XZKJE1CcYxo
 
-You can assign a value to any element of the form, and WP Cost Calculator will automatically calculate the total price. Additionally, you can assign your own calculation formula with the ability to add, subtract, multiply, and divide elements of the form. Integrate your forms into your pages using shortcodes.
+You can assign values to any form element, and WP Cost Calculator will instantly calculate the total. You also have full control to create custom formulas using addition, subtraction, multiplication, or division. Easily embed your calculators anywhere using shortcodes.
 
-Don't worry about customization - you can freely customize colors, fonts, and background colors to match your website's style.
+Don’t worry about customization! Adjust colors, fonts, and background freely to match your website’s style and brand without limitations.
 
-### 100+ PREMADE FORM TEMPLATES
+### 100+ Ready-made Form Templates
 
-The templates in the Cost Calculator WordPress plugin make it easy for businesses to quickly create, customize, and use any kind of interactive contact, booking, or pricing form without having to start from scratch.
+Cost Calculator plugin for WordPress comes with a library of form templates. They make it easy for various businesses to create, edit, save and use contact, booking, payment order, or pricing form without designing from scratch.
 
-With the templates feature, you can select from a range of pre-made forms sorted by category, or you can build and save your own template. This feature helps businesses save time and energy as they create forms that align with their needs.
+There are over 100 ready-made form templates sorted by business type that you can import and use right away. Whether you're selling custom products or services with flexible pricing, this calculator plugin helps you create forms tailored to what you offer:
+- [Printing Service](https://stylemixthemes.com/cost-calculator/printing-service-template/)
+- [Graphic & Web Designers](https://stylemixthemes.com/cost-calculator/graphic-designing-template/)
+- [Car & Vehicle Rental](https://stylemixthemes.com/cost-calculator/car-rental-booking-template/)
+- [Loan Calculator](https://stylemixthemes.com/cost-calculator/loan-calculator-template/)
+- [Beauty Salon Service](https://stylemixthemes.com/cost-calculator/beauty-salon-booking-template/)
+- [Home Remodeling & Renovation](https://stylemixthemes.com/cost-calculator/renovation-template/)
+- [Car Wash Service](https://stylemixthemes.com/cost-calculator/car-wash-template/)
+- [Delivery Service](https://stylemixthemes.com/cost-calculator/delivery-service-template/)
+- [Dental Services](https://stylemixthemes.com/cost-calculator/dental-service-template/)
+- [Medical Services](https://stylemixthemes.com/cost-calculator/clinic-booking-template/)
+- [Tuition Fees](https://stylemixthemes.com/cost-calculator/tuition-fee-template/)
+- [Venue Rentals](https://stylemixthemes.com/cost-calculator/venue-rental-template/)
+- [Wedding Planners](https://stylemixthemes.com/cost-calculator/wedding-planner-booking-template/)
+- [Body Mass Index (BMI)](https://stylemixthemes.com/cost-calculator/bmi-body-mass-index-calculator-template/)
+- [Funeral Home Company](https://stylemixthemes.com/cost-calculator/funeral-home-company-template/)
+- [Energy Consumption](https://stylemixthemes.com/cost-calculator/energy-consumption-template/)
+- [Internet Marketing](https://stylemixthemes.com/cost-calculator/internet-marketing-template/)
+- [Tax Calculator](https://stylemixthemes.com/cost-calculator/tax-calculator-template/)
+- [Web Hosting Services](https://stylemixthemes.com/cost-calculator/hosting-template/)
+- [Trucking](https://stylemixthemes.com/cost-calculator/trucking-template/)
+- [Electrician Services](https://stylemixthemes.com/cost-calculator/electrician-services-template/)
+- And even more!
 
-There are over 100 ready-made templates sorted by types of forms that you can easily import and utilize. This calculator plugin is suitable for selling highly customizable products or services or providing mathematical help for your site visitors.
-- [Printing Service](https://stylemixthemes.com/cost-calculator-plugin/?calc-id=1#plugin-cost-calculator-features)
-- [Graphic & Web Designers](https://stylemixthemes.com/cost-calculator-plugin/?calc-id=2#plugin-cost-calculator-features)
-- [Car & Vehicle Rental](https://stylemixthemes.com/cost-calculator-plugin/?calc-id=3#plugin-cost-calculator-features)
-- [Loan Calculator](https://stylemixthemes.com/cost-calculator-plugin/?calc-id=4#plugin-cost-calculator-features)
-- [Beauty Salon Service](https://stylemixthemes.com/cost-calculator-plugin/?calc-id=5#plugin-cost-calculator-features)
-- [Home Remodeling & Renovation](https://stylemixthemes.com/cost-calculator-plugin/?calc-id=6#plugin-cost-calculator-features)
-- [Car Wash Service](https://stylemixthemes.com/cost-calculator-plugin/?calc-id=7#plugin-cost-calculator-features)
-- [Delivery Service](https://stylemixthemes.com/cost-calculator-plugin/?calc-id=8#plugin-cost-calculator-features)
-- [Dental Services](https://stylemixthemes.com/cost-calculator-plugin/?calc-id=9#plugin-cost-calculator-features)
-- [Medical Services](https://stylemixthemes.com/cost-calculator-plugin/?calc-id=10#plugin-cost-calculator-features)
-- [Tuition Fees](https://stylemixthemes.com/cost-calculator-plugin/?calc-id=11#plugin-cost-calculator-features)
-- [Venue Rentals](https://stylemixthemes.com/cost-calculator-plugin/?calc-id=12#plugin-cost-calculator-features)
-- [Wedding Planners](https://stylemixthemes.com/cost-calculator-plugin/?calc-id=13#plugin-cost-calculator-features)
-- [Body Mass Index (BMI)](https://stylemixthemes.com/cost-calculator-plugin/?calc-id=14#plugin-cost-calculator-features)
-- [Fabric Services](https://stylemixthemes.com/cost-calculator-plugin/?calc-id=15#plugin-cost-calculator-features)
-- [Energy Consumption](https://stylemixthemes.com/cost-calculator-plugin/?calc-id=16#plugin-cost-calculator-features)
-- [Internet Marketing](https://stylemixthemes.com/cost-calculator-plugin/?calc-id=17#plugin-cost-calculator-features)
-- [Tax Calculator](https://stylemixthemes.com/cost-calculator-plugin/?calc-id=18#plugin-cost-calculator-features)
-- [Web Hosting Services](https://stylemixthemes.com/cost-calculator-plugin/?calc-id=19#plugin-cost-calculator-features)
-- [Trucking](https://stylemixthemes.com/cost-calculator-plugin/?calc-id=20#plugin-cost-calculator-features)
-- [Electrician Services](https://stylemixthemes.com/cost-calculator-plugin/?calc-id=21#plugin-cost-calculator-features)
-- And much more.
+Explore the ready-to-use [Templates page](https://stylemixthemes.com/cost-calculator-plugin/templates) and try them on our [live demo](https://stylemixthemes.com/cost-calculator-plugin/templates/tip-calculator-template/).
 
-To see all ready-made forms, visit our [Templates page](https://stylemixthemes.com/cost-calculator-plugin/templates).
+Start building quote calculators that convert visitors into paying clients faster and smarter with WP Cost Calculator.
 
 ## Cost Calculator Community on Facebook
 
-You can visit our Cost Calculator [group](https://www.facebook.com/groups/costcalculator/) on Facebook and get the news, updates, advices by sharing your thoughts or viewing the posts.
+You can visit our Cost Calculator [group](https://www.facebook.com/groups/costcalculator/) on Facebook to get the latest updates, engage with other users, and share your thoughts.
 
 ## More Awesome Free Plugins by Stylemix
 
@@ -168,6 +207,9 @@ Also, you can import the demo sample using Tools -> Import -> WordPress Import.
 Demo sample XML file included in plugin archive.
 
 == Changelog ==
+
+= 3.5.25 =
+- New: Added Analytics dashboard with detailed stats for views, submissions, and revenue per calculator and field. (Pro)
 
 = 3.5.24 =
 - Fix: Minor bug fixes.

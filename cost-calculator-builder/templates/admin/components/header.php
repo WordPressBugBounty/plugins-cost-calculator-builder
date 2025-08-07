@@ -16,12 +16,12 @@ $header_pages = array(
 		'title' => __( 'Orders', 'cost-calculator-builder' ),
 		'key'   => 'cost_calculator_orders',
 	),
-	// 'analytics'   => array(
-	// 	'icon'  => 'ccb-icon-Dashboard-chart',
-	// 	'link'  => get_admin_url() . 'admin.php?page=cost_calculator_analytics',
-	// 	'title' => __( 'Analytics', 'cost-calculator-builder' ),
-	// 	'key'   => 'cost_calculator_analytics',
-	// ),
+	'analytics'   => array(
+		'icon'  => 'ccb-icon-Dashboard-chart',
+		'link'  => get_admin_url() . 'admin.php?page=cost_calculator_analytics',
+		'title' => __( 'Analytics', 'cost-calculator-builder' ),
+		'key'   => 'cost_calculator_analytics',
+	),
 	'settings'    => array(
 		'icon'  => 'ccb-icon-Union-28',
 		'link'  => get_admin_url() . 'admin.php?page=cost_calculator_builder&tab=settings',
