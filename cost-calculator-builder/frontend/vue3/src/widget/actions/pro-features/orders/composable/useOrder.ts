@@ -212,32 +212,37 @@ const getClearFields = (): Field[] => {
   const fieldStore = useFieldsStore();
   const fields = fieldStore.getFields;
   const result: Field[] = [];
-  const uniqueAliases = new Set<string>();
 
   for (const field of fields) {
-    if (field.fieldName === "group" && "groupElements" in field) {
-      field.groupElements.forEach((element) => {
-        for (const [_, existingField] of element.entries()) {
+    if (
+      field.fieldName === "group" &&
+      "groupElements" in field &&
+      !field.hidden
+    ) {
+      const groupField = field as IGroupField;
+      groupField.groupElements.forEach((groupFieldMap: Map<string, Field>) => {
+        Array.from(groupFieldMap.values()).forEach((groupInnerField: Field) => {
           if (
-            existingField.alias &&
-            !uniqueAliases.has(existingField.alias) &&
+            groupInnerField.alias &&
             !["total", "html", "line", "page_break"].includes(
-              existingField.fieldName,
+              groupInnerField.fieldName,
             ) &&
-            (existingField.addToSummary === true ||
-              existingField.addToSummary === false ||
-              existingField.alias.indexOf("file") !== -1) &&
-            (!existingField.hidden || existingField.calculateHidden) &&
-            hideEmptyFields(existingField)
+            (groupInnerField.fieldName === "repeater" ||
+              groupInnerField.addToSummary === true ||
+              groupInnerField.addToSummary === false ||
+              groupInnerField.alias.indexOf("file") !== -1) &&
+            (!groupInnerField.hidden || groupInnerField.calculateHidden) &&
+            hideEmptyFields(groupInnerField)
           ) {
-            uniqueAliases.add(existingField.alias);
-            result.push(existingField as Field);
+            result.push(groupInnerField);
           }
-        }
+        });
       });
-    } else if (
+      continue;
+    }
+
+    if (
       field.alias &&
-      !uniqueAliases.has(field.alias) &&
       !["total", "html", "line", "page_break"].includes(field.fieldName) &&
       (field.fieldName === "repeater" ||
         field.addToSummary === true ||
@@ -246,7 +251,6 @@ const getClearFields = (): Field[] => {
       (!field.hidden || field.calculateHidden) &&
       hideEmptyFields(field)
     ) {
-      uniqueAliases.add(field.alias);
       result.push(field);
     }
   }

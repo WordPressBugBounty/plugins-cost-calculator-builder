@@ -106,6 +106,7 @@ class CCBTranslations {
 			'email'                  => __( 'Email', 'cost-calculator-builder' ),
 			'message'                => __( 'Message', 'cost-calculator-builder' ),
 			'select'                 => __( 'Select', 'cost-calculator-builder' ),
+			'default_total'          => __( 'Total', 'cost-calculator-builder' ),
 		);
 
 		return apply_filters( 'ccb_frontend_translations', $translations );

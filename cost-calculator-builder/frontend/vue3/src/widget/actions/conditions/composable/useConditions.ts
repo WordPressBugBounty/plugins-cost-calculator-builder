@@ -340,7 +340,7 @@ function applyConditionForField(fieldAlias: string): void {
         );
     } else {
       if (
-        !["datePicker", "validated_form", "timePicker"].includes(
+        !["datePicker", "validated_form", "timePicker", "text"].includes(
           targetField.fieldName,
         )
       ) {

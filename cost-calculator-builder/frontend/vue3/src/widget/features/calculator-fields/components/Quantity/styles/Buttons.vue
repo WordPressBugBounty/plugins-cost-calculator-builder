@@ -9,7 +9,14 @@
     <div class="ccb-quantity-buttons__item down" @click="decrement">
       <i class="ccb-icon-Path-3518"></i>
     </div>
-    <input type="text" v-model="value" />
+    <input
+      type="text"
+      v-model="value"
+      @focus="emit('focus', $event)"
+      @focusout="emit('focusout', $event)"
+      @blur="emit('blur', $event)"
+      @keypress="emit('keypress', $event)"
+    />
     <div class="ccb-quantity-buttons__item up" @click="increment">
       <i class="ccb-icon-Path-3493"></i>
     </div>
@@ -30,32 +37,18 @@ const props = defineProps<Props>();
 const { field } = toRefs(props);
 
 const value = ref<string>(props.value);
-const emit = defineEmits(["input"]);
+const emit = defineEmits([
+  "input",
+  "focus",
+  "focusout",
+  "blur",
+  "keypress",
+  "increment",
+  "decrement",
+]);
 
-watch(
-  () => props.value,
-  (newValue) => {
-    value.value = newValue;
-  },
-);
-
-const increment = () => {
-  let newValue =
-    Math.round((Number(value.value) + Number(field.value.step)) * 100) / 100;
-  if (newValue <= field.value.max) {
-    value.value = newValue.toString();
-    emit("input", { target: { value: newValue } });
-  }
-};
-
-const decrement = () => {
-  let newValue =
-    Math.round((Number(value.value) - Number(field.value.step)) * 100) / 100;
-  if (newValue >= field.value.min) {
-    value.value = newValue.toString();
-    emit("input", { target: { value: newValue } });
-  }
-};
+const increment = () => emit("increment");
+const decrement = () => emit("decrement");
 
 const separation = computed(() => {
   return field.value.separation;
@@ -70,6 +63,13 @@ const buttonsPosition = computed(() => {
 watch(value, (newValue) => {
   emit("input", { target: { value: newValue } });
 });
+
+watch(
+  () => props.value,
+  (newValue) => {
+    value.value = newValue;
+  },
+);
 </script>
 
 <style lang="scss">

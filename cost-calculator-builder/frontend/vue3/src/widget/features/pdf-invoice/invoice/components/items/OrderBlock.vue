@@ -596,7 +596,6 @@ const getOrderDetails = computed(() => {
 
   fields.forEach((el) => {
     if ("groupElements" in el && Array.isArray(el.groupElements)) {
-      result.push(el);
       el.groupElements.forEach((inner: Map<string, Field>) => {
         result = [...result, ...(getFieldsFromMap.value(inner) as Field[])];
       });

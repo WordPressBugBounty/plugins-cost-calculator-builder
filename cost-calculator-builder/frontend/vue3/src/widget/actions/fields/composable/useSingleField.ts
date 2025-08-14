@@ -76,12 +76,12 @@ function getCommonFieldDisplayView(
   if ("originalValue" in field) {
     originalValue = field.originalValue?.toString() || "";
   }
+
   const settingsStore = useSettingsStore();
   let displayValue = field.value?.toString();
 
   if (
-    field.useCurrency ||
-    field.fieldCurrency ||
+    (field.useCurrency || field.fieldCurrency) &&
     settingsStore.getCurrencySettings?.useInAll
   ) {
     displayValue = currencyInstance.formatCurrency(

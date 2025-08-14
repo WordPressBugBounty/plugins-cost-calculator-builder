@@ -147,11 +147,23 @@ function checkPromocodeConditions(discount: IDiscount) {
     : true;
 }
 
+function toFixedTruncate(num: number, decimals: number): number {
+  const factor = Math.pow(10, decimals);
+  return Math.floor(num * factor) / factor;
+}
+
 function evaluateDiscountCondition(
   field: IFormulaField | IRepeaterField,
   condition: IDiscountCondition,
 ): boolean {
-  const value = field.value || 0;
+  let value = field.value || 0;
+
+  const decimals =
+    field.fieldCurrency && field.fieldCurrencySettings
+      ? field.fieldCurrencySettings.numAfterInteger
+      : 0;
+
+  value = toFixedTruncate(Number(value), decimals);
 
   switch (condition.conditionSymbol) {
     case "<":

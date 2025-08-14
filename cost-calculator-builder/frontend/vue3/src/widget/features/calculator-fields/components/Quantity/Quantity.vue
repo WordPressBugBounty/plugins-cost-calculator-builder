@@ -45,6 +45,8 @@
       @blur="onBlur"
       @keypress="intValueFilter"
       :key="forceUpdateKey"
+      @increment="onIncrement"
+      @decrement="onDecrement"
     />
 
     <div
@@ -95,6 +97,7 @@ const singleFieldMixins = useSingleField();
 const translationsStore = useTranslationsStore();
 const pageBreakerStore = usePageBreakerStore();
 
+const backupValue = ref<string>("");
 const rawInput = ref<string>(field.value.originalValue.toString());
 const isEditing = ref<boolean>(false);
 const forceUpdateKey = ref<number>(0);
@@ -105,11 +108,16 @@ const requiredWarningText = computed(() => {
 });
 
 const formattedValue = computed(() => {
-  if (isEditing.value) return rawInput.value;
+  if (isEditing.value) {
+    backupValue.value = rawInput.value;
+    return rawInput.value;
+  }
 
-  rawInput.value = parseFormattedValue(rawInput.value).toString();
+  rawInput.value = backupValue.value;
 
-  let value = field.value.round ? Math.round(+rawInput.value) : +rawInput.value;
+  let value = field.value.round
+    ? Math.round(+backupValue.value)
+    : +backupValue.value;
 
   return parseQuantityValue(value.toString());
 });
@@ -132,6 +140,10 @@ const updateValue = (
 ) => {
   if (alias && alias !== field.value.alias) {
     return;
+  }
+
+  if (alias) {
+    backupValue.value = numericValue.toString();
   }
 
   rawInput.value = numericValue.toString();
@@ -163,14 +175,40 @@ const updateValue = (
 
 const onInput = (event: Event) => {
   const target = event.target as HTMLInputElement;
-  if (target.value?.toString()?.includes(",")) {
-    target.value = target.value.replace(",", ".");
-  }
-  let value = field.value.round
-    ? Math.round(parseFloat(target.value))
-    : parseFloat(target.value);
 
-  if (isNaN(value)) {
+  if (isEditing.value) {
+    changeHandler(target.value);
+  }
+};
+
+const onIncrement = () => {
+  if (field.value.value < field.value.max) {
+    field.value.value = field.value.value + field.value.step;
+  }
+
+  backupValue.value = field.value.value.toString();
+  changeHandler(backupValue.value);
+};
+
+const onDecrement = () => {
+  if (field.value.value > field.value.min) {
+    field.value.value = field.value.value - field.value.step;
+  }
+
+  backupValue.value = field.value.value.toString();
+  changeHandler(backupValue.value);
+};
+
+const changeHandler = (value: string) => {
+  if (value?.toString()?.includes(",")) {
+    value = value.replace(",", ".");
+  }
+
+  let innerValue = field.value.round
+    ? Math.round(parseFloat(value))
+    : parseFloat(value);
+
+  if (isNaN(innerValue)) {
     return;
   }
 
@@ -185,7 +223,7 @@ const onInput = (event: Event) => {
 const onFocus = (e: Event) => {
   const target = e.target as HTMLInputElement;
   isEditing.value = true;
-  rawInput.value = target.value;
+  rawInput.value = parseFormattedValue(target.value || "0").toString();
 };
 
 const onBlur = () => {
@@ -193,7 +231,7 @@ const onBlur = () => {
 };
 
 const parseField = () => {
-  rawInput.value = parseQuantityValue(rawInput.value);
+  rawInput.value = parseQuantityValue(backupValue.value);
 };
 
 const checkMinMaxRequired = () => {
@@ -380,6 +418,7 @@ callbackStore.add("updateQuantity", updateValue);
 
 onMounted(() => {
   rawInput.value = field.value.originalValue.toString();
+  backupValue.value = rawInput.value;
   updateValue(false, field.value.originalValue, undefined, true);
 });
 </script>

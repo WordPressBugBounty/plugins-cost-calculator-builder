@@ -62,4 +62,5 @@ export interface ITranslations {
   hasBeenAddedCart: string;
   viewCart: string;
   select: string;
+  defaultTotal: string;
 }

@@ -6,7 +6,7 @@ Tags: cost calculator, calculator, calculator form builder, cost estimation, shi
 Requires at least: 6.2
 Requires PHP: 8.0.3
 Tested up to: 6.8.2
-Stable tag: 3.5.25
+Stable tag: 3.5.26
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -207,6 +207,11 @@ Also, you can import the demo sample using Tools -> Import -> WordPress Import.
 Demo sample XML file included in plugin archive.
 
 == Changelog ==
+
+= 3.5.26 =
+- Fix: Fixed default total not being translated in the Summary section
+- Fix: Fixed bugs in Quantity element's "Currency Settings"
+- Fix: Fixed currency sign showing for Quantity element even when the “Currency Sign” setting was disabled
 
 = 3.5.25 =
 - New: Added Analytics dashboard with detailed stats for views, submissions, and revenue per calculator and field. (Pro)

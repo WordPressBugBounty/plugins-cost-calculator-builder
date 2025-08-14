@@ -3,8 +3,8 @@ import { defineStore } from "pinia";
 import {
   Field,
   IDefaultTotal,
-  IFormulaField,
   IGroupField,
+  IFormulaField,
   IRepeaterField,
   ISourceField,
 } from "@/widget/shared/types/fields";
@@ -20,6 +20,7 @@ import { useDiscounts } from "@/widget/actions/discounts/composable/useDiscounts
 import { IPageBreakerField } from "@/widget/shared/types/fields/fields.type";
 import { getNonce } from "@/widget/shared/utils/nonce.utils.ts";
 import { handleCalcAnalyticsRequest } from "@/widget/shared/api/handlerCalcAnalytics.ts";
+import { useTranslationsStore } from "./translationsStore";
 
 interface IFieldsStore {
   fields: Map<string, Field>;
@@ -106,27 +107,32 @@ export const useFieldsStore = () => {
         if (Array.isArray(fields)) {
           const excludeFields = ["total", "line", "html"];
           let result: Field[] = [];
-          fields.forEach((f: Field | IGroupField) => {
+          fields.forEach((f: Field) => {
             if (f.fieldName.includes("repeater")) {
               f.addToSummary = true;
             }
+
+            if (f.fieldName === "group" && "groupElements" in f && !f.hidden) {
+              const groupField = f as IGroupField;
+              groupField.groupElements.forEach(
+                (groupFieldMap: Map<string, Field>) => {
+                  Array.from(groupFieldMap.values()).forEach((field: Field) => {
+                    if (
+                      !excludeFields.includes(field.fieldName) &&
+                      field.addToSummary
+                    ) {
+                      result.push(field);
+                    }
+                  });
+                },
+              );
+              return;
+            }
+
             if (excludeFields.includes(f.fieldName) || !f.addToSummary) {
               return;
             }
-            if (f.fieldName === "group" && "groupElements" in f) {
-              (f as IGroupField).groupElements.forEach((groupFieldMap) => {
-                Array.from(groupFieldMap.values()).forEach((field) => {
-                  if (
-                    !excludeFields.includes(field.fieldName) &&
-                    field.addToSummary
-                  ) {
-                    result.push(field);
-                  }
-                });
-              });
-            } else {
-              result.push(f);
-            }
+            result.push(f);
           });
 
           if (!settings.general?.hideEmpty) {
@@ -386,10 +392,11 @@ export const useFieldsStore = () => {
 
       recalculateTotals() {
         const currencyFormatter = useCurrency();
+        const translationsStore = useTranslationsStore();
 
         if (!this.getDefaultTotals) {
           this.setDefaultTotals({
-            label: "Total",
+            label: translationsStore.getTranslations.defaultTotal,
             fieldName: "total",
             value: 0,
             displayValue: currencyFormatter.formatCurrency(
@@ -528,7 +535,8 @@ export const useFieldsStore = () => {
           }, 0);
 
           if (this.getDefaultTotals) {
-            this.getDefaultTotals.label = "Total";
+            this.getDefaultTotals.label =
+              translationsStore.getTranslations.defaultTotal;
             this.getDefaultTotals.value = total;
             this.getDefaultTotals.displayValue =
               currencyFormatter.formatCurrency(
