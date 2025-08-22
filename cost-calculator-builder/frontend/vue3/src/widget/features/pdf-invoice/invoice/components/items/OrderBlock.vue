@@ -622,6 +622,11 @@ const getOrderDetails = computed(() => {
         f.geoType === "multiplyLocation"
       ) {
         return f.displayValue;
+      } else if (
+        (f.fieldName === "datePicker" && f.displayValue.length > 0) ||
+        (f.fieldName === "timePicker" && f.displayValue.length > 0)
+      ) {
+        return f.displayValue;
       } else {
         return f.value;
       }

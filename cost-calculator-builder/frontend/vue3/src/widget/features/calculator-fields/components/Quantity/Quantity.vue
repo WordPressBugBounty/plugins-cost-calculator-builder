@@ -182,20 +182,22 @@ const onInput = (event: Event) => {
 };
 
 const onIncrement = () => {
-  if (field.value.value < field.value.max) {
-    field.value.value = field.value.value + field.value.step;
+  if (Number(backupValue.value) < field.value.max) {
+    backupValue.value = (
+      Number(backupValue.value) + Number(field.value.step)
+    ).toString();
   }
 
-  backupValue.value = field.value.value.toString();
   changeHandler(backupValue.value);
 };
 
 const onDecrement = () => {
-  if (field.value.value > field.value.min) {
-    field.value.value = field.value.value - field.value.step;
+  if (Number(backupValue.value) > field.value.min) {
+    backupValue.value = (
+      Number(backupValue.value) - Number(field.value.step)
+    ).toString();
   }
 
-  backupValue.value = field.value.value.toString();
   changeHandler(backupValue.value);
 };
 

@@ -5,8 +5,14 @@
 </template>
 
 <script setup lang="ts">
-import { computed, defineAsyncComponent } from "vue";
+import { computed, defineAsyncComponent, defineProps } from "vue";
 import { useAppearanceStore } from "@/widget/app/providers/stores/appearanceStore.ts";
+
+type Props = {
+  type?: string;
+};
+
+const { type } = defineProps<Props>();
 
 const appearanceStore = useAppearanceStore();
 
@@ -21,6 +27,14 @@ const currentComponent = computed(() => {
     return defineAsyncComponent(() => import("./styles/segment.vue"));
   } else if (Number(appearanceStore.getAppearanceLoaderType) === 4) {
     return defineAsyncComponent(() => import("./styles/spinner.vue"));
+  } else if (Number(appearanceStore.getAppearanceLoaderType) === 5) {
+    if (type === "submit") {
+      return defineAsyncComponent(() => import("./styles/submitSkeleton.vue"));
+    } else {
+      return defineAsyncComponent(
+        () => import("./styles/skeletonCalculator.vue"),
+      );
+    }
   }
 });
 </script>

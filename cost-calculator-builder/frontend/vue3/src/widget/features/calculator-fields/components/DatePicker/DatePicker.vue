@@ -211,9 +211,12 @@ const getExtraDisplayValue = computed(() => {
         getDisabledWeekDays.value,
       );
 
-      if (dayDiff) result.push(`${dayDiff} day(s) x ${field.value.dayPrice}`);
+      if (dayDiff)
+        result.push(
+          `${dayDiff} ${translationsStore.getTranslations.days} x ${field.value.dayPrice}`,
+        );
     } else if (date.value) {
-      result.push(`1 day(s) x ${value}`);
+      result.push(`1 ${translationsStore.getTranslations.days} x ${value}`);
     }
 
     return result;

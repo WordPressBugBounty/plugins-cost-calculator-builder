@@ -1,9 +1,15 @@
 <template>
   <div class="ccb-app-container">
-    <div v-show="!appStore.getAppLoader" :data-calc-id="currenctCalcId">
-      <component :is="currentComponent" />
-    </div>
-    <Loader v-show="appStore.getAppLoader" />
+    <Suspense>
+      <template #default>
+        <div :data-calc-id="currenctCalcId">
+           <component :is="currentComponent" />
+        </div>
+      </template>
+      <template #fallback>
+        <Loader />
+      </template>
+    </Suspense>
   </div>
 </template>
 

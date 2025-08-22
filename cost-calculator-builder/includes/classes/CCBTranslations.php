@@ -33,7 +33,7 @@ class CCBTranslations {
 			'must_be_between'        => __( 'Value must be between min and max values', 'cost-calculator-builder' ),
 			'must_be_greater_min'    => __( 'Value can\'t be less than min value', 'cost-calculator-builder' ),
 			'must_be_less_max'       => __( 'Value can\'t be greater than max value', 'cost-calculator-builder' ),
-			'days'                   => __( 'days', 'cost-calculator-builder' ),
+			'days'                   => __( 'day(s)', 'cost-calculator-builder' ),
 			'files'                  => __( 'file(s)', 'cost-calculator-builder' ),
 			'order_created'          => __( 'Order created', 'cost-calculator-builder' ),
 			'clearLocation'          => __( 'Clear location', 'cost-calculator-builder' ),

@@ -30,7 +30,7 @@
       v-show="appStore.getSubmissionLoader"
       style="width: 100%; opacity: 0.5"
     >
-      <Loader />
+      <Loader type="submit" />
     </div>
   </div>
 </template>

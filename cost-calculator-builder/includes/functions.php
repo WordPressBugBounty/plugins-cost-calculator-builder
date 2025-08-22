@@ -566,6 +566,10 @@ function ccb_sync_settings_from_general_settings( $settings, $general_settings, 
 			if ( 'submitBtnText' === $form_field_key && ! empty( $form_field_value ) ) {
 				$settings['formFields'][ $form_field_key ] = $form_field_value;
 			}
+
+			if ( 'adminEmailAddress' === $form_field_key && ! empty( $form_field_value ) ) {
+				$settings['formFields'][ $form_field_key ] = $form_field_value;
+			}
 		}
 	}
 

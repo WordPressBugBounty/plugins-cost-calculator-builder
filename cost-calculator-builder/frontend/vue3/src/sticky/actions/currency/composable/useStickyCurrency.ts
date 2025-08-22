@@ -11,6 +11,10 @@ interface IUseStickyCurrencyResult {
     value: number,
     options: CurrencyFormatOptions | undefined,
   ) => string;
+  parseCurrency: (
+    value: string,
+    options: CurrencyFormatOptions | undefined,
+  ) => number;
   parseCurrencyPosition: (
     value: string,
     currency: string,
@@ -43,13 +47,11 @@ export function useStickyCurrency(): IUseStickyCurrencyResult {
       return value.toString();
     }
 
-    const {
-      numAfterInteger,
-      thousandsSeparator,
-      decimalSeparator,
-      currency,
-      currencyPosition,
-    } = options;
+    const numAfterInteger = options?.numAfterInteger || 2;
+    const thousandsSeparator = options?.thousandsSeparator || ",";
+    const decimalSeparator = options?.decimalSeparator || ".";
+    const currency = options?.currency || "";
+    const currencyPosition = options?.currencyPosition || "left";
 
     // Ensure correct decimal places
     let innerValue = Number(value).toFixed(numAfterInteger);
@@ -67,6 +69,45 @@ export function useStickyCurrency(): IUseStickyCurrencyResult {
       integerPart + (decimalPart ? decimalSeparator + decimalPart : "");
 
     return parseCurrencyPosition(formattedValue, currency, currencyPosition);
+  }
+
+  function parseCurrency(
+    inputValue: string,
+    options: CurrencyFormatOptions | undefined,
+  ): number {
+    if (typeof options === "undefined") {
+      return +inputValue;
+    }
+
+    const numAfterInteger = options?.numAfterInteger || 2;
+    const thousandsSeparator = options?.thousandsSeparator || ",";
+    const decimalSeparator = options?.decimalSeparator || ".";
+    const currency = options?.currency || "";
+
+    let value = inputValue.replace(currency, "").trim();
+
+    let parts;
+    if (value.includes(".") && value.includes(",")) {
+      parts = value.split(decimalSeparator);
+    } else if (value.includes(",")) {
+      parts = value.split(",");
+    } else if (value.includes(".")) {
+      parts = value.split(".");
+    } else {
+      parts = [value];
+    }
+
+    parts[0] = parts[0].split(thousandsSeparator).join("");
+
+    let sanitizedValue = parts.join(".");
+    let result = parseFloat(sanitizedValue) || 0;
+
+    if (numAfterInteger !== undefined) {
+      let factor = Math.pow(10, numAfterInteger);
+      result = Math.round(result * factor) / factor;
+    }
+
+    return result;
   }
 
   function parseCurrencyPosition(
@@ -91,6 +132,7 @@ export function useStickyCurrency(): IUseStickyCurrencyResult {
   return {
     getCurrencyOptions,
     formatCurrency,
+    parseCurrency,
     parseCurrencyPosition,
   };
 }

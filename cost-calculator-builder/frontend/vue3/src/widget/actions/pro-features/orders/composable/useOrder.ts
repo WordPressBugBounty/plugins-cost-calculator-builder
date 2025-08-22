@@ -692,6 +692,13 @@ const hideEmptyFields = (existingField: Field): string | boolean => {
       existingField.geoType === "multiplyLocation"
     ) {
       return (existingField.displayValue || "") as string;
+    } else if (
+      (existingField.fieldName === "datePicker" &&
+        existingField.displayValue.length > 0) ||
+      (existingField.fieldName === "timePicker" &&
+        existingField.displayValue.length > 0)
+    ) {
+      return (existingField.displayValue || "") as string;
     } else {
       return (existingField.value || "") as string;
     }

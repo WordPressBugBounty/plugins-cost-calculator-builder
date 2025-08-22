@@ -127,7 +127,7 @@ const toggleCollapse = () => {
         collapsed.value = true;
       } else {
         const isCurrentlyCollapsed = group.classList.contains(
-          "ccb-group-collapsed",
+          "ccb-group-collapsed"
         );
 
         if (isCurrentlyCollapsed) {
@@ -166,9 +166,7 @@ const additionalClasses = computed(() => {
 
   &__body {
     overflow: visible;
-    transition:
-      max-height 0.4s ease,
-      opacity 0.4s ease;
+    transition: max-height 0.4s ease, opacity 0.4s ease;
     max-height: 5000px;
     opacity: 1;
 
@@ -214,7 +212,7 @@ const additionalClasses = computed(() => {
 }
 
 .ccb-horizontal {
-  .group {
+  .ccb_field_with_group {
     grid-column: 1 / span 2;
   }
 }
