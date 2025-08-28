@@ -127,10 +127,22 @@ class CCBConditionsHelper {
 			'fields'    => array( 'geolocation', 'checkbox', 'datePicker', 'timePicker', 'dropDown', 'dropDown_with_img', 'checkbox_with_img', 'radio_with_img', 'multi_range', 'quantity', 'radio', 'range', 'range_datePicker', 'toggle', 'validated_form' ),
 		),
 		array(
-			'title'     => 'Unset',
+			'title'     => 'Unset All',
 			'value'     => 'unset',
 			'flex_grow' => '0',
-			'fields'    => array( 'checkbox', 'datePicker', 'timePicker', 'dropDown', 'dropDown_with_img', 'checkbox_with_img', 'radio_with_img', 'quantity', 'radio', 'range_datePicker', 'toggle' ),
+			'fields'    => array( 'datePicker', 'timePicker', 'dropDown', 'dropDown_with_img', 'radio_with_img', 'quantity', 'radio', 'range_datePicker' ),
+		),
+		array(
+			'title'     => 'Unset All',
+			'value'     => 'unset',
+			'flex_grow' => '0',
+			'fields'    => array( 'checkbox', 'checkbox_with_img', 'toggle' ),
+		),
+		array(
+			'title'     => 'Unset Option',
+			'value'     => 'unset_option',
+			'flex_grow' => '0',
+			'fields'    => array( 'checkbox', 'checkbox_with_img', 'toggle' ),
 		),
 		array(
 			'title'     => 'Set value',

@@ -175,7 +175,7 @@
                 style="width: 17%; text-align: right; font-weight: 700"
               >
                 <template v-if="Array.isArray(detail.displayValue)">
-                  <ul>
+                  <ul style="list-style: none">
                     <li v-for="option in detail.displayValue" :key="option">
                       {{ option }}
                     </li>

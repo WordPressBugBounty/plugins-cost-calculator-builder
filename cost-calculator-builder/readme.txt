@@ -6,7 +6,7 @@ Tags: cost calculator, calculator, calculator form builder, cost estimation, shi
 Requires at least: 6.2
 Requires PHP: 8.0.3
 Tested up to: 6.8.2
-Stable tag: 3.5.28
+Stable tag: 3.5.29
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -207,6 +207,9 @@ Also, you can import the demo sample using Tools -> Import -> WordPress Import.
 Demo sample XML file included in plugin archive.
 
 == Changelog ==
+
+= 3.5.29 =
+- Improvement: Added an action in Conditions to unset options for checkbox and image checkbox fields, allowing more granular control instead of clearing all options at once.
 
 = 3.5.28 =
 - Enhancement: Added a new preloader style “Skeleton” in Appearance for improved visuals during calculator loading on the page and order creation.

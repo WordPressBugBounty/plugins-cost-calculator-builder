@@ -3,7 +3,7 @@
     <Suspense>
       <template #default>
         <div :data-calc-id="currenctCalcId">
-           <component :is="currentComponent" />
+          <component :is="currentComponent" />
         </div>
       </template>
       <template #fallback>

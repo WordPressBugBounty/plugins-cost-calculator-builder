@@ -91,7 +91,6 @@ function ccb_add_admin_nonces() {
 		'ccb_apply_form_id'             => wp_create_nonce( 'ccb_apply_form_id' ),
 		'ccb_update_form'               => wp_create_nonce( 'ccb_update_form' ),
 		'ccb_duplicate_form'            => wp_create_nonce( 'ccb_duplicate_form' ),
-		'ccb_save_pdf'                  => wp_create_nonce( 'ccb_save_pdf' ),
 		'ccb_edit_pdf_template'         => wp_create_nonce( 'ccb_edit_pdf_template' ),
 		'ccb_delete_pdf_template'       => wp_create_nonce( 'ccb_delete_pdf_template' ),
 		'ccb_restore_pdf_template'      => wp_create_nonce( 'ccb_restore_pdf_template' ),

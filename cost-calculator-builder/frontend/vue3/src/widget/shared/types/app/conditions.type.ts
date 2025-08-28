@@ -16,7 +16,8 @@ export type Actions =
   | "set_period_and_disable"
   | "set_location"
   | "set_location_and_disable"
-  | "set_time_and_disable";
+  | "set_time_and_disable"
+  | "unset_option";
 
 export type ConditionLogic =
   | "=="

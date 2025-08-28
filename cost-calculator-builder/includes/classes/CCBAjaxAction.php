@@ -46,7 +46,6 @@ class CCBAjaxAction {
 		self::addAction( 'ccb_delete_preset', array( CCBCalculators::class, 'ccb_delete_preset' ) );
 		self::addAction( 'ccb_reset_type', array( CCBCalculators::class, 'ccb_reset_type' ) );
 		self::addAction( 'ccb_preset_hide_notice', array( CCBCalculators::class, 'ccb_preset_hide_notice' ) );
-		self::addAction( 'ccb_save_pdf', array( CCBCalculators::class, 'ccb_save_pdf' ) );
 		self::addAction( 'ccb_extend_pdf_template', array( CCBCalculators::class, 'ccb_extend_pdf_template' ) );
 		self::addAction( 'ccb_delete_pdf_template', array( CCBCalculators::class, 'ccb_delete_pdf_template' ) );
 		self::addAction( 'ccb_edit_pdf_template', array( CCBCalculators::class, 'ccb_edit_pdf_template' ) );

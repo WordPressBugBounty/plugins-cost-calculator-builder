@@ -255,6 +255,9 @@ function applyConditionForField(fieldAlias: string): void {
         case "unset":
           targetField = unset(conditionResult, targetField, condition);
           break;
+        case "unset_option":
+          targetField = unsetOption(conditionResult, targetField, condition);
+          break;
         case "set_value":
           targetField = setValue(conditionResult, targetField, condition);
           break;
@@ -626,6 +629,49 @@ function unset(
         targetField.alias,
         true,
       );
+    }
+  }
+
+  setTimeout(() => {
+    if (
+      (!targetField.hidden || targetField.calculateHidden) &&
+      targetCondition.optionFrom !== targetCondition.optionTo
+    ) {
+      applyConditionForField(targetField.alias);
+    }
+  });
+
+  return targetField;
+}
+
+function unsetOption(
+  result: boolean,
+  targetField: Field,
+  targetCondition: ICondition,
+): Field {
+  if (result) {
+    targetField.value = fieldMinValue(targetField);
+    if (
+      multipleOptionsField.includes(targetField.fieldName) &&
+      "selectedOption" in targetField
+    ) {
+      const values: number[] =
+        targetCondition.setVal
+          ?.toString()
+          ?.split(",")
+          ?.map((n: string) => +n) || [];
+
+      const selectedOption = targetField.options.filter(
+        (_, idx: number) => !values.includes(idx),
+      );
+
+      targetField.selectedOption = selectedOption || [];
+      let value: number = 0;
+      for (const option of selectedOption) {
+        value += +option.optionValue.split("_")[0] || 0;
+      }
+
+      targetField.value = +value;
     }
   }
 

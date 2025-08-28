@@ -697,8 +697,23 @@ export const useFieldsStore = () => {
           }
 
           if (
-            (["validated_form", "text"].includes(field.fieldName) &&
-              field.displayValue === "") ||
+            (field.fieldName === "datePicker" ||
+              field.fieldName === "timePicker") &&
+            field.displayValue !== ""
+          ) {
+            allFields.push(field);
+            continue;
+          }
+
+          if (
+            field.fieldName === "validated_form" &&
+            field.displayValue !== ""
+          ) {
+            allFields.push(field);
+          }
+
+          if (
+            (["text"].includes(field.fieldName) && field.displayValue === "") ||
             !field.value
           ) {
             continue;

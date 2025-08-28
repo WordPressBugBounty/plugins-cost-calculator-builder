@@ -1217,3 +1217,7 @@ function ccb_smart_format( $value, $precision = 2 ) {
 
 	return $float;
 }
+
+function ccb_to_fixed( $number, $decimals = 2 ) {
+	return number_format( $number, $decimals, '.', '' );
+}
