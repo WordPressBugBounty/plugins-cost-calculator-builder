@@ -63,4 +63,5 @@ export interface ITranslations {
   viewCart: string;
   select: string;
   defaultTotal: string;
+  off: string;
 }

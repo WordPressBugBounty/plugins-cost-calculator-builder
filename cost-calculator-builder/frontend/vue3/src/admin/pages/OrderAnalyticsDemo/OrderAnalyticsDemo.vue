@@ -2,8 +2,8 @@
   <div class="ccb-demo-page-wrapper">
     <div class="ccb-demo-page-container">
       <Demo
-        title="🔒 Analytics is available in the Pro version."
-        description="Upgrade now to unlock insights, track users, optimize sales, and grow your revenue."
+        :title="translations.proVersion"
+        :description="translations.upgradeNow"
         link="https://stylemixthemes.com/cost-calculator-plugin/pricing/?utm_source=calcwpadmin&utm_medium=freetoprobutton&utm_campaign=send_form"
         :image="bannerImageUrl"
       />
@@ -14,6 +14,11 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import Demo from "@/admin/shared/ui/components/Demo/index.ts";
+import { useAdminTranslationsStore } from "@/admin/store/analytics/translationsStore";
+
+const translationsStore = useAdminTranslationsStore();
+
+const translations = computed(() => translationsStore.getTranslations);
 
 const bannerImageUrl = computed(() => {
   if (

@@ -10,6 +10,7 @@ import { useCurrency } from "@/widget/actions/fields/composable/useCurrency.ts";
 import { useConditions } from "@/widget/actions/conditions/composable/useConditions.ts";
 import { ComputedRef } from "vue-demi";
 import { useFieldsStore } from "@/widget/app/providers/stores/fieldsStore.ts";
+import { useTranslationsStore } from "@/widget/app/providers/stores/translationsStore.ts";
 
 const discounts = ref<DiscountsStore>({});
 const originalDiscounts = ref<OriginalDiscountsStore>({});
@@ -203,11 +204,13 @@ function parseAppliedDiscount(
     return `-${value}`;
   }
 
+  const translations = useTranslationsStore();
+
   if (condition.discountType === "percent_of_amount") {
-    return `${Number(condition.discountAmount)}% off`;
+    return `${Number(condition.discountAmount)}% ${translations.getTranslations.off}`;
   }
 
-  return `-${value} off`;
+  return `-${value} ${translations.getTranslations.off}`;
 }
 
 function applyPromocode(promocode: string): void {

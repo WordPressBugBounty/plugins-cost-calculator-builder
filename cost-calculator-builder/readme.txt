@@ -6,7 +6,7 @@ Tags: cost calculator, calculator, calculator form builder, cost estimation, shi
 Requires at least: 6.2
 Requires PHP: 8.0.3
 Tested up to: 6.8.2
-Stable tag: 3.5.29
+Stable tag: 3.5.30
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -207,6 +207,9 @@ Also, you can import the demo sample using Tools -> Import -> WordPress Import.
 Demo sample XML file included in plugin archive.
 
 == Changelog ==
+
+= 3.5.30 =
+- Improvement: Strings in the Analytics dashboard are now available for translation in Loco Translate. (Pro)
 
 = 3.5.29 =
 - Improvement: Added an action in Conditions to unset options for checkbox and image checkbox fields, allowing more granular control instead of clearing all options at once.

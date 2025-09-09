@@ -1,0 +1,2 @@
+import{_ as c}from"./_plugin-vue_export-helper-DlAUqK2U.js";import{n as o,g as e,q as n,B as r}from"./convert-case-to-camel-case.utils-C0gHQHtf.js";const a={},_={class:"ccb-hint"},i={class:"ccb-hint__content"};function l(t,s){return e(),o("span",_,[s[0]||(s[0]=n("i",{class:"ccb-icon-Path-3367"},null,-1)),n("span",i,[r(t.$slots,"content")])])}const f=c(a,[["render",l]]);export{f as H};
+//# sourceMappingURL=Hint-BI4B_lwQ.js.map

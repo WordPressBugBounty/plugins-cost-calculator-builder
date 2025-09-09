@@ -1,27 +1,31 @@
 import { Period } from "@/admin/store/analytics/useAnalyticsStore";
+import { useAdminTranslationsStore } from "@/admin/store/analytics/translationsStore";
+
+const translationsStore = useAdminTranslationsStore();
 
 export type AllowedGroupingsType = {
   value: string;
   label: string;
 };
+
 export type AllowedGroupingsKeys = "week" | "month" | "year" | "hour";
 
 const getAllowedOptions: Record<AllowedGroupingsKeys, AllowedGroupingsType> = {
   hour: {
     value: "hour",
-    label: "Hourly",
+    label: translationsStore.getTranslations.hourly,
   },
   week: {
     value: "week",
-    label: "Weekly",
+    label: translationsStore.getTranslations.weekly,
   },
   month: {
     value: "month",
-    label: "Monthly",
+    label: translationsStore.getTranslations.monthly,
   },
   year: {
     value: "year",
-    label: "Yearly",
+    label: translationsStore.getTranslations.yearly,
   },
 };
 

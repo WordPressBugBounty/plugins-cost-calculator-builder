@@ -1,0 +1,2 @@
+import{_ as t}from"./_plugin-vue_export-helper-DlAUqK2U.js";import{n as o,g as a,q as c,B as s}from"./convert-case-to-camel-case.utils-C0gHQHtf.js";const r={},n={class:"ccb-block"},d={class:"ccb-subtotal-wrapper"};function f(e,i){return a(),o("div",n,[c("div",d,[s(e.$slots,"default",{},void 0,!0)]),s(e.$slots,"notifications",{},void 0,!0)])}const p=t(r,[["render",f],["__scopeId","data-v-2fd8f1fd"]]);export{p as default};
+//# sourceMappingURL=SubTotalWrapper-BDgY1T1F.js.map

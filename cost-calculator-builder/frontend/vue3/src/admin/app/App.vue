@@ -3,7 +3,9 @@
 </template>
 
 <script setup lang="ts">
-import { computed, defineAsyncComponent, inject, h } from "vue";
+import { computed, defineAsyncComponent, inject, h, onMounted } from "vue";
+import { useAdminTranslationsStore } from "@/admin/store/analytics/translationsStore";
+import { IAdminTranslations } from "@/admin/shared/types/analytics/translations.type";
 
 const page = inject("page");
 const demo = inject("demo");
@@ -28,6 +30,15 @@ const getCurrentComponent = computed(() => {
   }
 
   return h("div", "No page found");
+});
+
+onMounted(() => {
+  const translationsStore = useAdminTranslationsStore();
+  const translations = window.ccb_ajax_window?.translations;
+  if (!translations) return;
+  translationsStore.initTranslations(
+    translations as unknown as IAdminTranslations,
+  );
 });
 </script>
 

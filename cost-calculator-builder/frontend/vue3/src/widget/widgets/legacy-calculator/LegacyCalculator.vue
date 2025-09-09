@@ -12,7 +12,7 @@
           <template v-for="field in getFields" :key="field.alias">
             <template v-if="field.fieldName === 'repeater'">
               <CalculatorField
-                v-if="isFieldHidden(field)"
+                v-show="isFieldHidden(field)"
                 :name="field.fieldName"
                 :field="field"
               />
@@ -20,7 +20,7 @@
             <template v-else>
               <Transition name="fade">
                 <CalculatorField
-                  v-if="isFieldHidden(field)"
+                  v-show="isFieldHidden(field)"
                   :name="field.fieldName"
                   :field="field"
                 />

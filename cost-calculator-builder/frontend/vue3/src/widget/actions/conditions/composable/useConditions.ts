@@ -18,6 +18,9 @@ import { useCallbackStore } from "@/widget/app/providers/stores/callbackStore.ts
 import { useAppStore } from "@/widget/app/providers/stores/appStore.ts";
 import { useConditionsStore } from "@/widget/app/providers/stores/conditionsStore.ts";
 import { useFields } from "../../fields/composable/useFields";
+import { ref } from "vue";
+
+const timeout = ref<ReturnType<typeof setTimeout> | null>(null);
 
 const multipleOptionsField: string[] = [
   "checkbox",
@@ -76,14 +79,29 @@ function triggerCondition() {
 function applyConditionForField(fieldAlias: string): void {
   const conditionsStore = useConditionsStore();
 
-  if (!conditionsStore.conditions[fieldAlias]) return;
+  if (!conditionsStore.conditions[fieldAlias]) {
+    const keys = Object.keys(conditionsStore.conditions)?.filter((key) =>
+      key.includes("total"),
+    );
+
+    if (timeout.value) {
+      clearTimeout(timeout.value);
+    }
+
+    timeout.value = setTimeout(() => {
+      for (const key of keys) {
+        applyConditionForField(key);
+      }
+    }, 300);
+
+    return;
+  }
 
   const fieldStore = useFieldsStore();
   const singleFieldMixins = useSingleField();
 
   const affectedFields = Object.keys(conditionsStore.conditions[fieldAlias]);
   const triggerField: Field | undefined = fieldStore.getField(fieldAlias);
-
   if (!triggerField) return;
 
   for (const affectedAlias of affectedFields) {
@@ -94,7 +112,6 @@ function applyConditionForField(fieldAlias: string): void {
 
     fieldConditions.forEach((condition: ICondition) => {
       const fieldValue: number | undefined = triggerField.value;
-
       const conditionResultData: Array<boolean | string> = [];
       condition.conditions.forEach(
         (conditionRule: IConditionRule, index: number) => {

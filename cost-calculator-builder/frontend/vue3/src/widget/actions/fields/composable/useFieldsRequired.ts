@@ -176,13 +176,6 @@ const geolocationFieldValidation = (field: Field): boolean => {
 };
 
 const applyRequiredFieldsValidation = (fields: Field[]) => {
-  /** Validation rules for required fields
-   *  quantity must be higher than 0
-   *  checkbox, toggle must have at least one selected element even if its value is 0
-   *  dropDown, radio a value must be selected even if its value is 0
-   *  datePicker must be chosen
-   * **/
-
   return fields.filter((field: Field) => {
     return (
       quantityFieldValidation(field) ||
@@ -207,8 +200,12 @@ const resetRequiredFields = (): void => {
 const filterRequiredFields = (fieldsData: Field[]): Field[] => {
   const fieldsStore = useFieldsStore();
   let fields: Field[] = fieldsData;
+
   fieldsData.forEach((field: Field) => {
-    if (field.fieldName === "repeater" && "groupElements" in field) {
+    if (
+      ["repeater", "group"].includes(field.fieldName) &&
+      "groupElements" in field
+    ) {
       const groupElements: Field[] = [];
       field.groupElements.forEach((element) => {
         if ("entries" in element && typeof element.entries === "function") {
@@ -226,7 +223,8 @@ const filterRequiredFields = (fieldsData: Field[]): Field[] => {
     (field: Field) =>
       !field.hidden &&
       field.fieldName !== "total" &&
-      field.fieldName !== "repeater",
+      field.fieldName !== "repeater" &&
+      field.fieldName !== "group",
   );
 
   fields = applyRequiredFieldsValidation(fields);
@@ -234,13 +232,32 @@ const filterRequiredFields = (fieldsData: Field[]): Field[] => {
   if (fields.length) {
     const appStore = useAppStore();
     if (fieldsStore.getPageBreakEnabled) {
-      const pageBreakerFieldAliases: string[] =
+      const temp: Array<string | string[]> =
         fieldsStore.getActivePage?.groupElements?.map((element) => {
-          if ("alias" in element) {
+          if (
+            "alias" in element &&
+            "groupElements" in element &&
+            element?.alias &&
+            ((element?.alias as string)?.includes("group") ||
+              (element?.alias as string)?.includes("repeater"))
+          ) {
+            if (Array.isArray(element.groupElements)) {
+              return element.groupElements.map((groupElement) => {
+                if ("alias" in groupElement) {
+                  return groupElement.alias as string;
+                }
+                return "";
+              });
+            }
+            return "";
+          } else if ("alias" in element) {
             return element.alias as string;
           }
+
           return "";
         }) || [];
+
+      const pageBreakerFieldAliases = temp.flat();
 
       fields = fields.filter((field) =>
         pageBreakerFieldAliases.includes(field.alias),

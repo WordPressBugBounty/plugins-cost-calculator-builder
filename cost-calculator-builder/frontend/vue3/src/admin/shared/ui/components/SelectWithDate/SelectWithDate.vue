@@ -108,13 +108,13 @@
           class="ccb-select-with-date-footer-button ccb-cancel-button"
           @click="cancelSelection"
         >
-          <span>Cancel</span>
+          <span>{{ translations.cancel }}</span>
         </button>
         <button
           class="ccb-select-with-date-footer-button ccb-apply-button"
           @click="applySelection"
         >
-          <span>Apply</span>
+          <span>{{ translations.ok }}</span>
         </button>
       </div>
     </div>
@@ -133,6 +133,11 @@ import {
 } from "vue";
 import VueDatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
+import { useAdminTranslationsStore } from "@/admin/store/analytics/translationsStore";
+
+const translationsStore = useAdminTranslationsStore();
+
+const translations = computed(() => translationsStore.getTranslations);
 
 const props = defineProps<{
   placeholder: string;

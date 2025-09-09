@@ -1,0 +1,2 @@
+import{_ as u}from"./_plugin-vue_export-helper-DlAUqK2U.js";import{n as e,g as o,q as l}from"./convert-case-to-camel-case.utils-C0gHQHtf.js";const s={},t={class:"ccb-loader-dots"};function d(r,n){return o(),e("div",t,n[0]||(n[0]=[l("div",null,null,-1),l("div",null,null,-1),l("div",null,null,-1),l("div",null,null,-1),l("div",null,null,-1),l("div",null,null,-1),l("div",null,null,-1),l("div",null,null,-1)]))}const a=u(s,[["render",d]]);export{a as default};
+//# sourceMappingURL=lazyDots-BmLHqjxK.js.map

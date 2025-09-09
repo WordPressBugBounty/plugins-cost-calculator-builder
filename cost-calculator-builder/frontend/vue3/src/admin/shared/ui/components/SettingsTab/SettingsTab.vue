@@ -39,7 +39,7 @@
             class="ccb-settings-tab__sidebar-options-item-label-deleted"
             v-if="page.deleted"
           >
-            deleted
+            {{ translations.deleted }}
           </span>
         </div>
       </div>
@@ -54,6 +54,11 @@
 import { toRefs, computed, shallowRef, onMounted, markRaw } from "vue";
 import { AnalyticsOptions } from "@/admin/shared/types/analytics/analyticsOptions.type";
 import { AnalyticsPages } from "@/admin/shared/types/analytics/analyticsPages.type";
+import { useAdminTranslationsStore } from "@/admin/store/analytics/translationsStore";
+
+const translationsStore = useAdminTranslationsStore();
+
+const translations = computed(() => translationsStore.getTranslations);
 
 type Props = {
   pageOptions: AnalyticsOptions[];

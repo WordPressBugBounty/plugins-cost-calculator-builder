@@ -107,6 +107,7 @@ class CCBTranslations {
 			'message'                => __( 'Message', 'cost-calculator-builder' ),
 			'select'                 => __( 'Select', 'cost-calculator-builder' ),
 			'default_total'          => __( 'Total', 'cost-calculator-builder' ),
+			'off'                    => __( 'off', 'cost-calculator-builder' ),
 		);
 
 		return apply_filters( 'ccb_frontend_translations', $translations );
@@ -146,6 +147,51 @@ class CCBTranslations {
 			'no_payment'                     => esc_html__( 'No Payment', 'cost-calculator-builder' ),
 			'no_payments'                    => esc_html__( 'No Payment', 'cost-calculator-builder' ),
 			'woocommerce'                    => esc_html__( 'WooCommerce', 'cost-calculator-builder' ),
+		);
+	}
+
+	public static function get_analytics_translations() {
+		return array(
+			'calculator_list' => __( 'Calculator List', 'cost-calculator-builder' ),
+			'analytics'       => __( 'Analytics', 'cost-calculator-builder' ),
+			'dashboard'       => __( 'Dashboard', 'cost-calculator-builder' ),
+			'calculators'     => __( 'Calculators', 'cost-calculator-builder' ),
+			'all_time'        => __( 'All time', 'cost-calculator-builder' ),
+			'today'           => __( 'Today', 'cost-calculator-builder' ),
+			'yesterday'       => __( 'Yesterday', 'cost-calculator-builder' ),
+			'last_7_days'     => __( 'Last 7 days', 'cost-calculator-builder' ),
+			'last_30_days'    => __( 'Last 30 days', 'cost-calculator-builder' ),
+			'last_90_days'    => __( 'Last 90 days', 'cost-calculator-builder' ),
+			'last_year'       => __( 'Last year', 'cost-calculator-builder' ),
+			'custom'          => __( 'Custom', 'cost-calculator-builder' ),
+			'all_statuses'    => __( 'All statuses', 'cost-calculator-builder' ),
+			'completed'       => __( 'Completed', 'cost-calculator-builder' ),
+			'pending'         => __( 'Pending', 'cost-calculator-builder' ),
+			'charts'          => __( 'Charts', 'cost-calculator-builder' ),
+			'widgets'         => __( 'Widgets', 'cost-calculator-builder' ),
+			'select_period'   => __( 'Select period', 'cost-calculator-builder' ),
+			'page_settings'   => __( 'Page settings', 'cost-calculator-builder' ),
+			'pro_version'     => __( '🔒 Analytics is available in the Pro version', 'cost-calculator-builder' ),
+			'upgrade_now'     => __( 'Upgrade now to unlock insights, track users, optimize sales, and grow your revenue.', 'cost-calculator-builder' ),
+			'upgrade_now_btn' => __( 'Upgrade now', 'cost-calculator-builder' ),
+			'enable_all'      => __( 'Enable all', 'cost-calculator-builder' ),
+			'cancel'          => __( 'Cancel', 'cost-calculator-builder' ),
+			'ok'              => __( 'OK', 'cost-calculator-builder' ),
+			'apply'           => __( 'Apply', 'cost-calculator-builder' ),
+			'deleted'         => __( 'Deleted', 'cost-calculator-builder' ),
+			'hourly'          => __( 'Hourly', 'cost-calculator-builder' ),
+			'weekly'          => __( 'Weekly', 'cost-calculator-builder' ),
+			'monthly'         => __( 'Monthly', 'cost-calculator-builder' ),
+			'yearly'          => __( 'Yearly', 'cost-calculator-builder' ),
+			'hide'            => __( 'Hide', 'cost-calculator-builder' ),
+			'small_large'     => __( 'Small/Large', 'cost-calculator-builder' ),
+			'type'            => __( 'Type', 'cost-calculator-builder' ),
+			'select_widget'   => __( 'Select widget', 'cost-calculator-builder' ),
+			'add_widget'      => __( 'Add widget', 'cost-calculator-builder' ),
+			'interactions'    => __( 'Interactions', 'cost-calculator-builder-pro' ),
+			'revenue'         => __( 'Revenue', 'cost-calculator-builder-pro' ),
+			'orders'          => __( 'Orders', 'cost-calculator-builder-pro' ),
+			'views'           => __( 'Views', 'cost-calculator-builder-pro' ),
 		);
 	}
 }

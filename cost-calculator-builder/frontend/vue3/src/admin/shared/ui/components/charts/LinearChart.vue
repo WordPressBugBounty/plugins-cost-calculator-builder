@@ -45,6 +45,7 @@ import {
 } from "@/admin/shared/utils/periods";
 import { Skeleton } from "@/admin/shared/ui/components/Skeleton";
 import { CustomSelect } from "@/admin/shared/ui/components/CustomSelect";
+import { useAdminTranslationsStore } from "@/admin/store/analytics/translationsStore";
 
 const props = defineProps<{
   chart: IChartData;
@@ -149,15 +150,16 @@ const lineChartOptions = ref({
 });
 
 const lineChartSeries = computed(() => {
+  const translations = useAdminTranslationsStore();
   if (chart.value.extraSeries && chart.value.extraSeries.length > 0) {
     return [
       {
-        name: "Interactions",
+        name: translations.getTranslations.interactions,
         type: "line",
         data: chart.value.series,
       },
       {
-        name: "Orders",
+        name: translations.getTranslations.orders,
         type: "line",
         data: chart.value.extraSeries,
       },
@@ -165,7 +167,7 @@ const lineChartSeries = computed(() => {
   }
   return [
     {
-      name: "Revenue",
+      name: translations.getTranslations.revenue,
       type: "line",
       data: chart.value.series,
     },

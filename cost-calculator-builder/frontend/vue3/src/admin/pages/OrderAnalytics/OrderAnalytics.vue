@@ -4,7 +4,7 @@
       <template #header>
         <div class="ccb-analytics-page__header">
           <div class="ccb-analytics-page__header-title">
-            Analytics
+            {{ translations.analytics }}
             <span
               class="ccb-analytics-page__header-title-subpage"
               v-if="analyticsStore.getCurrentPage?.id"
@@ -17,7 +17,7 @@
               @update="handleDateUpdate"
               :items="getItems"
               defaultValue="all"
-              placeholder="Select period"
+              :placeholder="translations.selectPeriod"
               :class="{
                 'ccb-is-loading-for-settings': analyticsStore.isLoading,
               }"
@@ -26,7 +26,7 @@
             <CustomSelect
               :items="getStatusItems"
               :current="status"
-              placeholder="All statuses"
+              :placeholder="translations.allStatuses"
               @update="updateStatusHandler"
               class="ccb-order-status-select"
               :class="{
@@ -38,7 +38,7 @@
             <template v-if="getCurrentPage?.id !== 0">
               <PageSettings
                 :tabs="getPageSettingsTabs"
-                placeholder="Page settings"
+                :placeholder="translations.pageSettings"
                 :items="analyticsStore.getPageSettings"
                 @update="updatePageSettings"
                 :class="{
@@ -72,8 +72,12 @@ import {
   useAnalyticsStore,
 } from "@/admin/store/analytics/useAnalyticsStore";
 import { CustomSelect } from "@/admin/shared/ui/components/CustomSelect";
+import { useAdminTranslationsStore } from "@/admin/store/analytics/translationsStore";
 
 const analyticsStore = useAnalyticsStore();
+const translationsStore = useAdminTranslationsStore();
+
+const translations = computed(() => translationsStore.getTranslations);
 
 const status = ref<string>("all");
 
@@ -84,7 +88,7 @@ const analyticsOptions = computed<AnalyticsOptions[]>(() => {
       icon: "",
       pages: [
         {
-          label: "Dashboard",
+          label: translations.value.dashboard,
           id: 0,
           slug: "dashboard",
           icon: "ccb-icon-new-calculator",
@@ -98,7 +102,7 @@ const analyticsOptions = computed<AnalyticsOptions[]>(() => {
       deleted: false,
     },
     {
-      label: "Calculators",
+      label: translations.value.calculators,
       icon: "",
       pages: analyticsStore.getCalculators,
     },
@@ -136,29 +140,29 @@ const updatePageSettings = (
 
 const getItems = computed<{ value: string; label: string }[]>(() => {
   return [
-    { value: "all", label: "All time" },
-    { value: "today", label: "Today" },
-    { value: "yesterday", label: "Yesterday" },
-    { value: "last_7_days", label: "Last 7 days" },
-    { value: "last_30_days", label: "Last 30 days" },
-    { value: "last_90_days", label: "Last 90 days" },
-    { value: "last_year", label: "Last year" },
-    { value: "custom", label: "Custom" },
+    { value: "all", label: translations.value.allTime },
+    { value: "today", label: translations.value.today },
+    { value: "yesterday", label: translations.value.yesterday },
+    { value: "last_7_days", label: translations.value.last_7Days },
+    { value: "last_30_days", label: translations.value.last_30Days },
+    { value: "last_90_days", label: translations.value.last_90Days },
+    { value: "last_year", label: translations.value.lastYear },
+    { value: "custom", label: translations.value.custom },
   ];
 });
 
 const getPageSettingsTabs = computed<{ value: string; label: string }[]>(() => {
   return [
-    { value: "charts", label: "Charts" },
-    { value: "widgets", label: "Widgets" },
+    { value: "charts", label: translations.value.charts },
+    { value: "widgets", label: translations.value.widgets },
   ];
 });
 
 const getStatusItems = computed<{ value: string; label: string }[]>(() => {
   return [
-    { value: "all", label: "All Statuses" },
-    { value: "complete", label: "Completed" },
-    { value: "pending", label: "Pending" },
+    { value: "all", label: translations.value.allStatuses },
+    { value: "complete", label: translations.value.completed },
+    { value: "pending", label: translations.value.pending },
   ];
 });
 

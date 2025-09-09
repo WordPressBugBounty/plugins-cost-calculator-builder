@@ -214,13 +214,31 @@ export const useFieldsStore = () => {
       setRequiredFields(fields: Field[]): void {
         let result: Field[] = [];
         if (this.getPageBreakEnabled) {
-          const pageBreakerFieldAliases: string[] =
+          const temp: Array<string | string[]> =
             this.getActivePage?.groupElements?.map((element) => {
-              if ("alias" in element) {
+              if (
+                "alias" in element &&
+                "groupElements" in element &&
+                element?.alias &&
+                ((element?.alias as string)?.includes("group") ||
+                  (element?.alias as string)?.includes("repeater"))
+              ) {
+                if (Array.isArray(element.groupElements)) {
+                  return element.groupElements.map((groupElement) => {
+                    if ("alias" in groupElement) {
+                      return groupElement.alias as string;
+                    }
+                    return "";
+                  });
+                }
+                return "";
+              } else if ("alias" in element) {
                 return element.alias as string;
               }
               return "";
             }) || [];
+
+          const pageBreakerFieldAliases = temp.flat();
 
           fields = fields.filter((field) =>
             pageBreakerFieldAliases.includes(field.alias),
@@ -289,9 +307,11 @@ export const useFieldsStore = () => {
                 }
 
                 item.groupElements.forEach((inner_item) => {
-                  const createField = fieldsInstance.addField(inner_item);
-                  createdField.hidden = inner_item.hidden;
-                  this.fields.set(inner_item.alias, createField);
+                  if (inner_item.type === "Total") {
+                    const createField = fieldsInstance.addField(inner_item);
+                    createdField.hidden = inner_item.hidden;
+                    this.fields.set(inner_item.alias, createField);
+                  }
                 });
               } else {
                 const createField = fieldsInstance.addField(item);
@@ -305,6 +325,7 @@ export const useFieldsStore = () => {
               createdField.hidden = field.hidden;
               this.fields.set(field.alias, createdField);
             }
+
             field.groupElements.forEach((item) => {
               if (item.type === "Total") {
                 const createdField = fieldsInstance.addField(item);

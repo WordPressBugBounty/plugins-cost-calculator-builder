@@ -50,7 +50,7 @@
             class="ccb-list-button-dropdown--footer-restore-text"
             @click="restoreDefaults"
           >
-            Enable All
+            {{ translations.enableAll }}
           </span>
         </div>
 
@@ -59,13 +59,13 @@
             class="ccb-list-button-dropdown--footer-actions-text cancel"
             @click="cancelSettings"
           >
-            Cancel
+            {{ translations.cancel }}
           </span>
           <span
             class="ccb-list-button-dropdown--footer-actions-text apply"
             @click="applySettings"
           >
-            OK
+            {{ translations.ok }}
           </span>
         </div>
       </div>
@@ -83,6 +83,11 @@ import {
   onUnmounted,
 } from "vue";
 import { SettingsToggle } from "@/admin/shared/ui/components/SettingsToggle";
+import { useAdminTranslationsStore } from "@/admin/store/analytics/translationsStore";
+
+const translationsStore = useAdminTranslationsStore();
+
+const translations = computed(() => translationsStore.getTranslations);
 
 const props = defineProps<{
   placeholder: string;

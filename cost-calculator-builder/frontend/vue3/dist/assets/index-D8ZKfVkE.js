@@ -1,0 +1,2 @@
+import{a as o,t as l,b as r,n as c,g as i,u as d,A as u}from"./convert-case-to-camel-case.utils-C0gHQHtf.js";const m=["innerHTML"],_=o({__name:"Html",props:{field:{}},setup(n){const s=n,{field:t}=l(s),a=r(()=>{var e;return((e=t.value)==null?void 0:e.additionalStyles)||""});return(e,p)=>(i(),c("div",{class:u(["ccb-field",{[a.value]:!0}]),innerHTML:d(t).htmlContent},null,10,m))}});export{_ as default};
+//# sourceMappingURL=index-D8ZKfVkE.js.map

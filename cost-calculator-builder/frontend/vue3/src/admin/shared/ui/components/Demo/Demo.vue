@@ -12,7 +12,7 @@
         target="_blank"
         class="ccb-demo-page-info-block-actions-button"
       >
-        <span>Upgrade now</span>
+        <span>{{ translations.upgradeNowBtn }}</span>
       </a>
     </div>
   </div>
@@ -25,7 +25,12 @@
 </template>
 
 <script setup lang="ts">
-import { toRefs } from "vue";
+import { computed, toRefs } from "vue";
+import { useAdminTranslationsStore } from "@/admin/store/analytics/translationsStore";
+
+const translationsStore = useAdminTranslationsStore();
+
+const translations = computed(() => translationsStore.getTranslations);
 
 const props = defineProps<{
   title: string;

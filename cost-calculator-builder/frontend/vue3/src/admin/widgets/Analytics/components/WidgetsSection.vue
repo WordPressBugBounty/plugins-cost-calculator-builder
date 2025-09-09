@@ -3,10 +3,10 @@
     <div class="ccb-singlepage-add-widget-container">
       <div class="ccb-singlepage-widgets-options">
         <div class="ccb-singlepage-widget-option">
-          <span>Type</span>
+          <span>{{ translations.type }}</span>
           <div class="ccb-singlepage-widget-option-select">
             <select v-model="selectedWidget">
-              <option value="" selected>Select widget</option>
+              <option value="" selected>{{ translations.selectWidget }}</option>
               <option :value="widget.key" v-for="widget in getAvailableWidgets">
                 {{ widget.title }}
               </option>
@@ -22,7 +22,7 @@
         }"
         @click.prevent="addWidget"
       >
-        Add widget
+        {{ translations.addWidget }}
       </button>
     </div>
     <div class="ccb-dashboard-row">
@@ -55,8 +55,12 @@ import { computed, ref } from "vue";
 import { useAnalyticsStore } from "@/admin/store/analytics/useAnalyticsStore";
 import { LargeWidget } from "@/admin/shared/ui/components/LargeWidget";
 import { SmallWidget } from "@/admin/shared/ui/components/SmallWidget";
+import { useAdminTranslationsStore } from "@/admin/store/analytics/translationsStore";
 
 const analyticsStore = useAnalyticsStore();
+const translationsStore = useAdminTranslationsStore();
+
+const translations = computed(() => translationsStore.getTranslations);
 
 const selectedWidget = ref<string>("");
 
@@ -65,9 +69,9 @@ const getSingleCarts = computed(() => {
 });
 
 const items = ref<{ value: string; label: string }[]>([
-  { value: "hide", label: "Hide" },
-  { value: "small/large", label: "Small/Large" },
-  { value: "delete", label: "Delete" },
+  { value: "hide", label: translations.value.hide },
+  { value: "small/large", label: translations.value.smallLarge },
+  { value: "delete", label: translations.value.deleted },
 ]);
 
 const getWidgetsSolidPageSettings = computed(() => {

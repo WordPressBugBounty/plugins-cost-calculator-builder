@@ -36,22 +36,26 @@ function cBuilder_admin_enqueue() {
 			CALC_PATH . '/frontend/vue3/dist',
 			'src/admin/main.ts',
 			array(
-				'handle'    => 'ccb-admin-bundle',
+				'handle'    => 'ccb-analytics-bundle',
 				'in-footer' => true,
 			)
 		);
 
-		wp_localize_script(
-			'ccb-admin-bundle',
-			'ccb_ajax_window',
-			array(
+		// phpcs:disable
+		$handle_data = array(
 				'ajax_url'     => admin_url( 'admin-ajax.php' ),
 				'dateFormat'   => get_option( 'date_format' ),
 				'language'     => substr( get_bloginfo( 'language' ), 0, 2 ),
 				'plugin_url'   => CALC_URL,
-				'translations' => array_merge( \cBuilder\Classes\CCBTranslations::get_frontend_translations(), \cBuilder\Classes\CCBTranslations::get_backend_translations() ),
+				'translations' => array_merge( \cBuilder\Classes\CCBTranslations::get_backend_translations(), \cBuilder\Classes\CCBTranslations::get_analytics_translations() ),
 				'pro_active'   => ccb_pro_active(),
-			)
+		);
+		// phpcs:enable
+
+		wp_localize_script(
+			'ccb-analytics-bundle',
+			'ccb_ajax_window',
+			$handle_data
 		);
 	} elseif ( isset( $_GET['page'] ) && ( $_GET['page'] === 'cost_calculator_gopro' ) ) { //phpcs:ignore
 		wp_enqueue_style( 'ccb-calc-font', CALC_URL . '/frontend/dist/css/font/font.css', array(), CALC_VERSION );

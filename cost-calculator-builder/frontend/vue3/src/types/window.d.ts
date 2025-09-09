@@ -12,6 +12,14 @@ declare global {
     ccb_frontend_nonces?: {
       [key: string]: string;
     };
+    ccb_ajax_window?: {
+      ajax_url: string;
+      dateFormat: string;
+      language: string;
+      plugin_url: string;
+      translations: Record<string, string>;
+      pro_active: boolean;
+    };
     wpcf7?: {
       init: (form: HTMLElement) => void;
     };
