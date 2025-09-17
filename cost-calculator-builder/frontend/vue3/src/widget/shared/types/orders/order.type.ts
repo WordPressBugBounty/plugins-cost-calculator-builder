@@ -71,6 +71,7 @@ export interface IOrderDetailsHelperResult {
   extraView?: string;
   option_unit?: string;
   originalValue: number;
+  hideOrderPdf?: boolean;
 }
 
 export interface IRepeaterOrderDetailsHelperResult {

@@ -162,6 +162,20 @@ export const useFieldsStore = () => {
                 return f.value;
               }
             });
+            result = result.filter((f) =>
+              ["validated_form", "text"].includes(f.fieldName)
+                ? f.displayValue
+                : f.fieldName === "geolocation" &&
+                    "geoType" in f &&
+                    f.geoType === "multiplyLocation"
+                  ? f.displayValue
+                  : f.value ||
+                    (f.fieldName === "file_upload" &&
+                      "allowPrice" in f &&
+                      "files" in f &&
+                      Array.isArray(f.files) &&
+                      f.files.length > 0),
+            );
           }
 
           return result;

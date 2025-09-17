@@ -174,23 +174,35 @@ const getUsedFiles = (): IFileData[] => {
     });
 
     const fileElements = elements.map((f: IFileUploadField) => {
-      if (!aliasCounter[f.alias]) {
-        aliasCounter[f.alias] = 0;
+      const currentIndex = aliasCounter[f.alias] ?? 0;
+      const uniqueAlias = `${f.alias}_${currentIndex}`;
+      aliasCounter[f.alias] = currentIndex + 1;
+      if (!f.options) f.options = { value: undefined };
 
-        const uniqueAlias = `${f.alias}_${aliasCounter[f.alias]}`;
-        aliasCounter[f.alias]++;
-        if (!f.options) f.options = { value: undefined };
-
-        if (window.ccb_rep_files)
-          f.options.value = window.ccb_rep_files[uniqueAlias];
-
-        f.customAlias = uniqueAlias;
-        f.inRepeater = true;
+      if (window.ccb_rep_files) {
+        f.options.value = window.ccb_rep_files[uniqueAlias];
       }
+
+      f.customAlias = uniqueAlias;
+      f.inRepeater = true;
       return f;
     });
 
     pureFields.push(...fileElements);
+  });
+
+  const groupFields: IGroupField[] = fieldStore.getFields.filter(
+    (f) => f.fieldName === "group",
+  ) as IGroupField[];
+
+  groupFields.forEach((group: IGroupField) => {
+    group.groupElements.forEach((element) => {
+      for (const [_, existingField] of element.entries()) {
+        if (existingField.fieldName === "file_upload") {
+          pureFields.push(existingField as IFileUploadField);
+        }
+      }
+    });
   });
 
   const result: IFileData[] = [];
@@ -242,6 +254,35 @@ const getClearFields = (): Field[] => {
     }
 
     if (
+      field.fieldName === "repeater" &&
+      "groupElements" in field &&
+      (!field.hidden || ("calculateHidden" in field && field.calculateHidden))
+    ) {
+      const repeaterField = field as IRepeaterField;
+      result.push(field);
+      repeaterField.groupElements.forEach((repMap) => {
+        for (const [_, innerField] of repMap.entries()) {
+          if (
+            innerField.alias &&
+            !["total", "html", "line", "page_break"].includes(
+              innerField.fieldName,
+            ) &&
+            (innerField.addToSummary === true ||
+              innerField.addToSummary === false ||
+              innerField.alias.indexOf("file") !== -1) &&
+            (!innerField.hidden ||
+              ("calculateHidden" in innerField &&
+                innerField.calculateHidden)) &&
+            hideEmptyFields(innerField)
+          ) {
+            result.push(innerField);
+          }
+        }
+      });
+      continue;
+    }
+
+    if (
       field.alias &&
       !["total", "html", "line", "page_break"].includes(field.fieldName) &&
       (field.fieldName === "repeater" ||
@@ -277,6 +318,8 @@ const getOrderDetails = (): IOrderDetails => {
 
 const orderDetailsHelper = (fields: Field[]): IOrderDetailsType => {
   const data: IOrderDetailsType = [];
+  const settingsStore = useSettingsStore();
+  const generalSettings = settingsStore.getGeneralSettings;
 
   for (const field of fields) {
     if (field.fieldName === "repeater") {
@@ -338,6 +381,13 @@ const orderDetailsHelper = (fields: Field[]): IOrderDetailsType => {
         value: field.displayValue,
         addToSummary: field.addToSummary,
         originalValue: field.value || 0,
+        ...(field.fieldName === "file_upload" &&
+        (field.value || 0) <= 0 &&
+        !generalSettings?.hideEmptyForOrdersPdfEmails
+          ? {
+              hideOrderPdf: true,
+            }
+          : {}),
         ...(typeof field.repeaterIdx !== "undefined"
           ? {
               idx: field.repeaterIdx,
@@ -699,6 +749,14 @@ const hideEmptyFields = (existingField: Field): string | boolean => {
         existingField.displayValue.length > 0)
     ) {
       return (existingField.displayValue || "") as string;
+    } else if (
+      existingField.fieldName === "file_upload" &&
+      "allowPrice" in existingField &&
+      "files" in existingField &&
+      Array.isArray(existingField.files) &&
+      existingField.files.length > 0
+    ) {
+      return (existingField.files.length > 0) as boolean;
     } else {
       return (existingField.value || "") as string;
     }

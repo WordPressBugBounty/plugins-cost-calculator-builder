@@ -179,14 +179,9 @@ class CCBOrderController {
 				$file_url      = array();
 
 				foreach ( $data['orderDetails'] as $detail ) {
-					if ( ! empty( $detail['alias'] ) && str_contains( $detail['alias'], 'repeater' ) ) {
+					if ( ! empty( $detail['alias'] ) && isset( $detail['repeaterAlias'] ) && str_contains( $detail['repeaterAlias'], 'repeater' ) ) {
+						$detail['alias'] = $detail['alias'] . '_' . $detail['idx'];
 						$order_details[] = $detail;
-						foreach ( $detail['groupElements'] as &$item ) {
-							if ( isset( $item['idx'] ) ) {
-								$item['alias'] .= '_' . $item['idx'];
-							}
-							$order_details[] = $item;
-						}
 					} else {
 						$order_details[] = $detail;
 					}
@@ -200,13 +195,7 @@ class CCBOrderController {
 
 					foreach ( $order_details as $field ) {
 						if ( isset( $field['alias'] ) && ! empty( $field['alias'] ) ) {
-							$single_alias   = $field['alias'];
-							$repeater_alias = $field['alias'] . $key[0];
-
-							if ( $repeater_alias === $field_id ) {
-								$field['alias']    = $field_id;
-								$file_upload_field = $field;
-							} elseif ( $single_alias === $field_id ) {
+							if ( $field['alias'] === $field_id ) {
 								$file_upload_field = $field;
 							}
 						}
@@ -266,19 +255,12 @@ class CCBOrderController {
 					}
 				}
 
-				$file_upload_index = 0;
 				foreach ( $order_details as $field_key => $field ) {
 					if ( ! empty( $field['alias'] ) && preg_replace( '/_field_id.*/', '', $field['alias'] ) === 'file_upload' ) {
-						$file_key = isset( $file_url[ $field['alias'] ] )
-							? $field['alias']
-							: ( isset( $file_url[ $field['alias'] . '_' . $file_upload_index ] )
-								? $field['alias'] . '_' . $file_upload_index
-								: null );
-
-						if ( $file_key ) {
+						$file_key = $field['alias'];
+						if ( isset( $file_url[ $file_key ] ) ) {
 							$order_details[ $field_key ]['options'] = wp_json_encode( $file_url[ $file_key ] );
 						}
-						$file_upload_index++;
 					}
 				}
 
@@ -615,7 +597,15 @@ class CCBOrderController {
 				}
 
 				foreach ( $form_details as $detail ) {
-					$type = $detail->name ?? $detail->type;
+					$type = '';
+					if ( ! empty( $detail->name ) ) {
+						$type = $detail->name;
+					} else if ( ! empty( $detail->type ) ) {
+						$type = $detail->type;
+					} else if ( ! empty( $detail->attributes ) && isset( $detail->attributes->type ) ) {
+						$type = $detail->attributes->type;
+					}
+
 					if ( ( 'email' === $type || 'your-email' === $type ) && ! empty( $detail->value ) ) {
 						$order['user_email'] = $detail->value;
 					}

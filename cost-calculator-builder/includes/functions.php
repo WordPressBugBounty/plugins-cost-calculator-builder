@@ -220,7 +220,7 @@ function ccb_parse_settings( $settings ) {
  *
  * @return array
  */
-function ccb_woo_products( $page = 1, $per_page = 5, $search = '', $product_ids = array() ) {
+function ccb_woo_products( $page = 1, $per_page = 5, $search = '', $product_ids = array(), $called_by = 'woo_products' ) {
 	$offset          = $page * $per_page;
 	$selected_offset = $offset - count( $product_ids );
 	$product_ids     = array_filter( array_map( 'absint', (array) $product_ids ) );
@@ -245,6 +245,17 @@ function ccb_woo_products( $page = 1, $per_page = 5, $search = '', $product_ids 
 				'paged'          => 1,
 			);
 
+			if ( 'woo_checkout' === $called_by ) {
+				$selected_args['tax_query'] = array(
+					array(
+						'taxonomy' => 'product_type',
+						'field'    => 'slug',
+						'terms'    => array( 'variable' ),
+						'operator' => 'NOT IN',
+					),
+				);
+			}
+
 			$selected_query        = new WP_Query( $selected_args );
 			$selected_products_all = $selected_query->posts;
 
@@ -267,6 +278,17 @@ function ccb_woo_products( $page = 1, $per_page = 5, $search = '', $product_ids 
 			'post__not_in'   => $product_ids,
 			'posts_per_page' => $selected_offset,
 		);
+
+		if ( 'woo_checkout' === $called_by ) {
+			$other_args['tax_query'] = array(
+				array(
+					'taxonomy' => 'product_type',
+					'field'    => 'slug',
+					'terms'    => array( 'variable' ),
+					'operator' => 'NOT IN',
+				),
+			);
+		}
 
 		$other_query    = new WP_Query( $other_args );
 		$other_products = $other_query->posts;

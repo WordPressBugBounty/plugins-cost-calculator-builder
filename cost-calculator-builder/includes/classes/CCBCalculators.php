@@ -94,11 +94,13 @@ class CCBCalculators {
 		$search   = ! empty( $_GET['search'] ) ? $_GET['search'] : '';
 		$per_page = ! empty( $_GET['per_page'] ) ? $_GET['per_page'] : 5;
 
+		$called_by = ! empty( $_GET['called_by'] ) ? $_GET['called_by'] : false;
+
 		if ( ! empty( $_GET['product_ids'] ) ) {
 			$product_ids = explode( ',', $_GET['product_ids'] );
 		}
 
-		$data = ccb_woo_products( $page, $per_page, $search, $product_ids );
+		$data = ccb_woo_products( $page, $per_page, $search, $product_ids, $called_by );
 
 		$products     = $data['items'];
 		$total_count  = $data['total'];

@@ -122,6 +122,7 @@ import {
   defineProps,
   defineExpose,
   onMounted,
+  onBeforeUnmount,
 } from "vue";
 import { useSettingsStore } from "@/widget/app/providers/stores/settingsStore";
 import { useAppStore } from "@/widget/app/providers/stores/appStore.ts";
@@ -337,11 +338,25 @@ const actionsClass = computed(() => {
     : "ccb-pdf-invoice__actions--show-share";
 });
 
+const handleDownload = () => generatePdf();
+const handleOpenModal = () => showPopup();
+
 const initListeners = () => {
-  if (appStore.isThankYouPage) {
-    window.addEventListener("ccbDownLoadPdf", () => generatePdf());
+  const listenersKey = `__ccb_pdf_listeners_${appStore.getCalcId}`;
+  if ((window as any)[listenersKey]) return;
+
+  const thankYouPageSettings = settingsStore.getThankYouPage;
+  if (
+    appStore.isThankYouPage ||
+    (thankYouPageSettings?.enable &&
+      thankYouPageSettings?.type === "modal" &&
+      thankYouPageSettings?.downloadButton)
+  ) {
+    window.addEventListener("ccbDownLoadPdf", handleDownload);
   }
-  window.addEventListener("ccbOpenModal", () => showPopup());
+  window.addEventListener("ccbOpenModal", handleOpenModal);
+
+  (window as any)[listenersKey] = true;
 };
 
 const getButtonStatus = computed(() => {
@@ -356,6 +371,16 @@ const getButtonStatus = computed(() => {
 
 onMounted(() => {
   initListeners();
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener("ccbDownLoadPdf", handleDownload);
+  window.removeEventListener("ccbOpenModal", handleOpenModal);
+
+  const listenersKey = `__ccb_pdf_listeners_${appStore.getCalcId}`;
+  if ((window as any)[listenersKey]) {
+    delete (window as any)[listenersKey];
+  }
 });
 </script>
 
