@@ -98,3 +98,23 @@ export interface IOrderDateThankYouPage {
   discounts: any;
   promocodes: string[];
 }
+
+export interface IOrderTotals {
+  totals: any;
+  discounts: any;
+  promocodes: string[];
+  label: string;
+  value: number;
+  hidden: boolean;
+  hasDiscount: boolean;
+  discount: {
+    discountView: string;
+    discountTitle: string;
+  };
+  converted: string;
+  originalConverted: string;
+  originalValue: number;
+  originalDisplayView: string;
+  originalLabel: string;
+  originalPaymentCurrency: string;
+}

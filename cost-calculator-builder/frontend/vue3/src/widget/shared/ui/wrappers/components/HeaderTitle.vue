@@ -22,6 +22,10 @@ const { title } = toRefs(props);
   color: var(--ccb-text-color);
   text-align: left;
 
+  &.ccb-calculator-name {
+    display: var(--ccb-header-display);
+  }
+
   @media only screen and (max-width: 480px) {
     font-size: var(--ccb-mobile-header-size);
     font-weight: var(--ccb-mobile-header-weight);

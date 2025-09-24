@@ -6,7 +6,7 @@ Tags: cost calculator, calculator, calculator form builder, cost estimation, shi
 Requires at least: 6.2
 Requires PHP: 8.0.3
 Tested up to: 6.8.2
-Stable tag: 3.5.31
+Stable tag: 3.5.32
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -207,6 +207,9 @@ Also, you can import the demo sample using Tools -> Import -> WordPress Import.
 Demo sample XML file included in plugin archive.
 
 == Changelog ==
+
+= 3.5.32 =
+- Enhancement: Added an option to show or hide the Calculator Title.
 
 = 3.5.31 =
 - Fix: Fixed an issue where Unit Measurement and Currency Sign symbols were not applied to the Quantity Field, Basic Slider, and Multi Range elements.

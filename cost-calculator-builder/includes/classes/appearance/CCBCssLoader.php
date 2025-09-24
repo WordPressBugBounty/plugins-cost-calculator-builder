@@ -72,6 +72,8 @@ class CCBCssLoader {
 		$desktop_typography         = self::$appearance['desktop']['typography']['data'];
 		$ccb_header_size            = $desktop_typography['header_font_size']['value'] . 'px';
 		$ccb_header_weight          = $desktop_typography['header_font_weight']['value'];
+		$ccb_header_hide            = isset( $desktop_typography['header_hide']['value'] ) ? (int) $desktop_typography['header_hide']['value'] : 0;
+		$ccb_header_display         = $ccb_header_hide ? 'none' : 'block';
 		$ccb_field_size             = $desktop_typography['label_font_size']['value'] . 'px';
 		$ccb_field_weight           = $desktop_typography['fields_btn_font_weight']['value'];
 		$ccb_field_label_weight     = $desktop_typography['label_font_weight']['value'];
@@ -224,6 +226,7 @@ class CCBCssLoader {
 
 			        --ccb-header-size:			     $ccb_header_size;
 			        --ccb-header-weight:			 $ccb_header_weight;
+			        --ccb-header-display:			 $ccb_header_display;
 
 			        --ccb-field-size:			     $ccb_field_size;
 			        --ccb-field-weight:			     $ccb_field_weight;

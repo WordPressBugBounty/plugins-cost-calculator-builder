@@ -5,7 +5,7 @@
         <div class="ccb-payment-header__label">
           <input
             type="radio"
-            name="paymentMethods"
+            :name="name"
             value="woocommerce"
             v-model="paymentType"
           />
@@ -26,6 +26,13 @@
 <script setup lang="ts">
 import cashImg from "@/images/payments/woocommerce.webp";
 import { useSinglePayment } from "@/widget/actions/pro-features/payments/composable/useSinglePayment.ts";
+import { toRefs } from "vue";
+
+const props = defineProps<{
+  name: string;
+}>();
+const { name } = toRefs(props);
+
 const { paymentType } = useSinglePayment();
 </script>
 

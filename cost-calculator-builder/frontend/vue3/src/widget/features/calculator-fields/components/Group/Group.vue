@@ -153,7 +153,6 @@ const additionalClasses = computed(() => {
 
 <style lang="scss">
 .ccb-group {
-  overflow: hidden;
   border-bottom: 2px solid var(--ccb-container-dark-color);
   padding-bottom: 20px;
 
@@ -179,6 +178,7 @@ const additionalClasses = computed(() => {
   }
 
   &.ccb-group-collapsed {
+    overflow: hidden;
     .ccb-group__icon {
       transform: rotate(180deg);
     }

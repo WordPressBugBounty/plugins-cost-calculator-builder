@@ -139,40 +139,8 @@
                 </template>
               </span>
               <span
-                class="pdf-total-summary--body-item-unit"
-                style="width: 34%"
-              >
-                <template
-                  v-if="
-                    [
-                      'dropDown',
-                      'dropDown_with_img',
-                      'radio',
-                      'radio_with_img',
-                    ].includes(detail.fieldName)
-                  "
-                >
-                  <template
-                    v-if="
-                      'summaryView' in detail &&
-                      detail.summaryView === 'show_value'
-                    "
-                  >
-                    <span
-                      class="ccb-pdf-extra-wrap-label"
-                      style="font-weight: 700"
-                      v-if="'selectedOption' in detail && detail.selectedOption"
-                    >
-                      <template v-if="'optionText' in detail.selectedOption">
-                        {{ detail.selectedOption.optionText }}
-                      </template>
-                    </span>
-                  </template>
-                </template>
-              </span>
-              <span
                 class="pdf-total-summ ary--body-item-total"
-                style="width: 17%; text-align: right; font-weight: 700"
+                style="width: 46%; text-align: right; font-weight: 700"
               >
                 <template v-if="Array.isArray(detail.displayValue)">
                   <ul style="list-style: none">
@@ -442,11 +410,20 @@ const generateQRCode = (link: string) => {
 const getGrandTotalAmount = computed(() => {
   let sumTotal = 0;
 
-  fieldsStore.getTotalsList
-    .filter((f) => f)
-    .forEach((total) => {
-      sumTotal += total?.value || 0;
-    });
+  if (getOrderData.value?.totals) {
+    const orderTotals = updateFieldsWithOrderTotals(getOrderData.value?.totals);
+    orderTotals
+      .filter((f) => f)
+      .forEach((total) => {
+        sumTotal += total?.value || 0;
+      });
+  } else {
+    fieldsStore.getTotalsList
+      .filter((f) => f)
+      .forEach((total) => {
+        sumTotal += total?.value || 0;
+      });
+  }
 
   const settings = currencyInstance.getCurrencyOptions();
   const currency = settings.currency;
@@ -585,15 +562,70 @@ const getOrderData = computed(() => {
   return submissionStore.getOrderData;
 });
 
+const updateFieldsWithOrderTotals = (orderTotals: any[]): any[] => {
+  return orderTotals.map((item: any) => {
+    return {
+      ...item,
+      value: item.total,
+      originalDisplayView: item.converted,
+      displayValue: item.converted,
+    };
+  });
+};
+
+const updateFieldsWithOrderDetails = (orderDetails: any[]): any[] => {
+  return orderDetails.map((item: any) => {
+    const {
+      title,
+      value,
+      groupTitle,
+      alias,
+      option_unit,
+      groupElements,
+      ...rest
+    } = item;
+
+    const cleanAlias = (alias: string): string => {
+      return alias.replace(/_field_id_\d+$/, "");
+    };
+
+    // если есть groupElements — обрабатываем каждый элемент
+    let updatedGroupElements = groupElements;
+
+    if (Array.isArray(groupElements)) {
+      updatedGroupElements = groupElements.map((el: any) => {
+        const { title, value, option_unit, ...restGroup } = el;
+        const updatedEl = {
+          ...restGroup,
+          displayValue: value,
+          label: title,
+          extraDisplayView: option_unit,
+        };
+        return new Map([[updatedEl.alias, updatedEl]]);
+      });
+    }
+
+    // возвращаем объект с displayValue и обновлёнными groupElements (если были)
+    return {
+      ...rest,
+      displayValue: value,
+      label: title || groupTitle,
+      extraDisplayView: option_unit,
+      fieldName: cleanAlias(alias),
+      ...(updatedGroupElements ? { groupElements: updatedGroupElements } : {}),
+    };
+  });
+};
+
 const getOrderDetails = computed(() => {
   let fields = fieldsStore.getSummaryList.filter((f: Field) => !f.hidden);
 
+  // Обновляем поля с данными из orderDetails если они доступны
   if (getOrderData.value?.orderDetails) {
-    fields = getOrderData.value?.orderDetails;
+    fields = updateFieldsWithOrderDetails(getOrderData.value.orderDetails);
   }
 
   let result: Field[] = [];
-
   fields.forEach((el) => {
     if ("groupElements" in el && Array.isArray(el.groupElements)) {
       el.groupElements.forEach((inner: Map<string, Field>) => {
@@ -661,7 +693,13 @@ const showQrCode = computed(() => {
 });
 
 const getTotals = computed(() => {
-  const result = fieldsStore.getTotalsList as IFormulaField[];
+  let result = fieldsStore.getTotalsList as IFormulaField[];
+
+  if (getOrderData.value?.totals) {
+    const orderTotals = getOrderData.value?.totals;
+    result = updateFieldsWithOrderTotals(orderTotals);
+  }
+
   return result?.filter((f) => f)?.filter((f) => !f?.hidden);
 });
 

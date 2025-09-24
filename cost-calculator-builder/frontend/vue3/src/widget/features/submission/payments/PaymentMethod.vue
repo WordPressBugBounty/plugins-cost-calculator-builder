@@ -1,5 +1,5 @@
 <template>
-  <component :is="FieldComponent"></component>
+  <component :is="FieldComponent" :name="name"></component>
 </template>
 <script setup lang="ts">
 import { computed, toRefs } from "vue";
@@ -10,10 +10,11 @@ import {
 
 type Props = {
   type: keyof IPaymentTypes;
+  name: string;
 };
 
 const props = defineProps<Props>();
-const { type } = toRefs(props);
+const { type, name } = toRefs(props);
 
 const FieldComponent = computed(() => {
   const key: keyof IPaymentTypes = type.value as keyof IPaymentTypes;

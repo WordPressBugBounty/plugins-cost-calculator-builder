@@ -2,7 +2,7 @@
   <div>
     <div v-show="!appStore.getSubmissionLoader" style="width: 100%">
       <template v-if="isWooCheckoutOnlyEnabled">
-        <div class="ccb-payment-after-submit-btn-wrapper">
+        <div class="ccb-payment-after-submit-btn-wrapper 1">
           <Button
             :text="translationsStore.getTranslations.addToCart"
             type="success"
@@ -13,7 +13,7 @@
       <template v-else-if="getSubmissionComponent">
         <component :is="getSubmissionComponent" />
       </template>
-      <div class="ccb-payment-after-submit-btn-wrapper">
+      <div class="ccb-payment-after-submit-btn-wrapper 2">
         <Button
           v-if="showButtons"
           :text="getMakePaymentText"

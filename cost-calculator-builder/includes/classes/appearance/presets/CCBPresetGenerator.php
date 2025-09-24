@@ -159,6 +159,7 @@ class CCBPresetGenerator {
 			'label' => __( 'Typography', 'cost-calculator-builder' ),
 			'name'  => 'typography',
 			'data'  => array(
+				'header_hide'                => $this->type->get_toggle_field( __( 'Hide calculator title', 'cost-calculator-builder' ), 'header_hide', isset( $data['header_hide'] ) ? $data['header_hide'] : 0, 'col-12' ),
 				'header_font_size'           => $this->type->get_number_type_field( __( 'Header text', 'cost-calculator-builder' ), 'header_font_size', 0, 100, 1, $data['header_font_size'], 'px', 'col-6' ),
 				'header_font_weight'         => $this->type->get_select_field( '', 'header_font_weight', $data['header_font_weight'], $this->store->get_font_weight_options(), 'col-6' ),
 				'label_font_size'            => $this->type->get_number_type_field( __( 'Label text (form labels)', 'cost-calculator-builder' ), 'label_font_size', 0, 100, 1, $data['label_font_size'], 'px', 'col-6' ),
@@ -247,6 +248,7 @@ class CCBPresetGenerator {
 					'box_style' => $desktop_layout['box_style']['value'] ?? 'vertical',
 				),
 				'typography'            => array(
+					'header_hide'                => isset( $desktop_typography['header_hide']['value'] ) ? $desktop_typography['header_hide']['value'] : 0,
 					'header_font_size'           => $desktop_typography['header_font_size']['value'],
 					'header_font_weight'         => $desktop_typography['header_font_weight']['value'],
 					'summary_header_size'        => $desktop_typography['summary_header_size']['value'],

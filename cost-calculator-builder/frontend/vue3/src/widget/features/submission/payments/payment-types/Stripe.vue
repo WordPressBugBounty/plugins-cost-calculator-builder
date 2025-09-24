@@ -5,7 +5,7 @@
         <div class="ccb-payment-header__label">
           <input
             type="radio"
-            name="paymentMethods"
+            :name="name"
             value="stripe"
             v-model="paymentType"
           />
@@ -27,12 +27,17 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { onMounted, ref, toRefs } from "vue";
 import stripeImg from "@/images/payments/card_payment.webp";
 import { useSinglePayment } from "@/widget/actions/pro-features/payments/composable/useSinglePayment.ts";
 import { useSettingsStore } from "@/widget/app/providers/stores/settingsStore.ts";
 import { usePaymentStore } from "@/widget/app/providers/stores/paymentsStore.ts";
 import type { StripeElements } from "@stripe/stripe-js";
+
+const props = defineProps<{
+  name: string;
+}>();
+const { name } = toRefs(props);
 
 const paymentStore = usePaymentStore();
 const settingsStore = useSettingsStore();

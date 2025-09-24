@@ -13,7 +13,7 @@ $get_date_format  = get_option( 'date_format' );
 			<template>
 				<div class="calc-fields calc-list calc-list__indexed" :class="{loaded: !loader, 'payment' :  getHideCalc}" v-if="!loader">
 					<div class="calc-list-inner">
-						<div class="calc-item-title">
+						<div class="calc-item-title ccb-calculator-name">
 							<div class="ccb-calc-heading">{{ getTitle }}</div>
 						</div>
 

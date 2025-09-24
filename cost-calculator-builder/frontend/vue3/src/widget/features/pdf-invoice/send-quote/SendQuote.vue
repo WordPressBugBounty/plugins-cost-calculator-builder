@@ -1,32 +1,29 @@
 <template>
-  <div
-    class="ccb-pdf-invoice"
-    ref="pdfInvoiceRef"
-    v-if="showPdfButton || showShareBtn"
-  >
-    <div
-      class="ccb-pdf-invoice__actions"
-      :class="actionsClass"
-      v-if="!getButtonStatus"
-    >
-      <Button
-        v-if="showPdfButton"
-        type="light"
-        :text="generatePdfBtnText"
-        @click="generatePdf"
-        :isDemo="isDemo"
+  <div>
+    <div class="ccb-pdf-invoice" v-if="showPdfButton" ref="pdfInvoiceRef">
+      <div
+        class="ccb-pdf-invoice__actions"
+        :class="actionsClass"
+        v-if="!getButtonStatus"
       >
-      </Button>
-      <Button
-        v-if="showShareBtn"
-        type="light"
-        :text="quoteBtnText"
-        @click="showPopup"
-        :isDemo="isDemo"
-      >
-      </Button>
+        <Button
+          v-if="showPdfButton"
+          type="light"
+          :text="generatePdfBtnText"
+          @click="generatePdf"
+          :isDemo="isDemo"
+        >
+        </Button>
+        <Button
+          v-if="showShareBtn"
+          type="light"
+          :text="quoteBtnText"
+          @click="showPopup"
+          :isDemo="isDemo"
+        >
+        </Button>
+      </div>
     </div>
-    <Invoice ref="invoice" @generate-quote="sendQuote" />
     <teleport :to="tpID">
       <Popup ref="popup">
         <div
@@ -111,6 +108,7 @@
         </div>
       </Popup>
     </teleport>
+    <Invoice ref="invoiceComponent" @generate-quote="sendQuote" />
   </div>
 </template>
 
@@ -168,7 +166,7 @@ const quoteFields = ref({
   pdfName: "",
 });
 
-const invoice = ref();
+const invoiceComponent = ref();
 const popup = ref();
 const settingsStore = useSettingsStore();
 
@@ -209,7 +207,7 @@ const checkQuoteFields = () => {
 };
 
 const generatePdf = () => {
-  invoice.value?.generate();
+  invoiceComponent.value?.generate();
 };
 
 defineExpose({
@@ -238,7 +236,7 @@ const generateQuote = () => {
     return;
   }
 
-  invoice.value.generateQuote();
+  invoiceComponent.value.generateQuote();
   quoteSucces.value = true;
 };
 
@@ -259,7 +257,6 @@ const sendQuote = (pdf: any) => {
     data.pdfName = pdfName.value;
     const hashData = customBtoa(data);
     formData.append("data", hashData);
-    formData.append("calcId", appStore.getCalcId?.toString() ?? "");
 
     const result = await fetch((window as any).ajax_window.ajax_url, {
       method: "POST",
@@ -296,20 +293,7 @@ const generatePdfBtnText = computed<string>(() => {
 });
 
 const showShareBtn = computed(() => {
-  const summaryDisplay = settingsStore.getFormSettings?.summaryDisplay;
-  if (
-    (summaryDisplay?.enable &&
-      summaryDisplay?.actionAfterSubmit !== "show_summary_block_with_pdf") ||
-    !settingsStore.getInvoice?.useInAll
-  ) {
-    return false;
-  }
-  const notificationsStore = useNotificationsStore();
-  return (
-    settingsStore.getInvoice.emailButton &&
-    (!settingsStore.getInvoice?.showAfterPayment ||
-      notificationsStore.notificationType === "finish")
-  );
+  return settingsStore.getInvoice?.emailButton;
 });
 
 const pdfName = computed(() => {

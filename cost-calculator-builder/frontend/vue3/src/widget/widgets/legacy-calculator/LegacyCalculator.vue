@@ -7,7 +7,10 @@
       <EditButton />
 
       <Wrapper wrapper="fields" class="ccb-fields-block">
-        <HeaderTitle :title="appStore.getCalcTitle" />
+        <HeaderTitle
+          :title="appStore.getCalcTitle"
+          class="ccb-calculator-name"
+        />
         <Grid grid="list">
           <template v-for="field in getFields" :key="field.alias">
             <template v-if="field.fieldName === 'repeater'">

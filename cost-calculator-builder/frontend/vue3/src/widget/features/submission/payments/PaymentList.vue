@@ -9,6 +9,7 @@
         v-for="payment in getPayments"
         :type="payment"
         :key="payment"
+        :name="getName"
       />
     </div>
   </div>
@@ -25,6 +26,7 @@ import ProBadge from "@/widget/shared/ui/components/Pro-badge/ProBadge.vue";
 import PaymentMethod from "@/widget/features/submission/payments/PaymentMethod.vue";
 import OrderForm from "@/widget/features/submission/order-form";
 import { useAppStore } from "@/widget/app/providers/stores/appStore";
+import { useMainStore } from "@/widget/app/providers/stores/mainStore.ts";
 
 type Props = {
   payment?: boolean;
@@ -35,6 +37,11 @@ const { payment } = toRefs(props);
 
 const translationsStore = useTranslationsStore();
 const appStore = useAppStore();
+
+const getName = computed(() => {
+  const calcStore = useMainStore();
+  return "paymentMethods_" + calcStore.getCalcId;
+});
 
 const getPayments = computed(() => {
   const settingsStore = useSettingsStore();

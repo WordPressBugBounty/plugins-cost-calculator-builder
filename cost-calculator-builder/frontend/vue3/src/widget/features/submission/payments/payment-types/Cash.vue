@@ -3,12 +3,7 @@
     <label>
       <div class="ccb-payment-header">
         <div class="ccb-payment-header__label">
-          <input
-            type="radio"
-            name="paymentMethods"
-            value="cash"
-            v-model="paymentType"
-          />
+          <input type="radio" :name="name" value="cash" v-model="paymentType" />
           <span class="ccb-radio-label">{{ cashPaymentLabel }}</span>
         </div>
         <div class="calc-payment_header__img">
@@ -34,7 +29,12 @@ import cashImg from "@/images/payments/cash_payment.webp";
 import { useSinglePayment } from "@/widget/actions/pro-features/payments/composable/useSinglePayment.ts";
 import { useSettingsStore } from "@/widget/app/providers/stores/settingsStore";
 import { useTranslationsStore } from "@/widget/app/providers/stores/translationsStore";
-import { computed } from "vue";
+import { computed, toRefs } from "vue";
+
+const props = defineProps<{
+  name: string;
+}>();
+const { name } = toRefs(props);
 
 const { paymentType } = useSinglePayment();
 const translationsStore = useTranslationsStore();

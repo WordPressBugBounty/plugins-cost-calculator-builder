@@ -5,7 +5,7 @@
         <div class="ccb-payment-header__label">
           <input
             type="radio"
-            name="paymentMethods"
+            :name="name"
             value="paypal"
             v-model="paymentType"
           />
@@ -33,7 +33,14 @@
 <script setup lang="ts">
 import paypalImg from "@/images/payments/paypal.webp";
 import { useSinglePayment } from "@/widget/actions/pro-features/payments/composable/useSinglePayment.ts";
+import { toRefs } from "vue";
+
 const { paymentType } = useSinglePayment();
+
+const props = defineProps<{
+  name: string;
+}>();
+const { name } = toRefs(props);
 </script>
 
 <style lang="scss"></style>
