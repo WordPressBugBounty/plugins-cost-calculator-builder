@@ -118,13 +118,13 @@ class CCBConditionsHelper {
 			'title'     => 'Hide (leave in Total)',
 			'value'     => 'hide_leave_in_total',
 			'flex_grow' => '0',
-			'fields'    => array( 'checkbox', 'datePicker', 'timePicker', 'dropDown', 'dropDown_with_img', 'checkbox_with_img', 'radio_with_img', 'multi_range', 'quantity', 'radio', 'range', 'range_datePicker', 'toggle', 'validated_form' ),
+			'fields'    => array( 'checkbox', 'datePicker', 'timePicker', 'dropDown', 'dropDown_with_img', 'checkbox_with_img', 'radio_with_img', 'multi_range', 'quantity', 'radio', 'range', 'range_datePicker', 'toggle', 'validated_form', 'text', 'file_upload', 'geolocation' ),
 		),
 		array(
 			'title'     => 'Disable',
 			'value'     => 'disable',
 			'flex_grow' => '0',
-			'fields'    => array( 'geolocation', 'checkbox', 'datePicker', 'timePicker', 'dropDown', 'dropDown_with_img', 'checkbox_with_img', 'radio_with_img', 'multi_range', 'quantity', 'radio', 'range', 'range_datePicker', 'toggle', 'validated_form' ),
+			'fields'    => array( 'geolocation', 'checkbox', 'datePicker', 'timePicker', 'dropDown', 'dropDown_with_img', 'checkbox_with_img', 'radio_with_img', 'multi_range', 'quantity', 'radio', 'range', 'range_datePicker', 'toggle', 'validated_form', 'file_upload' ),
 		),
 		array(
 			'title'     => 'Unset All',

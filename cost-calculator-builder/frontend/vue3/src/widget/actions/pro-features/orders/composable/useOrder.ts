@@ -39,6 +39,7 @@ type OrdersResponseData = {
   data?: {
     orderId: number;
     message: string;
+    clientSecret: string;
   };
 };
 
@@ -53,7 +54,7 @@ interface IOrderResult {
     type: PaymentMethods,
     orderInputs?: ContactFormFields[],
   ) => Promise<OrdersResponse | void>;
-  completeOrder: (orderId: number | undefined, status: string) => Promise<void>;
+  completeOrder: (orderId: number | undefined) => Promise<void>;
   razorpayPaymentReceived: (
     orderId: number | undefined,
     currency: string,
@@ -680,22 +681,18 @@ const createOrder = async (
   }
 };
 
-const completeOrder = async (
-  orderId: number | undefined,
-  status: string,
-): Promise<void> => {
+const completeOrder = async (orderId: number | undefined): Promise<void> => {
   if (orderId) {
     const submissionStore = useSubmissionStore();
     const data: ICompleteOrderData = {
       orderId,
-      status: status,
     };
 
     submissionStore.setOrderId(orderId);
     const createOrderParams: ISubmitsRequestParams = {
       data,
-      nonce: getNonce("ccb_update_order"),
-      action: "update_order_status",
+      nonce: getNonce("ccb_complete_payment"),
+      action: "complete_payment",
     };
 
     await handleSubmissionRequest(createOrderParams);

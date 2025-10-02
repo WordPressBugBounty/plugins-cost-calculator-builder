@@ -204,7 +204,8 @@ const filterRequiredFields = (fieldsData: Field[]): Field[] => {
   fieldsData.forEach((field: Field) => {
     if (
       ["repeater", "group"].includes(field.fieldName) &&
-      "groupElements" in field
+      "groupElements" in field &&
+      !field.hidden
     ) {
       const groupElements: Field[] = [];
       field.groupElements.forEach((element) => {

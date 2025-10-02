@@ -15,11 +15,13 @@ import { computed, defineAsyncComponent } from "vue";
 import { useSettingsStore } from "@/widget/app/providers/stores/settingsStore.ts";
 import { useAppStore } from "@/widget/app/providers/stores/appStore.ts";
 import { useFieldsStore } from "@/widget/app/providers/stores/fieldsStore.ts";
+import { useTranslationsStore } from "@/widget/app/providers/stores/translationsStore";
 
 const settingsStore = useSettingsStore();
 const pageBreakerSettings = settingsStore.getPageBreakerSettings;
 const appStore = useAppStore();
 const fieldsStore = useFieldsStore();
+const translationsStore = useTranslationsStore();
 
 const activeStepIndex = computed(() => {
   return fieldsStore.getActivePageIndex + 1;
@@ -62,10 +64,11 @@ const getPages = computed(() => {
   });
 
   if (pageBreakerSettings?.summaryAfterLastPage) {
+    const summaryTitle = translationsStore.getTranslations.summary || "Summary";
     allPages.push({
       id: allPages.length + 1,
-      title: "Summary",
-      label: "Summary",
+      title: summaryTitle,
+      label: summaryTitle,
     });
   }
 

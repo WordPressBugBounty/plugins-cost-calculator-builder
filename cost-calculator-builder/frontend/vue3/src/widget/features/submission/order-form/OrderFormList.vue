@@ -4,6 +4,7 @@
     :class="{
       'ccb-order-form-legacy': !settings.getFormSettings?.contactFormId,
       'is-live-form': !orderFormStore.getNextButtonStatus && isLive,
+      'order-open': orderOpenStatus,
     }"
   >
     <ProBadge />
@@ -55,7 +56,6 @@
           ></div>
         </template>
       </template>
-
       <div class="ccb-order-form__submit ccb-col-12" v-if="showButton">
         <Button
           type="success"
@@ -93,6 +93,7 @@ import { useNotificationsStore } from "@/widget/app/providers/stores/notificatio
 
 type Props = {
   payment?: boolean;
+  skipCreateOrder?: boolean;
 };
 
 const captchaIntegrated = ref(false);
@@ -108,6 +109,8 @@ const appStore = useAppStore();
 const myCf7Root = ref<HTMLElement | null>(null);
 const allowContactForm = ref<boolean>(false);
 const fieldsStore = useFieldsStore();
+
+const orderOpenStatus = ref<boolean>(false);
 
 const formFields = computed(() => {
   return orderFormStore.getFormFields;
@@ -276,6 +279,8 @@ const nextButton = () => {
     orderFormStore.updateNextButtonStatus(false);
     orderFormStore.updateNextButton(true);
     allowContactForm.value = true;
+
+    orderOpenStatus.value = true;
 
     setTimeout(() => {
       initContactFormActions();
@@ -558,9 +563,11 @@ onMounted(() => {
   }
 
   &.ccb-order-form-legacy {
-    display: grid;
-    grid-template-columns: repeat(12, 1fr);
-    gap: 20px;
+    &.order-open {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 20px;
+    }
 
     .ccb-col-2 {
       grid-column: span 2;

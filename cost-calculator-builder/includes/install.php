@@ -7,6 +7,7 @@ function ccb_get_nonces() {
 		'ccb_add_order'           => wp_create_nonce( 'ccb_add_order' ),
 		'ccb_orders'              => wp_create_nonce( 'ccb_orders' ),
 		'ccb_update_order'        => wp_create_nonce( 'ccb_update_order' ),
+		'ccb_complete_payment'    => wp_create_nonce( 'ccb_complete_payment' ),
 		'ccb_send_invoice'        => wp_create_nonce( 'ccb_send_invoice' ),
 		'ccb_get_invoice'         => wp_create_nonce( 'ccb_get_invoice' ),
 		'ccb_wp_hook_nonce'       => wp_create_nonce( 'ccb_wp_hook_nonce' ),

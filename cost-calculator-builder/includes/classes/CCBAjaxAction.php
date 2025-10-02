@@ -87,20 +87,22 @@ class CCBAjaxAction {
 		self::addAction( 'cost-calculator-import-run', array( CCBExportImport::class, 'import_run' ) );
 		self::addAction( 'cost-calculator-custom-export-run', array( CCBExportImport::class, 'export_calculators' ) );
 
-		/** Cost Duplicate Orders */
-		self::addAction( 'calc_create_discount', array( CCBDiscountController::class, 'create' ), true );
-		self::addAction( 'calc_update_discount', array( CCBDiscountController::class, 'update' ), true );
-		self::addAction( 'calc_delete_discount', array( CCBDiscountController::class, 'delete' ), true );
-		self::addAction( 'calc_duplicate_discount', array( CCBDiscountController::class, 'duplicate' ), true );
-		self::addAction( 'calc_discount_list', array( CCBDiscountController::class, 'discount_list' ), true );
-		self::addAction( 'calc_preview_discount_list', array( CCBDiscountController::class, 'discount_preview_list' ), true );
+		if ( defined( 'CCB_PRO_VERSION' ) ) {
+			self::addAction( 'calc_create_discount', array( CCBDiscountController::class, 'create' ) );
+			self::addAction( 'calc_update_discount', array( CCBDiscountController::class, 'update' ) );
+			self::addAction( 'calc_delete_discount', array( CCBDiscountController::class, 'delete' ) );
+			self::addAction( 'calc_duplicate_discount', array( CCBDiscountController::class, 'duplicate' ) );
+			self::addAction( 'calc_discount_list', array( CCBDiscountController::class, 'discount_list' ) );
+			self::addAction( 'calc_preview_discount_list', array( CCBDiscountController::class, 'discount_preview_list' ) );
 
-		self::addAction( 'create_cc_order', array( CCBOrderController::class, 'create' ), true );
-		self::addAction( 'create_cc_order', array( CCBOrderController::class, 'create' ) );
-		self::addAction( 'get_cc_orders', array( CCBOrderController::class, 'orders' ), true );
-		self::addAction( 'delete_cc_orders', array( CCBOrderController::class, 'delete' ) );
-		self::addAction( 'update_order_status', array( CCBOrderController::class, 'update' ), true );
-		self::addAction( 'ccb_woocommerce_payment', array( CCBOrderController::class, 'renderWooCommercePayment' ), true );
+			self::addAction( 'create_cc_order', array( CCBOrderController::class, 'create' ), true );
+			self::addAction( 'create_cc_order', array( CCBOrderController::class, 'create' ) );
+			self::addAction( 'get_cc_orders', array( CCBOrderController::class, 'orders' ) );
+			self::addAction( 'delete_cc_orders', array( CCBOrderController::class, 'delete' ) );
+			self::addAction( 'update_order_status', array( CCBOrderController::class, 'update' ) );
+			self::addAction( 'complete_payment', array( CCBOrderController::class, 'complete' ), true );
+			self::addAction( 'ccb_woocommerce_payment', array( CCBOrderController::class, 'renderWooCommercePayment' ), true );
+		}
 
 		/** Cost Calculator Settings */
 		self::addAction( 'save_invoice_logo', array( CCBAdminActions::class, 'upload_invoice_logo' ) );

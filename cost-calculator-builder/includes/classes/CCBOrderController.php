@@ -379,6 +379,16 @@ class CCBOrderController {
 	public static function update() {
 		check_ajax_referer( 'ccb_update_order', 'nonce' );
 
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json(
+				array(
+					'status'  => 'error',
+					'success' => false,
+					'message' => 'You are not allowed to run this action',
+				)
+			);
+		}
+
 		if ( empty( $_POST['data'] ) ) {
 			wp_send_json(
 				array(
@@ -419,6 +429,81 @@ class CCBOrderController {
 				header( 'Status: 500 Server Error' );
 			}
 		}
+	}
+
+	public static function complete() {
+		check_ajax_referer( 'ccb_complete_payment', 'nonce' );
+
+		$result = array(
+			'status'  => 'error',
+			'success' => false,
+			'message' => 'Invalid data',
+		);
+
+		if ( empty( $_POST['data'] ) ) {
+			wp_send_json( $result );
+		}
+
+		$data = null;
+		if ( isset( $_POST['data'] ) ) {
+			$data = ccb_convert_from_btoa( $_POST['data'], true );
+		}
+
+		$order_id = ! empty( $data['orderId'] ) ? sanitize_text_field( $data['orderId'] ) : null;
+		if ( ! empty( $order_id ) ) {
+			if ( ! is_numeric( $order_id ) ) {
+				$result['message'] = 'Invalid order id';
+				wp_send_json( $result );
+			}
+
+			$order = Orders::get_order_by_id( array( 'id' => $order_id ) );
+			if ( empty( $order ) ) {
+				$result['message'] = 'Order not found';
+				wp_send_json( $result );
+			}
+
+			try {
+				$order = $order[0];
+
+				if ( 'complete' === $order['status'] ) {
+					wp_send_json(
+						array(
+							'status'  => 'error',
+							'success' => false,
+							'message' => 'Order already completed',
+						)
+					);
+				}
+
+				if ( 'complete' !== $order['status'] ) {
+					Orders::update_orders( $order_id, array( 'status' => 'complete' ) );
+					Payments::update_payment_status_by_order_ids( array( $order_id ), 'complete' );
+				}
+
+				wp_send_json(
+					array(
+						'status'  => 200,
+						'message' => 'Success',
+					)
+				);
+			} catch ( \Exception $e ) {
+				wp_send_json(
+					array(
+						'status'  => 'error',
+						'success' => false,
+						'message' => $e->getMessage(),
+					)
+				);
+			}
+		}
+
+		wp_send_json(
+			array(
+				'status'  => 'error',
+				'success' => false,
+				'message' => 'Invalid order id',
+			)
+		);
 	}
 
 	protected static function deleteOrdersFiles( $ids ) {
@@ -497,6 +582,17 @@ class CCBOrderController {
 
 	public static function orders() {
 		check_ajax_referer( 'ccb_orders', 'nonce' );
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json(
+				array(
+					'status'  => 'error',
+					'message' => 'Unauthorized',
+					'code'    => 403,
+				)
+			);
+			exit();
+		}
 
 		$calc_list = CCBCalculators::get_calculator_list();
 
@@ -600,9 +696,9 @@ class CCBOrderController {
 					$type = '';
 					if ( ! empty( $detail->name ) ) {
 						$type = $detail->name;
-					} else if ( ! empty( $detail->type ) ) {
+					} elseif ( ! empty( $detail->type ) ) {
 						$type = $detail->type;
-					} else if ( ! empty( $detail->attributes ) && isset( $detail->attributes->type ) ) {
+					} elseif ( ! empty( $detail->attributes ) && isset( $detail->attributes->type ) ) {
 						$type = $detail->attributes->type;
 					}
 

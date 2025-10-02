@@ -11,6 +11,7 @@ class CCBTranslations {
 	 */
 	public static function get_frontend_translations() {
 		$translations = array(
+			'summary'                => __( 'Summary', 'cost-calculator-builder' ),
 			'empty_end_date_error'   => __( 'Please select the second date', 'cost-calculator-builder' ),
 			'wrong_date_range_error' => __( 'Please select correct date range values', 'cost-calculator-builder' ),
 			'empty_end_time_error'   => __( 'Please select the second time', 'cost-calculator-builder' ),
@@ -115,6 +116,7 @@ class CCBTranslations {
 
 	public static function get_backend_translations() {
 		return array(
+			'summary'                        => esc_html__( 'Summary', 'cost-calculator-builder' ),
 			'bulk_action_attention'          => esc_html__( 'Are you sure to "%s" choosen Calculators?', 'cost-calculator-builder' ),
 			'copied'                         => esc_html__( 'Copied', 'cost-calculator-builder' ),
 			'not_selected_calculators'       => esc_html__( 'No calculators were selected', 'cost-calculator-builder' ),

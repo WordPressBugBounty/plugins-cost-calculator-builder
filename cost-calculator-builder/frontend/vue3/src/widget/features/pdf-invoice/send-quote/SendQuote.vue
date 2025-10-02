@@ -401,7 +401,7 @@ onBeforeUnmount(() => {
     gap: 10px;
     justify-content: space-between;
 
-    @media (max-width: 540px) {
+    @media (max-width: 350px) {
       flex-direction: column;
     }
   }

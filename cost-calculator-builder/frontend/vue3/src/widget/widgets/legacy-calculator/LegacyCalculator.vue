@@ -37,10 +37,7 @@
         <template v-slot:default>
           <template v-if="formDisplaySummaryStatus || !appStore.isProActive">
             <TotalSummaryList list-type="summary">
-              <template
-                v-for="summary in fieldsStore.getSummaryList"
-                :key="summary.alias"
-              >
+              <template v-for="summary in fieldsStore.getSummaryList">
                 <Transition name="fade">
                   <TotalSummaryItem
                     v-if="!summary.hidden"
@@ -167,14 +164,25 @@ const flexWrap = computed(() => {
 const activeActionCount = computed(() => {
   const getActionsCount = (): number => {
     if (actionsRef.value) {
-      return actionsRef.value.children.length;
+      let count = 0;
+      const children = actionsRef.value.children;
+      for (let i = 0; i < children.length; i++) {
+        if ((children[i] as HTMLElement).offsetHeight > 0) {
+          count++;
+        }
+      }
+      return count;
     }
     return 0;
   };
 
-  return showShareBtn.value
-    ? `button-${getActionsCount()} has-share`
-    : `button-${getActionsCount()} `;
+  let count = getActionsCount();
+
+  if (showShareBtn.value) {
+    count++;
+  }
+
+  return showShareBtn.value ? `button-${count} has-share` : `button-${count} `;
 });
 
 const showShareBtn = computed(() => {
@@ -377,7 +385,8 @@ onMounted(() => {
     }
   }
 
-  &.button-2 {
+  &.button-2,
+  &.button-3 {
     display: flex;
     gap: 10px;
     justify-content: space-between;

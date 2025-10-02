@@ -120,6 +120,10 @@ watch(
   }
 
   .down {
+    order: 2;
+  }
+
+  .up {
     order: 3;
     border-left: none;
     border-top-right-radius: var(--ccb-fields-border-radius);
@@ -162,7 +166,7 @@ watch(
     border-bottom-right-radius: var(--ccb-fields-border-radius);
   }
 
-  .up {
+  .down {
     border-top-left-radius: var(--ccb-fields-border-radius);
     border-bottom-left-radius: var(--ccb-fields-border-radius);
   }
@@ -175,7 +179,7 @@ watch(
     border-bottom-left-radius: 0;
     text-align: center;
   }
-  .up {
+  .down {
     order: 1;
     border-right: none;
     border-top-left-radius: var(--ccb-fields-border-radius);

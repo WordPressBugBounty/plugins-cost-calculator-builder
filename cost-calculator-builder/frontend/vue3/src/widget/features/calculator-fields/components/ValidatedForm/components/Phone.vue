@@ -2,9 +2,11 @@
   <div class="ccb-field__input-wrapper">
     <VueTelInput
       @input="onInput"
+      v-model="phone"
       mode="international"
       :value="field.displayValue"
       :inputOptions="options"
+      @country-changed="countryChanged"
     />
   </div>
 </template>
@@ -12,6 +14,7 @@
 <script setup lang="ts">
 import { IValidatedFormField } from "@/widget/shared/types/fields/input.type";
 import { useValidatedFormField } from "@/widget/actions/fields/composable/useValidatedFormField.ts";
+import { onMounted, ref } from "vue";
 
 import { VueTelInput } from "vue-tel-input";
 import "vue-tel-input/vue-tel-input.css";
@@ -24,12 +27,25 @@ type Props = {
   field: IValidatedFormField;
 };
 
+const phone = ref("");
+
 const props = defineProps<Props>();
-const { onInput } = useValidatedFormField(props, emit);
+const field = ref(props.field);
+const { onInput, onCountryChanged } = useValidatedFormField(props, emit);
 
 const options = {
   placeholder: props.field.placeholder,
 };
+
+const countryChanged = () => {
+  setTimeout(() => {
+    onCountryChanged(phone.value);
+  }, 100);
+};
+
+onMounted(() => {
+  phone.value = props.field.displayValue;
+});
 </script>
 
 <style lang="scss">

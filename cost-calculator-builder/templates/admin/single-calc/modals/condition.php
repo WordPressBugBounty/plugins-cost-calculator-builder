@@ -112,7 +112,7 @@
 				<select name="conditionAction" @change="cleanSetVal(index)" v-model="model.action">
 					<option value=""><?php esc_html_e( 'Select action', 'cost-calculator-builder' ); ?></option>
 
-					<option v-for="conditionActions in $store.getters.getStaticConditionActionsByField($store.getters.getConditionData.optionTo)" v-if="model.optionFrom.indexOf('total_field') !== -1 && !['hide', 'unset', 'set_value', 'set_value_and_disable'].includes(conditionActions.value)" :value="conditionActions.value">
+					<option v-for="conditionActions in $store.getters.getStaticConditionActionsByField($store.getters.getConditionData.optionTo)" v-if="model.optionFrom.indexOf('total_field') !== -1 && !['hide', 'unset', 'set_value', 'set_value_and_disable', 'select_option', 'unset_option', 'select_option_and_disable', 'set_period', 'set_period_and_disable'].includes(conditionActions.value)" :value="conditionActions.value">
 						{{ conditionActions.title }}
 					</option>
 

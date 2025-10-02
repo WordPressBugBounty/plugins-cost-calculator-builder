@@ -15,8 +15,13 @@ export function useValidatedFormField(
     emit("update", value);
   };
 
+  const onCountryChanged = (e: string) => {
+    emit("update", e);
+  };
+
   return {
     field,
     onInput,
+    onCountryChanged,
   };
 }

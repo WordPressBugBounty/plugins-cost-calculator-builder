@@ -199,8 +199,13 @@ export const useSubmissionStore = () => {
                               },
                             );
                         } else {
-                          completeOrder(response.orderId, "complete");
-                          stripeClientSecret = response.clientSecret || "";
+                          const orderId =
+                            response.orderId || response?.data?.orderId;
+                          completeOrder(orderId);
+                          stripeClientSecret =
+                            response.clientSecret ||
+                            response?.data?.clientSecret ||
+                            "";
                         }
                       } else {
                         appStore.setSubmissionLoader(false);

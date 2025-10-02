@@ -10,11 +10,12 @@
         }}</span>
       </button>
       <div class="ccb-multiply-location__description">
-        <span v-if="!field.selectedPoint.addressName">{{
-          translationsStore.getTranslations.chooseFromMap
-        }}</span>
+        <span
+          v-if="!field.selectedPoint.addressName && !field.selectedPoint.label"
+          >{{ translationsStore.getTranslations.chooseFromMap }}</span
+        >
         <span v-else class="ccb-multiply-location__adressname">
-          {{ field.selectedPoint.addressName }}
+          {{ field.selectedPoint.addressName || field.selectedPoint.label }}
         </span>
       </div>
     </div>
@@ -38,7 +39,7 @@
                     :name="location.label"
                     :value="location"
                     :checked="
-                      field.selectedPoint.addressName === location.addressName
+                      field.selectedPoint.coordinates === location.coordinates
                     "
                   />
                   <span class="ccb-radio-label">{{

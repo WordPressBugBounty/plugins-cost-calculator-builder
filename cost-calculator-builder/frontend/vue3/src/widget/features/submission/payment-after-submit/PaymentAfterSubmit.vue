@@ -1,5 +1,8 @@
 <template>
-  <OrderForm v-show="!paymentAfterSubmitStore.getSubmit" />
+  <OrderForm
+    v-show="!paymentAfterSubmitStore.getSubmit"
+    :skip-create-order="true"
+  />
   <div v-show="paymentAfterSubmitStore.getSubmit">
     <Payments />
   </div>

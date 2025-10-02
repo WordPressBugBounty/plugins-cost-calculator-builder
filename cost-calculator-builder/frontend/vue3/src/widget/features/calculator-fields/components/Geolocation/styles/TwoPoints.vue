@@ -148,6 +148,41 @@ const loader = new Loader({
 });
 
 onMounted(() => {
+  if (field.value.displayValue) {
+    addressNames.value.from.addressName = (
+      field.value.userSelectedOptions as any
+    ).twoPoints.from.addressName;
+    addressNames.value.to.addressName = (
+      field.value.userSelectedOptions as any
+    ).twoPoints.to.addressName;
+    setTimeout(() => {
+      addressNames.value.from.coordinates = (
+        field.value.userSelectedOptions as any
+      ).twoPoints.from.coordinates;
+      addressNames.value.to.coordinates = (
+        field.value.userSelectedOptions as any
+      ).twoPoints.to.coordinates;
+      distance.value = (field.value.userSelectedOptions as any).distance;
+      coordinates.value = (
+        field.value.userSelectedOptions as any
+      ).twoPoints.from.coordinates;
+      coordinates.value = (
+        field.value.userSelectedOptions as any
+      ).twoPoints.to.coordinates;
+      setMarker(
+        "from",
+        (field.value.userSelectedOptions as any).twoPoints.from.coordinates,
+      );
+      setMarker(
+        "to",
+        (field.value.userSelectedOptions as any).twoPoints.to.coordinates,
+      );
+      calculateAndDisplayRoute();
+    }, 100);
+  }
+});
+
+onMounted(() => {
   if ("geolocation" in navigator) {
     navigator.geolocation.getCurrentPosition(
       (position) => {

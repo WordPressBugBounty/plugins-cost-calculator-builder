@@ -545,6 +545,7 @@ function disable(
       conditionHistoryLeaveOnlyCurrent(targetCondition);
     }
 
+    removeFromConditionHistory(targetCondition);
     addConditionHistory(targetCondition);
     if (targetCondition.action === "disable_option") {
       const disableOptions: number[] = [];
@@ -999,13 +1000,19 @@ function removeFromConditionHistory(data: ICondition): ICondition[] {
 
 function checkInConditionHistory(data: ICondition) {
   const conditionsStore = useConditionsStore();
-  return conditionsStore.getConditionHistory.filter(
+  const result = conditionsStore.getConditionHistory.filter(
     (d) =>
       d.optionTo === data.optionTo &&
       d.optionFrom === data.optionFrom &&
       d.action === data.action &&
       d.sort === data.sort,
   );
+
+  if (data.action === "disable_option") {
+    return result.filter((d) => d.setVal === data.setVal);
+  }
+
+  return result;
 }
 
 function conditionHistoryLeaveOnlyCurrent(data: ICondition) {

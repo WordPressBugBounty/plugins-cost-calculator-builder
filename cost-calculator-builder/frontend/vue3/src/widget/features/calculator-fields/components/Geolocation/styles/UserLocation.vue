@@ -112,6 +112,15 @@ let distanceView = ref("");
 
 let map: google.maps.Map;
 
+onMounted(() => {
+  if (typeof google !== "undefined" && props.field.extraDisplayView) {
+    addressName.value = props.field.extraDisplayView[0];
+    setTimeout(() => {
+      setMarker(parseLocationCoordinates(props.field.userLocation.toString()));
+    }, 1000);
+  }
+});
+
 // computed
 
 const dataValue = computed(() => ({
@@ -405,6 +414,7 @@ const updateValue = () => {
     getAdressnameView.value.toString(),
     getDistanceView.value.toString(),
   ];
+  field.value.userLocation = [coordinates.value.lat, coordinates.value.lng];
   fieldStore.updateField(field.value.alias, field.value);
   conditionsStore.applyConditionForField(field.value.alias);
   if (

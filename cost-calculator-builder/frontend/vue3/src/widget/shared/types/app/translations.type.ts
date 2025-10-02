@@ -1,5 +1,6 @@
 export interface ITranslations {
   [key: string]: string;
+  summary: string;
   bigFileSize: string;
   wrongFileFormat: string;
   wrongFileUrl: string;
