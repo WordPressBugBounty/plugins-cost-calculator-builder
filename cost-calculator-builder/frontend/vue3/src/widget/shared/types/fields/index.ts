@@ -34,6 +34,7 @@ import {
   IPageBreakerField,
   IGroupField,
   IDefaultTotal,
+  ISectionField,
 } from "@/widget/shared/types/fields/fields.type";
 
 export type {
@@ -63,6 +64,7 @@ export type {
   IGroupField,
   IValidatedFormField,
   IDefaultTotal,
+  ISectionField,
 };
 
 export * from "@/widget/shared/types/fields/woo.type";
@@ -84,4 +86,5 @@ export type Field =
   | IGeolocationField
   | IPageBreakerField
   | IGroupField
+  | ISectionField
   | IValidatedFormField;

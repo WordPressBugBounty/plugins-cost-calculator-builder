@@ -16,7 +16,7 @@ export interface IOrderData {
   orderId?: number;
   id: number;
   calcName: string;
-  status: "pending" | "complete";
+  status: "pending";
   promocodes: string[];
   orderDetails: IOrderDetailsType;
   hiddenOrderDetails: IOrderDetailsType;
@@ -35,12 +35,6 @@ export interface IOrderData {
   };
 }
 
-export interface ICompleteOrderData {
-  orderId: number;
-  status?: string;
-  paymentCurrency?: string;
-}
-
 export interface IFileData {
   alias: string;
   files: File[];
@@ -50,7 +44,7 @@ export interface IFileData {
 export interface ISubmitsRequestParams {
   action: string;
   nonce: string;
-  data: IOrderData | ICompleteOrderData;
+  data: IOrderData;
   files?: IFileData[];
 }
 
@@ -65,6 +59,8 @@ export interface IOrderDetailsHelperResult {
     value: string;
     converted: string;
     optionValue?: string;
+    addressLink?: string;
+    distanceView?: string;
   }[];
   summary_value?: string | string[];
   summary_view?: string;

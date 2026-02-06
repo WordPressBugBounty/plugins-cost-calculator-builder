@@ -1,4 +1,5 @@
 <?php
+// phpcs:ignoreFile
 function init_ccb_mixpanel() {
 	require_once 'classes/class-mixpanel.php';
 	require_once 'classes/class-mixpanel-general.php';
@@ -6,13 +7,13 @@ function init_ccb_mixpanel() {
 	require_once 'classes/class-mixpanel-single-calculator.php';
 	require_once 'classes/class-mixpanel-appearance.php';
 
-	$data_classes = array(
-		'CCB\Includes\Mixpanel_General',
-		'CCB\Includes\Mixpanel_Additional',
-		'CCB\Includes\Mixpanel_Single_Calculator',
-	);
-	$mixpanel     = new CCB\Includes\Mixpanel( $data_classes );
-	$mixpanel->execute();
+	// $data_classes = array(
+	// 	'CCB\Includes\Mixpanel_General',
+	// 	'CCB\Includes\Mixpanel_Additional',
+	// 	'CCB\Includes\Mixpanel_Single_Calculator',
+	// );
+	// $mixpanel     = new CCB\Includes\Mixpanel( $data_classes );
+	// $mixpanel->execute();
 }
 
 add_filter( 'cron_schedules', 'mixpanel_ccb_cron_schedule' );

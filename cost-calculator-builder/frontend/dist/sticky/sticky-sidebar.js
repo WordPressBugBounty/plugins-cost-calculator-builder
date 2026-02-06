@@ -556,6 +556,8 @@
 							var y = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
 							var x = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
 							var z = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+							x = parseInt(x) - 20;
+							x = x.toString() + 'px';
 
 							if (this.support.transform3d) return 'translate3d(' + y + ', ' + x + ', ' + z + ')';else if (this.support.translate) return 'translate(' + y + ', ' + x + ')';else return false;
 						}

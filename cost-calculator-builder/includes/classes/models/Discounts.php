@@ -4,7 +4,6 @@ namespace cBuilder\Classes\Database;
 
 use cBuilder\Classes\Vendor\DataBaseModel;
 
-
 class Discounts extends DataBaseModel {
 	public static $primary_key = 'discount_id';
 	/**

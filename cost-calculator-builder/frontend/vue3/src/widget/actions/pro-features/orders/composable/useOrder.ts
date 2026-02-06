@@ -1,7 +1,6 @@
 import { useAppStore } from "@/widget/app/providers/stores/appStore.ts";
 import { useDiscountsStore } from "@/widget/app/providers/stores/discountsStore.ts";
 import {
-  ICompleteOrderData,
   IFileData,
   IOrderData,
   IOrderDetails,
@@ -54,7 +53,6 @@ interface IOrderResult {
     type: PaymentMethods,
     orderInputs?: ContactFormFields[],
   ) => Promise<OrdersResponse | void>;
-  completeOrder: (orderId: number | undefined) => Promise<void>;
   razorpayPaymentReceived: (
     orderId: number | undefined,
     currency: string,
@@ -153,12 +151,18 @@ const prepareOrderData = (
 
 const getUsedFiles = (): IFileData[] => {
   const fieldStore = useFieldsStore();
+  const fields = fieldStore.getFields.flatMap((section) => {
+    if ("fields" in section) {
+      return Array.from(section.fields.values());
+    }
+    return [];
+  });
 
-  let pureFields: IFileUploadField[] = fieldStore.getFields.filter(
+  let pureFields: IFileUploadField[] = fields.filter(
     (f) => f.fieldName === "file_upload",
   ) as IFileUploadField[];
 
-  let repeaterFields: IRepeaterField[] = fieldStore.getFields.filter(
+  let repeaterFields: IRepeaterField[] = fields.filter(
     (f) => f.fieldName === "repeater",
   ) as IRepeaterField[];
 
@@ -226,74 +230,83 @@ const getClearFields = (): Field[] => {
   const fields = fieldStore.getFields;
   const result: Field[] = [];
 
-  for (const field of fields) {
-    if (
-      field.fieldName === "group" &&
-      "groupElements" in field &&
-      !field.hidden
-    ) {
-      const groupField = field as IGroupField;
-      groupField.groupElements.forEach((groupFieldMap: Map<string, Field>) => {
-        Array.from(groupFieldMap.values()).forEach((groupInnerField: Field) => {
-          if (
-            groupInnerField.alias &&
-            !["total", "html", "line", "page_break"].includes(
-              groupInnerField.fieldName,
-            ) &&
-            (groupInnerField.fieldName === "repeater" ||
-              groupInnerField.addToSummary === true ||
-              groupInnerField.addToSummary === false ||
-              groupInnerField.alias.indexOf("file") !== -1) &&
-            (!groupInnerField.hidden || groupInnerField.calculateHidden) &&
-            hideEmptyFields(groupInnerField)
-          ) {
-            result.push(groupInnerField);
+  for (const section of fields) {
+    if (!("fields" in section && section.fields)) continue;
+
+    for (const field of Array.from(section.fields.values()) as Field[]) {
+      if (
+        field.fieldName === "group" &&
+        "groupElements" in field &&
+        !field.hidden
+      ) {
+        const groupField = field as IGroupField;
+        groupField.groupElements.forEach(
+          (groupFieldMap: Map<string, Field>) => {
+            Array.from(groupFieldMap.values()).forEach(
+              (groupInnerField: Field) => {
+                if (
+                  groupInnerField.alias &&
+                  !["total", "html", "line", "page_break"].includes(
+                    groupInnerField.fieldName,
+                  ) &&
+                  (groupInnerField.fieldName === "repeater" ||
+                    groupInnerField.addToSummary === true ||
+                    groupInnerField.addToSummary === false ||
+                    groupInnerField.alias.indexOf("file") !== -1) &&
+                  (!groupInnerField.hidden ||
+                    groupInnerField.calculateHidden) &&
+                  hideEmptyFields(groupInnerField)
+                ) {
+                  result.push(groupInnerField);
+                }
+              },
+            );
+          },
+        );
+        continue;
+      }
+
+      if (
+        field.fieldName === "repeater" &&
+        "groupElements" in field &&
+        (!field.hidden || ("calculateHidden" in field && field.calculateHidden))
+      ) {
+        const repeaterField = field as IRepeaterField;
+        result.push(field);
+        repeaterField.groupElements.forEach((repMap) => {
+          for (const [_, innerField] of repMap.entries()) {
+            if (
+              innerField.alias &&
+              !["total", "html", "line", "page_break"].includes(
+                innerField.fieldName,
+              ) &&
+              (innerField.addToSummary === true ||
+                innerField.addToSummary === false ||
+                innerField.alias.indexOf("file") !== -1) &&
+              (!innerField.hidden ||
+                ("calculateHidden" in innerField &&
+                  innerField.calculateHidden)) &&
+              hideEmptyFields(innerField)
+            ) {
+              result.push(innerField);
+            }
           }
         });
-      });
-      continue;
-    }
+        continue;
+      }
 
-    if (
-      field.fieldName === "repeater" &&
-      "groupElements" in field &&
-      (!field.hidden || ("calculateHidden" in field && field.calculateHidden))
-    ) {
-      const repeaterField = field as IRepeaterField;
-      result.push(field);
-      repeaterField.groupElements.forEach((repMap) => {
-        for (const [_, innerField] of repMap.entries()) {
-          if (
-            innerField.alias &&
-            !["total", "html", "line", "page_break"].includes(
-              innerField.fieldName,
-            ) &&
-            (innerField.addToSummary === true ||
-              innerField.addToSummary === false ||
-              innerField.alias.indexOf("file") !== -1) &&
-            (!innerField.hidden ||
-              ("calculateHidden" in innerField &&
-                innerField.calculateHidden)) &&
-            hideEmptyFields(innerField)
-          ) {
-            result.push(innerField);
-          }
-        }
-      });
-      continue;
-    }
-
-    if (
-      field.alias &&
-      !["total", "html", "line", "page_break"].includes(field.fieldName) &&
-      (field.fieldName === "repeater" ||
-        field.addToSummary === true ||
-        field.addToSummary === false ||
-        field.alias.indexOf("file") !== -1) &&
-      (!field.hidden || field.calculateHidden) &&
-      hideEmptyFields(field)
-    ) {
-      result.push(field);
+      if (
+        field.alias &&
+        !["total", "html", "line", "page_break"].includes(field.fieldName) &&
+        (field.fieldName === "repeater" ||
+          field.addToSummary === true ||
+          field.addToSummary === false ||
+          field.alias.indexOf("file") !== -1) &&
+        (!field.hidden || field.calculateHidden) &&
+        hideEmptyFields(field)
+      ) {
+        result.push(field);
+      }
     }
   }
 
@@ -405,6 +418,77 @@ const orderDetailsHelper = (fields: Field[]): IOrderDetailsType => {
             }
           : {}),
       };
+      if (field.fieldName === "geolocation" && "geoType" in field) {
+        const hasUserSelectedOptions =
+          "userSelectedOptions" in field &&
+          field.userSelectedOptions &&
+          typeof field.userSelectedOptions === "object";
+        if (
+          hasUserSelectedOptions &&
+          (field.geoType === "twoPointLocation" ||
+            field.geoType === "userLocation")
+        ) {
+          type TwoPointLocation = {
+            twoPoints?: {
+              from?: { addressName?: string; addressLink?: string };
+              to?: { addressName?: string; addressLink?: string };
+            };
+            distance_view?: string;
+          };
+          type SingleLocation = {
+            addressLink?: string;
+          };
+          const selectedOptions = field.userSelectedOptions as Partial<
+            TwoPointLocation & SingleLocation
+          >;
+
+          if (
+            field.geoType === "twoPointLocation" &&
+            selectedOptions.twoPoints
+          ) {
+            const from = selectedOptions.twoPoints.from || {};
+            const to = selectedOptions.twoPoints.to || {};
+            const distanceView = selectedOptions.distance_view || "";
+            item.options = [
+              {
+                label: from.addressName || "",
+                value: from.addressLink || "",
+                addressLink: from.addressLink || "",
+                converted: "",
+              },
+              {
+                label: to.addressName || "",
+                value: "",
+                addressLink: to.addressLink || "",
+                converted: "",
+              },
+              {
+                label: "",
+                distanceView: distanceView,
+                value: "",
+                converted: "",
+              },
+            ];
+          } else {
+            const label0 = Array.isArray(field.extraDisplayView)
+              ? field.extraDisplayView?.[0] || ""
+              : "";
+            const converted = Array.isArray(field.extraDisplayView)
+              ? field.extraDisplayView?.[1] || ""
+              : "";
+            const addressLink = selectedOptions.addressLink || "";
+            item.options = [
+              {
+                label: label0,
+                distanceView: converted,
+                converted: "",
+                value: "",
+                addressLink: addressLink,
+              },
+            ];
+          }
+        }
+      }
 
       if ("selectedOption" in field && Array.isArray(field.selectedOption)) {
         item.options = field.selectedOption.map((o: IOptions) => ({
@@ -681,24 +765,6 @@ const createOrder = async (
   }
 };
 
-const completeOrder = async (orderId: number | undefined): Promise<void> => {
-  if (orderId) {
-    const submissionStore = useSubmissionStore();
-    const data: ICompleteOrderData = {
-      orderId,
-    };
-
-    submissionStore.setOrderId(orderId);
-    const createOrderParams: ISubmitsRequestParams = {
-      data,
-      nonce: getNonce("ccb_complete_payment"),
-      action: "complete_payment",
-    };
-
-    await handleSubmissionRequest(createOrderParams);
-  }
-};
-
 const razorpayPaymentReceived = async (
   orderId: number | undefined,
   currency: string,
@@ -718,19 +784,31 @@ const razorpayPaymentReceived = async (
 
 const hideEmptyFields = (existingField: Field): string | boolean => {
   const settings = useSettingsStore();
-
   if (!settings.general?.hideEmptyForOrdersPdfEmails) {
     if (
       "selectedOption" in existingField &&
       Array.isArray(existingField.selectedOption)
     ) {
+      if (existingField.summaryView === "show_value") {
+        let sum = 0;
+        for (const option of existingField.selectedOption) {
+          sum += +option.optionValue?.split("|")?.[0] || 0;
+        }
+        return sum > 0;
+      }
+
       return (existingField.selectedOption.length > 0) as boolean;
     } else if (
       "selectedOption" in existingField &&
       !Array.isArray(existingField.selectedOption) &&
       existingField.selectedOption
     ) {
-      return (existingField.selectedOption.optionValue || "") as string;
+      if (existingField.summaryView === "show_value") {
+        const splitValue = existingField.selectedOption.optionValue?.split("|");
+        return (+splitValue?.[0] || 0) as unknown as boolean;
+      }
+
+      return true;
     } else if (["validated_form", "text"].includes(existingField.fieldName)) {
       return (existingField.displayValue || "") as string;
     } else if (
@@ -765,7 +843,6 @@ const hideEmptyFields = (existingField: Field): string | boolean => {
 export function useOrder(): IOrderResult {
   return {
     createOrder,
-    completeOrder,
     makePayment,
     razorpayPaymentReceived,
   };

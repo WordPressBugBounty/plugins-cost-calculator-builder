@@ -25,6 +25,15 @@ export interface IQuantityField extends IBaseInputField {
   buttonsPosition: "right" | "both";
   separation: boolean;
   originalValue: number;
+  pricingStructure?: string;
+  pricingRanges?: Array<{
+    minQty: number;
+    maxQty: number;
+    unitPrice: number;
+  }>;
+  badgeText?: string;
+  badgeVariant?: string;
+  badgeFormat?: string;
 }
 
 export interface IRangeField extends IBaseInputField {
@@ -36,6 +45,15 @@ export interface IRangeField extends IBaseInputField {
   };
   scalePoints: string;
   jump: boolean;
+  pricingStructure?: string;
+  pricingRanges?: Array<{
+    minQty: number;
+    maxQty: number;
+    unitPrice: number;
+  }>;
+  badgeText?: string;
+  badgeVariant?: string;
+  badgeFormat?: string;
   originalValue: number;
 }
 
@@ -53,4 +71,5 @@ export interface ITextField extends IBaseField {
 export interface IValidatedFormField extends IBaseField {
   fieldType: "email" | "phone" | "name" | "website_url";
   placeholder: string;
+  defaultCountry?: string;
 }

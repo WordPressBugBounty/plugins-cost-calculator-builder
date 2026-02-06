@@ -1,11 +1,19 @@
 <template>
   <div
     class="ccb-field"
-    :class="'ccb_field_with_' + field.fieldName"
+    :class="[
+      'ccb_field_with_' + field.fieldName,
+      `field-width-${field.width ? field.width : '100'}`,
+    ]"
     :data-id="field.alias"
     :data-repeater="field.repeaterIdx"
   >
-    <component v-if="FieldComponent" :is="FieldComponent" :field="field" />
+    <component
+      v-if="FieldComponent"
+      :is="FieldComponent"
+      :field="field"
+      :key="field.alias"
+    />
   </div>
 </template>
 
@@ -32,6 +40,20 @@ const FieldComponent = computed(() => {
 </script>
 
 <style lang="scss">
+.ccb-field {
+  @media (min-width: 1025px) {
+    min-width: 0;
+    &.field-width-25 {
+      .ccb-field__description {
+        white-space: normal;
+        word-break: break-word;
+        overflow-wrap: anywhere;
+        font-size: calc(var(--ccb-description-size) - 3px);
+      }
+    }
+  }
+}
+
 .ccb-field__descriptions {
   display: flex;
   flex-direction: column;

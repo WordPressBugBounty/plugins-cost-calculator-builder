@@ -19,6 +19,7 @@ import {
   ITextField,
   ITimePickerField,
   IGroupField,
+  ISectionField,
   IValidatedFormField,
 } from "@/widget/shared/types/fields";
 
@@ -58,6 +59,7 @@ export function createField(
     fieldCurrencySettings: convertKeysToCamelCase(data.fieldCurrencySettings),
     fieldCurrency: data.fieldCurrency,
     useCurrency: data.allowCurrency || false,
+    width: data.width || "100",
   });
 }
 
@@ -91,11 +93,16 @@ export function createQuantityField(data: ISourceField): IQuantityField {
     unit: data.unit || 1,
     unitSymbol: data.unitSymbol || "",
     unitPosition: data.unitPosition || "right",
-    styles: data.styles || { style: "default" },
+    styles: { ...(data.styles || {}), style: data.styles?.style || "default" },
     buttonsPosition: data.buttonsPosition || "right",
     separation: data.separation || false,
     enabledCurrencySettings: data.enabledCurrencySettings || false,
     originalValue: value,
+    pricingStructure: data.pricingStructure || "no_discounts",
+    pricingRanges: data.pricingRanges || [],
+    badgeText: data.badgeText || "",
+    badgeVariant: data.badgeVariant || "outlined",
+    badgeFormat: data.badgeFormat || "percent",
   });
 
   field.displayValue = singleFieldMixins.getCommonFieldDisplayView(
@@ -128,10 +135,15 @@ export function createRangeField(data: ISourceField): IRangeField {
     unitSymbol: data.unitSymbol || "",
     unitPosition: data.unitPosition || "right",
     multipliedTotal: data.multipliedTotal || false,
-    styles: data.styles || { style: "default" },
+    styles: { ...(data.styles || {}), style: data.styles?.style || "default" },
     scalePoints: data.scalePoints || "",
     jump: data.jump || false,
     originalValue: value,
+    pricingStructure: data.pricingStructure || "no_discounts",
+    pricingRanges: data.pricingRanges || [],
+    badgeText: data.badgeText || "",
+    badgeVariant: data.badgeVariant || "outlined",
+    badgeFormat: data.badgeFormat || "percent",
   });
 
   field.displayValue = singleFieldMixins.getCommonFieldDisplayView(
@@ -186,7 +198,7 @@ export function createMultiRangeField(data: ISourceField): IMultiRangeField {
     unitSymbol: data.unitSymbol || "",
     unitPosition: data.unitPosition || "right",
     multipliedTotal: data.multipliedTotal || false,
-    styles: data.styles || { style: "default" },
+    styles: { ...(data.styles || {}), style: data.styles?.style || "default" },
     scalePoints: data.scalePoints || "",
     jump: data.jump || false,
     originalValue: value,
@@ -423,7 +435,7 @@ export function createTimePickerField(data: ISourceField): ITimePickerField {
     format: data.format || false,
     placeholderHours: data.placeholderHours || "",
     placeholderTime: data.placeholderTime || "",
-    range: data.range || false,
+    range: data.range?.toString() === "0" ? false : data.range || false,
     displayValue: "",
     minInterval: data.minInterval || "",
   });
@@ -470,6 +482,28 @@ export function createRepeaterField(data: ISourceField): IRepeaterField {
     originalFormula: "",
     addButtonLabel: data.addButtonLabel || "",
     removeButtonLabel: data.removeButtonLabel || "",
+  });
+}
+
+export function createSectionField(data: ISourceField): ISectionField {
+  const fieldsInstance = useFields();
+  const groupElements: Map<string, Field> = new Map();
+
+  const fields: ISourceField[] = data.fields || [];
+  for (const field of fields) {
+    const createdField: Field = fieldsInstance.addField(field, 0, data.alias);
+    if (createdField) {
+      groupElements.set(field.alias, createdField);
+    }
+  }
+
+  return reactive<ISectionField>({
+    ...createField(data),
+    fields: groupElements,
+    collapsible: data.collapsible || false,
+    defaultCollapsed: data.defaultCollapsed || false,
+    showName: data.showName || false,
+    styles: { ...(data.styles || {}), style: data.styles?.style || "default" },
   });
 }
 

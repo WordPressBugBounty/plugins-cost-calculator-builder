@@ -404,6 +404,10 @@ const resetValue = () => {
   }
 };
 
+const generateGoogleLink = (coordinates: google.maps.LatLngLiteral) => {
+  return `https://www.google.com/maps/search/?api=1&query=${coordinates.lat},${coordinates.lng}`;
+};
+
 const updateValue = () => {
   field.value.value =
     parseFloat(
@@ -414,7 +418,10 @@ const updateValue = () => {
     getAdressnameView.value.toString(),
     getDistanceView.value.toString(),
   ];
-  field.value.userLocation = [coordinates.value.lat, coordinates.value.lng];
+  field.value.userSelectedOptions = {
+    coordinates: [coordinates.value.lat, coordinates.value.lng],
+    addressLink: generateGoogleLink(coordinates.value),
+  };
   fieldStore.updateField(field.value.alias, field.value);
   conditionsStore.applyConditionForField(field.value.alias);
   if (
@@ -529,6 +536,8 @@ onMounted(() => {
     display: flex;
     justify-content: flex-start;
     align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
   }
 
   &__action {
@@ -543,7 +552,6 @@ onMounted(() => {
     padding: 0 15px 0 15px;
     cursor: pointer;
     transition: 300ms ease;
-    margin-right: 14px;
     white-space: nowrap;
     @media only screen and (max-width: 480px) {
       min-height: var(--ccb-mobile-field-button-height);

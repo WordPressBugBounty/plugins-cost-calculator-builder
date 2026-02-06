@@ -24,44 +24,26 @@
 			<template v-if="tab === 'main'">
 				<div class="row ccb-p-t-15">
 					<div class="col-6">
-						<div class="ccb-select-box">
-						<span class="ccb-select-label"><?php esc_html_e( 'Navigation Style', 'cost-calculator-builder' ); ?></span>
-							<div class="ccb-select-wrapper">
-								<i class="ccb-icon-Path-3485 ccb-select-arrow"></i>
-								<select class="ccb-select" v-model="pageNavigation.pagination_type" @change="typeSelected">
-									<option value="circle_with_line"><?php esc_html_e( 'Circle steps with line', 'cost-calculator-builder' ); ?></option>
-									<option value="circle_tabs"><?php esc_html_e( 'Circle tabs', 'cost-calculator-builder' ); ?></option>
-									<option value="rectangle_steps_with_line"><?php esc_html_e( 'Rectangle steps with line', 'cost-calculator-builder' ); ?></option>
-									<option value="rectangle_tabs"><?php esc_html_e( 'Rectangle tabs', 'cost-calculator-builder' ); ?></option>
-									<option value="progress_with_circle"><?php esc_html_e( 'Progress with circle', 'cost-calculator-builder' ); ?></option>
-									<option value="progress_with_bar"><?php esc_html_e( 'Progress with bar', 'cost-calculator-builder' ); ?></option>
-									<option value="hidden"><?php esc_html_e( 'Hidden', 'cost-calculator-builder' ); ?></option>
-								</select>
-							</div>
-						</div>
-					</div>
-					<div class="col-6">
 						<div class="list-header" :class="{disable: disableHiddenSelect}" style="padding-top: 26px;">
 							<div class="ccb-switch">
 								<input type="checkbox" v-model="pageNavigation.hide_pagination_title">
 								<label></label>
 							</div>
-							<h6 class="ccb-heading-5"><?php esc_html_e( 'Hide Page Title', 'cost-calculator-builder' ); ?></h6>
+							<h6><?php esc_html_e( 'Hide Page Title', 'cost-calculator-builder' ); ?></h6>
 						</div>
 					</div>
 				</div>
 				<div class="row ccb-p-t-15">
 					<div class="col-12">
-						<div class="ccb-style-preview">
-							<span class="ccb-style-preview-header"><?php esc_html_e( 'Style preview', 'cost-calculator-builder' ); ?></span>
-							<img :src="navigationImg" v-if="pageNavigation.pagination_type !== 'hidden'">
-							<span v-if="pageNavigation.pagination_type == 'hidden'"><?php esc_html_e( 'Page Navigation Hidden', 'cost-calculator-builder' ); ?></span>
+						<div class="ccb-style-preview ccb-field-style-preview" v-for="style in getPageNavigationStyles" :key="style.value" :class="{'active': pageNavigation.pagination_type === style.value}" @click="pageNavigation.pagination_type = style.value">
+							<span class="ccb-style-preview-header">{{ style.label }}</span>
+							<img :src="style.img" v-if="style.value !== 'hidden'">
 						</div>
 					</div>
 				</div>
 			</template>
 			<template v-if="tab === 'settings'">
-				<div class="row ccb-p-t-15" style="margin-top: 10px;" v-if="this.$store.getters.getPageBreakStatus">
+				<div class="row" v-if="this.$store.getters.getPageBreakStatus">
 					<div class="col-12">
 						<div class="list-header" style="padding-top: 10px;">
 							<div class="ccb-switch">
@@ -71,14 +53,14 @@
 							<h6 class="ccb-heading-6 ccb-bold"><?php esc_html_e( 'Summary on Final Page', 'cost-calculator-builder' ); ?></h6>
 							<span class="ccb-help-tip-block" style="margin-top: 2px;">
 								<span class="ccb-help-label" ><?php esc_html_e( 'Preview', 'cost-calculator-builder' ); ?></span>
-								<span class="ccb-help ccb-help-settings page-custom-help-tip" style="left: -290%; bottom: -150px;">
+								<span class="ccb-help ccb-help-settings page-custom-help-tip" style="left: -300%; bottom: -143px;">
 									<span class="ccb-help-content">
 										<img src="<?php echo esc_url( CALC_URL . '/frontend/dist/img/summary-block.gif' ); ?>" alt="woo logo">
 									</span>
 								</span>
 							</span>
 						</div>
-						<span class="ccb-heading-6" style="margin-left: 56px; width: 100%; color: #768493;"><?php esc_html_e( 'The summary block will take up the whole last page', 'cost-calculator-builder' ); ?></span>
+						<span class="ccb-heading-6" style="margin-left: 56px; width: 100%; color: #768493; font-size: 11px !important;"><?php esc_html_e( 'The summary block will take up the whole last page', 'cost-calculator-builder' ); ?></span>
 					</div>
 				</div>
 				<div class="row ccb-p-t-15" v-if="this.$store.getters.getPageBreakStatus" :class="{'ccb-settings-disabled': !pageNavigation.summary_after_last_page}">
@@ -98,7 +80,7 @@
 								</span>
 							</span>
 						</div>
-						<span class="ccb-heading-6" style="margin-left: 56px; display: inline-block; width: 90%; color: #768493;"><?php esc_html_e( 'Users will click a button at the bottom of each step and open a summary popup', 'cost-calculator-builder' ); ?></span>
+						<span class="ccb-heading-6" style="margin-left: 56px; display: inline-block; width: 90%; color: #768493; font-size: 11px !important;"><?php esc_html_e( 'Users will click a button at the bottom of each step and open a summary popup', 'cost-calculator-builder' ); ?></span>
 					</div>
 				</div>
 				<div class="row ccb-p-t-15" v-if="this.$store.getters.getPageBreakStatus && pageNavigation.total_in_page">
@@ -126,7 +108,7 @@
 								<ul class="items row-list settings-list totals">
 									<li class="option-item settings-item" v-for="formula in getFormulaFields" :class="{'settings-item-disabled': getTotalsIdx.length === 1 && getTotalsIdx.includes(+formula.idx)}" @click="(e) => autoSelect(e, formula)">
 										<input :id="'contact_' + formula.idx" :checked="getTotalsIdx.includes(+formula.idx)" name="contactTotals" class="index" type="checkbox" @change="multiselectChooseTotals(formula)"/>
-										<label :for="'contact_' + formula.idx" class="ccb-heading-5">{{ formula.title | to-short }}</label>
+										<label :for="'contact_' + formula.idx">{{ formula.title | to-short }}</label>
 									</li>
 								</ul>
 								<input name="options" type="hidden" />

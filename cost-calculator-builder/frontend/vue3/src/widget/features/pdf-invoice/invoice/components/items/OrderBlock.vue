@@ -26,7 +26,7 @@
         <div class="pdf-total-summary--body">
           <div class="pdf-total-summary--body-items">
             <div
-              class="pdf-total-summary--body-item"
+              class="pdf-total-summary--body-item pdf-keep"
               v-for="detail in getOrderDetails"
               :key="detail.label"
               :style="getLines"
@@ -79,6 +79,39 @@
                           style="white-space: nowrap"
                           >{{ selected.optionConverted }}</span
                         >
+                      </template>
+                    </span>
+                  </span>
+                </template>
+                <template
+                  v-if="
+                    [
+                      'dropDown',
+                      'dropDown_with_img',
+                      'radio',
+                      'radio_with_img',
+                    ].includes(detail.fieldName)
+                  "
+                >
+                  <span
+                    class="pdf-total-summary--body-item-name-extra"
+                    v-if="'selectedOption' in detail && detail.selectedOption"
+                  >
+                    <span
+                      class="ccb-pdf-extra-wrap"
+                      v-if="detail.selectedOption"
+                      style="padding-left: 10px"
+                    >
+                      <template
+                        v-if="
+                          detail.summaryView === 'show_value' &&
+                          'optionText' in detail.selectedOption &&
+                          'optionConverted' in detail.selectedOption
+                        "
+                      >
+                        <span class="ccb-pdf-extra-wrap-label">{{
+                          detail.selectedOption.optionText
+                        }}</span>
                       </template>
                     </span>
                   </span>
@@ -155,16 +188,16 @@
               </span>
             </div>
 
-            <div class="pdf-total-summary--body-item-box">
+            <div class="pdf-total-summary--body-item-box pdf-keep">
               <div class="pdf-order-block-qr-code" v-if="showQrCode">
                 <img :src="qrCodeDataUrl" alt="QR Code" />
               </div>
-              <div class="pdf-order-block-payment-info">
+              <div class="pdf-order-block-payment-info pdf-keep">
                 <div class="pdf-order-block-payment-info--totals">
                   <span
                     v-for="total in getTotals"
                     :key="total.label"
-                    class="pdf-order-block-payment-info--totals-item"
+                    class="pdf-order-block-payment-info--totals-item pdf-keep"
                     style="box-sizing: border-box"
                   >
                     <template
@@ -589,7 +622,6 @@ const updateFieldsWithOrderDetails = (orderDetails: any[]): any[] => {
       return alias.replace(/_field_id_\d+$/, "");
     };
 
-    // если есть groupElements — обрабатываем каждый элемент
     let updatedGroupElements = groupElements;
 
     if (Array.isArray(groupElements)) {
@@ -605,7 +637,6 @@ const updateFieldsWithOrderDetails = (orderDetails: any[]): any[] => {
       });
     }
 
-    // возвращаем объект с displayValue и обновлёнными groupElements (если были)
     return {
       ...rest,
       displayValue: value,
@@ -620,7 +651,6 @@ const updateFieldsWithOrderDetails = (orderDetails: any[]): any[] => {
 const getOrderDetails = computed(() => {
   let fields = fieldsStore.getSummaryList.filter((f: Field) => !f.hidden);
 
-  // Обновляем поля с данными из orderDetails если они доступны
   if (getOrderData.value?.orderDetails) {
     fields = updateFieldsWithOrderDetails(getOrderData.value.orderDetails);
   }

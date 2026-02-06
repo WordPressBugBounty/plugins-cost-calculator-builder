@@ -1,6 +1,7 @@
 import {
   Field,
   IBaseField,
+  IStyles,
   ISourceField,
 } from "@/widget/shared/types/fields/index.ts";
 
@@ -90,6 +91,14 @@ export interface IGroupField extends IBaseField {
   label: string;
   showTitle: boolean;
   groupElements: Map<string, Field>[];
+}
+
+export interface ISectionField extends IBaseField {
+  fields: Map<string, Field>;
+  collapsible: boolean;
+  defaultCollapsed: boolean;
+  showName: boolean;
+  styles: IStyles;
 }
 
 export interface IPageBreakerField extends IBaseField {

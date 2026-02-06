@@ -1,5 +1,5 @@
 <template>
-  <div class="ccb-box-radio ccb-vertical-radio">
+  <div class="ccb-box-with-radio ccb-vertical-radio">
     <label
       class="ccb-radio-label"
       v-for="(option, idx) in options"
@@ -47,12 +47,12 @@ const { optionValues, changeValue, getName } = useSingleOptionChildShared(
 
 <style lang="scss" scoped>
 .ccb-vertical-radio {
-  .ccb-box-radio {
+  .ccb-box-with-radio {
     flex-direction: column;
   }
 }
 
-.ccb-box-radio {
+.ccb-box-with-radio {
   display: flex;
   gap: 10px;
   font-size: var(--ccb-field-size);

@@ -112,6 +112,7 @@ import Button from "@/widget/shared/ui/components/Button";
 import { usePaymentAfterSubmitStore } from "@/widget/app/providers/stores/paymentAfterSubmit";
 import { useOrderFormStore } from "@/widget/app/providers/stores/orderFormStore";
 import { usePaymentStore } from "@/widget/app/providers/stores/paymentsStore";
+import { useFieldsStore } from "@/widget/app/providers/stores/fieldsStore";
 
 const settingsStore = useSettingsStore();
 const submissionStore = useSubmissionStore();
@@ -153,6 +154,9 @@ const backToCalculatorAction = () => {
   const orderFormStore = useOrderFormStore();
   orderFormStore.resetBtnData();
 
+  const fieldsStore = useFieldsStore();
+  fieldsStore.updateActivePageIndex(0);
+
   showThankYouPage.value = false;
   appStore.updateThankYouPageStatus(false);
   notificationsStore.resetNotifications();
@@ -163,7 +167,9 @@ const downloadPdf = () => {
 };
 
 const sendPdf = () => {
-  window.dispatchEvent(new CustomEvent("ccbOpenModal"));
+  window.dispatchEvent(
+    new CustomEvent("ccbOpenModal", { detail: { calcId: appStore.getCalcId } }),
+  );
 };
 
 onMounted(() => {

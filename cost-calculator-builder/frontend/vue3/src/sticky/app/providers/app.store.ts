@@ -9,6 +9,7 @@ interface IAppStore {
   wooCheckoutSettings: IStickyWooCheckout | null;
   currencySettings: CurrencyFormatOptions | null;
   isProActive: boolean;
+  hasEmbedCalc: boolean;
 }
 
 export const useAppStore = defineStore("stickyApp", {
@@ -19,6 +20,7 @@ export const useAppStore = defineStore("stickyApp", {
     wooCheckoutSettings: null,
     currencySettings: null,
     isProActive: false,
+    hasEmbedCalc: false,
   }),
 
   getters: {
@@ -36,6 +38,8 @@ export const useAppStore = defineStore("stickyApp", {
       state.currencySettings,
 
     getIsProActive: (state: IAppStore): boolean => state.isProActive,
+
+    getHasEmbedCalc: (state: IAppStore): boolean => state.hasEmbedCalc,
   },
 
   actions: {
@@ -61,6 +65,10 @@ export const useAppStore = defineStore("stickyApp", {
 
     setIsProActive(isProActive: boolean): void {
       this.isProActive = isProActive;
+    },
+
+    setHasEmbedCalc(embedCalc: boolean): void {
+      this.hasEmbedCalc = embedCalc;
     },
   },
 });

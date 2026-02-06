@@ -89,12 +89,8 @@ export const useSubmissionStore = () => {
           }
         }
 
-        const {
-          createOrder,
-          completeOrder,
-          makePayment,
-          razorpayPaymentReceived,
-        } = useOrder();
+        const { createOrder, makePayment, razorpayPaymentReceived } =
+          useOrder();
 
         notificationsStore.resetNotifications();
 
@@ -199,9 +195,6 @@ export const useSubmissionStore = () => {
                               },
                             );
                         } else {
-                          const orderId =
-                            response.orderId || response?.data?.orderId;
-                          completeOrder(orderId);
                           stripeClientSecret =
                             response.clientSecret ||
                             response?.data?.clientSecret ||
@@ -258,7 +251,14 @@ export const useSubmissionStore = () => {
                   razorpayPaymentReceived(
                     orderId,
                     settingsStore.getRazorpayPaymentCurrency,
-                  );
+                  ).then(() => {
+                    appStore.setSubmissionLoader(false);
+                    notificationsStore.updateNotifications({
+                      status: true,
+                      type: "finish",
+                      message: "Your order has been placed",
+                    });
+                  });
                 }
               };
 

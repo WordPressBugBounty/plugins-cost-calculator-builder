@@ -15,6 +15,7 @@ import {
   createSingleOptionField,
   createRepeaterField,
   createGroupField,
+  createSectionField,
   createValidatedFormField,
 } from "./useFieldFactory";
 
@@ -106,6 +107,9 @@ function addField(
       break;
     case "group":
       field = createGroupField(data);
+      break;
+    case "section":
+      field = createSectionField(data);
       break;
     case "validated_form":
       field = createValidatedFormField(data);

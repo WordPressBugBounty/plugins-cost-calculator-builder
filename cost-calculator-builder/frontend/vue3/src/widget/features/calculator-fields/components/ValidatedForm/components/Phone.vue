@@ -2,49 +2,51 @@
   <div class="ccb-field__input-wrapper">
     <VueTelInput
       @input="onInput"
-      v-model="phone"
       mode="international"
-      :value="field.displayValue"
+      v-model="phone"
       :inputOptions="options"
       @country-changed="countryChanged"
+      :default-country="field.defaultCountry"
     />
   </div>
 </template>
 
 <script setup lang="ts">
+import { onMounted, ref } from "vue";
 import { IValidatedFormField } from "@/widget/shared/types/fields/input.type";
 import { useValidatedFormField } from "@/widget/actions/fields/composable/useValidatedFormField.ts";
-import { onMounted, ref } from "vue";
 
 import { VueTelInput } from "vue-tel-input";
 import "vue-tel-input/vue-tel-input.css";
 
 const emit = defineEmits<{
   (event: "update", value: string): void;
+  (event: "country-changed", value: string): void;
 }>();
 
 type Props = {
   field: IValidatedFormField;
 };
 
-const phone = ref("");
-
 const props = defineProps<Props>();
 const field = ref(props.field);
 const { onInput, onCountryChanged } = useValidatedFormField(props, emit);
 
+const phone = ref<string>("");
+
 const options = {
-  placeholder: props.field.placeholder,
+  placeholder: field.value.placeholder,
 };
 
-const countryChanged = () => {
+const countryChanged = (args: any) => {
+  emit("country-changed", args.iso2);
   setTimeout(() => {
     onCountryChanged(phone.value);
   }, 100);
 };
 
 onMounted(() => {
-  phone.value = props.field.displayValue;
+  phone.value = field.value.displayValue;
 });
 </script>
 

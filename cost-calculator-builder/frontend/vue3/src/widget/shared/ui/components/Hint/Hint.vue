@@ -56,6 +56,10 @@
       border-style: solid;
       border-color: #3b3e4a transparent transparent transparent;
     }
+
+    @media (max-width: 550px) {
+      max-width: 100px;
+    }
   }
 }
 </style>

@@ -137,7 +137,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, toRefs, ref } from "vue";
+import { computed, toRefs, ref, onMounted } from "vue";
 import { IFileUploadField } from "@/widget/shared/types/fields";
 import { useAppearanceStore } from "@/widget/app/providers/stores/appearanceStore.ts";
 import { useSingleField } from "@/widget/actions/fields/composable/useSingleField.ts";
@@ -171,6 +171,22 @@ const fileUploadUrl = ref<string>("");
 const uploadFromUrl = ref<boolean>(false);
 const requiredType = ref<string>("");
 const allowList = ref<boolean>(false);
+
+onMounted(() => {
+  CheckFiles();
+});
+
+const CheckFiles = () => {
+  if (field.value.files) {
+    field.value.files.forEach((file) => {
+      let newFile = new File([file], file.name, {
+        type: file.type,
+      });
+      uploadedFiles.value.push(newFile);
+    });
+  }
+  updateValue();
+};
 
 const changeUploadUrl = () => (requiredType.value = "");
 
@@ -409,6 +425,31 @@ const additionalClasses = computed(() => {
 </script>
 
 <style lang="scss">
+.ccb-field {
+  @media (min-width: 1025px) {
+    &.field-width-25 {
+      .ccb-file-upload {
+        .ccb-file-upload__files {
+          .ccb-file-upload__file {
+            padding: 5px 6px;
+            .name {
+              font-size: 12px;
+            }
+          }
+        }
+        .ccb-file-upload__buttons {
+          flex-wrap: wrap;
+          button {
+            font-size: calc(var(--ccb-fields-button-size) - 2px);
+          }
+        }
+        .ccb-hint {
+          position: absolute;
+        }
+      }
+    }
+  }
+}
 .ccb-file-upload {
   position: relative;
 

@@ -48,4 +48,14 @@ class CCBAdminActions {
 		check_ajax_referer( 'ccb_save_marker_icon', 'nonce' );
 		self::file_upload();
 	}
+
+	public static function upload_section_icon() {
+		check_ajax_referer( 'ccb_save_section_icon', 'nonce' );
+		self::file_upload();
+	}
+
+	public static function upload_total_icon() {
+		check_ajax_referer( 'ccb_save_total_icon', 'nonce' );
+		self::file_upload();
+	}
 }

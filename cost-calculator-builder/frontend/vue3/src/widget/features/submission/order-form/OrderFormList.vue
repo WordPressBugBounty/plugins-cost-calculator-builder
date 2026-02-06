@@ -563,11 +563,9 @@ onMounted(() => {
   }
 
   &.ccb-order-form-legacy {
-    &.order-open {
-      display: grid;
-      grid-template-columns: repeat(12, 1fr);
-      gap: 20px;
-    }
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 20px;
 
     .ccb-col-2 {
       grid-column: span 2;

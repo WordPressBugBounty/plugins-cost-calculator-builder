@@ -93,6 +93,25 @@ const additionalClasses = computed(() => {
 </script>
 
 <style lang="scss">
+.ccb-field {
+  @media (min-width: 1025px) {
+    &.field-width-25 {
+      .ccb-field__input-wrapper {
+        div {
+          span {
+            font-size: 12px;
+          }
+        }
+        button {
+          padding: 0 5px;
+          span {
+            font-size: calc(var(--ccb-fields-button-size) - 2px);
+          }
+        }
+      }
+    }
+  }
+}
 .ccb-location-modal {
   border-radius: 10px;
   overflow: hidden;

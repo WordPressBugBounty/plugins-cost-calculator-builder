@@ -268,6 +268,27 @@ callbackStore.add("updateDatePicker", updateValue);
 </script>
 
 <style lang="scss">
+.ccb-field {
+  @media (min-width: 1025px) {
+    &.field-width-25 {
+      .ccb-datePicker {
+        .dp__input_wrap {
+          .dp__input {
+            padding: 10px calc(var(--ccb-field-side-indent) - 4px);
+            padding-left: max(
+              24px,
+              var(--ccb-field-side-indent) - 4px
+            ) !important;
+            font-size: calc(var(--ccb-fields-button-size) - 2px);
+          }
+          .dp__input_icons {
+            padding: 6px;
+          }
+        }
+      }
+    }
+  }
+}
 .ccb-datePicker *:focus {
   outline-width: 0;
 }

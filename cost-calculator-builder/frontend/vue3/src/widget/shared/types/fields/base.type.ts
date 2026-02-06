@@ -1,8 +1,12 @@
 import { CurrencyFormatOptions } from "@/widget/shared/types/common/currency.type";
 import { IPeriodData } from "@/widget/shared/types/fields/date.type.ts";
 export interface IStyles {
-  boxStyle: string;
-  style: string;
+  boxStyle?: string;
+  style?: string;
+  iconPath?: string;
+  applyToAll?: boolean;
+  textColor?: string;
+  backgroundColor?: string;
 }
 
 export interface IOptions {
@@ -46,6 +50,8 @@ export interface IBaseField {
 
   fieldCurrency: boolean;
   fieldCurrencySettings?: CurrencyFormatOptions;
+
+  width?: string;
 }
 
 export interface ISourceField {
@@ -86,6 +92,17 @@ export interface ISourceField {
   enabledCurrencySettings?: boolean;
   buttonsPosition?: "right" | "both";
   separation?: boolean;
+
+  // pricing structure properties
+  pricingStructure?: string;
+  pricingRanges?: Array<{
+    minQty: number;
+    maxQty: number;
+    unitPrice: number;
+  }>;
+  badgeText?: string;
+  badgeVariant?: string;
+  badgeFormat?: string;
 
   // options field properties
   summaryView?: SummaryView;
@@ -183,4 +200,10 @@ export interface ISourceField {
 
   // validated form field properties
   fieldType?: "email" | "phone" | "name" | "website_url";
+
+  // section
+  width?: string;
+  defaultCollapsed?: boolean;
+  showName?: boolean;
+  fields?: ISourceField[];
 }

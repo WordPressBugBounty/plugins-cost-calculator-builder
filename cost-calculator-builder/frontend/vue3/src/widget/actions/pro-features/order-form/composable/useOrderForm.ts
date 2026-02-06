@@ -25,7 +25,7 @@ function initializeFields(rawData: any[]): void {
 
       let defaultValue = attr.default_value;
       let selectedIdx: number[] = [];
-      if (field.type === "checkbox" || field.type === "dropdown") {
+      if (["checkbox", "dropdown"].includes(field.type) && defaultValue) {
         defaultValue = defaultValue.map((option: string) => {
           const lastWithSpace: string[] = option.split(" ");
           const last: string = lastWithSpace[lastWithSpace.length - 1];

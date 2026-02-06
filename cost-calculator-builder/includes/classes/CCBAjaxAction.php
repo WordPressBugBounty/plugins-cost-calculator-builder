@@ -2,7 +2,6 @@
 
 namespace cBuilder\Classes;
 
-use cBuilder\Classes\Database\Orders;
 use cBuilder\Classes\CCBEmbedCalculator;
 
 class CCBAjaxAction {
@@ -96,10 +95,6 @@ class CCBAjaxAction {
 			self::addAction( 'calc_preview_discount_list', array( CCBDiscountController::class, 'discount_preview_list' ) );
 
 			self::addAction( 'create_cc_order', array( CCBOrderController::class, 'create' ), true );
-			self::addAction( 'create_cc_order', array( CCBOrderController::class, 'create' ) );
-			self::addAction( 'get_cc_orders', array( CCBOrderController::class, 'orders' ) );
-			self::addAction( 'delete_cc_orders', array( CCBOrderController::class, 'delete' ) );
-			self::addAction( 'update_order_status', array( CCBOrderController::class, 'update' ) );
 			self::addAction( 'complete_payment', array( CCBOrderController::class, 'complete' ), true );
 			self::addAction( 'ccb_woocommerce_payment', array( CCBOrderController::class, 'renderWooCommercePayment' ), true );
 		}
@@ -110,6 +105,8 @@ class CCBAjaxAction {
 
 		self::addAction( 'save_pickup_icon', array( CCBAdminActions::class, 'upload_pickup_icon' ) );
 		self::addAction( 'save_marker_icon', array( CCBAdminActions::class, 'upload_marker_icon' ) );
+		self::addAction( 'save_section_icon', array( CCBAdminActions::class, 'upload_section_icon' ) );
+		self::addAction( 'save_total_icon', array( CCBAdminActions::class, 'upload_total_icon' ) );
 
 		/** Form Manager actions */
 		self::addAction( 'calc_forms_list', array( CCBForms::class, 'get_all_forms' ) );
@@ -122,5 +119,20 @@ class CCBAjaxAction {
 
 		/** Cost Calculator ContactForm */
 		self::addAction( 'get_template_preview_cf7', array( CCBContactFormSeven::class, 'get_template_preview_cf7' ) );
+
+		self::addAction( 'ccb_orders_list', array( CCBOrderController::class, 'orders_list' ) );
+		self::addAction( 'ccb_update_status_list', array( CCBOrderController::class, 'update_status_list' ) );
+		self::addAction( 'ccb_update_order_status', array( CCBOrderController::class, 'update_order_status' ) );
+		self::addAction( 'ccb_save_table_settings', array( CCBOrderController::class, 'save_table_settings' ) );
+		self::addAction( 'ccb_save_orders_settings', array( CCBOrderController::class, 'save_orders_settings' ) );
+		self::addAction( 'ccb_restore_orders_settings', array( CCBOrderController::class, 'restore_orders_settings' ) );
+		self::addAction( 'ccb_restore_table_settings', array( CCBOrderController::class, 'restore_table_settings' ) );
+		self::addAction( 'ccb_delete_order', array( CCBOrderController::class, 'delete_order' ) );
+		self::addAction( 'ccb_create_order_note', array( CCBOrderController::class, 'create_order_note' ) );
+		self::addAction( 'ccb_update_order_note', array( CCBOrderController::class, 'update_order_note' ) );
+		self::addAction( 'ccb_delete_order_note', array( CCBOrderController::class, 'delete_order_note' ) );
+		self::addAction( 'ccb_delete_orders', array( CCBOrderController::class, 'delete_orders' ) );
+		self::addAction( 'ccb_update_orders_status', array( CCBOrderController::class, 'update_orders_status' ) );
+		self::addAction( 'ccb_send_to_email', array( CCBOrderController::class, 'send_to_email' ) );
 	}
 }

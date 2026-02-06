@@ -199,7 +199,7 @@ class CCBBuilderAdminMenu {
 	}
 
 	public function calc_orders_page() {
-		echo CCBTemplate::load( 'admin/pages/orders' ); //phpcs:ignore
+		echo CCBTemplate::load( 'admin/pages/new-orders' ); //phpcs:ignore
 	}
 
 	public function calc_orders_page_demo() {
@@ -230,7 +230,7 @@ class CCBBuilderAdminMenu {
 				align-items: center;
 				justify-content: space-between;
 			}
-			
+
 			.ccb-menu-badge {
 				background: rgba(255,168,0,.1);
 				color: #fff;
@@ -248,13 +248,13 @@ class CCBBuilderAdminMenu {
 				align-items: center;
 				justify-content: center;
 			}
-			
+
 			@keyframes ccb-badge-pulse {
 				0% { transform: scale(1); }
 				50% { transform: scale(1.1); }
 				100% { transform: scale(1); }
 			}
-			
+
 			/* Dark theme support */
 			body.folded .ccb-menu-badge,
 			.wp-core-ui.wp-admin #adminmenu .ccb-menu-badge {

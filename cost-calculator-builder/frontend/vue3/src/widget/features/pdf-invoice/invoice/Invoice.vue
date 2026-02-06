@@ -90,6 +90,18 @@ const beforeDownload = async ({
 }) => {
   let conf = options;
   conf.enableLinks = true;
+  conf.pagebreak = {
+    mode: ["css"],
+    before: ".break-before",
+    after: ".break-after",
+    avoid:
+      ".avoid-break, .pdf-keep, .pdf-total-summary--body-item, .pdf-order-block-payment-info--totals-item",
+  };
+  conf.html2canvas = {
+    ...(conf.html2canvas || {}),
+    scale: 2,
+    windowWidth: pdfContent.scrollWidth,
+  };
   (
     pdfContent.querySelector(".ccb-pdf-tool-manager-preview") as HTMLElement
   ).style.width = "794px";
@@ -175,4 +187,33 @@ defineExpose({
 });
 </script>
 
-<style></style>
+<style>
+@media print {
+  .break-before {
+    break-before: page !important;
+    page-break-before: always !important;
+  }
+  .break-after {
+    break-after: page !important;
+    page-break-after: always !important;
+  }
+  .avoid-break,
+  .pdf-keep,
+  .pdf-total-summary--body-item,
+  .pdf-order-block-payment-info--totals-item {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+  .ccb-pdf-tool-manager-preview,
+  .ccb-pdf-layout-wrapper,
+  .ccb-pdf-layout__item--wrapper,
+  .pdf-total-summary--body,
+  .pdf-total-summary--body-items,
+  .pdf-order-block-payment-info,
+  .pdf-order-block-payment-info--totals {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+    overflow: visible !important;
+  }
+}
+</style>

@@ -18,15 +18,10 @@ $modal_types = array(
 	),
 );
 
+$pro_active = defined( 'CCB_PRO' ) ? 'active' : '';
+
 ?>
-<div class="ccb-create-calc">
-	<div class="ccb-field-overlay" @click="hideOverlay" v-if="getType !== null"></div>
-	<div class="ccb-create-calc-sidebar ccb-custom-scrollbar calc-quick-tour-elements" :style="getCalcSidebarStyleForElementStyleTourStep['ccb-create-calc-sidebar']" >
-		<div class="ccb-sidebar-header" :style="getCalcSidebarStyleForElementStyleTourStep['ccb-sidebar-header']">
-			<span class="ccb-heading-5 ccb-bold"><?php esc_html_e( 'Elements', 'cost-calculator-builder' ); ?></span>
-		</div>
-		<?php echo \cBuilder\Classes\CCBTemplate::load( '/admin/single-calc/partials/sidebar-items' ); // phpcs:ignore ?>
-	</div>
+<div class="ccb-create-calc" :class="{'active': toggleMenu}">
 	<div class="ccb-create-calc-content">
 		<div class="ccb-not-allowed ccb-create-calc-content-fields">
 			<div class="ccb-fields-container ccb-hint-fields-container" :class="{'ccb-container-empty': $store.getters.getBuilder?.length === 0}">
@@ -48,67 +43,140 @@ $modal_types = array(
 						<button class="ccb-button success ccb-settings" @click="openTemplateSettings"><?php esc_html_e( 'Config', 'cost-calculator-builder' ); ?></button>
 					<?php endif; ?>
 				</div>
-				<div class="ccb-fields-wrapper ccb-custom-scrollbar " :class="{'ccb-disable-scroll': $store.getters.getBuilder.length === 0}">
-					<div class="ccb-page-navigation" @click.stop="e => editField(e, 'page-navigation')" v-if="enoughPages">
-						<div class="ccb-page-navigation__title">
-							<?php esc_html_e( 'Page breaker settings', 'cost-calculator-builder' ); ?>
+
+				<div class="ccb-fields-builder">
+					<div class="ccb-fields-builder__header">
+						<div class="ccb-fields-builder__pages">
+							<draggable v-model="builderPages" style="display: flex;">
+								<div class="ccb-fields-builder__page" v-for="page in builderPages" @click="setActivePage(page.alias)" :key="page.id" :class="{'ccb-fields-builder__page-active': activePageId === page.alias, 'ccb-fields-builder__page-error': checkErrorsPages().includes(page.alias)}">
+									<div class="ccb-fields-builder__page-icon">
+										<i class="ccb-icon-drag-dots"></i>
+									</div>
+									<div class="ccb-fields-builder__page-title">{{ page.label }}</div>
+									<div class="ccb-fields-builder__page-edit" @click.stop="e => editField(e, 'page-break', page.alias, null, { pageId: page.alias })" v-if="enoughPages">
+										<i class="ccb-icon-Path-3483"></i>
+									</div>
+									<div class="ccb-fields-builder__page-delete" @click.stop="deletePage(page)" v-if="enoughPages">
+										<i class="ccb-icon-Path-3503"></i>
+									</div>
+								</div>
+							</draggable>
 						</div>
-						<div class="ccb-page-navigation__hide" v-if="this.$store.getters.getSettings.page_break.pagination_type === 'hidden'">
-							<i class="ccb-icon-no-preview"></i>
-							<span><?php esc_attr_e( 'Hidden', 'cost-calculator-builder' ); ?></span>
+						<div class="ccb-fields-builder__add-page" @click="addPage" :class="{'ccb-fields-builder__add-page-lock': !proActive}">
+							<i class="ccb-icon-Path-3493"></i>
+							<span class="ccb-item-lock-inner" v-if="!proActive"><i class="ccb-icon-Path-3482"></i> <span>Pro</span></span>
 						</div>
-						<div class="ccb-page-navigation__settings">
+						<div class="ccb-fields-builder__page-settings" @click.stop="e => editField(e, 'page-navigation', null, null, { pageId: activePageId })" v-if="enoughPages">
 							<i class="ccb-icon-Union-28"></i>
 						</div>
 					</div>
-					<field-row
+				</div>
+				<div class="ccb-fields-wrapper ccb-custom-scrollbar " :class="{'ccb-disable-scroll': $store.getters.getBuilder.length === 0}">
+					<component
 						v-model="builderFields"
 						group="fields"
 						@show-confirm="showConfirm"
+						@edit-field="editFieldEvent"
+						:active-page-id="activePageId"
+						:is="layout"
+						@add-section="addSection"
+						:active-page="builderPages.filter(page => page.alias === activePageId)[0]"
+						@edit-total-summary="editTotalSummary"
+						:edit-field-tab="editFieldTab"
 					/>
 				</div>
 			</div>
 		</div>
-		<div class="ccb-create-calc-content-edit-field ccb-custom-scrollbar calc-quick-tour-edit-field calc-quick-tour-element-styles" :class="{'has-content': getType}">
-			<template v-if="getType">
-				<?php
-				$fields = \cBuilder\Helpers\CCBFieldsHelper::fields();
-				?>
-				<?php foreach ( $fields as $key => $field ) : ?>
-					<component
-							inline-template
-							:key="updateEditKey"
-							:field="fieldData"
-							@save="addOrSaveField"
-							:id="editId"
-							:index="getIndex"
-							:order="getOrderId"
-							@cancel="closeOrCancelField"
-							:available="$store.getters.getBuilder"
-							is="<?php echo esc_attr( $field['type'] ); ?>-field"
-							v-if="getType === '<?php echo esc_attr( $field['type'] ); ?>'"
-					>
-						<?php echo \cBuilder\Classes\CCBTemplate::load( '/admin/single-calc/fields/' . $field['type'] . '-field' ); // phpcs:ignore ?>
-					</component>
-				<?php endforeach; ?>
-			</template>
-			<template v-else>
-				<div class="ccb-edit-field-no-selected">
-					<div class="ccn-edit-no-selected-box">
-						<span class="ccb-heading-3 ccb-bold"><?php esc_html_e( 'Click to See More', 'cost-calculator-builder' ); ?></span>
-						<span class="ccb-default-title ccb-light-2" style="line-height: 1"><?php esc_html_e( 'Choose an element to configure the settings ', 'cost-calculator-builder' ); ?></span>
+	</div>
+	<div class="ccb-phantom-sidebar"></div>
+	<div class="ccb-create-calc-sidebar ccb-custom-scrollbar calc-quick-tour-elements" :class="{'active': toggleMenu}" :style="getCalcSidebarStyleForElementStyleTourStep['ccb-create-calc-sidebar']" >
+		<div class="ccb-sidebar-toggle" @click="toggleMenu = !toggleMenu" :class="{'active': !toggleMenu}">
+			<i class="ccb-icon-Path-3398"></i>
+		</div>
+		<div class="ccb-create-calc-sidebar-header" :class="sidebarTab">
+			<div class="ccb-create-calc-sidebar-header__item" @click="sidebarTab = 'elements'" :class="{'ccb-create-calc-sidebar-header__item-active': sidebarTab === 'elements'}">
+				<?php esc_html_e( 'Elements', 'cost-calculator-builder' ); ?>
+			</div>
+			<div class="ccb-create-calc-sidebar-header__item" @click="sidebarTab = 'layouts'" :class="{'ccb-create-calc-sidebar-header__item-active': sidebarTab === 'layouts'}">
+				<?php esc_html_e( 'Layouts', 'cost-calculator-builder' ); ?>
+			</div>
+		</div>
+		<div class="ccb-sidebar-tabs" v-if="sidebarTab === 'elements'">
+			<div class="ccb-sidebar__fields-tabs" :class="{'right-tab': fieldsTab === 'calcFields'}">
+				<div class="ccb-sidebar__fields-tab" @click="fieldsTab = 'elements'">
+					<?php esc_html_e( 'Elements', 'cost-calculator-builder' ); ?>
+				</div>
+				<div class="ccb-sidebar__fields-tab" @click="fieldsTab = 'calcFields'">
+					<?php esc_html_e( 'Your Elements', 'cost-calculator-builder' ); ?>
+				</div>
+			</div>
+			<div class="ccb-sidebar__fields" v-if="fieldsTab === 'elements'" :key="'elements'">
+				<?php echo \cBuilder\Classes\CCBTemplate::load( '/admin/single-calc/partials/sidebar-items' ); // phpcs:ignore ?>
+			</div>
+			<div class="ccb-sidebar-builder-fields" v-if="fieldsTab === 'calcFields'" :key="'calcFields'">
+				<div class="ccb-sidebar-builder-fields__elements" v-if="editFieldTab === 'builderFields'">
+					<div class="ccb-sidebar-builder-fields__tab-icon-search">
+						<i class="ccb-icon-Search-Magnifier"></i>
+						<input type="text" v-model="fieldsSearch" placeholder="Search">
+					</div>
+					<div v-for="(field, index) in calculatorFields" class="ccb-sidebar-builder-fields__element" :key="field.id" @click="editField(event, field.type, field.alias, field.index, { pageId: field.pageId, section: field.sectionId, group: field.groupId })">
+						<div class="ccb-sidebar-builder-fields__element-icon">
+							<i :class="field.icon"></i>
+						</div>
+						<div class="ccb-sidebar-builder-fields__element-description">
+							<div class="ccb-sidebar-builder-fields__element-description-title">
+								{{ field.label }}
+							</div>
+							<div class="ccb-sidebar-builder-fields__element-description-id">
+								[{{ field.alias }}]
+							</div>
+						</div>
 					</div>
 				</div>
-			</template>
+			</div>
 		</div>
+		<div class="ccb-sidebar-tabs" v-if="sidebarTab === 'layouts'">
+			<div class="ccb-sidebar-layouts-container">
+				<div class="ccb-sidebar-layout" v-for="layoutItem in layouts" :key="layout.id" @click="setBuilderLayout(layoutItem.id)" :class="{'ccb-sidebar-layout-active': layoutItem.id === layout}">
+					<div class="ccb-sidebar-layout__img" :style="{ backgroundImage: `url(${layoutItem.img})` }"></div>
+					<div class="ccb-sidebar-layout__title">{{ layoutItem.title }}</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="ccb-sidebar__fields-tab-edit-field ccb-custom-scrollbar " v-if="editFieldTab === 'editField'" :class="{'has-content': getType}">
+		<?php
+		$fields = \cBuilder\Helpers\CCBFieldsHelper::fields();
+		?>
+		<?php foreach ( $fields as $key => $field ) : ?>
+			<component
+					inline-template
+					:key="updateEditKey"
+					:field="fieldData"
+					@save="addOrSaveField"
+					:id="editId"
+					:index="getIndex"
+					:order="getOrderId"
+					@cancel="closeOrCancelField"
+					:available="$store.getters.getBuilder"
+					is="<?php echo esc_attr( $field['type'] ); ?>-field"
+					v-if="editId.type === '<?php echo esc_attr( $field['type'] ); ?>'"
+			>
+				<?php echo \cBuilder\Classes\CCBTemplate::load( '/admin/single-calc/fields/' . $field['type'] . '-field' ); // phpcs:ignore ?>
+			</component>
+		<?php endforeach; ?>
+	</div>
+	<div class="ccb-sidebar__fields-tab-edit-field ccb-total-summary-edit" v-if="editFieldTab === 'totalSummary'">
+		<total-summary-edit inline-template @cancel="closeTotalSummaryEdit">
+			<?php echo \cBuilder\Classes\CCBTemplate::load( '/admin/single-calc/fields/total-summary' ); // phpcs:ignore ?>
+		</total-summary-edit>
 	</div>
 	<ccb-confirm-popup
 		v-if="confirmPopup"
 		:status="confirmPopup"
 		@close-confirm="removeFromBuilder"
 		:page-count="pageCount"
-		:field="currentFieldId"
-		:group-element-alias="groupElementAlias"
+		:delete-field-settings="deleteFieldSettings"
 		cancel="<?php esc_html_e( 'Cancel', 'cost-calculator-builder' ); ?>"
 		del="<?php esc_html_e( 'Delete field', 'cost-calculator-builder' ); ?>"
 	>

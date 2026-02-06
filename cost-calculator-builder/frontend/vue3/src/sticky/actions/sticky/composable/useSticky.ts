@@ -1,7 +1,9 @@
 import $ from "jquery";
 import { computed, ref } from "vue";
 import { useAppStore } from "@/sticky/app/providers/app.store.ts";
-import { Modal } from "bootstrap";
+import Modal from "bootstrap/js/dist/modal";
+import "@/styles/custom-bootstrap/ccb-modal.css";
+
 import { StickyFormulas } from "@/sticky/shared/types/app";
 import { useStickyCurrency } from "../../currency/composable/useStickyCurrency";
 import { Field } from "@/widget/shared/types/fields";
@@ -247,7 +249,11 @@ export function useSticky() {
       if (action === "pdf") {
         window.dispatchEvent(new CustomEvent("ccbDownLoadPdf"));
       } else if (action === "invoice") {
-        window.dispatchEvent(new CustomEvent("ccbOpenModal"));
+        window.dispatchEvent(
+          new CustomEvent("ccbOpenModal", {
+            detail: { calcId: appStore.getCalcId },
+          }),
+        );
       }
     } else if (
       ["open_modal", "woo_product_as_modal", "pro_features"].includes(action)

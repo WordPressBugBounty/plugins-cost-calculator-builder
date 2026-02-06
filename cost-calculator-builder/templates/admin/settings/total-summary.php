@@ -1,6 +1,18 @@
 <div class="ccb-tab-container">
 	<div class="ccb-grid-box">
 		<div class="container">
+			<div class="row">
+				<div class="col-6">
+					<div class="ccb-notice-wrapper" style="background-color: #ffe85a63; border-color: #80732263; color: #afa30a;">
+						<div class="ccb-notice-icon-wrapper">
+							<i class="ccb-icon-Path-3367" style="color: #afa30a;"></i>
+						</div> 
+						<div class="ccb-notice-content">
+							<?php esc_html_e( 'Summary Block settings are now editable inside the calculator builder. Simply select the block as you do with other elements.', 'cost-calculator-builder' ); ?>
+						</div>
+					</div>
+				</div>
+			</div>
 			<div class="row ccb-p-t-15 ccb-p-b-15">
 				<div class="col-12">
 					<span class="ccb-tab-title"><?php esc_html_e( 'Summary block ', 'cost-calculator-builder' ); ?></span>

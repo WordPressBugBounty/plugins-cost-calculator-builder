@@ -109,6 +109,7 @@ class CCBTranslations {
 			'select'                 => __( 'Select', 'cost-calculator-builder' ),
 			'default_total'          => __( 'Total', 'cost-calculator-builder' ),
 			'off'                    => __( 'off', 'cost-calculator-builder' ),
+			'back'                   => __( 'Back', 'cost-calculator-builder' ),
 		);
 
 		return apply_filters( 'ccb_frontend_translations', $translations );
@@ -190,10 +191,65 @@ class CCBTranslations {
 			'type'            => __( 'Type', 'cost-calculator-builder' ),
 			'select_widget'   => __( 'Select widget', 'cost-calculator-builder' ),
 			'add_widget'      => __( 'Add widget', 'cost-calculator-builder' ),
-			'interactions'    => __( 'Interactions', 'cost-calculator-builder-pro' ),
-			'revenue'         => __( 'Revenue', 'cost-calculator-builder-pro' ),
-			'orders'          => __( 'Orders', 'cost-calculator-builder-pro' ),
-			'views'           => __( 'Views', 'cost-calculator-builder-pro' ),
+			'interactions'    => __( 'Interactions', 'cost-calculator-builder' ),
+			'revenue'         => __( 'Revenue', 'cost-calculator-builder' ),
+			'orders'          => __( 'Orders', 'cost-calculator-builder' ),
+			'views'           => __( 'Views', 'cost-calculator-builder' ),
+			'order_details'   => __( 'Order Details Settings', 'cost-calculator-builder' ),
 		);
+	}
+
+	public static function get_orders_translations() {
+		return array(
+			'orders'                     => __( 'Orders', 'cost-calculator-builder' ),
+			'all'                        => __( 'All', 'cost-calculator-builder' ),
+			'more'                       => __( 'More', 'cost-calculator-builder' ),
+			'woocommerce_orders'         => __( 'WooCommerce Orders', 'cost-calculator-builder' ),
+			'date'                       => __( 'Date', 'cost-calculator-builder' ),
+			'email'                      => __( 'Email', 'cost-calculator-builder' ),
+			'name'                       => __( 'Name', 'cost-calculator-builder' ),
+			'payment'                    => __( 'Payment', 'cost-calculator-builder' ),
+			'status'                     => __( 'Status', 'cost-calculator-builder' ),
+			'selected'                   => __( 'Selected', 'cost-calculator-builder' ),
+			'amount'                     => __( 'Amount', 'cost-calculator-builder' ),
+			'no_orders_found'            => __( 'No orders found', 'cost-calculator-builder' ),
+			'use_strict_filters'         => __( 'Use less strict filters', 'cost-calculator-builder' ),
+			'orders_error'               => __( 'Promote your products or services, and new orders will appear soon', 'cost-calculator-builder' ),
+			'status_settings'            => __( 'Status settings', 'cost-calculator-builder' ),
+			'table_settings'             => __( 'Table settings', 'cost-calculator-builder' ),
+			'orders_settings'            => __( 'Orders settings', 'cost-calculator-builder' ),
+			'order_note'                 => __( 'Order note', 'cost-calculator-builder' ),
+			'add_note'                   => __( 'Add note', 'cost-calculator-builder' ),
+			'save'                       => __( 'Save', 'cost-calculator-builder' ),
+			'cancel'                     => __( 'Cancel', 'cost-calculator-builder' ),
+			'emailed_to'                 => __( 'Emailed to', 'cost-calculator-builder' ),
+			'download_attachments'       => __( 'Download attachments', 'cost-calculator-builder' ),
+			'delete_order_from_database' => __( 'Delete order from database', 'cost-calculator-builder' ),
+			'total'                      => __( 'Total', 'cost-calculator-builder' ),
+			'delete'                     => __( 'Delete', 'cost-calculator-builder' ),
+			'attachments'                => __( 'Attachments', 'cost-calculator-builder' ),
+			'download_all'               => __( 'Download all', 'cost-calculator-builder' ),
+			'reset_defaults'             => __( 'Reset defaults', 'cost-calculator-builder' ),
+			'title'                      => __( 'Title', 'cost-calculator-builder' ),
+			'color'                      => __( 'Color', 'cost-calculator-builder' ),
+			'status_name'                => __( 'Status name', 'cost-calculator-builder' ),
+			'add'                        => __( 'Add', 'cost-calculator-builder' ),
+			'assing_pending_status'      => __( 'Assign an initial status to new orders', 'cost-calculator-builder' ),
+			'assing_completed_status'    => __( 'Assign a status for completed orders', 'cost-calculator-builder' ),
+			'clear'                      => __( 'Clear', 'cost-calculator-builder' ),
+			'ok'                         => __( 'OK', 'cost-calculator-builder' ),
+			'calculator'                 => __( 'Calculator', 'cost-calculator-builder' ),
+			'send_to_email'              => __( 'Send To Email', 'cost-calculator-builder' ),
+			'send'                       => __( 'Send', 'cost-calculator-builder' ),
+			'send_to_email_description'  => __( 'Separate several emails with commas', 'cost-calculator-builder' ),
+		);
+	}
+
+	public static function get_full_admin_translations() {
+		$backend_translations   = self::get_backend_translations();
+		$analytics_translations = self::get_analytics_translations();
+		$orders_translations    = self::get_orders_translations();
+
+		return array_merge( $backend_translations, $analytics_translations, $orders_translations );
 	}
 }

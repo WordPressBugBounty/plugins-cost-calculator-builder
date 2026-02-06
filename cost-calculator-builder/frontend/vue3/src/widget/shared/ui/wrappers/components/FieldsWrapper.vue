@@ -8,8 +8,4 @@
 
 <style scoped lang="scss">
 @use "@/styles/widget/_mixins.scss" as mixins;
-
-.ccb-fields-wrapper {
-  @include mixins.container;
-}
 </style>

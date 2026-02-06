@@ -1,5 +1,5 @@
 <?php
-
+// phpcs:ignoreFile
 namespace CCB\Includes;
 
 use cBuilder\Classes\CCBCalculatorTemplates;
@@ -9,6 +9,7 @@ use cBuilder\Classes\Database\Orders;
 class Mixpanel_General extends Mixpanel {
 
 	public static function register_data() {
+		return;
 		$all_templates       = CCBCalculatorTemplates::calc_templates_list();
 		$template_categories = array_unique( array_column( $all_templates, 'category' ) );
 

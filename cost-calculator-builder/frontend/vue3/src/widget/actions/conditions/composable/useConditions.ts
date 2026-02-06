@@ -46,7 +46,6 @@ function addConditions(rawConditions: IConditionList[]): void {
     if (!structuredConditions[optionsFrom][optionsTo]) {
       structuredConditions[optionsFrom][optionsTo] = [];
     }
-
     condition.forEach(({ action, conditions, setVal, setOptions, sort }) => {
       structuredConditions[optionsFrom][optionsTo].push({
         optionTo: optionsTo,
@@ -71,7 +70,24 @@ function triggerCondition() {
   }
 
   const fieldsInstance = useFields();
-  for (const field of fieldsInstance.getFields()) {
+  const fields = fieldsInstance.getFields();
+  const validFields: Field[] = [];
+
+  for (const field of fields) {
+    if (field.alias && field.fieldName !== "total") {
+      if (
+        field.fieldName === "section" &&
+        "fields" in field &&
+        field.fields instanceof Map
+      ) {
+        validFields.push(...field?.fields.values());
+      } else {
+        validFields.push(field);
+      }
+    }
+  }
+
+  for (const field of validFields) {
     applyConditionForField(field.alias);
   }
 }
@@ -102,6 +118,7 @@ function applyConditionForField(fieldAlias: string): void {
 
   const affectedFields = Object.keys(conditionsStore.conditions[fieldAlias]);
   const triggerField: Field | undefined = fieldStore.getField(fieldAlias);
+
   if (!triggerField) return;
 
   for (const affectedAlias of affectedFields) {
@@ -135,6 +152,32 @@ function applyConditionForField(fieldAlias: string): void {
                     conditionRule.key === "any"
                       ? !!selectedIdx
                       : +selectedIdx === +conditionRule.key;
+                }
+              } else if (
+                triggerField.fieldName === "geolocation" &&
+                "geoType" in triggerField &&
+                triggerField.geoType === "multiplyLocation" &&
+                "multiplyLocations" in triggerField &&
+                "userSelectedOptions" in triggerField &&
+                "userLocation" in triggerField
+              ) {
+                let conditionCoordinates = (
+                  triggerField.multiplyLocations[
+                    Number(conditionRule.key)
+                  ] as any
+                )?.coordinates;
+                let userSelectedCoordinates = (
+                  triggerField.userSelectedOptions as any
+                ).coordinates
+                  ? (triggerField.userSelectedOptions as any).coordinates.lat +
+                    ", " +
+                    (triggerField.userSelectedOptions as any).coordinates.lng
+                  : "";
+                if (conditionRule.key === "any") {
+                  conditionResult = userSelectedCoordinates.length > 0;
+                } else {
+                  conditionResult =
+                    conditionCoordinates == userSelectedCoordinates;
                 }
               } else {
                 conditionResult = fieldValue === +conditionRule.value;
@@ -455,7 +498,6 @@ function hide(
       }
     });
   }
-
   return targetField;
 }
 
@@ -819,15 +861,19 @@ function setTime(
 ): Field {
   const callbackStore = useCallbackStore();
 
+  const targetFieldRange = "range" in targetField && targetField.range;
+
   if (result) {
-    if ("range" in targetField && targetField.range) {
+    if (targetFieldRange) {
       const data = JSON.parse(targetCondition?.setVal?.toString() || "{}");
 
-      callbackStore.runCallback(
-        "updateRangeTimePicker",
-        data,
-        targetField.alias,
-      );
+      if (data.start && data.end) {
+        callbackStore.runCallback(
+          "updateRangeTimePicker",
+          data,
+          targetField.alias,
+        );
+      }
     } else {
       callbackStore.runCallback(
         "updateSingleTimePicker",
@@ -1085,10 +1131,8 @@ function updateGroupElements(targetField: Field) {
   if (targetField.fieldName === "group" && "groupElements" in targetField) {
     targetField.groupElements.forEach((elements, _) =>
       Array.from(elements.entries()).forEach(([_, element]) => {
-        if (element.fieldName === "total") {
-          element.hidden = targetField.hidden;
-          fieldStore.updateField(element.alias, element, true);
-        }
+        element.hidden = targetField.hidden;
+        fieldStore.updateField(element.alias, element, true);
       }),
     );
   }

@@ -5,6 +5,7 @@
       required: isRequired,
       'ccb-field-disabled': field.disabled,
       [additionalClasses]: true,
+      [field.styles?.style]: true,
     }"
   >
     <div class="ccb-field__label">
@@ -208,6 +209,66 @@ onMounted(() => {
 </script>
 
 <style lang="scss">
+.ccb-field {
+  @media (min-width: 1025px) {
+    &.field-width-25 {
+      .ccb-multi-range-field {
+        .ccb-input-multi-range-field {
+          flex-direction: column;
+          padding: 6px 0;
+          gap: 25px;
+          align-items: flex-start;
+          .slider-target {
+            padding: 0;
+            .slider-handle {
+              width: 20px !important;
+              height: 20px !important;
+              top: calc(
+                (
+                    var(--slider-handle-height, 16px) - var(
+                        --slider-height,
+                        6px
+                      )
+                  ) /
+                  2 * -1 - 1px
+              ) !important;
+              box-shadow: 0px 5px 15px 0px rgba(0, 0, 0, 0.1);
+            }
+          }
+        }
+        .ccb-field__title--title-box {
+          flex-direction: column;
+        }
+        .slider-wrapper {
+          &.ccb-modern-multi-range-field {
+            .slider-base {
+              .slider-handle {
+                right: calc(var(--slider-handle-width, 24px) / 2 * -1);
+              }
+            }
+          }
+          &.ccb-flat-multi-range-field {
+            .slider-base {
+              .slider-handle {
+                right: calc(var(--slider-handle-width, 32px) / 2 * -1);
+              }
+            }
+          }
+          &.ccb-multi-point-multi-range-field {
+            .slider-origin {
+              width: 100%;
+            }
+            .slider-base {
+              .slider-handle {
+                right: calc(var(--slider-handle-width, -10px) / 2 * -1);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
 .ccb-multi-range-field {
   display: flex;
   flex-direction: column;
@@ -229,13 +290,24 @@ onMounted(() => {
   .slider-tooltip {
     color: var(--ccb-fields-color) !important;
     border-color: var(--ccb-accent-color) !important;
-    @media (max-width: 1024px) {
+  }
+  @media (max-width: 1024px) {
+    .slider-tooltip {
+      display: none !important;
+    }
+
+    .slider-handle.slider-active .slider-tooltip {
       display: block !important;
     }
   }
 
   .slider-handle:focus {
     box-shadow: none !important;
+  }
+  &.default {
+    .ccb-field__descriptions {
+      margin-top: 15px;
+    }
   }
 }
 </style>

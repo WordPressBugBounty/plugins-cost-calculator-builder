@@ -4,7 +4,6 @@ namespace cBuilder\Classes;
 
 use cBuilder\Classes\pdfManager\CCBPdfManager;
 use cBuilder\Classes\pdfManager\CCBPdfManagerTemplates;
-
 class CCBSettingsData {
 	public static function get_tab_pages() {
 		return array( 'calculator', 'conditions', 'settings', 'customize' );
@@ -14,11 +13,16 @@ class CCBSettingsData {
 		return array(
 			'general'         => array(
 				'header_title'           => 'Total Summary',
+				'icon_path'              => '',
 				'descriptions'           => true,
 				'hide_empty'             => true,
 				'sticky'                 => false,
 				'show_details_accordion' => true,
 				'show_option_unit'       => true,
+				'layout'                 => 'vertical-layout',
+				'pdf_button'             => true,
+				'quote_button'           => true,
+				'order_button'           => true,
 				'styles'                 => array(
 					'radio'             => '',
 					'checkbox'          => '',
@@ -695,5 +699,52 @@ class CCBSettingsData {
 		}
 
 		return $settings;
+	}
+
+	public static function get_menu_items() {
+		$menu_items = array(
+			'calculators' => array(
+				'icon'  => 'ccb-icon-Union-18',
+				'link'  => get_admin_url() . 'admin.php?page=cost_calculator_builder',
+				'title' => __( 'Calculators', 'cost-calculator-builder' ),
+				'key'   => 'cost_calculator_builder',
+			),
+			'orders'      => array(
+				'icon'  => 'ccb-icon-Union-17',
+				'link'  => get_admin_url() . 'admin.php?page=cost_calculator_orders',
+				'title' => __( 'Orders', 'cost-calculator-builder' ),
+				'key'   => 'cost_calculator_orders',
+			),
+			'analytics'   => array(
+				'icon'  => 'ccb-icon-Dashboard-chart',
+				'link'  => get_admin_url() . 'admin.php?page=cost_calculator_analytics',
+				'title' => __( 'Analytics', 'cost-calculator-builder' ),
+				'key'   => 'cost_calculator_analytics',
+			),
+			'settings'    => array(
+				'icon'  => 'ccb-icon-Union-28',
+				'link'  => get_admin_url() . 'admin.php?page=cost_calculator_builder&tab=settings',
+				'title' => __( 'Global Settings', 'cost-calculator-builder' ),
+				'key'   => 'cost_calculator_builder_settings',
+			),
+		);
+
+		if ( defined( 'CCB_PRO' ) ) {
+			$menu_items['orders'] = array(
+				'icon'  => 'ccb-icon-Union-17',
+				'link'  => get_admin_url() . 'admin.php?page=cost_calculator_orders',
+				'title' => __( 'Orders', 'cost-calculator-builder' ),
+				'key'   => 'cost_calculator_orders',
+			);
+
+			$menu_items['account'] = array(
+				'icon'  => 'ccb-icon-path7',
+				'link'  => get_admin_url() . 'admin.php?page=cost_calculator_builder-account',
+				'title' => __( 'Account', 'cost-calculator-builder' ),
+				'key'   => 'cost_calculator_builder-account',
+			);
+		}
+
+		return $menu_items;
 	}
 }

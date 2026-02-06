@@ -164,6 +164,7 @@ class CCBCalculators {
 
 		$params['calc_id'] = ! empty( $_GET['calc_id'] ) ? sanitize_text_field( $_GET['calc_id'] ) : '';
 		$result            = self::edit_calc_body( $params );
+
 		$result['success'] = true;
 		$result['message'] = '';
 

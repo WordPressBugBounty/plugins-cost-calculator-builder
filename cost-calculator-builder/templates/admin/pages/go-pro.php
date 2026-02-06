@@ -94,8 +94,8 @@ function get_freemius_info() {
 $freemius_info = get_freemius_info();
 
 
-$start_date   = new DateTime( '2025-06-23 00:00:00' );
-$end_date     = new DateTime( '2025-07-01 23:59:00' );
+$start_date   = new DateTime( '2025-12-22 00:00:00' );
+$end_date     = new DateTime( '2026-01-08 23:59:00' );
 $current_time = new DateTime();
 
 
@@ -137,7 +137,7 @@ if ( array_key_exists( 'from', $params_array ) && ! empty( $params_array['from']
 							<?php echo esc_html( nl2br( $freemius_info['info']->short_description ) ); ?>
 						<?php endif; ?>
 						<?php if ( $freemius_info['info']->url ) : ?>
-							<a href="<?php echo esc_html( $freemius_info['info']->url . '?utm_source=wpadmin&utm_medium=gopro&utm_campaign=2024' ); ?>">
+							<a href="<?php echo esc_html( $freemius_info['info']->url . '?utm_source=wpadmin&utm_medium=gopro&utm_campaign=2025' ); ?>">
 								<?php esc_html_e( 'Learn more.', 'cost-calculator-builder' ); ?>
 							</a>
 						<?php endif; ?>
@@ -146,7 +146,7 @@ if ( array_key_exists( 'from', $params_array ) && ! empty( $params_array['from']
 			</div>
 			<?php if ( $is_promotion ) : ?>
 				<div class="stm-discount">
-					<a href="https://stylemixthemes.com/cost-calculator-plugin/pricing/?utm_source=wpadmin&utm_medium=push&utm_campaign=costcalculator&utm_content=gopro&utm_term=midsummersale2025" target="_blank"></a>
+					<a href="https://stylemixthemes.com/cost-calculator-plugin/pricing/?utm_source=wpadmin&utm_medium=push&utm_campaign=costcalculator&utm_content=gopro&utm_term=bfcm2025&plugin_coupon=XMAS2025" target="_blank"></a>
 				</div>
 			<?php endif; ?>
 			<?php if ( isset( $freemius_info['plan'] ) ) : ?>
@@ -172,14 +172,16 @@ if ( array_key_exists( 'from', $params_array ) && ! empty( $params_array['from']
 									<div class="stm_price">
 										<?php
 										if ( $is_promotion ) :
+											$price_annual   = number_format( $plan->annual_price * 0.70, 2, '.', '' );
+											$price_lifetime = number_format( $plan->lifetime_price * 0.70, 2, '.', '' );
 											?>
 											<sup>$</sup>
 											<span class="stm_price__value"
-												data-price-annual="<?php echo esc_attr( number_format( $plan->annual_price * 0.70, 0, '.', '' ) ); ?>"
-												data-price-lifetime="<?php echo esc_attr( number_format( $plan->lifetime_price * 0.70, 0, '.', '' ) ); ?>"
+												data-price-annual="<?php echo esc_attr( $price_annual ); ?>"
+												data-price-lifetime="<?php echo esc_attr( $price_lifetime ); ?>"
 												data-price-old-annual="<?php echo esc_attr( $plan->annual_price ); ?>"
 												data-price-old-lifetime="<?php echo esc_attr( $plan->lifetime_price ); ?>">
-												<?php echo esc_html( number_format( $plan->annual_price * 0.70, 0, '.', '' ) ); ?>
+												<?php echo esc_html( $price_annual ); ?>
 											</span>
 											<div class="discount">
 												<sup>$</sup>
@@ -213,6 +215,9 @@ if ( array_key_exists( 'from', $params_array ) && ! empty( $params_array['from']
 										$get_now_link = $get_now_link . $pro_features_utm;
 									}
 
+									if ( $is_promotion ) {
+										$get_now_link .= '&plugin_coupon=XMAS2025';
+									}
 									?>
 									<a href="<?php echo esc_url( $get_now_link ); ?>" class="stm_plan__btn stm_plan__btn--buy" data-checkout-url="<?php echo esc_url( $data_url ); ?>" target="_blank">
 										<?php esc_html_e( 'Get now', 'cost-calculator-builder' ); ?>

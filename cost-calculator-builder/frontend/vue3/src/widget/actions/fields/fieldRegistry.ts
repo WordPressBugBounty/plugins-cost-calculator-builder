@@ -20,6 +20,7 @@ export interface IFields {
   repeater: unknown;
   group: unknown;
   validated_form: unknown;
+  section: unknown;
 }
 
 export const fieldRegistry: IFields = {
@@ -81,6 +82,9 @@ export const fieldRegistry: IFields = {
   ),
   group: defineAsyncComponent(
     () => import("@/widget/features/calculator-fields/components/Group"),
+  ),
+  section: defineAsyncComponent(
+    () => import("@/widget/features/calculator-fields/components/Section"),
   ),
   validated_form: defineAsyncComponent(
     () =>

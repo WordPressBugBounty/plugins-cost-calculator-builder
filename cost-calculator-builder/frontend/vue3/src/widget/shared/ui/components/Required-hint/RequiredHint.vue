@@ -26,6 +26,10 @@ const { text } = toRefs(props);
   z-index: 99;
   white-space: nowrap;
   width: fit-content;
+  @media (min-width: 1024px) {
+    position: absolute;
+    top: -13px;
+  }
 
   &:after {
     content: "";

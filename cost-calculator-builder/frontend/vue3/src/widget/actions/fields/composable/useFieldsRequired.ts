@@ -1,11 +1,7 @@
 import { Field, IQuantityField } from "@/widget/shared/types/fields";
 import { validateEmail } from "@/widget/shared/utils/validate-email.utils";
 import { validateUrl } from "@/widget/shared/utils/validate-url.utils";
-import { scrollIntoRequired } from "@/widget/shared/utils/scroll-to-required.utils";
-import { useAppStore } from "@/widget/app/providers/stores/appStore";
 import { useFieldsStore } from "@/widget/app/providers/stores/fieldsStore";
-
-let timeout: ReturnType<typeof setTimeout> | null = null;
 
 interface IUseFieldsRequiredResult {
   hasRequiredFields: (fields: Field[]) => boolean;
@@ -14,7 +10,28 @@ interface IUseFieldsRequiredResult {
   checkFieldRequired: (field: Field) => boolean;
 }
 
+const hasActivePricingStructure = (field: IQuantityField): boolean => {
+  const structure = (field as any).pricingStructure as
+    | "tiered_discounts"
+    | "cumulative_discounts"
+    | "flat_rate_discounts"
+    | "no_discounts"
+    | undefined;
+  const ranges = (((field as any).pricingRanges as any[]) || []) as any[];
+
+  return (
+    !field.multiply &&
+    !!structure &&
+    structure !== "no_discounts" &&
+    Array.isArray(ranges) &&
+    ranges.length > 0
+  );
+};
+
 const isValueInMinMax = (field: IQuantityField): boolean => {
+  if (hasActivePricingStructure(field)) {
+    return true;
+  }
   let value: number = field.value;
 
   if (field.unit && field.multiply) {
@@ -34,9 +51,8 @@ const fileUploadFieldValidation = (field: Field): boolean => {
     field.fieldName === "file_upload" &&
     (!("files" in field) ||
       ("files" in field &&
-        field.files?.length === 0 &&
-        field.allowPrice &&
-        field.price > 0))
+        Array.isArray(field.files) &&
+        field.files.length === 0))
   );
 };
 
@@ -198,25 +214,29 @@ const resetRequiredFields = (): void => {
 };
 
 const filterRequiredFields = (fieldsData: Field[]): Field[] => {
-  const fieldsStore = useFieldsStore();
-  let fields: Field[] = fieldsData;
+  let fields: Field[] = [];
+  fieldsData.forEach((sectionField: Field) => {
+    if ("fields" in sectionField) {
+      sectionField.fields.forEach((field: Field) => {
+        if (
+          ["repeater", "group"].includes(field.fieldName) &&
+          "groupElements" in field &&
+          !field.hidden
+        ) {
+          const groupElements: Field[] = [];
+          field.groupElements.forEach((element) => {
+            if ("entries" in element && typeof element.entries === "function") {
+              for (const [_, existingField] of element.entries()) {
+                groupElements.push(existingField as Field);
+              }
+            }
+          });
 
-  fieldsData.forEach((field: Field) => {
-    if (
-      ["repeater", "group"].includes(field.fieldName) &&
-      "groupElements" in field &&
-      !field.hidden
-    ) {
-      const groupElements: Field[] = [];
-      field.groupElements.forEach((element) => {
-        if ("entries" in element && typeof element.entries === "function") {
-          for (const [_, existingField] of element.entries()) {
-            groupElements.push(existingField as Field);
-          }
+          fields = [...fields, ...groupElements];
         }
-      });
 
-      fields = [...fields, ...groupElements];
+        fields = [...fields, field];
+      });
     }
   });
 
@@ -229,58 +249,6 @@ const filterRequiredFields = (fieldsData: Field[]): Field[] => {
   );
 
   fields = applyRequiredFieldsValidation(fields);
-
-  if (fields.length) {
-    const appStore = useAppStore();
-    if (fieldsStore.getPageBreakEnabled) {
-      const temp: Array<string | string[]> =
-        fieldsStore.getActivePage?.groupElements?.map((element) => {
-          if (
-            "alias" in element &&
-            "groupElements" in element &&
-            element?.alias &&
-            ((element?.alias as string)?.includes("group") ||
-              (element?.alias as string)?.includes("repeater"))
-          ) {
-            if (Array.isArray(element.groupElements)) {
-              return element.groupElements.map((groupElement) => {
-                if ("alias" in groupElement) {
-                  return groupElement.alias as string;
-                }
-                return "";
-              });
-            }
-            return "";
-          } else if ("alias" in element) {
-            return element.alias as string;
-          }
-
-          return "";
-        }) || [];
-
-      const pageBreakerFieldAliases = temp.flat();
-
-      fields = fields.filter((field) =>
-        pageBreakerFieldAliases.includes(field.alias),
-      );
-    }
-
-    fields = fields.filter((field: Field) => !field.hidden);
-
-    if (fields.length > 0) {
-      if (timeout) {
-        clearTimeout(timeout);
-      }
-
-      timeout = setTimeout(() => {
-        scrollIntoRequired(
-          fields[0].alias,
-          fields[0].repeaterIdx,
-          appStore.getCalcId || 0,
-        );
-      }, 300);
-    }
-  }
 
   return fields;
 };

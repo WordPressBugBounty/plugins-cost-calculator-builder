@@ -169,6 +169,53 @@ const additionalClasses = computed(() => {
 </script>
 
 <style lang="scss">
+.ccb-field {
+  @media (min-width: 1025px) {
+    &.field-width-25 {
+      .ccb-timePicker-field {
+        .ccb-range-timePicker {
+          flex-direction: column;
+          .ccb-range-timePicker__from {
+            .dp__input {
+              border-radius: var(--ccb-fields-border-radius)
+                var(--ccb-fields-border-radius) 0 0;
+            }
+          }
+          .ccb-range-timePicker__to {
+            .dp__input {
+              border-radius: 0 0 var(--ccb-fields-border-radius)
+                var(--ccb-fields-border-radius);
+            }
+          }
+          .ccb-range-timePicker__separator {
+            min-height: 24px;
+            justify-content: center;
+            border: 1px solid var(--ccb-fields-border-color);
+            border-top: none;
+            border-bottom: none;
+            span {
+              font-size: calc(var(--ccb-fields-button-size) - 2px);
+            }
+          }
+        }
+        .dp__input_wrap {
+          .dp__input {
+            padding: 10px calc(var(--ccb-field-side-indent) - 4px);
+            padding-left: max(
+              24px,
+              var(--ccb-field-side-indent) - 4px
+            ) !important;
+            font-size: calc(var(--ccb-fields-button-size) - 2px);
+          }
+          .dp__input_icon {
+            padding: 6px;
+            font-size: 14px;
+          }
+        }
+      }
+    }
+  }
+}
 .ccb-timePicker-field *:focus {
   outline-width: 0;
 }

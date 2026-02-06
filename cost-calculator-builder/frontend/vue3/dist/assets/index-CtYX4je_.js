@@ -1,0 +1,2 @@
+import{T as o}from"./ThankYouPage-BB_2TAkH.js";import{a as r,f as a,g as e,u as t}from"./convert-case-to-camel-case.utils-DRsbC-qG.js";import"./widget-aE3IoCbC.js";import"./_commonjsHelpers-Cpj98o6Y.js";import"./_commonjs-dynamic-modules-TDtrdbi3.js";import"./translationsStore-C34buciO.js";import"./_plugin-vue_export-helper-DlAUqK2U.js";const g=r({__name:"ThankYouPage",setup(p){return(m,n)=>(e(),a(t(o)))}});export{g as default};
+//# sourceMappingURL=index-CtYX4je_.js.map

@@ -59,6 +59,8 @@ class DataBaseModel {
 		$wpdb->insert( self::_table(), $data );
 
 		remove_filter( 'query', array( self::class, 'wp_db_null_value' ) );
+
+		return self::insert_id();
 	}
 
 	/**

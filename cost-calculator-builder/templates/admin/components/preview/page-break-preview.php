@@ -7,7 +7,7 @@ $get_date_format  = get_option( 'date_format' );
 ?>
 
 <div :class="'ccb-wrapper-' + getId">
-	<div ref="calc" :class="['calc-container', boxStyle, {demoSite: showDemoBoxStyle}, {'has-title': showMultiStepCalcTitle}]" :style="fullWithStepCalc" :data-calc-id="getId">
+	<div ref="calc" :class="['calc-container', 'calc-page-container', layout, {demoSite: showDemoBoxStyle}, {'has-title': showMultiStepCalcTitle}]" :style="fullWithStepCalc" :data-calc-id="getId">
 		<loader v-if="loader"></loader>
 		<template v-else>
 			<div v-show="!loader">
@@ -22,73 +22,75 @@ $get_date_format  = get_option( 'date_format' );
 						<div class="ccb-calc-heading" v-text="getTheTitle"></div>
 					</div>
 					<div v-if="calc_data" class="calc-fields-container">
-
 						<div class="calc-pages">
 							<div class="calc-page" v-for="(page, index) in getPages" :class="[{'visible': index == activePageIndex}, { 'horizontal': page.boxStyle === 'horizontal' } ]">
-								<template v-for="field in page.groupElements">
-									<template
-											v-if="field && field.alias && field.type !== 'Total' && !field.alias.includes('group')">
-										<component
-												format="<?php esc_attr( $get_date_format ); ?>"
-												text-days="<?php esc_attr_e( 'days', 'cost-calculator-builder' ); ?>"
-												v-if="fields[field.alias] && !field.group_id"
-												:is="field._tag"
-												:id="calc_data.id"
-												:field="field"
-												:converter="currencyFormat"
-												:disabled="fields[field.alias].disabled"
-												v-model="fields[field.alias].value"
-												v-on:change="change"
-												v-on:[field._event]="change"
-												:key="!field.hasNextTick ? field.alias : field.alias + '_' + fields[field.alias].nextTickCount"
-										>
-										</component>
-									</template>
-									<template v-if="field.alias && field.alias.includes('group')">
-										<component
-												format="<?php esc_attr( $get_date_format ); ?>"
-												text-days="<?php esc_attr_e( 'days', 'cost-calculator-builder' ); ?>"
-												v-if="fields[field.alias] && !field.group_id"
-												:is="field._tag"
-												:id="calc_data.id"
-												:field="field"
-												v-on:change="change"
-												v-on:[field._event]="change"
-												:converter="currencyFormat"
-												:disabled="fields[field.alias].disabled"
-												v-model="fields[field.alias].value"
-												:key="!field.hasNextTick ? field.alias : field.alias + '_' + fields[field.alias].nextTickCount"
-										>
-											<slot>
-												<template v-for="element in field.groupElements">
-													<component
-															format="<?php esc_attr( $get_date_format ); ?>"
-															text-days="<?php esc_attr_e( 'days', 'cost-calculator-builder' ); ?>"
-															v-if="fields[element.alias] && !element.alias.includes('total')"
-															:is="element._tag"
-															:id="calc_data.id"
-															:field="element"
-															v-on:change="change"
-															v-on:[element._event]="change"
-															:converter="currencyFormat"
-															:disabled="fields[element.alias].disabled"
-															v-model="fields[element.alias].value"
-															:key="!element.hasNextTick ? element.alias : element.alias + '_' + fields[element.alias].nextTickCount"
-													>
-													</component>
-												</template>
-											</slot>
-										</component>
-									</template>
-									<template v-else-if="field && !field.alias && field.type !== 'Total'">
-										<component
-												:id="calc_data.id"
-												style="boxStyle"
-												:is="field._tag"
-												:field="field"
-										>
-										</component>
-									</template>
+								<template v-for="section in page.groupElements">
+									<div class="calc-section" v-if="section.alias.includes('section') && section.fields.length > 0">
+										<template v-if="section.fields.length > 0" v-for="field in section.fields">
+											<template v-if="field && field.alias && field.type !== 'Total' && !field.alias.includes('group')">
+												<component
+													format="<?php esc_attr( $get_date_format ); ?>"
+													text-days="<?php esc_attr_e( 'days', 'cost-calculator-builder' ); ?>"
+													v-if="fields[field.alias] && !field.group_id"
+													:is="field._tag"
+													:id="calc_data.id"
+													:field="field"
+													:converter="currencyFormat"
+													:disabled="fields[field.alias].disabled"
+													v-model="fields[field.alias].value"
+													v-on:change="change"
+													v-on:[field._event]="change"
+													:key="!field.hasNextTick ? field.alias : field.alias + '_' + fields[field.alias].nextTickCount"
+												>
+												</component>
+											</template>
+											<template v-if="field.alias && field.alias.includes('group')">
+												<component
+														format="<?php esc_attr( $get_date_format ); ?>"
+														text-days="<?php esc_attr_e( 'days', 'cost-calculator-builder' ); ?>"
+														v-if="fields[field.alias] && !field.group_id"
+														:is="field._tag"
+														:id="calc_data.id"
+														:field="field"
+														v-on:change="change"
+														v-on:[field._event]="change"
+														:converter="currencyFormat"
+														:disabled="fields[field.alias].disabled"
+														v-model="fields[field.alias].value"
+														:key="!field.hasNextTick ? field.alias : field.alias + '_' + fields[field.alias].nextTickCount"
+												>
+													<slot>
+														<template v-for="element in field.groupElements">
+															<component
+																	format="<?php esc_attr( $get_date_format ); ?>"
+																	text-days="<?php esc_attr_e( 'days', 'cost-calculator-builder' ); ?>"
+																	v-if="fields[element.alias] && !element.alias.includes('total')"
+																	:is="element._tag"
+																	:id="calc_data.id"
+																	:field="element"
+																	v-on:change="change"
+																	v-on:[element._event]="change"
+																	:converter="currencyFormat"
+																	:disabled="fields[element.alias].disabled"
+																	v-model="fields[element.alias].value"
+																	:key="!element.hasNextTick ? element.alias : element.alias + '_' + fields[element.alias].nextTickCount"
+															>
+															</component>
+														</template>
+													</slot>
+												</component>
+											</template>
+											<template v-else-if="field && !field.alias && field.type !== 'Total'">
+												<component
+														:id="calc_data.id"
+														style="boxStyle"
+														:is="field._tag"
+														:field="field"
+												>
+												</component>
+											</template>
+										</template>
+									</div>
 								</template>
 							</div>
 							<div class="calc-summary-page" v-show="summaryInLastPage && showSummaryPage">

@@ -2,7 +2,7 @@
   <div class="ccb-notifications" :class="type">
     <component
       :is="getCurrentComponents"
-      :message="message"
+      :message="normalizedMessage"
       :description="description"
     />
   </div>
@@ -11,6 +11,8 @@
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, toRefs, h } from "vue";
 import { NotificationsTypes } from "@/widget/shared/types/settings";
+import { useSettingsStore } from "@/widget/app/providers/stores/settingsStore.ts";
+import { IThankYouPage } from "@/widget/shared/types/settings";
 
 type Props = {
   type: NotificationsTypes;
@@ -20,6 +22,18 @@ type Props = {
 
 const props = defineProps<Props>();
 const { type, message, description } = toRefs(props);
+
+const settingsStore = useSettingsStore();
+type ExtendedThankYouPage = IThankYouPage & { completeMsg?: string };
+const normalizedMessage = computed(() => {
+  const thankYouPage =
+    settingsStore.getThankYouPage as ExtendedThankYouPage | null;
+  const completeMsg = thankYouPage?.completeMsg?.trim();
+  if (type.value === "finish" && completeMsg) {
+    return completeMsg;
+  }
+  return message.value;
+});
 
 const getCurrentComponents = computed(() => {
   if (type.value !== "error") {

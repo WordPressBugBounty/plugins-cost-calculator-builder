@@ -94,6 +94,46 @@ const additionalClasses = computed(() => {
 </script>
 
 <style lang="scss">
+.ccb-field {
+  @media (min-width: 1025px) {
+    &.field-width-25 {
+      .ccb-radio-img-field {
+        .ccb-default-image-radio-withicon {
+          .ccb-radio-image {
+            padding: 8px 10px;
+            .ccb-radio-image__info {
+              width: 100%;
+            }
+            .ccb-radio-image__box {
+              padding: 0;
+              img {
+                width: 30px;
+                height: 30px;
+              }
+            }
+          }
+        }
+        .ccb-radio-image__box {
+          padding: 10px;
+        }
+        .ccb-radio-image {
+          width: 100%;
+        }
+        .ccb-radio-image__info {
+          width: 75%;
+        }
+        .ccb-radio-image__title-box {
+          .ccb-radio-image__label {
+            font-size: calc(var(--ccb-fields-button-size) - 2px) !important;
+          }
+          .ccb-radio-image__price {
+            font-size: calc(var(--ccb-summary-text-size) - 2px) !important;
+          }
+        }
+      }
+    }
+  }
+}
 .ccb-radio-image__label {
   font-size: var(--ccb-fields-button-size) !important;
 

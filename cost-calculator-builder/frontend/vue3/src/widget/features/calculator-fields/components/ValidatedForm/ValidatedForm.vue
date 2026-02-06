@@ -36,7 +36,12 @@
     </div>
 
     <div class="ccb-field__input-wrapper">
-      <component :is="currentComponents" @update="updateValue" :field="field" />
+      <component
+        :is="currentComponents"
+        @update="updateValue"
+        :field="field"
+        @country-changed="updateCountryCode"
+      />
     </div>
 
     <div
@@ -115,6 +120,11 @@ const updateValue = (value: string) => {
   fieldStore.updateField(field.value.alias, field.value);
 };
 
+const updateCountryCode = (value: string) => {
+  field.value.defaultCountry = value;
+  fieldStore.updateField(field.value.alias, field.value);
+};
+
 const isRequired = computed(() => {
   if (
     requiredType.value === "invalid_email" ||
@@ -134,6 +144,31 @@ const additionalClasses = computed(() => {
 <style lang="scss">
 @use "@/styles/widget/_mixins.scss" as mixins;
 
-.ccb-radio-field {
+.ccb-field {
+  @media (min-width: 1025px) {
+    &.field-width-25 {
+      .vue-tel-input {
+        flex-direction: column;
+        .vti__phone {
+          border-top: none;
+          border-radius: 0 0 var(--ccb-fields-border-radius)
+            var(--ccb-fields-border-radius);
+          font-size: calc(var(--ccb-fields-button-size) - 2px);
+        }
+        .vti__dropdown {
+          padding: 12px;
+          align-items: center;
+          border: var(--ccb-fields-border) var(--ccb-fields-border-style)
+            var(--ccb-fields-border-color);
+          border-radius: var(--ccb-fields-border-radius)
+            var(--ccb-fields-border-radius) 0 0;
+          .vti__dropdown-list {
+            width: 200px;
+            top: 40px;
+          }
+        }
+      }
+    }
+  }
 }
 </style>

@@ -1,297 +1,119 @@
 <template>
   <div
     class="ccb-page-breaker"
-    :class="[{ 'summary-last-page': summaryLastPage }, currentPageStyle]"
+    :class="[
+      {
+        'summary-last-page': summaryLastPage,
+        'ccb-page-breaker-border': enoughPages,
+      },
+      currentPageStyle,
+    ]"
     ref="pageBreakerRef"
     v-if="!hideThankYouPage"
   >
-    <Layout>
+    <div class="ccb-page-breaker__content">
+      <PaginationItem v-if="hidePagination && enoughPages" />
       <EditButton />
-      <Wrapper wrapper="fields">
-        <PaginationItem v-if="hidePagination" />
-        <Grid grid="list">
-          <template
-            v-for="(page, index) in fieldsStore.getPages"
-            :key="page.alias"
-          >
-            <template
-              v-if="
-                index === activePageIndex && 'groupElements' in page && 'alias'
-              "
-            >
-              <template v-for="inPage in page.groupElements">
-                <template
-                  v-for="field in fieldsStore.getFields"
-                  :key="field.alias"
-                >
-                  <Transition name="fade">
-                    <CalculatorField
-                      v-if="
-                        isFieldHidden(field) &&
-                        'alias' in inPage &&
-                        inPage.alias === field.alias
-                      "
-                      :name="field.fieldName"
-                      :field="field"
-                    />
-                  </Transition>
-                </template>
-              </template>
-            </template>
-          </template>
-
-          <template v-if="activePageIndex === fieldsStore.getPages.length">
-            <Wrapper
-              wrapper="subtotal"
-              class="ccb-subtotals-block"
-              :id="getStickyId"
-            >
-              <template v-slot:default>
-                <template v-if="formDisplaySummaryStatus">
-                  <TotalSummaryList list-type="summary">
-                    <template
-                      v-for="summary in fieldsStore.getSummaryList"
-                      :key="summary.alias"
-                    >
-                      <Transition name="fade">
-                        <TotalSummaryItem
-                          v-if="!summary.hidden"
-                          :item-type="getFieldItemType(summary)"
-                          :summary="summary"
-                        ></TotalSummaryItem>
-                      </Transition>
-                    </template>
-                  </TotalSummaryList>
-
-                  <TotalSummaryList list-type="total">
-                    <template
-                      v-for="summary in fieldsStore.getTotalsList"
-                      :key="summary.alias"
-                    >
-                      <Transition name="fade">
-                        <TotalSummaryItem
-                          v-if="!summary.hidden"
-                          item-type="total"
-                          :summary="summary"
-                        ></TotalSummaryItem>
-                      </Transition>
-                    </template>
-                  </TotalSummaryList>
-                </template>
-                <template v-else>
-                  <HeaderTitle
-                    :title="
-                      settingsStore.getFormSettings?.summaryDisplay?.formTitle
-                    "
-                  />
-                </template>
-
-                <Promocode v-if="hasPromocodes()" />
-
-                <WooRedirectCart v-if="showWooRedirectCart" />
-
-                <div
-                  class="ccb-actions"
-                  :class="activeActionCount"
-                  :style="
-                    !orderFormStore.getNextButtonStatus
-                      ? 'flex-direction: column;'
-                      : ''
-                  "
-                  ref="actionsRef"
-                >
-                  <Submission class="ccb-actions__item" />
-                  <PdfInvoice class="ccb-actions__item" />
-                </div>
-              </template>
-
-              <template v-slot:notifications>
-                <Notifications
-                  v-if="notificationsStore.notificationStatus"
-                  :type="notificationsStore.notificationType"
-                  :message="notificationsStore.message"
-                />
-              </template>
-            </Wrapper>
-          </template>
-        </Grid>
-        <div
-          class="ccb-page-navigation"
-          :class="{ 'page-formulas': totalsInNavigation }"
-        >
-          <div class="ccb-page-navigation__formulas" v-if="totalsInNavigation">
-            <div class="ccb-page-navigation__totals">
-              <template v-for="summary in fieldsStore.getTotalsList">
-                <Transition name="fade">
-                  <TotalSummaryItem
-                    v-if="
-                      !summary.hidden && pageFormulas.includes(summary.alias)
-                    "
-                    :key="summary.alias"
-                    item-type="total"
-                    :summary="summary"
-                  ></TotalSummaryItem>
-                </Transition>
-              </template>
-            </div>
-            <div class="ccb-page-navigation__popup-action">
-              <span @click="showPopup">{{
-                translationsStore.getTranslations.showSummary
-              }}</span>
-              <CCBPopup ref="popup">
-                <div class="ccb-page-popup">
-                  <div class="ccb-page-popup__header">
-                    <div class="ccb-page-popup__title">
-                      {{ settingsStore.getGeneralSettings?.headerTitle }}
-                    </div>
-                    <div class="ccb-page-popup__close" @click="hidePopup">
-                      <i class="ccb-icon-close"></i>
-                    </div>
-                  </div>
-                  <div class="ccb-page-popup__body">
-                    <Wrapper wrapper="subtotal">
-                      <template v-slot:default>
-                        <TotalSummaryList list-type="summary">
-                          <template
-                            v-for="summary in fieldsStore.getSummaryList"
-                            :key="summary.alias"
-                          >
-                            <Transition name="fade">
-                              <TotalSummaryItem
-                                v-if="
-                                  !summary.hidden &&
-                                  activePageFieldsAliases.includes(
-                                    summary.alias,
-                                  )
-                                "
-                                :item-type="getFieldItemType(summary)"
-                                :summary="summary"
-                              ></TotalSummaryItem>
-                            </Transition>
-                          </template>
-                        </TotalSummaryList>
-
-                        <TotalSummaryList list-type="total">
-                          <template
-                            v-for="summary in fieldsStore.getTotalsList"
-                            :key="summary.alias"
-                          >
-                            <Transition name="fade">
-                              <TotalSummaryItem
-                                v-if="!summary.hidden"
-                                item-type="total"
-                                :summary="summary"
-                              ></TotalSummaryItem>
-                            </Transition>
-                          </template>
-                        </TotalSummaryList>
-                      </template>
-                    </Wrapper>
-                  </div>
-                </div>
-              </CCBPopup>
-            </div>
-          </div>
-          <div class="ccb-page-navigation__actions">
-            <Button
-              type="success-outlined"
-              :text="prevBtnText"
-              @click="prevPage"
-              icon="ccb-icon-Arrow-Previous"
-              iconPosition="before"
-              v-if="hideBackButton"
-            ></Button>
-            <Button
-              type="success"
-              :text="nextBtnText"
-              @click="nextPage"
-              icon="ccb-icon-Arrow-Previous"
-              iconPosition="after"
-              class="next-btn"
-              v-if="hideNextButton"
-              :disabled="pageBreakerStore.getDisableNextButton"
-            ></Button>
-          </div>
-        </div>
-      </Wrapper>
-      <Wrapper
-        v-if="!summaryLastPage"
-        wrapper="subtotal"
-        class="ccb-subtotals-block"
-        :id="getStickyId"
-      >
-        <template v-slot:default>
-          <template v-if="formDisplaySummaryStatus">
-            <TotalSummaryList list-type="summary">
-              <template
-                v-for="summary in fieldsStore.getSummaryList"
-                :key="summary.alias"
-              >
-                <Transition name="fade">
-                  <TotalSummaryItem
-                    v-if="
-                      !summary.hidden &&
-                      activePageFieldsAliases.includes(summary.alias)
-                    "
-                    :item-type="getFieldItemType(summary)"
-                    :summary="summary"
-                  ></TotalSummaryItem>
-                </Transition>
-              </template>
-            </TotalSummaryList>
-
-            <TotalSummaryList list-type="total">
-              <template
-                v-for="summary in fieldsStore.getTotalsList"
-                :key="summary.alias"
-              >
-                <Transition name="fade">
-                  <TotalSummaryItem
-                    v-if="!summary.hidden"
-                    item-type="total"
-                    :summary="summary"
-                  ></TotalSummaryItem>
-                </Transition>
-              </template>
-            </TotalSummaryList>
-          </template>
-          <template v-else>
-            <HeaderTitle
-              :title="settingsStore.getFormSettings?.summaryDisplay?.formTitle"
-            />
-          </template>
-
-          <Promocode v-if="hasPromocodes()" />
-
-          <WooRedirectCart v-if="showWooRedirectCart" />
-
-          <div
-            class="ccb-actions"
-            :class="activeActionCount"
-            ref="actionsRef"
-            :style="
-              !orderFormStore.getNextButtonStatus
-                ? 'flex-direction: column;'
-                : ''
-            "
-          >
-            <Submission class="ccb-actions__item" />
-            <PdfInvoice class="ccb-actions__item" />
-          </div>
-        </template>
-
-        <template v-slot:notifications>
-          <Notifications
-            v-if="showNotifications"
-            :type="notificationsStore.notificationType"
-            :message="notificationsStore.message"
-          />
-        </template>
-      </Wrapper>
+      <Layout></Layout>
       <CCBPopup size="medium" ref="popup" v-if="appStore.isProActive">
         <ThankYouPage />
       </CCBPopup>
-    </Layout>
+      <div
+        class="ccb-page-navigation"
+        :class="{ 'page-formulas': totalsInNavigation }"
+        v-if="enoughPages"
+      >
+        <div class="ccb-page-navigation__formulas" v-if="totalsInNavigation">
+          <div class="ccb-page-navigation__totals">
+            <template v-for="summary in fieldsStore.getTotalsList">
+              <Transition name="fade">
+                <TotalSummaryItem
+                  v-if="!summary.hidden && pageFormulas.includes(summary.alias)"
+                  :key="summary.alias"
+                  item-type="total"
+                  :summary="summary"
+                ></TotalSummaryItem>
+              </Transition>
+            </template>
+          </div>
+          <div class="ccb-page-navigation__popup-action">
+            <span @click="showPopup">{{
+              translationsStore.getTranslations.showSummary
+            }}</span>
+            <CCBPopup ref="popup">
+              <div class="ccb-page-popup">
+                <div class="ccb-page-popup__header">
+                  <div class="ccb-page-popup__title">
+                    {{ settingsStore.getGeneralSettings?.headerTitle }}
+                  </div>
+                  <div class="ccb-page-popup__close" @click="hidePopup">
+                    <i class="ccb-icon-close"></i>
+                  </div>
+                </div>
+                <div class="ccb-page-popup__body">
+                  <Wrapper wrapper="subtotal">
+                    <template v-slot:default>
+                      <TotalSummaryList list-type="summary">
+                        <template
+                          v-for="summary in fieldsStore.getSummaryList"
+                          :key="summary.alias"
+                        >
+                          <Transition name="fade">
+                            <TotalSummaryItem
+                              v-if="
+                                !summary.hidden &&
+                                activePageFieldsAliases.includes(summary.alias)
+                              "
+                              :item-type="getFieldItemType(summary)"
+                              :summary="summary"
+                            ></TotalSummaryItem>
+                          </Transition>
+                        </template>
+                      </TotalSummaryList>
+
+                      <TotalSummaryList list-type="total">
+                        <template
+                          v-for="summary in fieldsStore.getTotalsList"
+                          :key="summary.alias"
+                        >
+                          <Transition name="fade">
+                            <TotalSummaryItem
+                              v-if="!summary.hidden"
+                              item-type="total"
+                              :summary="summary"
+                            ></TotalSummaryItem>
+                          </Transition>
+                        </template>
+                      </TotalSummaryList>
+                    </template>
+                  </Wrapper>
+                </div>
+              </div>
+            </CCBPopup>
+          </div>
+        </div>
+        <div class="ccb-page-navigation__actions">
+          <Button
+            type="success-outlined"
+            :text="prevBtnText"
+            @click="prevPage"
+            icon="ccb-icon-Arrow-Previous"
+            iconPosition="before"
+            v-if="hideBackButton"
+          ></Button>
+          <Button
+            type="success"
+            :text="nextBtnText"
+            @click="nextPage"
+            icon="ccb-icon-Arrow-Previous"
+            iconPosition="after"
+            class="next-btn"
+            v-if="hideNextButton"
+            :disabled="pageBreakerStore.getDisableNextButton"
+          ></Button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -300,32 +122,19 @@ import { computed, ref, watch } from "vue";
 import Layout from "@/widget/shared/ui/layouts/Layout.vue";
 import Wrapper from "@/widget/shared/ui/wrappers/Wrapper.vue";
 import PaginationItem from "@/widget/shared/ui/components/Step-pagination/PaginationItem.vue";
-import CalculatorField from "@/widget/features/calculator-fields/CalculatorField.vue";
-import Grid from "@/widget/shared/ui/grids/Grid.vue";
 import { useFieldsStore } from "@/widget/app/providers/stores/fieldsStore.ts";
 import TotalSummaryList from "@/widget/shared/ui/total-summary/TotalSummaryList.vue";
 import TotalSummaryItem from "@/widget/shared/ui/total-summary/TotalSummaryItem.vue";
 import EditButton from "@/widget/shared/ui/components/Edit-button/EditButton.vue";
-import Promocode from "@/widget/features/discounts/components";
-import { useDiscounts } from "@/widget/actions/discounts/composable/useDiscounts.ts";
 import { useNotificationsStore } from "@/widget/app/providers/stores/notificationsStore.ts";
-import Submission from "@/widget/features/submission";
-import Notifications from "@/widget/shared/ui/components/Notifications";
 import Button from "@/widget/shared/ui/components/Button/Button.vue";
 import { useSettingsStore } from "@/widget/app/providers/stores/settingsStore.ts";
 import CCBPopup from "@/widget/shared/ui/components/Popup/Popup.vue";
 import { Field } from "@/widget/shared/types/fields";
-import { useAppearanceStore } from "@/widget/app/providers/stores/appearanceStore";
 import { useAppStore } from "@/widget/app/providers/stores/appStore.ts";
-import HeaderTitle from "@/widget/shared/ui/wrappers/components/HeaderTitle.vue";
-import PdfInvoice from "@/widget/features/pdf-invoice/send-quote";
-import WooRedirectCart from "@/widget/shared/ui/wrappers/components/WooRedirectCart.vue";
-import { useOrderFormStore } from "@/widget/app/providers/stores/orderFormStore.ts";
 import { usePageBreakerStore } from "@/widget/app/providers/stores/pageBreakerStore.ts";
 
 const appStore = useAppStore();
-const orderFormStore = useOrderFormStore();
-const appearanceStore = useAppearanceStore();
 const pageBreakerStore = usePageBreakerStore();
 
 import { useTranslationsStore } from "@/widget/app/providers/stores/translationsStore";
@@ -337,7 +146,6 @@ const settingsStore = useSettingsStore();
 const submissionStore = useSubmissionStore();
 const pageBreakerSettings = settingsStore.getPageBreakerSettings;
 
-const { hasPromocodes } = useDiscounts();
 const notificationsStore = useNotificationsStore();
 const translationsStore = useTranslationsStore();
 
@@ -349,28 +157,6 @@ const showThankYouPage = computed((): boolean => {
   return !(
     settingsStore.hasThankYouPage &&
     notificationsStore.notificationType === "finish"
-  );
-});
-
-const showNotifications = computed((): boolean => {
-  return (
-    notificationsStore.notificationStatus &&
-    (notificationsStore.notificationType !== "finish" ||
-      !settingsStore.hasThankYouPage) &&
-    !getWooStayOnPage.value
-  );
-});
-
-const showWooRedirectCart = computed((): boolean => {
-  return (
-    notificationsStore.notificationType === "success" && getWooStayOnPage.value
-  );
-});
-
-const getWooStayOnPage = computed((): boolean => {
-  return (
-    settingsStore.getWooCheckoutSettings?.redirectTo === "stay" &&
-    notificationsStore.message === "Stay on page"
   );
 });
 
@@ -421,43 +207,7 @@ const activePageIndex = computed(() => {
   return fieldsStore.getActivePageIndex;
 });
 
-const actionsRef = ref<HTMLElement | null>(null);
-
 const pageBreakerRef = ref<HTMLElement | null>(null);
-
-const activeActionCount = computed(() => {
-  const getActionsCount = (): number => {
-    if (actionsRef.value) {
-      return actionsRef.value.children.length;
-    }
-    return 0;
-  };
-
-  return showShareBtn.value
-    ? `button-${getActionsCount()} has-share`
-    : `button-${getActionsCount()} `;
-});
-
-const showShareBtn = computed(() => {
-  return settingsStore.getInvoice?.emailButton;
-});
-
-const formDisplaySummaryStatus = computed(() => {
-  const summaryDisplay = settingsStore.getFormSettings?.summaryDisplay;
-  if (summaryDisplay?.enable) {
-    if (
-      ["show_summary_block", "show_summary_block_with_pdf"].includes(
-        summaryDisplay?.actionAfterSubmit,
-      )
-    ) {
-      return settingsStore.summaryDisplayShowSummary;
-    }
-
-    return false;
-  }
-
-  return true;
-});
 
 const popup = ref();
 
@@ -469,35 +219,9 @@ const hidePopup = () => {
   popup.value.hidePopup();
 };
 
-const isFieldHidden = computed(() => {
-  return (field: Field) => {
-    if (field?.hidden) {
-      return !field.hidden;
-    }
-
-    if (field?.hideAndLeaveTotal) {
-      return !field.hideAndLeaveTotal;
-    }
-
-    return true;
-  };
-});
-
-const getStickyId = computed(() => {
-  const stickyStatus = settingsStore.general?.sticky;
-  if (appearanceStore.getAppearanceBoxStyle === "horizontal" || !stickyStatus) {
-    if (window.$ccbSticky) window.$ccbSticky.destroy();
-    return null;
-  }
-
-  if (window.$ccbSticky) window.$ccbSticky.initialize();
-
-  return `ccb_summary_sticky_${appStore.getCalcId}`;
-});
-
 const prevBtnText = computed(() => {
   const page = fieldsStore.getActivePage;
-  return page ? page.previousBtnLabel : "Back";
+  return page ? page.previousBtnLabel : translationsStore.getTranslations.back;
 });
 
 const nextBtnText = computed(() => {
@@ -529,6 +253,12 @@ const hideBackButton = computed(() => {
   return activePageIndex.value !== 0;
 });
 
+// copy from Vertical.vue
+const enoughPages = computed(() => {
+  return fieldsStore.getPages.length > 1;
+});
+
+// copy from Vertical.vue
 const activePageFieldsAliases = computed(() => {
   const allAliases: string[] = [];
 
@@ -536,26 +266,27 @@ const activePageFieldsAliases = computed(() => {
     const page = fieldsStore.getPages[i];
     if (page && "groupElements" in page) {
       if (page?.groupElements) {
-        page.groupElements.forEach((element) => {
-          if ("alias" in element && typeof element.alias === "string") {
-            if (
-              "groupElements" in element &&
-              Array.isArray(element.groupElements)
-            ) {
-              if (element.alias.includes("repeater")) {
-                allAliases.push(element.alias);
+        page.groupElements.forEach((section: any) => {
+          if (section.fields) {
+            section.fields.forEach((field: Field) => {
+              if (field.alias.includes("repeater")) {
+                allAliases.push(field.alias);
               }
-              element.groupElements.forEach((groupElement: any) => {
+              if (field.alias) {
                 if (
-                  "alias" in groupElement &&
-                  typeof groupElement.alias === "string"
+                  "groupElements" in field &&
+                  Array.isArray(field.groupElements)
                 ) {
-                  allAliases.push(groupElement.alias);
+                  field.groupElements.forEach((groupElement: any) => {
+                    if (groupElement.alias) {
+                      allAliases.push(groupElement.alias);
+                    }
+                  });
+                } else {
+                  allAliases.push(field.alias);
                 }
-              });
-            } else {
-              allAliases.push(element.alias);
-            }
+              }
+            });
           }
         });
       }
@@ -655,6 +386,7 @@ const prevPage = () => {
   }
 };
 
+// copy from Vertical.vue
 const getFieldItemType = computed(() => {
   return (summary: Field): "summary" | "repeater" | "group" | "total" => {
     const types: { [key: string]: "repeater" | "group" | "total" } = {
@@ -686,6 +418,14 @@ watch(activePageIndex, () => {
 
 <style lang="scss">
 .ccb-page-breaker {
+  max-width: 970px;
+  margin: 0 auto;
+  position: relative;
+
+  &.ccb-page-breaker-border {
+    border: 1px solid #ddd;
+  }
+
   &.summary-last-page {
     .ccb-vertical {
       grid-template: none;
@@ -734,6 +474,10 @@ watch(activePageIndex, () => {
         padding-top: 0px;
       }
 
+      .ccb-subtotal-wrapper {
+        box-shadow: none !important;
+      }
+
       .ccb-summary-list__header {
         display: none;
       }
@@ -766,6 +510,15 @@ watch(activePageIndex, () => {
 
   .ccb-fields-list {
     padding: 20px;
+  }
+  .ccb-subtotals-block-summary {
+    padding: 20px;
+    &[id*="ccb_summary_sticky_"] {
+      .ccb-section-subtotal {
+        position: sticky;
+        top: 40px;
+      }
+    }
   }
 
   .ccb-page-navigation {
@@ -820,14 +573,6 @@ watch(activePageIndex, () => {
           transform: rotate(180deg);
         }
       }
-    }
-  }
-
-  &.horizontal {
-    .ccb-fields-list {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 16px;
     }
   }
 }

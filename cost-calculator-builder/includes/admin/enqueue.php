@@ -34,7 +34,7 @@ function cBuilder_admin_enqueue() {
 	} elseif ( isset( $_GET['page'] ) && ( $_GET['page'] === 'cost_calculator_analytics' ) ) { //phpcs:ignore
 		Vite\enqueue_asset(
 			CALC_PATH . '/frontend/vue3/dist',
-			'src/admin/main.ts',
+			'src/analytics/main.ts',
 			array(
 				'handle'    => 'ccb-analytics-bundle',
 				'in-footer' => true,
@@ -47,8 +47,10 @@ function cBuilder_admin_enqueue() {
 				'dateFormat'   => get_option( 'date_format' ),
 				'language'     => substr( get_bloginfo( 'language' ), 0, 2 ),
 				'plugin_url'   => CALC_URL,
-				'translations' => array_merge( \cBuilder\Classes\CCBTranslations::get_backend_translations(), \cBuilder\Classes\CCBTranslations::get_analytics_translations() ),
+				'translations' => \cBuilder\Classes\CCBTranslations::get_full_admin_translations(),
 				'pro_active'   => ccb_pro_active(),
+                'plugin_version' => CALC_VERSION,
+                'menu_items'     => \cBuilder\Classes\CCBSettingsData::get_menu_items(),
 		);
 		// phpcs:enable
 
@@ -68,6 +70,32 @@ function cBuilder_admin_enqueue() {
 		|| ( isset( $_GET['page'] ) && ( $_GET['page'] === 'cost_calculator_builder-contact' ) ) // phpcs:ignore
 	) {
 		wp_enqueue_style( 'ccb-calc-font', CALC_URL . '/frontend/dist/css/font/font.css', array(), CALC_VERSION );
+	} elseif ( isset( $_GET['page'] ) && ( $_GET['page'] === 'cost_calculator_orders' ) ) { //phpcs:ignore
+		Vite\enqueue_asset(
+			CALC_PATH . '/frontend/vue3/dist',
+			'src/orders/main.ts',
+			array(
+				'handle'    => 'ccb-orders-bundle',
+				'in-footer' => true,
+			)
+		);
+
+		wp_localize_script(
+			'ccb-orders-bundle',
+			'ccb_ajax_window',
+			array(
+				'ajax_url'       => admin_url( 'admin-ajax.php' ),
+				'dateFormat'     => get_option( 'date_format' ),
+				'language'       => substr( get_bloginfo( 'language' ), 0, 2 ),
+				'plugin_url'     => CALC_URL,
+				'translations'   => \cBuilder\Classes\CCBTranslations::get_full_admin_translations(),
+				'pro_active'     => ccb_pro_active(),
+				'plugin_version' => CALC_VERSION,
+				'menu_items'     => \cBuilder\Classes\CCBSettingsData::get_menu_items(),
+				'woo_url'        => esc_url( get_admin_url() . 'edit.php?post_type=shop_order' ),
+				'current_page'   => isset( $_GET['page'] ) ? sanitize_text_field( $_GET['page'] ) : '', // phpcs:ignore WordPress.Security.NonceVerification
+			)
+		);
 	}
 
 	if ( ! empty( $_GET['tab'] ) && isset( $_GET['page'] ) && 'cost_calculator_builder' === $_GET['page'] ) {

@@ -92,6 +92,31 @@ const additionalClasses = computed(() => {
 });
 </script>
 
+<style lang="scss">
+.ccb-field {
+  @media (min-width: 1025px) {
+    &.field-width-25 {
+      &.ccb_field_with_radio {
+        .ccb-box-radio {
+          label.ccb-radio-label {
+            padding: 8px 16px;
+            max-width: 100%;
+          }
+        }
+        .ccb-box-with-radio {
+          label.ccb-radio-label {
+            padding: 8px;
+            max-width: 100%;
+          }
+        }
+        .ccb-radio-label {
+          font-size: calc(var(--ccb-field-size) - 2px);
+        }
+      }
+    }
+  }
+}
+</style>
 <style lang="scss" scoped>
 .ccb-radio-label {
   font-size: var(--ccb-fields-button-size) !important;

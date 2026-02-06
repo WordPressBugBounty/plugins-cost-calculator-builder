@@ -10,4 +10,5 @@ export interface IncomingStickyData {
   currency: CurrencyFormatOptions;
   translations: ITranslations;
   is_pro_active: boolean;
+  hasEmbedCalc: boolean;
 }

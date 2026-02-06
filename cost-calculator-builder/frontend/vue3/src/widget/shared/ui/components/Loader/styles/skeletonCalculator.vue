@@ -1,6 +1,6 @@
 <template>
   <div class="ccb-skeleton-calculator">
-    <Layout class="ccb-layout-container">
+    <div class="ccb-layout-container">
       <Wrapper wrapper="fields" class="ccb-fields-block">
         <div class="ccb-skeleton-fields">
           <div class="skeleton-input-wrapper">
@@ -50,12 +50,11 @@
           </div>
         </div>
       </Wrapper>
-    </Layout>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import Layout from "@/widget/shared/ui/layouts/Layout.vue";
 import Wrapper from "@/widget/shared/ui/wrappers/Wrapper.vue";
 </script>
 

@@ -11,6 +11,8 @@
     </div>
     <input
       type="text"
+      :id="inputId"
+      :aria-labelledby="ariaLabelledby"
       v-model="value"
       @focus="emit('focus', $event)"
       @focusout="emit('focusout', $event)"
@@ -31,6 +33,8 @@ import { watch } from "vue";
 type Props = {
   field: IQuantityField;
   value: string;
+  inputId?: string;
+  ariaLabelledby?: string;
 };
 
 const props = defineProps<Props>();

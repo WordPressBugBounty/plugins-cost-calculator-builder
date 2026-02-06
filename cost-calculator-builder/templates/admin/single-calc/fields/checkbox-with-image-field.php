@@ -4,7 +4,7 @@
 <?php else : ?>
 	<div style="position: relative; width: 100%; height: 100%">
 		<div class="ccb-edit-info" style="position: relative">
-			<div class="ccb-edit-header" style="position: absolute; right: 0; z-index: 999;" @click="$emit( 'cancel' )">
+			<div class="ccb-edit-header" style="position: absolute; right: 10px; z-index: 999;" @click="$emit( 'cancel' )">
 				<span class="ccb-edit-close">
 					<i class="ccb-icon-close"></i>
 				</span>

@@ -25,7 +25,7 @@
     "paths": {
       "@/*": ["src/*"],
       "@/widget/*": ["src/widget/*"],
-      "@/admin/*": ["src/admin/*"]
+      "@/analytics/*": ["src/analytics/*"]
     },
     "typeRoots": ["./node_modules/@types", "./src/types"],
     "allowSyntheticDefaultImports": true,

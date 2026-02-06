@@ -1,0 +1,2 @@
+import{u as i}from"./useValidatedFormField-0kyWtmqU.js";import{a as d,m as u,g as c,p as m,u as e}from"./convert-case-to-camel-case.utils-DRsbC-qG.js";const _={class:"ccb-field__input-wrapper"},f=["placeholder","value"],B=d({__name:"Name",props:{field:{}},emits:["update"],setup(s,{emit:n}){const p=n,l=s,{field:t,onInput:o}=i(l,p);return(h,a)=>(c(),u("div",_,[m("input",{type:"text",placeholder:e(t).placeholder,onInput:a[0]||(a[0]=(...r)=>e(o)&&e(o)(...r)),value:e(t).displayValue},null,40,f)]))}});export{B as default};
+//# sourceMappingURL=Name-BDNB3_FK.js.map

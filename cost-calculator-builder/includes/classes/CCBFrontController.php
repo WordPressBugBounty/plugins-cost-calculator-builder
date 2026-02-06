@@ -5,6 +5,7 @@ namespace cBuilder\Classes;
 use cBuilder\Classes\Appearance\CCBAppearanceHelper;
 use cBuilder\Classes\Appearance\CCBCssLoader;
 use cBuilder\Helpers\CCBFieldsHelper;
+use cBuilder\Classes\Database\CalcOrders;
 use CCB\Vite;
 
 $template_variables = array();
@@ -44,11 +45,12 @@ class CCBFrontController {
 			return '';
 		}
 
-		$calculators   = CCBUpdatesCallbacks::get_calculators();
-		$sticky_calc   = '';
-		$has_sticky    = false;
-		$calc_sticky   = '';
-		$sticky_banner = '';
+		$calculators    = CCBUpdatesCallbacks::get_calculators();
+		$sticky_calc    = '';
+		$has_sticky     = false;
+		$calc_sticky    = '';
+		$sticky_banner  = '';
+		$has_embed_calc = false;
 
 		$positions = array(
 			'top_left'      => 0,
@@ -88,7 +90,6 @@ class CCBFrontController {
 						}
 
 						wp_enqueue_style( 'ccb-sticky-css', CALC_URL . '/frontend/dist/css/sticky.css', array(), CALC_VERSION );
-						wp_enqueue_style( 'ccb-bootstrap-css', CALC_URL . '/frontend/dist/css/modal.bootstrap.css', array(), CALC_VERSION );
 						wp_enqueue_script( 'ccb-velocity-ui-js', CALC_URL . '/frontend/dist/libs/velocity.ui.min.js', array(), CALC_VERSION, true );
 						wp_enqueue_script( 'ccb-velocity-ui-js', CALC_URL . '/frontend/dist/libs/velocity.ui.min.js', array(), CALC_VERSION, true );
 
@@ -105,6 +106,23 @@ class CCBFrontController {
 
 					$currency = $global_settings['currency']['use_in_all'] ? $global_settings['currency'] : $calc_settings['currency'];
 
+					if ( isset( $post->post_content ) && has_shortcode( $post->post_content, 'stm-calc' ) ) {
+						preg_match_all(
+							'/\[stm-calc\s+id="(\d+)"\]/',
+							$post->post_content,
+							$matches
+						);
+
+						if ( ! empty( $matches[1] ) ) {
+							foreach ( $matches[1] as $shortcode_id ) {
+								if ( (int) $shortcode_id === (int) $calculator->ID ) {
+									$has_embed_calc = true;
+									break;
+								}
+							}
+						}
+					}
+
 					$sticky_settings_data = array(
 						'title'               => get_post_meta( $calculator->ID, 'stm-name', true ),
 						'calcId'              => $calculator->ID,
@@ -113,6 +131,7 @@ class CCBFrontController {
 						'currency'            => $currency,
 						'translations'        => CCBTranslations::get_frontend_translations(),
 						'is_pro_active'       => ccb_pro_active(),
+						'has_embed_calc'      => $has_embed_calc,
 					);
 
 					$GLOBALS['ccb_sticky_data'][ $calculator->ID ] = $sticky_settings_data;
@@ -324,6 +343,10 @@ class CCBFrontController {
 				)
 			);
 
+			if ( isset( $general_settings['ai'] ) ) {
+				unset( $general_settings['ai'] );
+			}
+
 			wp_localize_script(
 				'calc-builder-main-js',
 				'ajax_window',
@@ -451,28 +474,49 @@ class CCBFrontController {
 
 	public static function get_order_data_by_id( $id ) {
 		if ( $id ) {
-			$meta_data = get_option( 'calc_meta_data_order_' . $id, array() );
-			$ccb_order = CCBOrderController::get_orders_by_id( $id );
+			$ccb_order = CalcOrders::get_order_full_data_by_id( $id );
 
-			$totals    = json_decode( $meta_data['totals'], true );
+			if ( empty( $ccb_order ) || ! is_array( $ccb_order ) ) {
+				return array();
+			}
+
+			$totals       = array_values( $ccb_order['totals'] ?? array() );
+			$other_totals = array_values( $ccb_order['other_totals'] ?? array() );
+
 			$discounts = array();
-			if ( is_array( $totals ) && count( $totals ) > 0 ) {
-				foreach ( $totals as $total ) {
-					if ( ! empty( $total['hasDiscount'] ) ) {
-						$discounts[] = $total['discount'];
+			if ( ! empty( $ccb_order['discounts'] ) && is_array( $ccb_order['discounts'] ) ) {
+				foreach ( $ccb_order['discounts'] as $alias => $items ) {
+					if ( is_array( $items ) ) {
+						foreach ( $items as $d ) {
+							$discounts[] = $d;
+						}
 					}
 				}
 			}
 
+			$converted = null;
+			if ( ! empty( $totals ) ) {
+				foreach ( $totals as $t ) {
+					if ( ! empty( $t['is_primary'] ) && ! empty( $t['converted'] ) ) {
+						$converted = $t['converted'];
+						break;
+					}
+				}
+				if ( is_null( $converted ) ) {
+					$converted = $totals[0]['converted'] ?? null;
+				}
+			}
+
 			return array(
-				'id'            => $ccb_order['id'],
+				'id'            => $ccb_order['order_id'],
 				'calc_id'       => $ccb_order['calc_id'],
-				'orderDetails'  => $ccb_order['order_details'],
-				'formDetails'   => $ccb_order['form_details'],
-				'paymentMethod' => $ccb_order['paymentMethod'],
-				'orderDate'     => $ccb_order['date_formatted'],
-				'converted'     => $meta_data['converted'],
+				'orderDetails'  => $ccb_order['calculator_fields'],
+				'formDetails'   => $ccb_order['order_form_details'],
+				'paymentMethod' => $ccb_order['payment_type'],
+				'orderDate'     => $ccb_order['formatted_date'],
+				'converted'     => $converted,
 				'totals'        => $totals,
+				'otherTotals'   => $other_totals,
 				'promocodes'    => $ccb_order['promocodes'] ?? array(),
 				'discounts'     => $discounts,
 			);

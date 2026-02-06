@@ -322,19 +322,27 @@ const actionsClass = computed(() => {
     : "ccb-pdf-invoice__actions--show-share";
 });
 
-const handleDownload = () => generatePdf();
-const handleOpenModal = () => showPopup();
+const handleDownload = () => {
+  generatePdf();
+};
+const handleOpenModal = (e: Event) => {
+  const calcId = (e as CustomEvent).detail?.calcId;
+  if (calcId === appStore.getCalcId) showPopup();
+};
 
 const initListeners = () => {
   const listenersKey = `__ccb_pdf_listeners_${appStore.getCalcId}`;
   if ((window as any)[listenersKey]) return;
 
   const thankYouPageSettings = settingsStore.getThankYouPage;
+  const oneClickAction = settingsStore?.stickyCalc?.oneClickAction;
+
   if (
     appStore.isThankYouPage ||
     (thankYouPageSettings?.enable &&
       thankYouPageSettings?.type === "modal" &&
-      thankYouPageSettings?.downloadButton)
+      thankYouPageSettings?.downloadButton) ||
+    oneClickAction === "pdf"
   ) {
     window.addEventListener("ccbDownLoadPdf", handleDownload);
   }

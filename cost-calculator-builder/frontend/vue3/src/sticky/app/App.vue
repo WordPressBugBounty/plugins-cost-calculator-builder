@@ -30,6 +30,7 @@ if (calcData && "stickySettings" in calcData) {
     convertKeysToCamelCase<IncomingStickyData>(calcData);
 
   appStore.setIsProActive(stickySettings.is_pro_active);
+  appStore.setHasEmbedCalc(stickySettings.hasEmbedCalc);
   appStore.initTitle(stickySettings.title);
   appStore.initCalcId(stickySettings.calcId);
   appStore.initStickySettings(stickySettings.stickySettings);
@@ -45,7 +46,15 @@ const showActionHandler = (): void => {
   }
 
   setTimeout(() => {
-    showSticky.value = true;
+    if (
+      !appStore.getHasEmbedCalc &&
+      (appStore.getStickySettings?.oneClickAction === "pdf" ||
+        appStore.getStickySettings?.oneClickAction === "invoice")
+    ) {
+      showSticky.value = false;
+    } else {
+      showSticky.value = true;
+    }
 
     setTimeout(() => {
       const $wrapper: HTMLElement | null = document.querySelector(

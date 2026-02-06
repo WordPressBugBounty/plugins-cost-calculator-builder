@@ -35,9 +35,9 @@ class Payments extends DataBaseModel {
             `tax`       DECIMAL(10,2) DEFAULT 0.00,
             `transaction`     VARCHAR(255) DEFAULT NULL,
             `notes` longtext DEFAULT NULL,
-            `created_at` DATETIME NOT NULL,
-            `updated_at` DATETIME NOT NULL,
-            `paid_at` DATETIME,
+            `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            `paid_at` TIMESTAMP,
             PRIMARY KEY ({$primary_key}),
             INDEX `idx_order_id` (`order_id`),
             INDEX `idx_status` (`status`)

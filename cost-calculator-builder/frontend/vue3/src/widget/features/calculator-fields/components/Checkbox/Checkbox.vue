@@ -105,7 +105,7 @@ const currentComponents = computed(() => {
 const boxStyle = computed(() => {
   return field.value?.styles?.boxStyle === "vertical"
     ? "ccb-vertical-checkbox"
-    : "";
+    : "ccb-horizontal-checkbox";
 });
 
 const additionalClasses = computed(() => {
@@ -115,7 +115,67 @@ const additionalClasses = computed(() => {
 
 <style lang="scss">
 @use "@/styles/widget/_mixins.scss" as mixins;
-
+.ccb-field {
+  @media (min-width: 1025px) {
+    &.field-width-25 {
+      .ccb-checkbox-field {
+        .ccb-box-with-heading-checkbox-description {
+          label {
+            padding: 10px 30px 10px 10px;
+            .ccb-checkbox-label {
+              .label {
+                font-size: calc(var(--ccb-fields-button-size) - 2px);
+              }
+            }
+            &:before {
+              right: 6px;
+              top: 12px;
+            }
+            &:after {
+              right: 10px;
+              top: 19px;
+            }
+          }
+        }
+        .ccb-box-with-checkbox-description {
+          label {
+            padding: 10px 10px 10px 30px;
+            &:before {
+              left: 6px;
+              top: 8px;
+            }
+            &:after {
+              left: 12px;
+              top: 15px;
+            }
+          }
+        }
+        .ccb-box-with-checkbox {
+          label {
+            padding: 10px 10px 10px 30px;
+            &:before {
+              left: 6px;
+            }
+            &:after {
+              left: 12px;
+            }
+          }
+        }
+        .ccb-box-checkbox {
+          label {
+            padding: 8px 16px;
+            .ccb-checkbox-label {
+              text-align: center;
+            }
+          }
+        }
+        .ccb-checkbox-label {
+          font-size: calc(var(--ccb-fields-button-size) - 2px) !important;
+        }
+      }
+    }
+  }
+}
 .ccb-checkbox-label {
   font-size: var(--ccb-fields-button-size) !important;
 

@@ -6,15 +6,20 @@
         @click="collapseStore[idx] = !collapseStore[idx]"
         v-if="getFieldsFromMap(elements).length > 0"
       >
-        <div
-          class="ccb-summary-repeater__btn"
-          :aria-expanded="!collapseStore[idx]"
-          :class="{ rotated: collapseStore[idx] }"
-        >
-          <i class="ccb-icon-Path-3514"></i>
+        <div class="ccb-summary-repeater__left">
+          <div
+            class="ccb-summary-repeater__btn"
+            :aria-expanded="!collapseStore[idx]"
+            :class="{ rotated: collapseStore[idx] }"
+          >
+            <i class="ccb-icon-Path-3514"></i>
+          </div>
+          <div class="ccb-summary-repeater__title">{{ summary.label }}</div>
+          <div class="ccb-summary-repeater__count">#{{ idx + 1 }}</div>
         </div>
-        <div class="ccb-summary-repeater__title">{{ summary.label }}</div>
-        <div class="ccb-summary-repeater__count">#{{ idx + 1 }}</div>
+        <div class="ccb-summary-repeater__value">
+          {{ getGroupTotal(elements) }}
+        </div>
       </div>
       <div
         class="ccb-summary-repeater__list"
@@ -55,6 +60,69 @@ const getFieldsFromMap = computed(() => {
     return Array.from(data.values()).filter((item: Field) => item.addToSummary);
   };
 });
+
+const getGroupTotal = computed(() => {
+  return (data: Map<string, Field>): number => {
+    if (summary.value.enableFormula) {
+      // If formula mode is enabled for repeater, calculate per-group total by formula
+      const baseFormula =
+        (summary.value.originalFormula &&
+          summary.value.originalFormula.trim()) ||
+        (summary.value.formula && summary.value.formula.trim()) ||
+        "0";
+
+      let groupFormula = baseFormula;
+
+      const fieldsAliasList = groupFormula.match(/\w+_field_id_\d+/g) || [];
+
+      fieldsAliasList.forEach((alias: string) => {
+        let numeric = 0;
+        for (const field of data.values()) {
+          if (field.alias === alias) {
+            numeric =
+              typeof field.value === "number"
+                ? (field.value as number)
+                : Number(
+                    (field as any)?.displayValue
+                      ?.toString()
+                      ?.replace(/[^\d.-]/g, ""),
+                  );
+            if (Number.isNaN(numeric)) numeric = 0;
+            break;
+          }
+        }
+
+        groupFormula = groupFormula.replace(
+          new RegExp("\\b" + alias + "\\b", "g"),
+          numeric.toString(),
+        );
+      });
+
+      try {
+        const res = Number(eval(groupFormula));
+        return Number.isFinite(res) ? res : 0;
+      } catch {
+        return 0;
+      }
+    } else {
+      // Default behavior: sum fields that are added to summary
+      const items = Array.from(data.values()).filter(
+        (item: Field) => item.addToSummary,
+      );
+      return items.reduce((sum: number, item: Field) => {
+        const numeric =
+          typeof item.value === "number"
+            ? item.value
+            : Number(
+                (item as any)?.displayValue
+                  ?.toString()
+                  ?.replace(/[^\d.-]/g, ""),
+              );
+        return sum + (isNaN(numeric) ? 0 : numeric);
+      }, 0);
+    }
+  };
+});
 </script>
 
 <style lang="scss">
@@ -62,14 +130,21 @@ const getFieldsFromMap = computed(() => {
   padding-left: 15px;
 
   &__header {
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr auto;
     align-items: center;
-    justify-content: flex-start;
     margin-bottom: 10px;
     cursor: pointer;
 
     &:not(:first-child) {
       margin-top: 12px;
+    }
+
+    .ccb-summary-repeater__left {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 4px;
     }
 
     .ccb-summary-repeater__btn {
@@ -95,6 +170,14 @@ const getFieldsFromMap = computed(() => {
       font-size: var(--ccb-repeater-title-font-size);
       font-weight: 600;
       color: var(--ccb-summary-description-color);
+    }
+
+    .ccb-summary-repeater__value {
+      justify-self: end;
+      font-size: var(--ccb-summary-text-size);
+      font-weight: var(--ccb-summary-text-weight);
+      color: var(--ccb-text-color);
+      text-transform: var(--ccb-summary-text-transform);
     }
   }
 

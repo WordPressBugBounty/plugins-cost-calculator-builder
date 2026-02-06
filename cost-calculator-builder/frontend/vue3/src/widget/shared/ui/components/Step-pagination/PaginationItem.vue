@@ -80,7 +80,8 @@ const getPages = computed(() => {
 .ccb-pagination {
   position: relative;
   overflow-x: auto;
-  max-width: 470px;
+  background-color: var(--ccb-container-color);
+
   .ccb-calc-title {
     position: absolute;
     color: #001931;

@@ -1,5 +1,5 @@
 <template>
-  <div class="ccb-box-checkbox">
+  <div class="ccb-box-with-heading-checkbox-description">
     <template v-for="(option, idx) in field.options">
       <label
         :for="getName + '_' + idx + '_' + generateId"
@@ -52,7 +52,7 @@ const generateId = computed(() => {
 </script>
 
 <style lang="scss" scoped>
-.ccb-box-checkbox {
+.ccb-box-with-heading-checkbox-description {
   display: flex;
   gap: 10px;
   font-size: var(--ccb-field-size);
@@ -149,7 +149,7 @@ const generateId = computed(() => {
 }
 
 .ccb-vertical-checkbox {
-  .ccb-box-checkbox {
+  .ccb-box-with-heading-checkbox-description {
     flex-direction: column;
   }
 

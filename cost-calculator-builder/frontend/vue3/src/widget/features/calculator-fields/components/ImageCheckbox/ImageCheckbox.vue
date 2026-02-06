@@ -84,11 +84,60 @@ const additionalClasses = computed(() => {
 const boxStyle = computed(() => {
   return field.value?.styles?.boxStyle === "vertical"
     ? "ccb-vertical-checkbox"
-    : "";
+    : "ccb-horizontal-checkbox";
 });
 </script>
 
 <style lang="scss">
+.ccb-field {
+  @media (min-width: 1025px) {
+    &.field-width-25 {
+      .ccb-image-checkbox-field {
+        .ccb-default-image-checkbox-withicon {
+          .ccb-checkbox-image {
+            padding: 8px 12px;
+          }
+          .ccb-checkbox-image__title-box {
+            .ccb-checkbox-image__label {
+              font-size: calc(var(--ccb-fields-button-size) - 2px) !important;
+            }
+          }
+        }
+        &.ccb-horizontal-checkbox {
+          .ccb-checkbox-image {
+            width: 100%;
+          }
+        }
+        .ccb-default-checkbox-image {
+          .ccb-checkbox-image {
+            min-height: unset;
+            &:before {
+              bottom: 5px;
+              right: 5px;
+            }
+            &:after {
+              bottom: 13px;
+              right: 10px;
+            }
+          }
+          .ccb-checkbox-image__box {
+            padding: 8px;
+          }
+          .ccb-checkbox-image__info {
+            padding: 5px 8px;
+            width: 75%;
+            .ccb-checkbox-image__label {
+              font-size: calc(var(--ccb-fields-button-size) - 2px) !important;
+            }
+            .ccb-checkbox-image__price {
+              font-size: calc(var(--ccb-summary-text-size) - 2px) !important;
+            }
+          }
+        }
+      }
+    }
+  }
+}
 .ccb-checkbox-image__label {
   font-size: var(--ccb-fields-button-size) !important;
 

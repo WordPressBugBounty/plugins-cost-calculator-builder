@@ -173,6 +173,10 @@ class CCBExportImport {
 			$data['ccb_form_settings']['woo_checkout']['formulas'] = CCBUpdatesCallbacks::ccb_appearance_totals( $totals, $descriptions );
 		}
 
+		if ( ! class_exists( 'WooCommerce' ) ) {
+			$data['ccb_form_settings']['woo_checkout']['enable'] = false;
+		}
+
 		update_option( 'stm_ccb_form_settings_' . sanitize_text_field( $calculator_id ), apply_filters( 'stm_ccb_sanitize_array', $data['ccb_form_settings'] ) );
 
 		$presets     = CCBPresetGenerator::get_static_preset_from_db();

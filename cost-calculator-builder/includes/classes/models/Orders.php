@@ -21,8 +21,6 @@ class Orders extends DataBaseModel {
 
 		$table_name  = self::_table();
 		$primary_key = self::$primary_key;
-		$forms_table = Forms::_table();
-		$form_id     = Forms::$primary_key;
 
 		$sql = "CREATE TABLE IF NOT EXISTS {$table_name} (
 			id INT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -385,5 +383,192 @@ class Orders extends DataBaseModel {
         // phpcs:enable
 
 		return $wpdb->get_results( $query, ARRAY_A ); // phpcs:ignore
+	}
+
+	public static function orders_count() {
+		global $wpdb;
+		$sql = "SELECT COUNT(*) FROM " . self::_table(); // phpcs:ignore
+		return $wpdb->get_var( $sql ); // phpcs:ignore
+	}
+
+	public static function get_order_full_data() {
+		global $wpdb;
+
+		// phpcs:disable
+		$sql = "
+			SELECT
+				o.id as order_id,
+				o.calc_id,
+				o.calc_title,
+				o.status,
+				o.order_details,
+				o.form_details,
+				o.promocodes,
+				p.type as payment_type,
+				p.currency as payment_currency,
+				p.status as payment_status,
+				p.total as payment_total,
+				p.transaction as payment_transaction,
+				p.tax as payment_tax,
+				p.paid_at
+			FROM " . self::_table() . " o
+			LEFT JOIN " . Payments::_table() . " p ON o.id = p.order_id
+		";
+		// phpcs:enable
+		$orders = $wpdb->get_results( $sql, ARRAY_A ); // phpcs:ignore
+
+		foreach ( $orders as $idx => $order ) {
+			$orders[ $idx ]['order_details'] = json_decode( $order['order_details'], true );
+			$orders[ $idx ]['form_details']  = json_decode( $order['form_details'], true );
+			$orders[ $idx ]['promocodes']    = json_decode( $order['promocodes'], true );
+
+			$meta_data    = get_option( 'calc_meta_data_order_' . $order['order_id'], array() );
+			$totals       = $meta_data['totals'];
+			$other_totals = $meta_data['otherTotals'];
+			if ( isset( $meta_data['totals'] ) && is_string( $meta_data['totals'] ) ) {
+				$totals = json_decode( $meta_data['totals'], true );
+			}
+
+			if ( isset( $meta_data['otherTotals'] ) && is_string( $meta_data['otherTotals'] ) ) {
+				$other_totals = json_decode( $meta_data['otherTotals'], true );
+			}
+
+			$orders[ $idx ]['totals']       = $totals;
+			$orders[ $idx ]['other_totals'] = $other_totals;
+			$orders[ $idx ]['final_total']  = $meta_data['converted'];
+
+			$orders[ $idx ]['order_currency'] = ccb_parse_currency_format( $meta_data['converted'] );
+
+			$discounts  = array();
+			$promocodes = array();
+			$all_totals = array_merge( $totals, $other_totals );
+			foreach ( $all_totals as $total ) {
+				if ( ! empty( $total['hasDiscount'] ) ) {
+					if ( empty( $discounts[ $total['alias'] ] ) ) {
+						$discounts[ $total['alias'] ] = array();
+					}
+
+					$discounts[ $total['alias'] ][] = array(
+						'discount_view'   => $total['discount']['discountView'],
+						'discount_title'  => $total['discount']['discountTitle'],
+						'discount_type'   => $total['discount']['discountType'],
+						'discount_amount' => $total['discount']['discountAmount'],
+						'discount_value'  => $total['discount']['discountValue'],
+					);
+
+					if ( ! empty( $total['discount']['promocode'] ) ) {
+						$promocodes[] = $total['discount']['promocode'];
+					}
+				}
+			}
+
+			$orders[ $idx ]['discounts']  = $discounts;
+			$orders[ $idx ]['promocodes'] = $promocodes;
+		}
+
+		return $orders;
+	}
+
+	/**
+	 * Get orders in batches for memory-efficient processing
+	 * @param int $limit Number of orders to fetch
+	 * @param int $offset Starting position
+	 * @return array Orders data
+	 */
+	public static function get_order_full_data_batch( $limit = 50, $offset = 0 ) {
+		global $wpdb;
+
+		// phpcs:disable
+		$sql = $wpdb->prepare(
+			"SELECT
+				o.id as order_id,
+				o.calc_id,
+				o.calc_title,
+				o.status,
+				o.order_details,
+				o.form_details,
+				o.promocodes,
+				p.type as payment_type,
+				p.currency as payment_currency,
+				p.status as payment_status,
+				p.total as payment_total,
+				p.transaction as payment_transaction,
+				p.tax as payment_tax,
+				p.paid_at,
+				o.created_at
+			FROM " . self::_table() . " o
+			LEFT JOIN " . Payments::_table() . " p ON o.id = p.order_id
+			ORDER BY o.id ASC
+			LIMIT %d OFFSET %d",
+			$limit,
+			$offset
+		);
+		// phpcs:enable
+		$orders = $wpdb->get_results( $sql, ARRAY_A ); // phpcs:ignore
+
+		if ( empty( $orders ) ) {
+			return array();
+		}
+
+		// Collect all order IDs for batch loading options
+		$order_ids = array_column( $orders, 'order_id' );
+
+		// Pre-load all meta_data for this batch (much faster than individual get_option calls)
+		$meta_data_cache = array();
+		foreach ( $order_ids as $order_id ) {
+			$meta_data_cache[ $order_id ] = get_option( 'calc_meta_data_order_' . $order_id, array() );
+		}
+
+		foreach ( $orders as $idx => $order ) {
+			$orders[ $idx ]['order_details'] = json_decode( $order['order_details'], true );
+			$orders[ $idx ]['form_details']  = json_decode( $order['form_details'], true );
+			$orders[ $idx ]['promocodes']    = json_decode( $order['promocodes'], true );
+
+			$meta_data    = $meta_data_cache[ $order['order_id'] ];
+			$totals       = isset( $meta_data['totals'] ) ? $meta_data['totals'] : array();
+			$other_totals = isset( $meta_data['otherTotals'] ) ? $meta_data['otherTotals'] : array();
+
+			if ( isset( $meta_data['totals'] ) && is_string( $meta_data['totals'] ) ) {
+				$totals = json_decode( $meta_data['totals'], true );
+			}
+
+			if ( isset( $meta_data['otherTotals'] ) && is_string( $meta_data['otherTotals'] ) ) {
+				$other_totals = json_decode( $meta_data['otherTotals'], true );
+			}
+
+			$orders[ $idx ]['totals']       = $totals;
+			$orders[ $idx ]['other_totals'] = $other_totals;
+			$orders[ $idx ]['final_total']  = isset( $meta_data['converted'] ) ? $meta_data['converted'] : '';
+
+			$orders[ $idx ]['order_currency'] = ccb_parse_currency_format( isset( $meta_data['converted'] ) ? $meta_data['converted'] : '' );
+
+			$discounts  = array();
+			$promocodes = array();
+			$all_totals = array_merge( $totals, $other_totals );
+			foreach ( $all_totals as $total ) {
+				if ( ! empty( $total['hasDiscount'] ) ) {
+					if ( empty( $discounts[ $total['alias'] ] ) ) {
+						$discounts[ $total['alias'] ] = array();
+					}
+
+					$discounts[ $total['alias'] ][] = array(
+						'discount_view'   => isset( $total['discount']['discountView'] ) ? $total['discount']['discountView'] : '',
+						'discount_title'  => isset( $total['discount']['discountTitle'] ) ? $total['discount']['discountTitle'] : '',
+						'discount_type'   => isset( $total['discount']['discountType'] ) ? $total['discount']['discountType'] : '',
+						'discount_amount' => isset( $total['discount']['discountAmount'] ) ? $total['discount']['discountAmount'] : 0,
+						'discount_value'  => isset( $total['discount']['discountValue'] ) ? $total['discount']['discountValue'] : '',
+					);
+
+					if ( ! empty( $total['discount']['promocode'] ) ) {
+						$promocodes[] = $total['discount']['promocode'];
+					}
+				}
+			}
+
+			$orders[ $idx ]['discounts']  = $discounts;
+			$orders[ $idx ]['promocodes'] = $promocodes;
+		}
+
+		return $orders;
 	}
 }

@@ -43,8 +43,8 @@ a:visited {
   width: 40px;
   height: 40px;
   position: absolute;
-  top: 10px;
-  left: -3%;
+  top: 20px;
+  left: -4%;
   transform: translateX(-50%);
   display: flex;
   justify-content: center;

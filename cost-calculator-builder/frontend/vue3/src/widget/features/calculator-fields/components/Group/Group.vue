@@ -157,10 +157,22 @@ const additionalClasses = computed(() => {
   padding-bottom: 20px;
 
   &__fields {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
     padding: 0 10px;
+    .field-width-25 {
+      grid-column: span 1;
+    }
+    .field-width-50 {
+      grid-column: span 2;
+    }
+    .field-width-75 {
+      grid-column: span 3;
+    }
+    .field-width-100 {
+      grid-column: span 4;
+    }
   }
 
   &__body {

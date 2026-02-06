@@ -1,5 +1,5 @@
 <template>
-  <div class="ccb-box-checkbox">
+  <div class="ccb-box-with-checkbox-description">
     <template v-for="(option, idx) in field.options">
       <label
         :for="getName + '_' + idx + '_' + generateId"
@@ -52,7 +52,7 @@ const { optionValues, changeValue, getName } = useMultiOptionChildShared(
 </script>
 
 <style lang="scss" scoped>
-.ccb-box-checkbox {
+.ccb-box-with-checkbox-description {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
@@ -145,7 +145,7 @@ const { optionValues, changeValue, getName } = useMultiOptionChildShared(
 }
 
 .ccb-vertical-checkbox {
-  .ccb-box-checkbox {
+  .ccb-box-with-checkbox-description {
     flex-direction: column;
   }
 

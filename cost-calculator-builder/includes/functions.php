@@ -61,6 +61,35 @@ function ccb_update_calc_new_values( $data ) {
 	return false;
 }
 
+function ccb_update_calc_new_values_template_to_pagebreak( $data ) {
+	$result = array(
+		array(
+			'type'          => 'page-break',
+			'label'         => 'Page 1',
+			'description'   => 'Page 1',
+			'alias'         => 'page_break_field_id_0',
+			'_id'           => '99',
+			'groupElements' => array(
+				array(
+					'type'        => 'section',
+					'label'       => 'Section 1',
+					'description' => 'Section 1',
+					'alias'       => 'section_field_id_0',
+					'fields'      => array(),
+					'_id'         => '98',
+				),
+			),
+		),
+	);
+
+	foreach ( $data['builder'] as $builder ) {
+		$builder['width'] = 100;
+		array_push( $result[0]['groupElements'][0]['fields'], $builder );
+	}
+
+	return $result;
+}
+
 /**
  * Update calculator
  *
@@ -1242,4 +1271,63 @@ function ccb_smart_format( $value, $precision = 2 ) {
 
 function ccb_to_fixed( $number, $decimals = 2 ) {
 	return number_format( $number, $decimals, '.', '' );
+}
+
+function ccb_parse_currency_format( $str ) {
+	$str = $str ? $str : '';
+
+	$result = array(
+		'currency_sign'      => '',
+		'currency_position'  => 'left_with_space',
+		'thousand_separator' => ',',
+		'decimal_separator'  => '.',
+		'number_of_decimals' => 2,
+	);
+
+	$str = trim( $str );
+
+	if ( preg_match( '/^([^\d\s]+)/', $str, $m ) ) { //phpcs:ignore
+		$result['currency_sign']     = $m[1];
+		$result['currency_position'] = 0 === strpos( $str, $m[1] . ' ' )
+			? 'left_with_space'
+			: 'left';
+	} elseif ( preg_match( '/([^\d\s]+)$/', $str, $m ) ) { //phpcs:ignore
+		$result['currency_sign']     = $m[1];
+		$result['currency_position'] = preg_match( '/\s' . preg_quote( $m[1], '/' ) . '$/', $str ) //phpcs:ignore
+			? 'right_with_space'
+			: 'right';
+	}
+
+	$numericPart = trim( str_replace( $result['currency_sign'], '', $str ) );
+
+	if ( preg_match( '/\d([.,])\d+$/', $numericPart, $m ) ) { //phpcs:ignore
+		$result['decimal_separator'] = $m[1];
+	}
+
+	if ( false !== strpos( $numericPart, $result['decimal_separator'] ) ) {
+		$result['number_of_decimals'] = strlen( explode( $result['decimal_separator'], $numericPart )[1] );
+	}
+
+	$integerPart = explode( $result['decimal_separator'], $numericPart )[0];
+	if ( preg_match( '/\d{1,3}([.,])\d{3}/', $integerPart, $m ) ) { //phpcs:ignore
+		$result['thousand_separator'] = $m[1];
+	}
+
+	return $result;
+}
+
+function ccb_slug_to_label( $slug ) {
+	if ( empty( $slug ) ) {
+		return '';
+	}
+
+	$label    = preg_replace( '/[-_]+/', ' ', $slug );
+	$words    = explode( ' ', strtolower( $label ) );
+	$acronyms = array( 'id', 'api', 'url', 'ip' );
+
+	foreach ( $words as &$word ) {
+		$word = in_array( $word, $acronyms, true ) ? strtoupper( $word ) : ucfirst( $word );
+	}
+
+	return implode( ' ', $words );
 }

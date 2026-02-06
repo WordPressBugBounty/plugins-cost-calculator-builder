@@ -147,9 +147,21 @@ const additionalClasses = computed(() => {
     row-gap: 8px;
 
     &--fields {
-      display: flex;
-      flex-direction: column;
-      row-gap: 20px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      .field-width-25 {
+        grid-column: span 1;
+      }
+      .field-width-50 {
+        grid-column: span 2;
+      }
+      .field-width-75 {
+        grid-column: span 3;
+      }
+      .field-width-100 {
+        grid-column: span 4;
+      }
     }
 
     &--header {

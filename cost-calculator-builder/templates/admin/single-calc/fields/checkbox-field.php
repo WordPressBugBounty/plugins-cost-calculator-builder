@@ -1,9 +1,13 @@
 <div class="cbb-edit-field-container">
 	<div class="ccb-edit-field-header">
-		<span class="ccb-edit-field-title ccb-heading-3 ccb-bold"><?php esc_html_e( 'Checkbox', 'cost-calculator-builder' ); ?></span>
-		<div class="ccb-field-actions">
-			<button class="ccb-button default" @click="$emit('cancel')"><?php esc_html_e( 'Cancel', 'cost-calculator-builder' ); ?></button>
-			<button class="ccb-button success" @click.prevent="save( checkboxField, id, index, checkboxField.alias )"><?php esc_html_e( 'Save', 'cost-calculator-builder' ); ?></button>
+		<div class="ccb-edit-field-header-left">
+			<span class="ccb-edit-field-title ccb-heading-3 ccb-bold">{{ getFieldTitle(checkboxField) || "Checkbox" }}</span>
+		</div>
+		<div class="ccb-edit-field-header-right">
+			<div class="ccb-save-wrapper">
+				<button class="ccb-button" @click.prevent="$emit( 'cancel' )"><?php esc_html_e( 'Cancel', 'cost-calculator-builder' ); ?></button>
+				<button class="ccb-button success" @click.prevent="save(checkboxField, id, index, checkboxField.alias)"><?php esc_html_e( 'Done', 'cost-calculator-builder' ); ?></button>
+			</div>
 		</div>
 	</div>
 	<div class="ccb-grid-box">
@@ -16,7 +20,7 @@
 							<span class="ccb-fields-required" v-if="errorsCount > 0">{{ errorsCount }}</span>
 						</div>
 						<div class="ccb-edit-field-switch-item ccb-default-title" :class="{active: tab === 'style'}" @click="tab = 'style'">
-							<?php esc_html_e( 'Styles', 'cost-calculator-builder' ); ?>
+							<?php esc_html_e( 'Variants', 'cost-calculator-builder' ); ?>
 						</div>
 						<div class="ccb-edit-field-switch-item ccb-default-title" :class="{active: tab === 'options'}" @click="tab = 'options'">
 							<?php esc_html_e( 'Settings', 'cost-calculator-builder' ); ?>
@@ -27,79 +31,41 @@
 		</div>
 		<div class="container" v-show="tab === 'main'">
 			<div class="row ccb-p-t-15">
-				<div class="col">
-					<div class="ccb-input-wrapper">
-						<span class="ccb-input-label"><?php esc_html_e( 'Name', 'cost-calculator-builder' ); ?></span>
-						<input type="text" class="ccb-heading-5 ccb-light" v-model.trim="checkboxField.label" placeholder="<?php esc_attr_e( 'Enter field name', 'cost-calculator-builder' ); ?>">
-					</div>
-				</div>
-			</div>
-			<div class="row ccb-p-t-15">
 				<div class="col-12">
-					<div class="ccb-input-wrapper">
-						<span class="ccb-input-label"><?php esc_html_e( 'Description', 'cost-calculator-builder' ); ?></span>
-						<input type="text" class="ccb-heading-5 ccb-light" v-model.trim="checkboxField.description" placeholder="<?php esc_attr_e( 'Enter field description', 'cost-calculator-builder' ); ?>">
-					</div>
-				</div>
-			</div>
-			<div class="row ccb-p-t-15">
-				<div class="col-12">
-					<div class="ccb-options-container checkbox">
-						<div class="ccb-options-header">
-							<span><?php esc_html_e( 'Label', 'cost-calculator-builder' ); ?></span>
-							<span style="display: flex;"><?php esc_html_e( 'Value', 'cost-calculator-builder' ); ?>
-								<span class="ccb-options-tooltip">
-									<i class="ccb-icon-circle-question"></i>
-									<span class="ccb-options-tooltip__text"><?php esc_html_e( 'This value can be used for calculation purposes, Use numbers only' ); ?></span>
-								</span>
-							</span>
-							<span><?php esc_html_e( 'Hint', 'cost-calculator-builder' ); ?></span>
+					<div class="ccb-field-name">
+						<div class="ccb-field-name__header">
+							<div class="ccb-field-name__label"><?php esc_html_e( 'Element name', 'cost-calculator-builder' ); ?></div>
+							<div class="ccb-field-name__id">{{ checkboxField.alias }}</div>
 						</div>
-						<draggable
-								v-model="fieldOptions"
-								class="ccb-options"
-								draggable=".ccb-option"
-								:animation="200"
-								handle=".ccb-option-drag"
-						>
-							<div class="ccb-option" v-for="(option, index) in fieldOptions" :key="index">
-								<div class="ccb-option-drag" :class="{disabled: fieldOptions?.length === 1}">
-									<i class="ccb-icon-drag-dots"></i>
-								</div>
-								<div class="ccb-option-delete" @click.prevent="removeOption(index, option.optionValue)" :class="{disabled: fieldOptions?.length === 1}">
-									<i class="ccb-icon-close"></i>
-								</div>
-								<div class="ccb-option-inner label-input">
-									<div class="ccb-input-wrapper">
-										<input type="text" class="ccb-heading-5 ccb-light" v-model="option.optionText" placeholder="<?php esc_attr_e( 'Option label', 'cost-calculator-builder' ); ?>">
-									</div>
-								</div>
-								<div class="ccb-option-inner">
-									<div class="ccb-input-wrapper">
-										<input type="text" class="ccb-heading-5 ccb-light" :name="'option_' + index" min="0" step="1" @keyup="checkRequired('errorOptionValue' + index)" v-model="option.optionValue" placeholder="<?php esc_attr_e( 'Value', 'cost-calculator-builder' ); ?>">
-										<span @click="numberCounterActionForOption(index)" class="input-number-counter up"></span>
-										<span @click="numberCounterActionForOption(index, '-')" class="input-number-counter down"></span>
-									</div>
-									<span :id="'errorOptionValue' + index"></span>
-								</div>
-								<div class="ccb-option-inner hint-input">
-									<div class="ccb-input-wrapper">
-										<input type="text" class="ccb-heading-5 ccb-light" v-model="option.optionHint" placeholder="<?php esc_attr_e( 'Option hint', 'cost-calculator-builder' ); ?>">
-									</div>
-								</div>
-							</div>
-						</draggable>
-						<div class="ccb-option-actions">
-							<button class="ccb-button light" @click.prevent="addOption">
-								<i class="ccb-icon-Path-3453"></i>
-								<?php esc_html_e( 'Add new', 'cost-calculator-builder' ); ?>
-							</button>
+						<div class="ccb-field-name__body">
+							<input type="text" placeholder="<?php esc_attr_e( 'Enter field name', 'cost-calculator-builder' ); ?>" v-model.trim="checkboxField.label">
+							<input type="text" placeholder="<?php esc_attr_e( 'Enter field description', 'cost-calculator-builder' ); ?>" v-model.trim="checkboxField.description">
 						</div>
 					</div>
 				</div>
 			</div>
 			<div class="row ccb-p-t-15">
-				<div class="col-6 ccb-select-box">
+				<div class="col-12">
+					<div class="ccb-builder-radio-wrapper">
+						<span class="ccb-radio-label"><?php esc_html_e( 'Element Width (%)', 'cost-calculator-builder' ); ?></span>
+						<div class="ccb-radio-box">
+							<input class="ccb-builder-radio__radio" :id="'ccb-width-25-' + checkboxField.alias" type="radio" :name="'width-' + checkboxField.alias" value="25" v-model="checkboxField.width" @change="document.dispatchEvent(new CustomEvent('ccb_field_width_change', { detail: { alias: id.alias, width: 25 } }))">
+							<label class="ccb-builder-radio__option" :for="'ccb-width-25-' + checkboxField.alias"><?php esc_html_e( '25', 'cost-calculator-builder' ); ?></label>
+
+							<input class="ccb-builder-radio__radio" :id="'ccb-width-50-' + checkboxField.alias" type="radio" :name="'width-' + checkboxField.alias" value="50" v-model="checkboxField.width" @change="document.dispatchEvent(new CustomEvent('ccb_field_width_change', { detail: { alias: id.alias, width: 50 } }))">
+							<label class="ccb-builder-radio__option" :for="'ccb-width-50-' + checkboxField.alias"><?php esc_html_e( '50', 'cost-calculator-builder' ); ?></label>
+
+							<input class="ccb-builder-radio__radio" :id="'ccb-width-75-' + checkboxField.alias" type="radio" :name="'width-' + checkboxField.alias" value="75" v-model="checkboxField.width" @change="document.dispatchEvent(new CustomEvent('ccb_field_width_change', { detail: { alias: id.alias, width: 75 } }))">
+							<label class="ccb-builder-radio__option" :for="'ccb-width-75-' + checkboxField.alias"><?php esc_html_e( '75', 'cost-calculator-builder' ); ?></label>
+
+							<input class="ccb-builder-radio__radio" :id="'ccb-width-100-' + checkboxField.alias" type="radio" :name="'width-' + checkboxField.alias" value="100" v-model="checkboxField.width" @change="document.dispatchEvent(new CustomEvent('ccb_field_width_change', { detail: { alias: id.alias, width: 100 } }))">
+							<label class="ccb-builder-radio__option" :for="'ccb-width-100-' + checkboxField.alias"><?php esc_html_e( '100', 'cost-calculator-builder' ); ?></label>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row ccb-p-t-15">
+				<div class="col-12 ccb-select-box">
 					<span class="ccb-select-label"><?php esc_html_e( 'Default Value(s)', 'cost-calculator-builder' ); ?></span>
 					<div class="ccb-multi-select" tabindex="100" @click.prevent="multiselectShow(event)" :class="[{'disabled': isOptionEmpty}]">
 						<i :class="['ccb-icon-Path-3485 ccb-select-arrow', {'ccb-arrow-up': multiselectOpened}]"></i>
@@ -115,7 +81,7 @@
 						<span v-else class="anchor ccb-heading-5 ccb-light-3">
 								<?php esc_html_e( 'Select default values', 'cost-calculator-builder' ); ?>
 						</span>
-						<ul class="items">
+						<ul class="items" style="z-index: 88;">
 							<li v-if="option.optionText.length > 0 && option.optionValue.length > 0" class="option-item" @click="chooseDefaultValues( optionIndex, option )"
 								v-for="(option, optionIndex) in fieldOptions">
 								<input :checked="( checkboxField.default.length > 0 && checkboxField.default.split(',').includes(option.optionValue + '_' + optionIndex) )"
@@ -126,7 +92,7 @@
 						</ul>
 					</div>
 				</div>
-				<div class="col-6">
+				<div class="col-12 ccb-p-t-15">
 					<div class="ccb-select-box">
 						<span class="ccb-select-label"><?php esc_html_e( 'Type of Label in Total', 'cost-calculator-builder' ); ?></span>
 						<div class="ccb-select-wrapper">
@@ -141,6 +107,61 @@
 				</div>
 				
 			</div>
+			<div class="row ccb-p-t-15">
+				<div class="col-12">
+					<div class="ccb-options-container checkbox">
+						<draggable
+								v-model="fieldOptions"
+								class="ccb-options ccb-column-options"
+								draggable=".ccb-option"
+								:animation="200"
+								handle=".ccb-option-drag"
+						>
+							<div class="ccb-option" v-for="(option, index) in fieldOptions" :key="index">
+								<div class="ccb-option-drag" :class="{disabled: fieldOptions?.length === 1}">
+									<i class="ccb-icon-drag-dots"></i>
+								</div>
+								<div class="ccb-option-delete" @click.prevent="removeOption(index, option.optionValue)" :class="{disabled: fieldOptions?.length === 1}">
+									<i class="ccb-icon-close"></i>
+								</div>
+								<div class="ccb-option-inner label-input">
+									<div class="ccb-input-wrapper">
+										<span class="ccb-input-label"><?php esc_html_e( 'Label', 'cost-calculator-builder' ); ?></span>
+										<input type="text" v-model="option.optionText" placeholder="<?php esc_attr_e( 'Option label', 'cost-calculator-builder' ); ?>">
+									</div>
+								</div>
+								<div class="ccb-option-inner">
+									<div class="ccb-input-wrapper">
+										<span class="ccb-input-label">
+											<?php esc_html_e( 'Value', 'cost-calculator-builder' ); ?>
+											<span class="ccb-options-tooltip">
+												<i class="ccb-icon-circle-question"></i>
+												<span class="ccb-options-tooltip__text"><?php esc_html_e( 'This value can be used for calculation purposes, Use numbers only' ); ?></span>
+											</span>
+										</span>
+										<input type="text" :name="'option_' + index" min="0" step="1" @keyup="checkRequired('errorOptionValue' + index)" v-model="option.optionValue" placeholder="<?php esc_attr_e( 'Value', 'cost-calculator-builder' ); ?>">
+										<span @click="numberCounterActionForOption(index)" class="input-number-counter up"></span>
+										<span @click="numberCounterActionForOption(index, '-')" class="input-number-counter down"></span>
+									</div>
+									<span :id="'errorOptionValue' + index"></span>
+								</div>
+								<div class="ccb-option-inner hint-input">
+									<div class="ccb-input-wrapper">
+										<span class="ccb-input-label"><?php esc_html_e( 'Hint', 'cost-calculator-builder' ); ?></span>
+										<input type="text" v-model="option.optionHint" placeholder="<?php esc_attr_e( 'Option hint', 'cost-calculator-builder' ); ?>">
+									</div>
+								</div>
+							</div>
+						</draggable>
+						<div class="ccb-option-actions">
+							<button class="ccb-button light" @click.prevent="addOption">
+								<i class="ccb-icon-Path-3453"></i>
+								<?php esc_html_e( 'Add new', 'cost-calculator-builder' ); ?>
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
 			<div class="row ccb-p-t-15" v-if="errorsCount > 0">
 				<div class="col-12">
 					<div class="ccb-notice ccb-error">
@@ -152,36 +173,24 @@
 		</div>
 		<div class="container" v-show="tab === 'style' && typeof checkboxField.styles !== 'undefined'">
 			<?php if ( defined( 'CCB_PRO' ) ) : ?>
-			<div class="row ccb-p-t-15" style="align-items: flex-end !important;" v-if="checkboxField.styles">
-				<div class="col-6">
-					<div class="ccb-select-box">
-						<span class="ccb-select-label"><?php esc_html_e( 'Style', 'cost-calculator-builder' ); ?></span>
-						<div class="ccb-select-wrapper">
-							<i class="ccb-icon-Path-3485 ccb-select-arrow"></i>
-							<select class="ccb-select" v-model="checkboxField.styles.style" style="padding-right: 30px !important;">
-								<option v-for="opt in getCheckboxStyles" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
-							</select>
+			<div class="row ccb-p-t-15" v-if="checkboxField.styles">
+				<div class="col-12">
+					<div class="ccb-field-style-tabs">
+						<div class="ccb-field-style-tab" :class="{'active': checkboxField.styles.box_style === 'horizontal'}" @click="checkboxField.styles.box_style = 'horizontal'">
+							<?php esc_html_e( 'Horizontal', 'cost-calculator-builder' ); ?>
 						</div>
-					</div>
-				</div>
-				<div class="col-6">
-					<div class="ccb-select-box" :class="{'disabled': checkboxField.styles.style === 'boxed-with-description'}">
-						<span class="ccb-select-label"><?php esc_html_e( 'Box style', 'cost-calculator-builder' ); ?></span>
-						<div class="ccb-select-wrapper">
-							<i class="ccb-icon-Path-3485 ccb-select-arrow"></i>
-							<select class="ccb-select" v-model="checkboxField.styles.box_style" style="padding-right: 30px !important;">
-								<option value="vertical"><?php esc_html_e( 'Vertical', 'cost-calculator-builder' ); ?></option>
-								<option value="horizontal"><?php esc_html_e( 'Horizontal', 'cost-calculator-builder' ); ?></option>
-							</select>
+						<div class="ccb-field-style-tab" :class="{'active': checkboxField.styles.box_style === 'vertical'}" @click="checkboxField.styles.box_style = 'vertical'">
+							<?php esc_html_e( 'Vertical', 'cost-calculator-builder' ); ?>
 						</div>
 					</div>
 				</div>
 			</div>
-			<div class="row ccb-p-t-15">
+
+			<div class="row ccb-p-t-15" v-if="checkboxField.styles">
 				<div class="col-12">
-					<div class="ccb-style-preview">
-						<span class="ccb-style-preview-header"><?php esc_html_e( 'Style preview', 'cost-calculator-builder' ); ?></span>
-						<img :src="getCurrentImage">
+					<div class="ccb-style-preview ccb-field-style-preview" v-for="style in getCheckboxStyles" :key="style.value" :class="{'active': checkboxField.styles.style === style.value}" @click="checkboxField.styles.style = style.value">
+						<span class="ccb-style-preview-header">{{ style.label }}</span>
+						<img :src="style.img[checkboxField.styles.box_style]">
 					</div>
 				</div>
 			</div>
@@ -192,7 +201,7 @@
 							<input type="checkbox" v-model="checkboxField.apply_style_for_all"/>
 							<label></label>
 						</div>
-						<h6 class="ccb-heading-5" style="font-size: 14px"><?php esc_html_e( 'Apply this checkbox style to all checkbox fields in this calculator', 'cost-calculator-builder' ); ?></h6>
+						<h6 style="font-size: 14px"><?php esc_html_e( 'Apply this checkbox style to all checkbox fields in this calculator', 'cost-calculator-builder' ); ?></h6>
 					</div>
 				</div>
 			</div>
@@ -222,61 +231,61 @@
 			<?php endif; ?>
 		</div>
 		<div class="container" v-show="tab === 'options'">
-			<div class="row ccb-p-t-15">
-				<div class="col-6 ccb-p-t-10">
+			<div class="row ccb-p-t-15 switch-row">
+				<div class="col-12">
 					<div class="list-header">
 						<div class="ccb-switch">
 							<input type="checkbox" v-model="checkboxField.allowCurrency"/>
 							<label></label>
 						</div>
-						<h6 class="ccb-heading-5"><?php esc_html_e( 'Currency Sign', 'cost-calculator-builder' ); ?></h6>
+						<h6><?php esc_html_e( 'Currency Sign', 'cost-calculator-builder' ); ?></h6>
 					</div>
 				</div>
 				<?php if ( ccb_pro_active() ) : ?>
-					<div class="col-6 ccb-p-t-10">
+					<div class="col-12">
 						<div class="list-header">
 							<div class="ccb-switch">
 								<input type="checkbox" v-model="checkboxField.required"/>
 								<label></label>
 							</div>
-							<h6 class="ccb-heading-5"><?php esc_html_e( 'Required', 'cost-calculator-builder' ); ?></h6>
+							<h6><?php esc_html_e( 'Required', 'cost-calculator-builder' ); ?></h6>
 						</div>
 					</div>
 				<?php endif; ?>
-				<div class="col-6 ccb-p-t-10">
+				<div class="col-12">
 					<div class="list-header">
 						<div class="ccb-switch">
 							<input type="checkbox" v-model="checkboxField.allowRound"/>
 							<label></label>
 						</div>
-						<h6 class="ccb-heading-5"><?php esc_html_e( 'Round Value', 'cost-calculator-builder' ); ?></h6>
+						<h6><?php esc_html_e( 'Round Value', 'cost-calculator-builder' ); ?></h6>
 					</div>
 				</div>
-				<div class="col-6 ccb-p-t-10" v-if="!disableFieldHiddenByDefault(checkboxField)">
+				<div class="col-12" v-if="!disableFieldHiddenByDefault(checkboxField)">
 					<div class="list-header">
 						<div class="ccb-switch">
 							<input type="checkbox" v-model="checkboxField.hidden"/>
 							<label></label>
 						</div>
-						<h6 class="ccb-heading-5"><?php esc_html_e( 'Hidden by Default', 'cost-calculator-builder' ); ?></h6>
+						<h6><?php esc_html_e( 'Hidden by Default', 'cost-calculator-builder' ); ?></h6>
 					</div>
 				</div>
-				<div class="col-6 ccb-p-t-10" v-if="!disableFieldHiddenByDefault(checkboxField)">
+				<div class="col-12" v-if="!disableFieldHiddenByDefault(checkboxField)">
 					<div class="list-header">
 						<div class="ccb-switch">
 							<input type="checkbox" v-model="checkboxField.calculateHidden"/>
 							<label></label>
 						</div>
-						<h6 class="ccb-heading-5"><?php esc_html_e( 'Calculate hidden by default', 'cost-calculator-builder' ); ?></h6>
+						<h6><?php esc_html_e( 'Calculate hidden by default', 'cost-calculator-builder' ); ?></h6>
 					</div>
 				</div>
-				<div class="col-6 ccb-p-t-10">
+				<div class="col-12">
 					<div class="list-header">
 						<div class="ccb-switch">
 							<input type="checkbox" v-model="checkboxField.addToSummary"/>
 							<label></label>
 						</div>
-						<h6 class="ccb-heading-5"><?php esc_html_e( 'Show in Grand Total', 'cost-calculator-builder' ); ?></h6>
+						<h6><?php esc_html_e( 'Show in Grand Total', 'cost-calculator-builder' ); ?></h6>
 					</div>
 				</div>
 			</div>
@@ -286,12 +295,12 @@
 				</div>
 				<div class="col-6">
 					<div class="ccb-input-wrapper">
-						<input type="number" min="0" oninput="validity.valid || (value='');" class="ccb-heading-5 ccb-light" v-model.trim="checkboxField.minChecked" placeholder="<?php esc_attr_e( 'Min', 'cost-calculator-builder' ); ?>">
+						<input type="number" min="0" oninput="validity.valid || (value='');" v-model.trim="checkboxField.minChecked" placeholder="<?php esc_attr_e( 'Min', 'cost-calculator-builder' ); ?>">
 					</div>
 				</div>
 				<div class="col-6">
 					<div class="ccb-input-wrapper">
-						<input type="number" min="0" oninput="validity.valid || (value='');" class="ccb-heading-5 ccb-light" v-model.trim="checkboxField.checkedLength" placeholder="<?php esc_attr_e( 'Max', 'cost-calculator-builder' ); ?>">
+						<input type="number" min="0" oninput="validity.valid || (value='');" v-model.trim="checkboxField.checkedLength" placeholder="<?php esc_attr_e( 'Max', 'cost-calculator-builder' ); ?>">
 					</div>
 				</div>
 				<div class="col-6 ccb-p-t-10">
@@ -300,18 +309,18 @@
 							<input type="checkbox" v-model="checkboxField.fieldCurrency"/>
 							<label></label>
 						</div>
-						<h6 class="ccb-heading-5"><?php esc_html_e( 'Add a measuring unit', 'cost-calculator-builder' ); ?></h6>
+						<h6><?php esc_html_e( 'Add a measuring unit', 'cost-calculator-builder' ); ?></h6>
 					</div>
 				</div>
 			</div>
 			<div class="row row-currency" :class="{'disabled': !checkboxField.fieldCurrency}">
-				<div class="col-4">
+				<div class="col-6 ccb-p-t-10">
 					<div class="ccb-input-wrapper">
 						<span class="ccb-input-label"><?php esc_html_e( 'Unit Symbol', 'cost-calculator-builder' ); ?></span>
 						<input type="text" maxlength="18" v-model="fieldCurrency.currency" placeholder="<?php esc_attr_e( 'Enter unit symbol', 'cost-calculator-builder' ); ?>">
 					</div>
 				</div>
-				<div class="col-4">
+				<div class="col-6 ccb-p-t-10">
 					<div class="ccb-select-box">
 						<span class="ccb-select-label"><?php esc_html_e( 'Position', 'cost-calculator-builder' ); ?></span>
 						<div class="ccb-select-wrapper">
@@ -325,7 +334,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="col-4">
+				<div class="col-6 ccb-p-t-10">
 					<div class="ccb-select-box">
 						<span class="ccb-select-label"><?php esc_html_e( 'Thousands separator', 'cost-calculator-builder' ); ?></span>
 						<div class="ccb-select-wrapper">
@@ -339,7 +348,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="col-4">
+				<div class="col-6 ccb-p-t-10">
 					<div class="ccb-input-wrapper number">
 						<span class="ccb-input-label"><?php esc_html_e( 'Number of decimals', 'cost-calculator-builder' ); ?></span>
 						<div class="ccb-input-box">
@@ -349,7 +358,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="col-4">
+				<div class="col-6 ccb-p-t-10">
 					<div class="ccb-select-box">
 						<span class="ccb-select-label"><?php esc_html_e( 'Decimal separator', 'cost-calculator-builder' ); ?></span>
 						<div class="ccb-select-wrapper">
@@ -366,7 +375,7 @@
 				<div class="col-12">
 					<div class="ccb-input-wrapper">
 						<span class="ccb-input-label"><?php esc_html_e( 'Additional Classes', 'cost-calculator-builder' ); ?></span>
-						<textarea class="ccb-heading-5 ccb-light" v-model="checkboxField.additionalStyles" placeholder="<?php esc_attr_e( 'Set Additional Classes', 'cost-calculator-builder' ); ?>"></textarea>
+						<textarea v-model="checkboxField.additionalStyles" placeholder="<?php esc_attr_e( 'Set Additional Classes', 'cost-calculator-builder' ); ?>"></textarea>
 					</div>
 				</div>
 			</div>

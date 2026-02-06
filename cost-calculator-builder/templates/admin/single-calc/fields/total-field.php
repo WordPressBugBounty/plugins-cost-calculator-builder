@@ -1,9 +1,13 @@
 <div class="cbb-edit-field-container" v-if="open">
 	<div class="ccb-edit-field-header">
-		<span class="ccb-edit-field-title ccb-heading-3 ccb-bold"><?php esc_html_e( 'Formula', 'cost-calculator-builder' ); ?></span>
-		<div class="ccb-field-actions">
-			<button class="ccb-button default" @click="$emit( 'cancel' )"><?php esc_html_e( 'Cancel', 'cost-calculator-builder' ); ?></button>
-			<button class="ccb-button success" @click.prevent="save"><?php esc_html_e( 'Save', 'cost-calculator-builder' ); ?></button>
+		<div class="ccb-edit-field-header-left">
+			<span class="ccb-edit-field-title ccb-heading-3 ccb-bold">{{ getFieldTitle(totalField) || "Formula" }}</span>
+		</div>
+		<div class="ccb-edit-field-header-right">
+			<div class="ccb-save-wrapper">
+				<button class="ccb-button" @click.prevent="$emit( 'cancel' )"><?php esc_html_e( 'Cancel', 'cost-calculator-builder' ); ?></button>
+				<button class="ccb-button success" @click.prevent="save(totalField, id, index, totalField.alias)"><?php esc_html_e( 'Done', 'cost-calculator-builder' ); ?></button>
+			</div>
 		</div>
 	</div>
 	<div class="ccb-grid-box">
@@ -23,22 +27,20 @@
 			</div>
 		</div>
 		<div class="container" v-show="tab === 'element'">
-			<div class="row ccb-p-t-20">
-				<div class="col-12">
-					<div class="ccb-input-wrapper">
-						<span class="ccb-input-label"><?php esc_html_e( 'Title', 'cost-calculator-builder' ); ?></span>
-						<input type="text" class="ccb-heading-5 ccb-light" v-model.trim="totalField.label" placeholder="<?php esc_attr_e( 'Enter field name', 'cost-calculator-builder' ); ?>">
-					</div>
-				</div>
-			</div>
 			<div class="row ccb-p-t-15">
-				<div class="col-12">
-					<div class="ccb-input-wrapper">
-						<span class="ccb-input-label"><?php esc_html_e( 'Description', 'cost-calculator-builder' ); ?></span>
-						<input type="text" class="ccb-heading-5 ccb-light" placeholder="<?php esc_attr_e( 'Enter field description', 'cost-calculator-builder' ); ?>" v-model.trim="totalField.description">
+					<div class="col-12">
+						<div class="ccb-field-name">
+							<div class="ccb-field-name__header">
+								<div class="ccb-field-name__label"><?php esc_html_e( 'Element name', 'cost-calculator-builder' ); ?></div>
+								<div class="ccb-field-name__id">{{ totalField.alias }}</div>
+							</div>
+							<div class="ccb-field-name__body">
+								<input type="text" placeholder="<?php esc_attr_e( 'Enter field name', 'cost-calculator-builder' ); ?>" v-model.trim="totalField.label">
+								<input type="text" placeholder="<?php esc_attr_e( 'Enter field description', 'cost-calculator-builder' ); ?>" v-model.trim="totalField.description">
+							</div>
+						</div>
 					</div>
 				</div>
-			</div>
 			<div class="row ccb-p-t-15" v-if="errorMessage.length > 0">
 				<div class="col-12">
 					<div class="ccb-formula-message-errors">
@@ -61,65 +63,65 @@
 		</div>
 
 		<div class="container" v-show="tab === 'settings'">
-			<div class="row ccb-p-t-10">
-				<div class="col-6 ccb-p-t-10">
+			<div class="row ccb-p-t-10 switch-row">
+				<div class="col-12">
 					<div class="list-header">
 						<div class="ccb-switch">
 							<input type="checkbox" v-model="totalField.formulaView" />
 							<label></label>
 						</div>
-						<h6 class="ccb-heading-5"><?php esc_html_e( 'Legacy Formula View', 'cost-calculator-builder' ); ?></h6>
+						<h6><?php esc_html_e( 'Legacy Formula View', 'cost-calculator-builder' ); ?></h6>
 					</div>
 				</div>
-				<div class="col-6 ccb-p-t-10" v-if="!disableFieldHiddenByDefault(totalField)">
+				<div class="col-12" v-if="!disableFieldHiddenByDefault(totalField)">
 					<div class="list-header">
 						<div class="ccb-switch">
 							<input type="checkbox" v-model="totalField.hidden"/>
 							<label></label>
 						</div>
-						<h6 class="ccb-heading-5"><?php esc_html_e( 'Hidden by Default', 'cost-calculator-builder' ); ?></h6>
+						<h6><?php esc_html_e( 'Hidden by Default', 'cost-calculator-builder' ); ?></h6>
 					</div>
 				</div>
-				<div class="col-6 ccb-p-t-10">
+				<div class="col-12">
 					<div class="list-header">
 						<div class="ccb-switch">
 							<input type="checkbox" v-model="totalField.advancedJsCalculation"/>
 							<label></label>
 						</div>
-						<h6 class="ccb-heading-5"><?php esc_html_e( 'Advanced calculations', 'cost-calculator-builder' ); ?></h6>
+						<h6><?php esc_html_e( 'Advanced calculations', 'cost-calculator-builder' ); ?></h6>
 						<span class="ccb-options-tooltip">
 							<i class="ccb-icon-circle-question"></i>
 							<span class="ccb-options-tooltip__text"><?php esc_html_e( 'Enable for advanced calculations using JavaScript-based formulas. With over 9 totals, performance may slow. Disable for faster basic calculations.' ); ?></span>
 						</span>
 					</div>
 				</div>
-				<div class="col-6 ccb-p-t-10">
+				<div class="col-12">
 					<div class="list-header">
 						<div class="ccb-switch">
 							<input type="checkbox" v-model="totalField.calculateHidden"/>
 							<label></label>
 						</div>
-						<h6 class="ccb-heading-5"><?php esc_html_e( 'Calculate hidden by default', 'cost-calculator-builder' ); ?></h6>
+						<h6><?php esc_html_e( 'Calculate hidden by default', 'cost-calculator-builder' ); ?></h6>
 					</div>
 				</div>
-				<div class="col-6 ccb-p-t-10">
+				<div class="col-12">
 					<div class="list-header">
 						<div class="ccb-switch">
 							<input type="checkbox" v-model="totalField.fieldCurrency"/>
 							<label></label>
 						</div>
-						<h6 class="ccb-heading-5"><?php esc_html_e( 'Add a measuring unit', 'cost-calculator-builder' ); ?></h6>
+						<h6><?php esc_html_e( 'Add a measuring unit', 'cost-calculator-builder' ); ?></h6>
 					</div>
 				</div>
 			</div>
 			<div class="row row-currency" :class="{'disabled': !totalField.fieldCurrency}">
-				<div class="col-4">
+				<div class="col-6 ccb-p-t-10">
 					<div class="ccb-input-wrapper">
 						<span class="ccb-input-label"><?php esc_html_e( 'Unit Symbol', 'cost-calculator-builder' ); ?></span>
 						<input type="text" maxlength="18" v-model="fieldCurrency.currency" placeholder="<?php esc_attr_e( 'Enter unit symbol', 'cost-calculator-builder' ); ?>">
 					</div>
 				</div>
-				<div class="col-4">
+				<div class="col-6 ccb-p-t-10">
 					<div class="ccb-select-box">
 						<span class="ccb-select-label"><?php esc_html_e( 'Position', 'cost-calculator-builder' ); ?></span>
 						<div class="ccb-select-wrapper">
@@ -133,7 +135,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="col-4">
+				<div class="col-6 ccb-p-t-10">
 					<div class="ccb-select-box">
 						<span class="ccb-select-label"><?php esc_html_e( 'Thousands separator', 'cost-calculator-builder' ); ?></span>
 						<div class="ccb-select-wrapper">
@@ -147,7 +149,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="col-4">
+				<div class="col-6 ccb-p-t-10">
 					<div class="ccb-input-wrapper number">
 						<span class="ccb-input-label"><?php esc_html_e( 'Number of decimals', 'cost-calculator-builder' ); ?></span>
 						<div class="ccb-input-box">
@@ -157,7 +159,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="col-4">
+				<div class="col-6 ccb-p-t-10">
 					<div class="ccb-select-box">
 						<span class="ccb-select-label"><?php esc_html_e( 'Decimal separator', 'cost-calculator-builder' ); ?></span>
 						<div class="ccb-select-wrapper">
@@ -174,7 +176,7 @@
 				<div class="col-12">
 					<div class="ccb-input-wrapper">
 						<span class="ccb-input-label"><?php esc_html_e( 'Additional Classes', 'cost-calculator-builder' ); ?></span>
-						<textarea class="ccb-heading-5 ccb-light" v-model="totalField.additionalStyles" placeholder="<?php esc_attr_e( 'Set Additional Classes', 'cost-calculator-builder' ); ?>"></textarea>
+						<textarea v-model="totalField.additionalStyles" placeholder="<?php esc_attr_e( 'Set Additional Classes', 'cost-calculator-builder' ); ?>"></textarea>
 					</div>
 				</div>
 			</div>

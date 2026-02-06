@@ -84,6 +84,16 @@ class CCBFieldsHelper {
 				'icon'        => 'ccb-icon-Subtraction-7',
 				'description' => __( 'Text field', 'cost-calculator-builder' ),
 				'sort_type'   => 'type',
+				'width'       => 100,
+			),
+			array(
+				'name'        => __( 'Section', 'cost-calculator-builder' ),
+				'alias'       => 'section',
+				'type'        => 'section',
+				'tag'         => 'cost-section',
+				'icon'        => 'ccb-icon-group-element',
+				'description' => __( 'Section', 'cost-calculator-builder' ),
+				'sort_type'   => 'grouping',
 			),
 			array(
 				'name'        => __( 'Quantity field', 'cost-calculator-builder' ),
@@ -93,6 +103,7 @@ class CCBFieldsHelper {
 				'icon'        => 'ccb-icon-Subtraction-6',
 				'description' => __( 'Quantity field', 'cost-calculator-builder' ),
 				'sort_type'   => 'type',
+				'width'       => 100,
 			),
 			array(
 				'name'        => __( 'Validated form', 'cost-calculator-builder' ),
@@ -102,6 +113,7 @@ class CCBFieldsHelper {
 				'icon'        => 'ccb-icon-Icon-element',
 				'description' => __( 'Validated form', 'cost-calculator-builder' ),
 				'sort_type'   => 'type',
+				'width'       => 100,
 			),
 			array(
 				'name'        => __( 'Dropdown', 'cost-calculator-builder' ),
@@ -111,6 +123,7 @@ class CCBFieldsHelper {
 				'icon'        => 'ccb-icon-dropdown-2',
 				'description' => __( 'Dropdown list', 'cost-calculator-builder' ),
 				'sort_type'   => 'selection',
+				'width'       => 100,
 			),
 			array(
 				'name'        => __( 'Image dropdown', 'cost-calculator-builder' ),
@@ -120,6 +133,7 @@ class CCBFieldsHelper {
 				'icon'        => 'ccb-icon-dropdown-2',
 				'description' => __( 'Image dropdown', 'cost-calculator-builder' ),
 				'sort_type'   => 'selection',
+				'width'       => 100,
 			),
 			array(
 				'name'        => __( 'Radio select', 'cost-calculator-builder' ),
@@ -129,6 +143,7 @@ class CCBFieldsHelper {
 				'icon'        => 'ccb-icon-Path-3511',
 				'description' => __( 'Radio select', 'cost-calculator-builder' ),
 				'sort_type'   => 'selection',
+				'width'       => 100,
 			),
 			array(
 				'name'        => __( 'Image radio', 'cost-calculator-builder' ),
@@ -138,6 +153,7 @@ class CCBFieldsHelper {
 				'icon'        => 'ccb-icon-Path-3511',
 				'description' => __( 'Image radio', 'cost-calculator-builder' ),
 				'sort_type'   => 'selection',
+				'width'       => 100,
 			),
 			array(
 				'name'        => __( 'Switch toggle', 'cost-calculator-builder' ),
@@ -147,6 +163,7 @@ class CCBFieldsHelper {
 				'icon'        => 'ccb-icon-Path-3515',
 				'description' => __( 'Switch toggle', 'cost-calculator-builder' ),
 				'sort_type'   => 'checkbox',
+				'width'       => 100,
 			),
 			array(
 				'name'        => __( 'Checkbox', 'cost-calculator-builder' ),
@@ -156,6 +173,7 @@ class CCBFieldsHelper {
 				'icon'        => 'ccb-icon-Path-3512',
 				'description' => __( 'Checkbox', 'cost-calculator-builder' ),
 				'sort_type'   => 'checkbox',
+				'width'       => 100,
 			),
 			array(
 				'name'        => __( 'Image checkbox', 'cost-calculator-builder' ),
@@ -165,6 +183,7 @@ class CCBFieldsHelper {
 				'icon'        => 'ccb-icon-Path-3512',
 				'description' => __( 'Image checkbox', 'cost-calculator-builder' ),
 				'sort_type'   => 'checkbox',
+				'width'       => 100,
 			),
 			array(
 				'name'        => __( 'Date picker', 'cost-calculator-builder' ),
@@ -174,6 +193,7 @@ class CCBFieldsHelper {
 				'icon'        => 'ccb-icon-Path-3513',
 				'description' => __( 'Date picker', 'cost-calculator-builder' ),
 				'sort_type'   => 'date',
+				'width'       => 100,
 			),
 			array(
 				'name'        => __( 'Time picker', 'cost-calculator-builder' ),
@@ -183,6 +203,7 @@ class CCBFieldsHelper {
 				'icon'        => 'ccb-icon-ccb_time_picker',
 				'description' => __( 'Time picker', 'cost-calculator-builder' ),
 				'sort_type'   => 'date',
+				'width'       => 100,
 			),
 			array(
 				'name'        => __( 'Basic slider', 'cost-calculator-builder' ),
@@ -192,6 +213,7 @@ class CCBFieldsHelper {
 				'icon'        => 'ccb-icon-Union-5',
 				'description' => __( 'Basic slider', 'cost-calculator-builder' ),
 				'sort_type'   => 'slider',
+				'width'       => 100,
 			),
 			array(
 				'name'        => __( 'Multi range', 'cost-calculator-builder' ),
@@ -201,6 +223,7 @@ class CCBFieldsHelper {
 				'icon'        => 'ccb-icon-Union-6',
 				'description' => __( 'Multi range', 'cost-calculator-builder' ),
 				'sort_type'   => 'slider',
+				'width'       => 100,
 			),
 			array(
 				'name'        => __( 'File upload', 'cost-calculator-builder' ),
@@ -211,6 +234,7 @@ class CCBFieldsHelper {
 				'description' => __( 'File upload', 'cost-calculator-builder' ),
 				'formats'     => self::get_file_field_format_based_on_permission(),
 				'sort_type'   => 'other',
+				'width'       => 100,
 			),
 			array(
 				'name'        => __( 'HTML', 'cost-calculator-builder' ),
@@ -220,6 +244,7 @@ class CCBFieldsHelper {
 				'icon'        => 'ccb-icon-Path-3517',
 				'description' => __( 'HTML element', 'cost-calculator-builder' ),
 				'sort_type'   => 'other',
+				'width'       => 100,
 			),
 			array(
 				'name'        => __( 'Geolocation', 'cost-calculator-builder' ),
@@ -229,6 +254,7 @@ class CCBFieldsHelper {
 				'icon'        => 'ccb-icon-location',
 				'description' => __( 'Geolocation', 'cost-calculator-builder' ),
 				'sort_type'   => 'other',
+				'width'       => 100,
 			),
 			array(
 				'name'        => __( 'Repeater', 'cost-calculator-builder' ),

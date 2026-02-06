@@ -17,7 +17,10 @@ import { useSubmissionStore } from "@/widget/app/providers/stores/submissionStor
 import { useOrderFormStore } from "@/widget/app/providers/stores/orderFormStore.ts";
 import { usePaymentAfterSubmitStore } from "@/widget/app/providers/stores/paymentAfterSubmit";
 import { useDiscounts } from "@/widget/actions/discounts/composable/useDiscounts.ts";
-import { IPageBreakerField } from "@/widget/shared/types/fields/fields.type";
+import {
+  IPageBreakerField,
+  ISectionField,
+} from "@/widget/shared/types/fields/fields.type";
 import { getNonce } from "@/widget/shared/utils/nonce.utils.ts";
 import { handleCalcAnalyticsRequest } from "@/widget/shared/api/handlerCalcAnalytics.ts";
 import { useTranslationsStore } from "./translationsStore";
@@ -103,36 +106,46 @@ export const useFieldsStore = () => {
       getSummaryList(): Field[] {
         const settings = useSettingsStore();
         const fields = Array.from(this.fields.values());
-
         if (Array.isArray(fields)) {
           const excludeFields = ["total", "line", "html"];
           let result: Field[] = [];
-          fields.forEach((f: Field) => {
-            if (f.fieldName.includes("repeater")) {
-              f.addToSummary = true;
-            }
+          const sectionFields = fields.filter((f): f is ISectionField => {
+            return "fields" in f && f.fields instanceof Map;
+          });
+          sectionFields.forEach((sectionField) => {
+            sectionField.fields.forEach((f: Field) => {
+              if (f.fieldName.includes("repeater")) {
+                f.addToSummary = true;
+              }
 
-            if (f.fieldName === "group" && "groupElements" in f && !f.hidden) {
-              const groupField = f as IGroupField;
-              groupField.groupElements.forEach(
-                (groupFieldMap: Map<string, Field>) => {
-                  Array.from(groupFieldMap.values()).forEach((field: Field) => {
-                    if (
-                      !excludeFields.includes(field.fieldName) &&
-                      field.addToSummary
-                    ) {
-                      result.push(field);
-                    }
-                  });
-                },
-              );
-              return;
-            }
+              if (
+                f.fieldName === "group" &&
+                "groupElements" in f &&
+                !f.hidden
+              ) {
+                const groupField = f as IGroupField;
+                groupField.groupElements.forEach(
+                  (groupFieldMap: Map<string, Field>) => {
+                    Array.from(groupFieldMap.values()).forEach(
+                      (field: Field) => {
+                        if (
+                          !excludeFields.includes(field.fieldName) &&
+                          field.addToSummary
+                        ) {
+                          result.push(field);
+                        }
+                      },
+                    );
+                  },
+                );
+                return;
+              }
 
-            if (excludeFields.includes(f.fieldName) || !f.addToSummary) {
-              return;
-            }
-            result.push(f);
+              if (excludeFields.includes(f.fieldName) || !f.addToSummary) {
+                return;
+              }
+              result.push(f);
+            });
           });
 
           if (!settings.general?.hideEmpty) {
@@ -162,20 +175,38 @@ export const useFieldsStore = () => {
                 return f.value;
               }
             });
-            result = result.filter((f) =>
-              ["validated_form", "text"].includes(f.fieldName)
-                ? f.displayValue
-                : f.fieldName === "geolocation" &&
-                    "geoType" in f &&
-                    f.geoType === "multiplyLocation"
-                  ? f.displayValue
-                  : f.value ||
-                    (f.fieldName === "file_upload" &&
-                      "allowPrice" in f &&
-                      "files" in f &&
-                      Array.isArray(f.files) &&
-                      f.files.length > 0),
-            );
+
+            result = result.filter((f) => {
+              if (["validated_form", "text"].includes(f.fieldName)) {
+                return f.displayValue;
+              } else if (
+                f.fieldName === "geolocation" &&
+                "geoType" in f &&
+                f.geoType === "multiplyLocation"
+              ) {
+                return f.displayValue;
+              } else if (
+                f.fieldName === "file_upload" &&
+                "allowPrice" in f &&
+                "files" in f &&
+                Array.isArray(f.files) &&
+                f.files.length > 0
+              ) {
+                return f.files.length > 0;
+              } else {
+                if (
+                  "summaryView" in f &&
+                  [
+                    "show_label_calculable",
+                    "show_label_not_calculable",
+                  ].includes(f.summaryView)
+                ) {
+                  return true;
+                } else {
+                  return f.value;
+                }
+              }
+            });
           }
 
           return result;
@@ -190,13 +221,21 @@ export const useFieldsStore = () => {
         const fields = Array.from(this.fields.values());
 
         if (Array.isArray(fields)) {
-          let totals = fields?.filter((f: { fieldName: string }) => {
-            return (
-              f.fieldName === "total" ||
-              (f.fieldName === "repeater" &&
-                ((f as IRepeaterField).sumAllAvailable ||
-                  (f as IRepeaterField).enableFormula))
-            );
+          const totals: Field[] = [];
+
+          fields.forEach((item) => {
+            if ("fields" in item && item.fields instanceof Map) {
+              item.fields.forEach((f) => {
+                if (
+                  f.fieldName === "total" ||
+                  (f.fieldName === "repeater" &&
+                    (((f as IRepeaterField).sumAllAvailable as boolean) ||
+                      ((f as IRepeaterField).enableFormula as boolean)))
+                ) {
+                  totals.push(f);
+                }
+              });
+            }
           });
 
           if (totals.length === 0) {
@@ -204,7 +243,7 @@ export const useFieldsStore = () => {
           }
 
           if (!settings.general?.hideEmpty) {
-            totals = totals.filter((f) => f.value);
+            return totals.filter((f) => f.value);
           }
 
           return totals;
@@ -229,27 +268,32 @@ export const useFieldsStore = () => {
         let result: Field[] = [];
         if (this.getPageBreakEnabled) {
           const temp: Array<string | string[]> =
-            this.getActivePage?.groupElements?.map((element) => {
-              if (
-                "alias" in element &&
-                "groupElements" in element &&
-                element?.alias &&
-                ((element?.alias as string)?.includes("group") ||
-                  (element?.alias as string)?.includes("repeater"))
-              ) {
-                if (Array.isArray(element.groupElements)) {
-                  return element.groupElements.map((groupElement) => {
-                    if ("alias" in groupElement) {
-                      return groupElement.alias as string;
+            this.getActivePage?.groupElements?.flatMap((section) => {
+              if ("fields" in section && Array.isArray(section.fields)) {
+                return section.fields.map((element: Field) => {
+                  if (
+                    "alias" in element &&
+                    "groupElements" in element &&
+                    element?.alias &&
+                    ((element?.alias as string)?.includes("group") ||
+                      (element?.alias as string)?.includes("repeater"))
+                  ) {
+                    if (Array.isArray(element.groupElements)) {
+                      return element.groupElements.map((groupElement) => {
+                        if ("alias" in groupElement) {
+                          return groupElement.alias as string;
+                        }
+                        return "";
+                      });
                     }
                     return "";
-                  });
-                }
-                return "";
-              } else if ("alias" in element) {
-                return element.alias as string;
+                  } else if ("alias" in element) {
+                    return element.alias as string;
+                  }
+                  return "";
+                });
               }
-              return "";
+              return [];
             }) || [];
 
           const pageBreakerFieldAliases = temp.flat();
@@ -313,23 +357,39 @@ export const useFieldsStore = () => {
                 return;
               }
 
-              if (item.type === "Group" && item.groupElements) {
-                const createdField = fieldsInstance.addField(item);
-                if (createdField) {
-                  createdField.hidden = item.hidden;
-                  this.fields.set(item.alias, createdField);
-                }
+              if (item.fields && item.fields.length > 0) {
+                item.fields.forEach((field) => {
+                  if (field.type === "Group") {
+                    const createdField = fieldsInstance.addField(field);
+                    if (createdField) {
+                      createdField.hidden = field.hidden;
+                      this.fields.set(field.alias, createdField);
+                    }
 
-                item.groupElements.forEach((inner_item) => {
-                  if (inner_item.type === "Total") {
-                    const createField = fieldsInstance.addField(inner_item);
-                    createdField.hidden = inner_item.hidden;
-                    this.fields.set(inner_item.alias, createField);
+                    if (field.groupElements) {
+                      field.groupElements.forEach((innerField) => {
+                        if (innerField.type === "Total") {
+                          const innerCreatedField =
+                            fieldsInstance.addField(innerField);
+                          if (innerCreatedField) {
+                            innerCreatedField.hidden = innerField.hidden;
+                            this.fields.set(
+                              innerField.alias,
+                              innerCreatedField,
+                            );
+                          }
+                        }
+
+                        if (field.hidden) {
+                          innerField.hidden = field.hidden;
+                        }
+                      });
+                    }
                   }
+
+                  const createField = fieldsInstance.addField(item);
+                  this.fields.set(item.alias, createField);
                 });
-              } else {
-                const createField = fieldsInstance.addField(item);
-                this.fields.set(item.alias, createField);
               }
             });
             this.setPageBreakEnabled(true);
@@ -347,16 +407,41 @@ export const useFieldsStore = () => {
                 this.fields.set(item.alias, createdField);
               }
             });
-          } else {
-            const createdField = fieldsInstance.addField(field);
-            if (createdField) {
-              this.fields.set(field.alias, createdField);
-            }
           }
         }
 
+        this.enforceGroupAccordionCollapsible();
+
         this.recalculateTotals();
         fieldsInstance.triggerConditions();
+      },
+
+      enforceGroupAccordionCollapsible(): void {
+        const groupFields: IGroupField[] = [];
+
+        this.getFields.forEach((section: Field) => {
+          if ("fields" in section && section.fields instanceof Map) {
+            section.fields.forEach((f: Field) => {
+              if (f.fieldName === "group") {
+                groupFields.push(f as IGroupField);
+              }
+            });
+          } else if (section.fieldName === "group") {
+            groupFields.push(section as IGroupField);
+          }
+        });
+
+        if (groupFields.length <= 1) return;
+        const hasAccordion = groupFields.some((g) => !!g.accordion);
+        if (!hasAccordion) return;
+
+        groupFields.forEach((g) => {
+          g.accordion = true;
+          g.collapsible = true;
+          if ("alias" in g && g.alias) {
+            this.updateField(g.alias, g, false);
+          }
+        });
       },
 
       updateField(
@@ -446,17 +531,34 @@ export const useFieldsStore = () => {
           });
         }
 
-        const fieldsArray = this.getFields;
+        const fieldsArray: Field[] = [];
+        this.getFields.forEach((field) => {
+          if ("fields" in field && field.fields instanceof Map) {
+            field.fields.forEach((f) => {
+              fieldsArray.push(f);
+            });
+          }
+
+          if (field.fieldName === "total") {
+            fieldsArray.push(field);
+          }
+        });
+
         const repeaterFields: IRepeaterField[] = fieldsArray.filter(
           (f: Field) => f.fieldName === "repeater",
         ) as IRepeaterField[];
 
-        let repeaterValue = 0;
         for (let repeater of repeaterFields) {
           if (repeater.sumAllAvailable) {
+            let repeaterValue = 0;
             for (const repeaterElement of repeater.groupElements) {
               for (const field of repeaterElement.values()) {
-                repeaterValue += field.value || 0;
+                const liveField = this.fields.get(field.alias) as
+                  | Field
+                  | undefined;
+                const liveValue =
+                  (liveField?.value as number) || (field.value as number) || 0;
+                repeaterValue += liveValue;
               }
             }
 
@@ -474,21 +576,31 @@ export const useFieldsStore = () => {
               repeater.originalFormula = repeater.formula;
             }
 
-            for (const repeaterElement of repeater.groupElements) {
+            for (const groupElement of repeater.groupElements) {
               repeaterFormulas[i] = repeater.originalFormula;
               const fieldsAliasList =
                 repeaterFormulas[i].match(/\w+_field_id_\d+/g) || [];
 
               fieldsAliasList.forEach((alias: string) => {
-                for (const field of repeaterElement.values()) {
+                let valueForAlias = 0;
+
+                for (const field of groupElement.values()) {
                   if (field.alias === alias) {
-                    let value = field.value || 0;
-                    repeaterFormulas[i] = repeaterFormulas[i].replace(
-                      new RegExp("\\b" + alias + "\\b", "g"),
-                      value.toString(),
-                    );
+                    const liveField = this.fields.get(field.alias) as
+                      | Field
+                      | undefined;
+
+                    valueForAlias =
+                      (liveField?.value as number) ??
+                      ((field.value as number) || 0);
+                    break;
                   }
                 }
+
+                repeaterFormulas[i] = repeaterFormulas[i].replace(
+                  new RegExp("\\b" + alias + "\\b", "g"),
+                  valueForAlias.toString(),
+                );
               });
 
               i++;
@@ -561,6 +673,14 @@ export const useFieldsStore = () => {
                     }
                   });
                 });
+              } else if ("fields" in el && el.fields instanceof Map) {
+                el.fields.forEach((field) => {
+                  if (!field.hidden || field.calculateHidden) {
+                    if (!result.some((r) => r.alias === field.alias)) {
+                      result.push(field);
+                    }
+                  }
+                });
               } else {
                 if (!result.some((r) => r.alias === el.alias)) {
                   result.push(el);
@@ -594,11 +714,26 @@ export const useFieldsStore = () => {
         const mergedFieldsMap: Map<string, Field> = new Map();
 
         for (const [key, field] of fieldsMap) {
-          if ("groupElements" in field) {
-            for (const repeaterElement of field.groupElements) {
-              mergedFieldsMap.set(key, field);
-              for (const field of repeaterElement.values()) {
-                mergedFieldsMap.set(field.alias, field);
+          if ("fields" in field && field.fields instanceof Map) {
+            for (const sectionField of field.fields.values()) {
+              if (sectionField.fieldName !== "total") {
+                mergedFieldsMap.set(sectionField.alias, sectionField);
+                if (
+                  "groupElements" in sectionField &&
+                  Array.isArray(sectionField.groupElements)
+                ) {
+                  for (const groupElement of sectionField.groupElements) {
+                    if (groupElement instanceof Map) {
+                      for (const field of groupElement.values()) {
+                        if ("alias" in field) {
+                          if (!field.alias.includes("total")) {
+                            mergedFieldsMap.set(field.alias, field);
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
               }
             }
           } else {
@@ -683,6 +818,52 @@ export const useFieldsStore = () => {
           });
 
           document.dispatchEvent(event);
+
+          const totals = formulas.map((f: any) => ({
+            alias: f.alias,
+            label: f.label,
+            fieldName: f.fieldName,
+            value: f.value || 0,
+            displayValue: f.displayValue || "",
+            originalValue: f.originalValue ?? f.value ?? 0,
+            originalDisplayView: f.originalDisplayView || "",
+            discount: f.discount || null,
+          }));
+
+          const cid = appStore.getCalcId;
+
+          const w = window as any;
+          w.ccbTotalsState = w.ccbTotalsState || {};
+          w.ccbTotalsState[cid || ""] = w.ccbTotalsState[cid || ""] || {};
+          totals.forEach((t: any) => {
+            w.ccbTotalsState[cid || ""][t.alias] = t;
+          });
+
+          w.ccbTotals = w.ccbTotals || {
+            get: (alias: string, calcId?: number) => {
+              const id = calcId ?? cid;
+              return w.ccbTotalsState?.[id || ""]?.[alias];
+            },
+            getAll: (calcId?: number) => {
+              const id = calcId ?? cid;
+              const map = w.ccbTotalsState?.[id || ""] || {};
+              return Object.keys(map).map((k) => map[k]);
+            },
+          };
+
+          document.dispatchEvent(
+            new CustomEvent("ccb_totals_update", {
+              detail: { totals, calcId: cid },
+            }),
+          );
+
+          totals.forEach((t: any) => {
+            document.dispatchEvent(
+              new CustomEvent("ccb_total_update", {
+                detail: { ...t, calcId: cid || "" },
+              }),
+            );
+          });
         });
       },
 
@@ -703,13 +884,22 @@ export const useFieldsStore = () => {
         let fields = this.getFields;
 
         fields.forEach((el) => {
-          if ("groupElements" in el && Array.isArray(el.groupElements)) {
-            result.push(el);
-            el.groupElements.forEach((inner: Map<string, Field>) => {
-              result.push(...Array.from(inner.values()));
+          if ("fields" in el) {
+            el.fields.forEach((sectionField: Field) => {
+              if (
+                "groupElements" in sectionField &&
+                Array.isArray(sectionField.groupElements)
+              ) {
+                result.push(sectionField);
+                sectionField.groupElements.forEach(
+                  (inner: Map<string, Field>) => {
+                    result.push(...Array.from(inner.values()));
+                  },
+                );
+              } else {
+                result.push(sectionField);
+              }
             });
-          } else {
-            result.push(el);
           }
         });
 
@@ -722,47 +912,75 @@ export const useFieldsStore = () => {
 
       parseContactFormDescriptions(): string {
         const fieldsArray = this.getFields;
-        const allFields: Field[] = [];
-
+        let allFields: Field[] = [];
+        const settingsStore = useSettingsStore();
         const exceptions: string[] = ["total", "html", "line"];
 
-        for (const field of fieldsArray) {
-          if (exceptions.includes(field.fieldName)) {
-            continue;
-          }
+        for (const section of fieldsArray) {
+          if (section.alias.includes("section")) {
+            if ("fields" in section && section.fields instanceof Map) {
+              for (const field of section.fields.values()) {
+                if (exceptions.includes(field.fieldName)) {
+                  continue;
+                }
 
-          if (
-            (field.fieldName === "datePicker" ||
-              field.fieldName === "timePicker") &&
-            field.displayValue !== ""
-          ) {
-            allFields.push(field);
-            continue;
-          }
+                if (
+                  (field.fieldName === "datePicker" ||
+                    field.fieldName === "timePicker") &&
+                  field.displayValue !== ""
+                ) {
+                  allFields.push(field);
+                  continue;
+                }
 
-          if (
-            field.fieldName === "validated_form" &&
-            field.displayValue !== ""
-          ) {
-            allFields.push(field);
-          }
+                if (
+                  field.fieldName === "validated_form" &&
+                  field.displayValue !== ""
+                ) {
+                  allFields.push(field);
+                }
 
-          if (
-            (["text"].includes(field.fieldName) && field.displayValue === "") ||
-            !field.value
-          ) {
-            continue;
-          }
+                if (
+                  ["text"].includes(field.fieldName) &&
+                  field.displayValue === ""
+                ) {
+                  continue;
+                }
 
-          if (field.fieldName === "repeater" && "groupElements" in field) {
-            allFields.push(field);
-            for (const repeaterElement of field.groupElements) {
-              for (const field of repeaterElement.values()) {
-                allFields.push(field);
+                if (
+                  field.fieldName === "group" &&
+                  "groupElements" in field &&
+                  Array.isArray(field.groupElements)
+                ) {
+                  for (const groupElement of field.groupElements) {
+                    for (const field of groupElement.values()) {
+                      allFields.push(field);
+                    }
+                  }
+
+                  continue;
+                }
+
+                if (
+                  field.fieldName === "repeater" &&
+                  "groupElements" in field
+                ) {
+                  allFields.push(field);
+                  for (const repeaterElement of field.groupElements) {
+                    for (const field of repeaterElement.values()) {
+                      allFields.push(field);
+                    }
+                  }
+                } else {
+                  allFields.push(field);
+                }
+                if (!settingsStore.general?.hideEmpty) {
+                  allFields = allFields.filter(
+                    (f) => f.value || f.displayValue,
+                  );
+                }
               }
             }
-          } else {
-            allFields.push(field);
           }
         }
 

@@ -5,8 +5,8 @@ Donate link: https://stylemixthemes.com
 Tags: cost calculator, calculator, calculator form builder, cost estimation, shipping calculator, taxi fare calculator, price calculator, tax calculation, cost, calc, cost calc, calc builder
 Requires at least: 6.2
 Requires PHP: 8.0.3
-Tested up to: 6.8.3
-Stable tag: 3.5.33
+Tested up to: 6.9
+Stable tag: 3.6.13
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -207,6 +207,81 @@ Also, you can import the demo sample using Tools -> Import -> WordPress Import.
 Demo sample XML file included in plugin archive.
 
 == Changelog ==
+
+= 3.6.13 =
+- Fix: Fixed default values not working for Dropdown and Radio when Option Values are left empty.
+
+= 3.6.12 =
+- Fix: Fixed Default Value from Quantity field using an incorrect value when Multiply by Unit Price was enabled and Skeleton Preloader icon was used.
+
+= 3.6.11 =
+- Fix: Fixed Validated Form with Phone Type resetting when returning to its page in the Page Breaker. (Pro)
+- Fix: Fixed required validator not working for File Upload with Required setting enabled. (Pro)
+- Fix: Fixed Checkbox, Image Checkbox, and Switch Toggle data not appearing in Analytics. (Pro)
+- Fix: Fixed Page Breaker conditions not working properly. (Pro)
+
+= 3.6.10 =
+- Fix: Fixed incorrect display of Quick Tour steps. 
+- Fix: Fixed rearranging options in Dropdown, Radio, and Checkbox elements causing the element to close.
+
+= 3.6.9 =
+- Fix: Fixed minor visual issues in the Element Settings sidebar.
+- Fix: Fixed minor visual issues with Section Styles.
+
+= 3.6.8 =
+- Fix: Minor bugfixes
+
+= 3.6.7 =
+- Update: Compatibility with WordPress 6.9
+- Enhancement: Added the ability to edit Total Summary settings directly inside the calculator builder.
+- Fix: Fixed checkbox hints displaying incorrectly on mobile.
+- Fix: Fixed button color customization not applying in Preview.
+- Fix: Fixed slider indicators always appearing on mobile.
+- Fix: Fixed how the HTML element handles embedded scripts.
+
+= 3.6.6 =
+- Enhancement: Improved the UI of the elements and settings sidebar and moved it to the right side of the screen.
+
+= 3.6.5 =
+- Fix: Minor bug fixes.
+
+= 3.6.4 =
+- Fix: Fixed an issue where the Woo Checkout payment method was enabled after import when WooCommerce was not installed or was disabled. (Pro)
+- Fix: Fixed text being cut in half in PDFs when spanning across pages. (Pro)
+- Fix: Fixed PDFs generated from Orders displaying only the formulas selected for the Total Field Element. (Pro)
+- Fix: Fixed uploaded files overriding existing files with the same name. (Pro)
+- Fix: Fixed the issue where elements inside a Group were still used in calculations after being hidden. (Pro)
+- Fix: Fixed files not uploading when Woo Checkout is used. (Pro)
+
+= 3.6.3 =
+- Update: Redesigned the UI of the Orders List and Order Details for a clearer and more intuitive order management experience. (Pro)
+- Update: The filtering system for the Orders table has been updated for better usability. (Pro)
+- New: Added display configuration settings for both the Orders table and the Order Details, allowing admins to customize what information is shown. (Pro)
+- New: Introduced the ability to create custom order statuses, enabling more flexible order workflows. (Pro)
+- New: Added support for adding order notes, allowing admins to leave internal comments or important information for each order. (Pro) 
+
+= 3.6.2 =
+- Fix: Fixed incorrect display of the calculator on mobile devices.
+- Fix: Fixed Sections failing to load on New Blank Calculators without the Pro version.
+- Fix: Fixed Geolocation with Ask for User’s Location updating the starting location to the user’s first input. (Pro)
+- Fix: Fixed uploaded file being hidden when changing pages in the Page Breaker. (Pro)
+
+= 3.6.1 =
+- Fix: Minor bug fixes
+- Fix: Fixed calculator with Page Breaker stopping working after returning from the Confirmation Page. (Pro)
+- Fix: Fixed outgoing conditions from Geolocation not working when Ask to choose from multiple locations was used. (Pro)
+- Fix: Fixed Repeater element appearing in the list of elements for Conditions. (Pro)
+- Fix: Fixed Set Time and Set Time and Disable actions in Conditions not working for Time Picker on Page Breaker. (Pro)
+- Fix: Fixed File Upload price displaying even when Set Price for File Uploads was disabled. (Pro)
+
+= 3.6.0 =
+- New: A fully redesigned Calculator Builder introduces a new, more intuitive approach to creating and managing calculators, making setup faster, clearer, and more flexible.
+
+= 3.5.35 =
+- Fix: Minor bug fixes.
+
+= 3.5.34 =
+- Fix: Fixed Decimal Separator in the Quantity field changing to a dot during manual input.
 
 = 3.5.33 =
 - Fix: Fixed сalculator responsiveness issues on mobile devices.

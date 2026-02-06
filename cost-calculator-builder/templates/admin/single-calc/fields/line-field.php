@@ -1,9 +1,13 @@
 <div class="cbb-edit-field-container">
 	<div class="ccb-edit-field-header">
-		<span class="ccb-edit-field-title ccb-heading-3 ccb-bold"><?php esc_html_e( 'Divider', 'cost-calculator-builder' ); ?></span>
-		<div class="ccb-field-actions">
-			<button class="ccb-button default" @click="$emit( 'cancel' )"><?php esc_html_e( 'Cancel', 'cost-calculator-builder' ); ?></button>
-			<button class="ccb-button success" @click.prevent="$emit( 'save', lineField, id, index, lineField.alias )"><?php esc_html_e( 'Save', 'cost-calculator-builder' ); ?></button>
+		<div class="ccb-edit-field-header-left">
+			<span class="ccb-edit-field-title ccb-heading-3 ccb-bold">{{ getFieldTitle(lineField) || "Divider" }}</span>
+		</div>
+		<div class="ccb-edit-field-header-right">
+			<div class="ccb-save-wrapper">
+				<button class="ccb-button" @click.prevent="$emit( 'cancel' )"><?php esc_html_e( 'Cancel', 'cost-calculator-builder' ); ?></button>
+				<button class="ccb-button success" @click.prevent="$emit('save', lineField, id, index, lineField.alias)"><?php esc_html_e( 'Done', 'cost-calculator-builder' ); ?></button>
+			</div>
 		</div>
 	</div>
 	<div class="ccb-grid-box">
@@ -57,7 +61,7 @@
 				<div class="col-12">
 					<div class="ccb-input-wrapper">
 						<span class="ccb-input-label"><?php esc_html_e( 'Additional Classes', 'cost-calculator-builder' ); ?></span>
-						<textarea class="ccb-heading-5 ccb-light" v-model="lineField.additionalStyles" placeholder="<?php esc_attr_e( 'Set Additional Classes', 'cost-calculator-builder' ); ?>"></textarea>
+						<textarea v-model="lineField.additionalStyles" placeholder="<?php esc_attr_e( 'Set Additional Classes', 'cost-calculator-builder' ); ?>"></textarea>
 					</div>
 				</div>
 			</div>
@@ -68,7 +72,7 @@
 							<input type="checkbox" v-model="lineField.hidden"/>
 							<label></label>
 						</div>
-						<h6 class="ccb-heading-5"><?php esc_html_e( 'Hidden by Default', 'cost-calculator-builder' ); ?></h6>
+						<h6><?php esc_html_e( 'Hidden by Default', 'cost-calculator-builder' ); ?></h6>
 					</div>
 				</div>
 			</div>

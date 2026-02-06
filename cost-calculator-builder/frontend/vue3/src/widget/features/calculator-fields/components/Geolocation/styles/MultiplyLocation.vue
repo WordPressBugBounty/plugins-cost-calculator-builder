@@ -352,6 +352,8 @@ onMounted(() => {
     display: flex;
     justify-content: flex-start;
     align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
   }
 
   &__action {
@@ -366,7 +368,6 @@ onMounted(() => {
     padding: 0 15px 0 15px;
     cursor: pointer;
     transition: 300ms ease;
-    margin-right: 14px;
     white-space: nowrap;
     @media only screen and (max-width: 480px) {
       min-height: var(--ccb-mobile-field-button-height);

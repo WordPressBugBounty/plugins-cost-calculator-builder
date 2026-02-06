@@ -200,6 +200,46 @@ const additionalClasses = computed(() => {
 });
 </script>
 
+<style lang="scss">
+.ccb-field {
+  @media (min-width: 1025px) {
+    &.field-width-25 {
+      .ccb-dropdown-img-field {
+        .ccb-field__input-wrapper {
+          .ccb-dropdown__list {
+            top: 46px;
+            width: 200px;
+            ul {
+              li {
+                padding: 5px;
+                font-size: 12px;
+                img {
+                  width: 40px;
+                  height: 40px;
+                }
+                .ccb-dropdown--option-label {
+                  font-size: 12px;
+                }
+              }
+            }
+          }
+          .ccb-dropdown__input {
+            font-size: calc(var(--ccb-fields-button-size) - 2px);
+            padding: 8px calc(var(--ccb-field-side-indent) - 4px);
+            .ccb-dropdown__label {
+              img {
+                width: 16px;
+                height: 16px;
+                margin-right: 2px;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+</style>
 <style lang="scss" scoped>
 @use "@/styles/widget/_mixins.scss" as mixins;
 

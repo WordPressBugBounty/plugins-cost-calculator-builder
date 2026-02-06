@@ -1,17 +1,26 @@
 <template>
   <div class="ccb-summary-list">
     <div class="ccb-summary-list__header">
-      <HeaderTitle :title="settingsStore.getGeneralSettings?.headerTitle" />
+      <HeaderTitle
+        :title="settingsStore.getGeneralSettings?.headerTitle"
+        :icon="iconPath"
+      />
 
-      <div
+      <button
         v-if="settingsStore.general?.descriptions"
         class="ccb-summary-list__accordion-btn"
         @click="toggleBody"
+        @keydown.enter.prevent="toggleBody"
+        @keydown.space.prevent="toggleBody"
+        type="button"
+        :aria-label="
+          translationsStore.getTranslations?.details || 'Toggle details'
+        "
         :aria-expanded="isBodyVisible"
         :class="{ rotated: !isBodyVisible }"
       >
         <i class="ccb-icon-Path-3485"></i>
-      </div>
+      </button>
     </div>
     <div
       class="ccb-summary-list__body"
@@ -49,6 +58,10 @@ const isBodyVisible = ref<boolean>(
 
 const disableOptionUnit = computed(() => {
   return !settingsStore.general?.showOptionUnit;
+});
+
+const iconPath = computed(() => {
+  return settingsStore.general?.iconPath;
 });
 
 const toggleBody = () => {
@@ -120,6 +133,10 @@ const toggleBody = () => {
     color: var(--ccb-text-color);
     border-radius: 20px;
     font-size: 8px;
+    border: none;
+    padding: 0;
+    line-height: 1;
+    outline: none;
 
     transition: transform 0.4s;
 

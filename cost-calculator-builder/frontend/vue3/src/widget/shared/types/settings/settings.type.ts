@@ -7,6 +7,7 @@ interface IFormulas {
 }
 
 export interface IGeneral {
+  layout: string;
   headerTitle: string;
   descriptions: boolean;
   hideEmpty: boolean;
@@ -14,6 +15,10 @@ export interface IGeneral {
   sticky: boolean;
   showOptionUnit: boolean;
   showDetailsAccordion: boolean;
+  iconPath: string;
+  pdfButton: boolean;
+  quoteButton: boolean;
+  orderButton: boolean;
 }
 
 export interface IGeolocation {

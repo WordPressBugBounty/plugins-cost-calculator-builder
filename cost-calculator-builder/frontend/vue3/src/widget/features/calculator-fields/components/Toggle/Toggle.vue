@@ -85,7 +85,7 @@ const currentComponents = computed(() => {
 const boxStyle = computed(() => {
   return field.value?.styles?.boxStyle === "vertical"
     ? "ccb-vertical-toggle"
-    : "";
+    : "ccb-horizontal-toggle";
 });
 
 const additionalClasses = computed(() => {
@@ -96,6 +96,35 @@ const additionalClasses = computed(() => {
 <style lang="scss">
 @use "@/styles/widget/_mixins.scss" as mixins;
 
+.ccb-field {
+  @media (min-width: 1025px) {
+    &.field-width-25 {
+      .ccb-toggle-field {
+        .ccb-toggle-item__label {
+          font-size: calc(var(--ccb-fields-button-size) - 2px) !important;
+        }
+        .ccb-toggle-item__description {
+          font-size: calc(var(--ccb-field-size) - 3px) !important;
+        }
+        .ccb-box-toggle {
+          .ccb-toggle-item {
+            flex-wrap: wrap;
+            padding: 10px;
+            gap: 10px;
+          }
+        }
+        .ccb-default-toggle {
+          .ccb-toggle-item {
+            flex-wrap: wrap;
+            .ccb-toggle-wrapper {
+              margin-left: 0;
+            }
+          }
+        }
+      }
+    }
+  }
+}
 .ccb-toggle-item__label {
   font-size: var(--ccb-fields-button-size) !important;
 

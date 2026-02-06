@@ -8,9 +8,6 @@ class CCBUpdates {
 		'3.1.14' => array(
 			'calculator_add_templates',
 		),
-		'3.1.7'  => array(
-			'calculator_add_container_blur',
-		),
 		'3.1.20' => array(
 			'calculator_email_templates_footer_toggle',
 		),
@@ -29,14 +26,8 @@ class CCBUpdates {
 		'3.1.32' => array(
 			'ccb_add_default_webhook_settings',
 		),
-		'3.1.34' => array(
-			'ccb_add_text_transform_appearance',
-		),
 		'3.1.48' => array(
 			'ccb_add_thank_you_page_settings',
-		),
-		'3.1.51' => array(
-			'ccb_add_summary_header_appearance',
 		),
 		'3.1.55' => array(
 			'ccb_update_min_date_info_to_unselectable',
@@ -72,7 +63,6 @@ class CCBUpdates {
 		),
 		'3.1.79' => array(
 			'ccb_added_payment_gateways',
-			'ccb_update_payment_type_enum',
 		),
 		'3.1.82' => array(
 			'ccb_general_settings_terms_and_conditions_update',
@@ -103,12 +93,6 @@ class CCBUpdates {
 		'3.2.26' => array(
 			'ccb_sync_general_settings',
 		),
-		'3.2.33' => array(
-			'ccb_order_form_fields_database_tables_create',
-		),
-		'3.2.36' => array(
-			'ccb_order_off_autoload_for_meta_values',
-		),
 		'3.2.42' => array(
 			'ccb_new_pdf_manager_tool',
 		),
@@ -119,12 +103,8 @@ class CCBUpdates {
 		'3.2.50' => array(
 			'ccb_update_pdf_data_font_controls',
 		),
-		'3.2.54' => array(
-			'ccb_delete_payments_table_constraints',
-		),
 		'3.2.55' => array(
 			'ccb_add_pdf_border_style',
-			'ccb_maybe_create_orders_table',
 		),
 		'3.2.56' => array(
 			'ccb_get_old_header_color',
@@ -141,6 +121,26 @@ class CCBUpdates {
 		),
 		'3.5.21' => array(
 			'ccb_add_analytics_tables',
+		),
+		'3.6.0'  => array(
+			'ccb_update_template_to_pagebreak',
+		),
+		'3.6.3'  => array(
+			'ccb_add_new_orders_table',
+		),
+		'3.6.7'  => array(
+			'ccb_maybe_create_new_payment_table',
+			'ccb_maybe_move_payments',
+			'ccb_add_single_option_field',
+		),
+		'3.6.9'  => array(
+			'ccb_add_parent_alias_field',
+		),
+		'3.6.12' => array(
+			'ccb_maybe_create_orders_statuses_table',
+		),
+		'3.6.13' => array(
+			'ccb_maybe_create_payments_table',
 		),
 	);
 

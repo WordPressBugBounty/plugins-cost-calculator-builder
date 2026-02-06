@@ -5,10 +5,8 @@ namespace cBuilder\Classes;
 use cBuilder\Classes\Appearance\Presets\CCBPresetGenerator;
 use cBuilder\Classes\Database\Condition;
 use cBuilder\Classes\Database\Discounts;
-use cBuilder\Classes\Database\Orders;
-use cBuilder\Classes\Database\Payments;
+use cBuilder\Classes\Database\OrdersPayments;
 use cBuilder\Classes\Database\Forms;
-use cBuilder\Classes\Database\FormCalcs;
 use cBuilder\Classes\Database\FormFields;
 use cBuilder\Classes\Database\FormFieldsAttributes;
 use cBuilder\Classes\Database\Promocodes;
@@ -16,60 +14,12 @@ use cBuilder\Classes\pdfManager\CCBPdfManager;
 use cBuilder\Classes\pdfManager\CCBPdfManagerTemplates;
 use cBuilder\Classes\Database\AnalyticsViews;
 use cBuilder\Classes\Database\AnalyticsInteractions;
+use cBuilder\Classes\OrdersPatch;
+use cBuilder\Classes\Database\OrdersCalcFieldsAttrs;
+use cBuilder\Classes\Database\OrdersStatuses;
+
 
 class CCBUpdatesCallbacks {
-
-	public static function calculator_add_container_blur() {
-		$presets = CCBPresetGenerator::get_static_preset_from_db();
-		foreach ( $presets as $idx => $preset ) {
-			if ( isset( $preset['desktop']['colors'] ) ) {
-				$colors = $preset['desktop']['colors'];
-				if ( isset( $colors['container_color'] ) ) {
-					$container_bg = $colors['container_color'];
-
-					unset( $colors['container_color'] );
-					$colors['container']         = CCBPresetGenerator::get_container_default( $container_bg );
-					$preset['desktop']['colors'] = $colors;
-				}
-			}
-			$presets[ $idx ] = $preset;
-		}
-
-		CCBPresetGenerator::update_presets( $presets );
-	}
-
-
-	/**
-	 *  Add 'Summary header font' options to Typography block
-	 */
-	public static function ccb_add_summary_header_appearance() {
-		$presets = CCBPresetGenerator::get_static_preset_from_db();
-
-		foreach ( $presets as $idx => $preset ) {
-			if ( isset( $preset['data'] ) && ! isset( $preset['data']['desktop']['typography']['summary_header_size'] ) ) {
-				$preset_data = $preset['data'];
-				if ( ! isset( $preset_data['desktop']['typography']['summary_header_size'] ) ) {
-					$preset_data['desktop']['typography']['summary_header_size'] = 14;
-				}
-				if ( ! isset( $preset_data['mobile']['typography']['summary_header_size'] ) ) {
-					$preset_data['mobile']['typography']['summary_header_size'] = 14;
-				}
-
-				if ( ! isset( $preset_data['desktop']['typography']['summary_header_font_weight'] ) ) {
-					$preset_data['desktop']['typography']['summary_header_font_weight'] = 700;
-				}
-				if ( ! isset( $preset_data['mobile']['typography']['summary_header_font_weight'] ) ) {
-					$preset_data['mobile']['typography']['summary_header_font_weight'] = 700;
-				}
-
-				$preset['data']  = $preset_data;
-				$presets[ $idx ] = $preset;
-			}
-		}
-
-		CCBPresetGenerator::update_presets( $presets );
-	}
-
 	/**
 	 * 3.1.51
 	 */
@@ -109,34 +59,6 @@ class CCBUpdatesCallbacks {
 			}
 			update_post_meta( $calculator->ID, 'stm-fields', (array) $fields );
 		}
-	}
-
-	/**
-	 * 3.1.34
-	 * Add 'Total field text transform' option to Typography block
-	 */
-	public static function ccb_add_text_transform_appearance() {
-		$presets = CCBPresetGenerator::get_static_preset_from_db();
-
-		$default_text_transform = 'capitalize';
-		foreach ( $presets as $idx => $preset ) {
-			if ( isset( $preset['data'] ) ) {
-				$preset_data = $preset['data'];
-
-				if ( ! isset( $preset_data['desktop']['typography']['total_text_transform'] ) ) {
-					$preset_data['desktop']['typography']['total_text_transform'] = $default_text_transform;
-				}
-
-				if ( ! isset( $preset_data['mobile']['typography']['total_text_transform'] ) ) {
-					$preset_data['mobile']['typography']['total_text_transform'] = $default_text_transform;
-				}
-
-				$preset['data']  = $preset_data;
-				$presets[ $idx ] = $preset;
-			}
-		}
-
-		CCBPresetGenerator::update_presets( $presets );
 	}
 
 	/**
@@ -494,7 +416,7 @@ class CCBUpdatesCallbacks {
 		foreach ( $calculators as $calculator ) {
 			$fields = get_post_meta( $calculator->ID, 'stm-fields', true );
 			foreach ( $fields as $key => $field ) {
-				if ( 'cost-total' === $field['_tag'] && ! isset( $field['legacyFormula'] ) ) {
+				if ( ! empty( $field['_tag'] ) && 'cost-total' === $field['_tag'] && ! isset( $field['legacyFormula'] ) ) {
 					if ( ! isset( $field['formulaView'] ) ) {
 						$fields[ $key ]['formulaView'] = false;
 					}
@@ -537,6 +459,7 @@ class CCBUpdatesCallbacks {
 						}
 					}
 				}
+
 				$fields[ $key ] = $field;
 			}
 
@@ -808,19 +731,6 @@ class CCBUpdatesCallbacks {
 		return $settings;
 	}
 
-	public static function ccb_update_payment_type_enum() {
-		global $wpdb;
-		$payment_table = Payments::_table();
-		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW COLUMNS FROM `%1s` LIKE %s;', $payment_table, 'type' ) ) ) { // phpcs:ignore
-			$wpdb->query(
-				$wpdb->prepare(
-					"ALTER TABLE `%1s` MODIFY COLUMN `type` ENUM('paypal', 'stripe', 'woocommerce', 'cash_payment', 'twoCheckout', 'razorpay', 'no_payments') NOT NULL DEFAULT 'no_payments';", // phpcs:ignore
-					$payment_table
-				)
-			);
-		}
-	}
-
 	/**
 	 * 3.1.82
 	 * Add Terms and Conditions default settings to general settings
@@ -875,7 +785,7 @@ class CCBUpdatesCallbacks {
 
 			$fields = get_post_meta( $calculator->ID, 'stm-fields', true );
 			foreach ( $fields as $key => $field ) {
-				if ( 'cost-total' === $field['_tag'] && isset( $field['totalSymbol'] ) && true === $field['totalSymbol'] ) {
+				if ( ! empty( $field['_tag'] ) && 'cost-total' === $field['_tag'] && isset( $field['totalSymbol'] ) && true === $field['totalSymbol'] ) {
 					$fields[ $key ]['currency']                                     = $field['totalSymbolSign'];
 					$fields[ $key ]['fieldCurrencySettings']['currency']            = $field['totalSymbolSign'];
 					$fields[ $key ]['fieldCurrencySettings']['num_after_integer']   = $currency_settings['num_after_integer'];
@@ -891,17 +801,6 @@ class CCBUpdatesCallbacks {
 	}
 
 	public static function ccb_add_discount() {
-		global $wpdb;
-		$order_table = Orders::_table();
-		if ( ! $wpdb->get_var( $wpdb->prepare( 'SHOW COLUMNS FROM `%1s` LIKE %s;', $order_table, 'promocodes' ) ) ) { // phpcs:ignore
-			$wpdb->query(
-				$wpdb->prepare(
-					"ALTER TABLE `%1s` ADD COLUMN promocodes longtext DEFAULT NULL;", // phpcs:ignore
-					$order_table
-				)
-			);
-		}
-
 		\cBuilder\Classes\Database\Discounts::create_table();
 		\cBuilder\Classes\Database\Promocodes::create_table();
 		\cBuilder\Classes\Database\Condition::create_table();
@@ -989,29 +888,6 @@ class CCBUpdatesCallbacks {
 		}
 	}
 
-	public static function ccb_order_form_fields_database_tables_create() {
-		global $wpdb;
-		$orders_table = Orders::_table();
-
-		if ( ! $wpdb->get_var( $wpdb->prepare( 'SHOW COLUMNS FROM `%1s` LIKE %s;', $orders_table, 'form_id' ) ) ) { // phpcs:ignore
-			Forms::create_table();
-			FormFields::create_table();
-			FormFieldsAttributes::create_table();
-
-			// phpcs:disable
-			$wpdb->query(
-				$wpdb->prepare(
-					"ALTER TABLE `%1s`
-				ADD COLUMN form_id INT UNSIGNED NULL AFTER form_details;",
-					$orders_table
-				)
-			);
-			// phpcs:enable
-
-			Forms::create_default_forms();
-		}
-	}
-
 	public static function ccb_update_paypal_data() {
 		$calculators = self::get_calculators();
 		foreach ( $calculators as $calculator ) {
@@ -1065,22 +941,6 @@ class CCBUpdatesCallbacks {
 			}
 
 			update_option( 'ccb_general_settings', apply_filters( 'calc_update_options', $general_settings ) );
-		}
-	}
-
-	public static function ccb_order_off_autoload_for_meta_values() {
-		global $wpdb;
-
-		$options = $wpdb->get_results( "SELECT option_name FROM {$wpdb->options} WHERE option_name LIKE 'calc_meta_data_order_%' AND autoload != 'off'" );
-
-		if ( 0 < count( $options ) ) {
-			foreach ( $options as $option ) {
-				$wpdb->update(
-					$wpdb->options,
-					array( 'autoload' => 'off' ),
-					array( 'option_name' => $option->option_name )
-				);
-			}
 		}
 	}
 
@@ -1326,19 +1186,6 @@ class CCBUpdatesCallbacks {
 		CCBPdfManager::update_tempaltes( $pdf_templates );
 	}
 
-	public static function ccb_delete_payments_table_constraints() {
-		global $wpdb;
-		$payment_table = Payments::_table();
-		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW COLUMNS FROM `%1s` LIKE %s;', $payment_table, 'currency' ) ) ) { // phpcs:ignore
-			$wpdb->query(
-				$wpdb->prepare(
-					"ALTER TABLE `%1s` MODIFY COLUMN `currency` CHAR(20) DEFAULT '';", // phpcs:ignore
-					$payment_table
-				)
-			);
-		}
-	}
-
 	public static function ccb_add_pdf_border_style() {
 		$pdf_templates = CCBPdfManager::ccb_get_pdf_template();
 
@@ -1359,14 +1206,6 @@ class CCBUpdatesCallbacks {
 		}
 
 		CCBPdfManager::update_tempaltes( $pdf_templates );
-	}
-
-	public static function ccb_maybe_create_orders_table() {
-		global $wpdb;
-		$orders_table = Orders::_table();
-		if ( ! $wpdb->get_var( $wpdb->prepare( 'SHOW COLUMNS FROM `%1s` LIKE %s;', $orders_table, 'id' ) ) ) { // phpcs:ignore
-			Orders::create_table();
-		}
 	}
 
 	public static function ccb_get_old_header_color() {
@@ -1469,7 +1308,7 @@ class CCBUpdatesCallbacks {
 			$fields = get_post_meta( $calculator->ID, 'stm-fields', true );
 
 			foreach ( $fields as $key => $field ) {
-				if ( 'cost-total' === $field['_tag'] && isset( $field['fieldCurrency'] ) && $field['fieldCurrency'] ) {
+				if ( ! empty( $field['_tag'] ) && 'cost-total' === $field['_tag'] && isset( $field['fieldCurrency'] ) && $field['fieldCurrency'] ) {
 					$fields[ $key ]['fieldCurrencySettings']['num_after_integer'] = '' === $fields[ $key ]['fieldCurrencySettings']['num_after_integer'] ? '2' : min( 8, $fields[ $key ]['fieldCurrencySettings']['num_after_integer'] );
 				}
 			}
@@ -1495,6 +1334,308 @@ class CCBUpdatesCallbacks {
 		$interactions_table = AnalyticsInteractions::_table();
 		if ( ! $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s;', $interactions_table ) ) ) { // phpcs:ignore
 			AnalyticsInteractions::create_table();
+		}
+	}
+
+	public static function normalize_to_single_section_per_page( array $data, string $layout = 'vertical' ): array {
+		$result             = array();
+		$next_section_index = 0;
+
+		$scan = function( array $nodes ) use ( &$scan, &$next_section_index ) {
+			foreach ( $nodes as $n ) {
+				if ( ! is_array( $n ) ) {
+					continue;
+				}
+				if ( 'section' === ( $n['type'] ?? null ) ) {
+					if ( ! empty( $n['alias'] ) && preg_match( '~section_field_id_(\d+)~', (string) $n['alias'], $m ) ) {
+						$next_section_index = max( $next_section_index, (int) $m[1] + 1 );
+					} elseif ( isset( $n['_id'] ) && is_numeric( $n['_id'] ) ) {
+						$next_section_index = max( $next_section_index, (int) $n['_id'] + 1 );
+					} else {
+						$next_section_index++;
+					}
+				}
+				if ( ! empty( $n['groupElements'] ) && is_array( $n['groupElements'] ) ) {
+					$scan( $n['groupElements'] );
+				}
+			}
+		};
+
+		$scan( $data );
+
+		$has_pages = false;
+		foreach ( $data as $item ) {
+			if ( is_array( $item ) && 'page-break' === ( $item['type'] ?? null ) ) {
+				$has_pages = true;
+				break;
+			}
+		}
+
+		$apply_width = function( array &$fields, string $layout ) {
+			$width_value = ( 'vertical' === $layout ) ? 100 : 50;
+
+			$process_node = function( &$node ) use ( &$process_node, $width_value ) {
+				if ( ! is_array( $node ) ) {
+					return;
+				}
+
+				$type = $node['type'] ?? null;
+
+				if ( 'Total' === $type ) {
+					return;
+				}
+
+				if ( 'Group' === $type || 'Repeater' === $type ) {
+					if ( ! empty( $node['groupElements'] ) && is_array( $node['groupElements'] ) ) {
+						foreach ( $node['groupElements'] as &$ge ) {
+							$process_node( $ge );
+						}
+						unset( $ge );
+					}
+					return;
+				}
+
+				if ( ! array_key_exists( 'width', $node ) ) {
+					$node['width'] = $width_value;
+				}
+
+				if ( ! empty( $node['fields'] ) && is_array( $node['fields'] ) ) {
+					foreach ( $node['fields'] as &$nested ) {
+						$process_node( $nested );
+					}
+					unset( $nested );
+				}
+
+				if ( ! empty( $node['groupElements'] ) && is_array( $node['groupElements'] ) ) {
+					foreach ( $node['groupElements'] as &$nested2 ) {
+						$process_node( $nested2 );
+					}
+					unset( $nested2 );
+				}
+			};
+
+			foreach ( $fields as &$field ) {
+				$process_node( $field );
+			}
+			unset( $field );
+		};
+
+		$all_sections = function( array $children ): bool {
+			if ( empty( $children ) ) {
+				return false;
+			}
+			foreach ( $children as $child ) {
+				if ( ! is_array( $child ) || 'section' !== ( $child['type'] ?? null ) ) {
+					return false;
+				}
+			}
+			return true;
+		};
+
+		$make_single_section = function( array $children, int &$idx, string $layout, callable $apply_width ): array {
+			$fields = array();
+
+			foreach ( $children as $child ) {
+				if ( ! is_array( $child ) ) {
+					continue;
+				}
+				if ( 'section' === ( $child['type'] ?? null ) ) {
+					$inner = ( isset( $child['fields'] ) && is_array( $child['fields'] ) ) ? $child['fields'] : array();
+					foreach ( $inner as $f ) {
+						$fields[] = $f;
+					}
+				} else {
+					$fields[] = $child;
+				}
+			}
+
+			$apply_width( $fields, $layout );
+
+			$label   = 'Section ' . $idx;
+			$section = array(
+				'type'        => 'section',
+				'label'       => $label,
+				'description' => $label,
+				'alias'       => 'section_field_id_' . $idx,
+				'fields'      => $fields,
+				'_id'         => $idx,
+			);
+			$idx++;
+
+			return $section;
+		};
+
+		if ( $has_pages ) {
+			foreach ( $data as $page ) {
+				if ( ! is_array( $page ) || 'page-break' !== ( $page['type'] ?? null ) ) {
+					continue;
+				}
+
+				$children = ( isset( $page['groupElements'] ) && is_array( $page['groupElements'] ) ) ? $page['groupElements'] : array();
+
+				if ( $all_sections( $children ) ) {
+					$new_page     = $page;
+					$new_children = array();
+
+					foreach ( $children as $section ) {
+						if ( is_array( $section ) && 'section' === ( $section['type'] ?? null ) ) {
+							$sec        = $section;
+							$sec_fields = isset( $sec['fields'] ) && is_array( $sec['fields'] ) ? $sec['fields'] : array();
+							$apply_width( $sec_fields, $layout );
+							$sec['fields']  = $sec_fields;
+							$new_children[] = $sec;
+						}
+					}
+
+					$new_page['groupElements'] = $new_children;
+					$result[]                  = $new_page;
+				} else {
+					$new_page                  = $page;
+					$new_page['groupElements'] = array(
+						$make_single_section( $children, $next_section_index, $layout, $apply_width ),
+					);
+
+					$result[] = $new_page;
+				}
+			}
+		} else {
+			$new_section = $make_single_section( array_values( $data ), $next_section_index, $layout, $apply_width );
+
+			$new_page = array(
+				'type'          => 'page-break',
+				'label'         => 'Page 1',
+				'description'   => 'Page 1',
+				'alias'         => 'page_break_field_id_0',
+				'_id'           => 0,
+				'groupElements' => array( $new_section ),
+			);
+
+			$result[] = $new_page;
+		}
+
+		return $result;
+	}
+
+	public static function ccb_update_template_to_pagebreak() {
+		$calculators = self::get_calculators();
+
+		foreach ( $calculators as $calculator ) {
+			$fields        = get_post_meta( $calculator->ID, 'stm-fields', true );
+			$preset_key    = get_post_meta( $calculator->ID, 'ccb_calc_preset_idx', true );
+			$presets       = CCBPresetGenerator::get_static_preset_from_db();
+			$calc_settings = CCBSettingsData::get_calc_single_settings( $calculator->ID );
+			$box_style     = 'vertical';
+
+			$layouts = array(
+				'vertical'   => 'vertical-layout',
+				'horizontal' => 'horizontal-layout',
+				'two_column' => 'two-column-layout',
+			);
+
+			if ( str_contains( $preset_key, 'saved' ) && isset( $presets[ $preset_key ] ) ) {
+				$preset    = $presets[ $preset_key ];
+				$box_style = $preset['data']['desktop']['layout']['box_style'];
+
+				$calc_settings['general']['layout'] = $layouts[ $box_style ];
+
+				update_option(
+					'stm_ccb_form_settings_' . sanitize_text_field( $calculator->ID ),
+					apply_filters( 'stm_ccb_sanitize_array', $calc_settings )
+				);
+			} elseif ( str_contains( $preset_key, 'saved' ) && isset( $presets[ $preset_key ] ) && $fields[0]['type'] && 'page-break' === $fields[0]['type'] ) {
+				$box_style = 'vertical';
+			} else {
+				$calc_settings['general']['layout'] = 'vertical-layout';
+				update_option(
+					'stm_ccb_form_settings_' . sanitize_text_field( $calculator->ID ),
+					apply_filters( 'stm_ccb_sanitize_array', $calc_settings )
+				);
+			}
+
+			if ( ! is_array( $fields ) ) {
+				continue;
+			}
+
+			$fields = self::normalize_to_single_section_per_page( $fields, $box_style );
+
+			update_post_meta( $calculator->ID, 'stm-fields', $fields );
+		}
+	}
+
+	public static function ccb_add_new_orders_table() {
+		OrdersPatch::ccb_patch_maybe_create_orders_table();
+		OrdersPatch::ccb_patch_maybe_create_orders_statuses();
+		OrdersPatch::ccb_patch_maybe_move_orders_data();
+	}
+
+	public static function ccb_add_single_option_field() {
+		global $wpdb;
+
+		$attrs_table = OrdersCalcFieldsAttrs::_table();
+		if ( ! $wpdb->get_var( $wpdb->prepare( 'SHOW COLUMNS FROM `%1s` LIKE %s;', $attrs_table, 'single_option' ) ) ) { // phpcs:ignore
+			$wpdb->query(
+				$wpdb->prepare(
+					"ALTER TABLE `%1s` ADD COLUMN `single_option` TEXT DEFAULT '' AFTER `option_unit`;", // phpcs:ignore
+					$attrs_table
+				)
+			);
+
+			OrdersPatch::ccb_patch_maybe_fill_single_option_field();
+		}
+	}
+
+	public static function ccb_maybe_create_new_payment_table() {
+		global $wpdb;
+		$orders_payments_table = OrdersPayments::_table();
+		if ( ! $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s;', $orders_payments_table ) ) ) { // phpcs:ignore
+			OrdersPayments::create_table();
+		}
+	}
+
+	public static function ccb_maybe_move_payments() {
+		global $wpdb;
+		$orders_payments_table = OrdersPayments::_table();
+		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s;', $orders_payments_table ) ) ) { // phpcs:ignore
+			OrdersPatch::ccb_maybe_move_orders_payment_data();
+		}
+	}
+
+	public static function ccb_add_parent_alias_field() {
+		global $wpdb;
+
+		$attrs_table = OrdersCalcFieldsAttrs::_table();
+		if ( ! $wpdb->get_var( $wpdb->prepare( 'SHOW COLUMNS FROM `%1s` LIKE %s;', $attrs_table, 'parent_alias' ) ) ) { // phpcs:ignore
+			$wpdb->query(
+				$wpdb->prepare(
+					"ALTER TABLE `%1s` ADD COLUMN `parent_alias` VARCHAR(255) DEFAULT NULL AFTER `option_unit`;", // phpcs:ignore
+					$attrs_table
+				)
+			);
+
+			OrdersPatch::ccb_patch_maybe_fill_parent_alias_field();
+		}
+	}
+
+	public static function ccb_maybe_create_orders_statuses_table() {
+		global $wpdb;
+		$status_table = OrdersStatuses::_table();
+		if ( ! $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s;', $status_table ) ) ) { // phpcs:ignore
+			OrdersStatuses::create_table();
+			if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s;', $status_table ) ) ) { // phpcs:ignore
+				OrdersStatuses::create_default_statuses();
+				self::ccb_maybe_create_payments_table();
+			}
+		}
+	}
+
+	public static function ccb_maybe_create_payments_table() {
+		global $wpdb;
+		$payments_table = OrdersPayments::_table();
+		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s;', $payments_table ) ) ) { // phpcs:ignore
+			OrdersPayments::maybe_fill_data();
+		} else {
+			OrdersPayments::create_table();
+			OrdersPayments::maybe_fill_data();
 		}
 	}
 }
