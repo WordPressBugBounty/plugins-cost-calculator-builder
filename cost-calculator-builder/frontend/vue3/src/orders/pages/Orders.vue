@@ -16,6 +16,7 @@ import { AdminHeader } from "@/common/features";
 import { IAdminMenu } from "@/common/shared/types/IAdminMenu";
 import { OrdersTable } from "@/orders/widgets/Orders";
 import { useOrdersStore } from "@/orders/app/providers/stores/orders";
+import { useSettingsStore } from "@/orders/app/providers/stores/useSettings";
 
 const getLogoUrl = computed(() => {
   if (
@@ -74,7 +75,9 @@ const getCurrentPage = computed(() => {
 
 onMounted(() => {
   const ordersStore = useOrdersStore();
+  const settingsStore = useSettingsStore();
   ordersStore.fetchOrders();
+  settingsStore.fetchPdfSettingsData();
 });
 </script>
 

@@ -179,6 +179,7 @@ export interface ISourceField {
 
   // repeater
   sumAllAvailable?: boolean;
+  collapseOnAddAnother?: boolean;
   groupElements?: ISourceField[];
   repeatCount?: number;
   repeaterIdx?: number;

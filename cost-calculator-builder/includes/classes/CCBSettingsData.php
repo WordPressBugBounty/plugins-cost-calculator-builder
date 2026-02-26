@@ -253,7 +253,7 @@ class CCBSettingsData {
 			),
 			'invoice'         => array(
 				'use_in_all'       => false,
-				'showAfterPayment' => true,
+				'showAfterPayment' => false,
 				'emailButton'      => false,
 				'submitBtnText'    => 'Send',
 				'btnText'          => 'Send Quote',

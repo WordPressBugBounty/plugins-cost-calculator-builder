@@ -134,5 +134,6 @@ class CCBAjaxAction {
 		self::addAction( 'ccb_delete_orders', array( CCBOrderController::class, 'delete_orders' ) );
 		self::addAction( 'ccb_update_orders_status', array( CCBOrderController::class, 'update_orders_status' ) );
 		self::addAction( 'ccb_send_to_email', array( CCBOrderController::class, 'send_to_email' ) );
+		self::addAction( 'ccb_get_pdf_settings', array( CCBOrderController::class, 'fetch_pdf_settings' ) );
 	}
 }

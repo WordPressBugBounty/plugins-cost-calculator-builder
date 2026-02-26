@@ -16,7 +16,7 @@
 </template>
 
 <script setup lang="ts">
-import { toRefs, defineProps, computed } from "vue";
+import { toRefs, computed } from "vue";
 import { pdfMixin } from "@/widget/features/pdf-invoice/pdf-mixins";
 import { IPdfSettings } from "@/widget/shared/types/settings";
 

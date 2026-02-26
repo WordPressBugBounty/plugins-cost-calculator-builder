@@ -15,7 +15,7 @@
 </template>
 
 <script setup lang="ts">
-import { toRefs, defineProps, computed } from "vue";
+import { toRefs, computed } from "vue";
 import { IPdfSettings } from "@/widget/shared/types/settings";
 
 type Props = {

@@ -75,6 +75,7 @@ export interface IRepeaterField extends IFormulaField {
   originalElements: ISourceField[];
   groupElements: Map<string, Field>[];
   sumAllAvailable: boolean;
+  collapseOnAddAnother: boolean;
   repeatCount: number;
   enableFormula: boolean;
   addButtonLabel: string;

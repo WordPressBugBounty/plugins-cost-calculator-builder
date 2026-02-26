@@ -91,3 +91,8 @@ export interface ISendToEmailRequestParams {
   order_id: number;
   emails: string[];
 }
+
+export interface IPdfSettingsRequestParams {
+  action: string;
+  nonce: string;
+}

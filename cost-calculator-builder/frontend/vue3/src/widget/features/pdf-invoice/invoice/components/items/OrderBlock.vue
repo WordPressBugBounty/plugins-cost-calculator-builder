@@ -348,7 +348,7 @@
 </template>
 
 <script setup lang="ts">
-import { toRefs, defineProps, computed, ref } from "vue";
+import { toRefs, computed, ref } from "vue";
 import { useFieldsStore } from "@/widget/app/providers/stores/fieldsStore.ts";
 import QRCode from "qrcode";
 import { IPdfSettings } from "@/widget/shared/types/settings";

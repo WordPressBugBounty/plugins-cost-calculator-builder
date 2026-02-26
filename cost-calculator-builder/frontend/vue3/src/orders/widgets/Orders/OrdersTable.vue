@@ -441,10 +441,18 @@ const isSelectAll = ref<boolean>(false);
 
 const showStatusList = ref<Record<number, boolean>>({});
 const toggleMultiStatusList = ref<boolean>(false);
-const orderDetails = ref<IOrders | null>(null);
 
 const translationsStore = useOrdersTranslationsStore();
 const translations = translationsStore.getTranslations;
+
+const orderDetails = computed({
+  get() {
+    return ordersStore.getCurrentOrder;
+  },
+  set(value: IOrders | null) {
+    ordersStore.setCurrentOrder(value);
+  },
+});
 
 const tempDate = computed({
   get() {

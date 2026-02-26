@@ -264,6 +264,76 @@ export const useFieldsStore = () => {
     },
 
     actions: {
+      getRepeaterGroupTotal(
+        repeater: IRepeaterField,
+        groupFieldsMap: Map<string, Field>,
+      ): number {
+        if (repeater?.enableFormula) {
+          const baseFormula =
+            (repeater.originalFormula && repeater.originalFormula.trim()) ||
+            (repeater.formula && repeater.formula.trim()) ||
+            "0";
+
+          let groupFormula = baseFormula;
+          const fieldsAliasList = groupFormula.match(/\w+_field_id_\d+/g) || [];
+
+          fieldsAliasList.forEach((alias: string) => {
+            let numeric = 0;
+
+            const inGroup = groupFieldsMap.get(alias);
+            const liveField = this.fields.get(alias) as Field | undefined;
+            const field = liveField || inGroup;
+
+            if (field) {
+              if (typeof field.value === "number") {
+                numeric = field.value as number;
+              } else {
+                numeric = Number(
+                  (field as any)?.displayValue
+                    ?.toString()
+                    ?.replace(/[^\d.-]/g, ""),
+                );
+              }
+            }
+
+            if (Number.isNaN(numeric)) numeric = 0;
+
+            groupFormula = groupFormula.replace(
+              new RegExp("\\b" + alias + "\\b", "g"),
+              numeric.toString(),
+            );
+          });
+
+          try {
+            const res = this.validateTotal(Number(eval(groupFormula)));
+            return Number.isFinite(res) ? res : 0;
+          } catch {
+            return 0;
+          }
+        }
+
+        // Default mode: sum fields that are added to summary
+        const items = Array.from(groupFieldsMap.values()).filter(
+          (item: Field) => item.addToSummary,
+        );
+
+        return items.reduce((sum: number, item: Field) => {
+          const liveField = this.fields.get(item.alias) as Field | undefined;
+          const source = liveField || item;
+
+          const numeric =
+            typeof source.value === "number"
+              ? (source.value as number)
+              : Number(
+                  (source as any)?.displayValue
+                    ?.toString()
+                    ?.replace(/[^\d.-]/g, ""),
+                );
+
+          return sum + (Number.isNaN(numeric) ? 0 : numeric);
+        }, 0);
+      },
+
       setRequiredFields(fields: Field[]): void {
         let result: Field[] = [];
         if (this.getPageBreakEnabled) {

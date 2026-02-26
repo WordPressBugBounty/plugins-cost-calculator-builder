@@ -66,56 +66,6 @@
 			</div>
 			<div class="row ccb-p-t-15">
 				<div class="col-12">
-					<div class="ccb-options-container radio">
-						<div class="ccb-options-header">
-							<span><?php esc_html_e( 'Label', 'cost-calculator-builder' ); ?></span>
-							<span style="display: flex;"><?php esc_html_e( 'Value', 'cost-calculator-builder' ); ?>
-								<span class="ccb-options-tooltip">
-									<i class="ccb-icon-circle-question"></i>
-									<span class="ccb-options-tooltip__text"><?php esc_html_e( 'This value can be used for calculation purposes, Use numbers only' ); ?></span>
-								</span>
-							</span>
-						</div>
-						<draggable
-								v-model="fieldOptions"
-								class="ccb-options"
-								draggable=".ccb-option"
-								:animation="200"
-								handle=".ccb-option-drag"
-						>
-							<div class="ccb-option" v-for="(option, index) in fieldOptions" :key="index">
-								<div class="ccb-option-drag" :class="{disabled: fieldOptions.length === 1}">
-									<i class="ccb-icon-drag-dots"></i>
-								</div>
-								<div class="ccb-option-delete" @click.prevent="removeOption(index, option.optionValue)" :class="{disabled: fieldOptions.length === 1}">
-									<i class="ccb-icon-close"></i>
-								</div>
-								<div class="ccb-option-inner">
-									<div class="ccb-input-wrapper">
-										<input type="text" v-model="option.optionText" placeholder="<?php esc_attr_e( 'Option label', 'cost-calculator-builder' ); ?>">
-									</div>
-								</div>
-								<div class="ccb-option-inner">
-									<div class="ccb-input-wrapper">
-										<input type="text" min="0" step="1" :name="'option_' + index" @keyup="checkRequired('errorOptionValue' + index)" v-model="option.optionValue" placeholder="<?php esc_attr_e( 'Option Value', 'cost-calculator-builder' ); ?>">
-										<span @click="numberCounterActionForOption(index)" class="input-number-counter up"></span>
-										<span @click="numberCounterActionForOption(index, '-')" class="input-number-counter down"></span>
-									</div>
-									<span :id="'errorOptionValue' + index"></span>
-								</div>
-							</div>
-						</draggable>
-						<div class="ccb-option-actions">
-							<button class="ccb-button light" @click.prevent="addOption">
-								<i class="ccb-icon-Path-3453"></i>
-								<?php esc_html_e( 'Add option', 'cost-calculator-builder' ); ?>
-							</button>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="row ccb-p-t-15">
-				<div class="col-12">
 					<div class="ccb-select-box">
 						<span class="ccb-select-label"><?php esc_html_e( 'Default Value', 'cost-calculator-builder' ); ?></span>
 						<div class="ccb-select-wrapper">
@@ -137,6 +87,61 @@
 								<option value="show_label_not_calculable"><?php esc_html_e( 'Label Only (No Calculation)', 'cost-calculator-builder' ); ?></option>
 								<option value="show_label_calculable"><?php esc_html_e( 'Label Only (Calculate Value)', 'cost-calculator-builder' ); ?></option>
 							</select>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row ccb-p-t-15">
+				<div class="col-12">
+					<div class="ccb-options-container radio">
+						<draggable
+								v-model="fieldOptions"
+								class="ccb-options ccb-column-options"
+								draggable=".ccb-option"
+								:animation="200"
+								handle=".ccb-option-drag"
+						>
+							<div class="ccb-option" v-for="(option, index) in fieldOptions" :key="index">
+								<div class="ccb-option-drag" :class="{disabled: fieldOptions.length === 1}">
+									<i class="ccb-icon-drag-dots"></i>
+								</div>
+								<div class="ccb-option-delete" @click.prevent="removeOption(index, option.optionValue)" :class="{disabled: fieldOptions.length === 1}">
+									<i class="ccb-icon-close"></i>
+								</div>
+								<div class="ccb-option-inner label-input">
+									<div class="ccb-input-wrapper">
+										<span class="ccb-input-label"><?php esc_html_e( 'Label', 'cost-calculator-builder' ); ?></span>
+										<input type="text" v-model="option.optionText" placeholder="<?php esc_attr_e( 'Option label', 'cost-calculator-builder' ); ?>">
+									</div>
+								</div>
+								<div class="ccb-option-inner">
+									<div class="ccb-input-wrapper">
+										<span class="ccb-input-label">
+											<?php esc_html_e( 'Value', 'cost-calculator-builder' ); ?>
+											<span class="ccb-options-tooltip">
+												<i class="ccb-icon-circle-question"></i>
+												<span class="ccb-options-tooltip__text"><?php esc_html_e( 'This value can be used for calculation purposes, Use numbers only' ); ?></span>
+											</span>
+										</span>
+										<input type="text" :name="'option_' + index" min="0" step="1" @keyup="checkRequired('errorOptionValue' + index)" v-model="option.optionValue" placeholder="<?php esc_attr_e( 'Value', 'cost-calculator-builder' ); ?>">
+										<span @click="numberCounterActionForOption(index)" class="input-number-counter up"></span>
+										<span @click="numberCounterActionForOption(index, '-')" class="input-number-counter down"></span>
+									</div>
+									<span :id="'errorOptionValue' + index"></span>
+								</div>
+								<div class="ccb-option-inner hint-input">
+									<div class="ccb-input-wrapper">
+										<span class="ccb-input-label"><?php esc_html_e( 'Hint', 'cost-calculator-builder' ); ?></span>
+										<input type="text" v-model="option.optionHint" placeholder="<?php esc_attr_e( 'Option hint', 'cost-calculator-builder' ); ?>">
+									</div>
+								</div>
+							</div>
+						</draggable>
+						<div class="ccb-option-actions">
+							<button class="ccb-button light" @click.prevent="addOption">
+								<i class="ccb-icon-Path-3453"></i>
+								<?php esc_html_e( 'Add new', 'cost-calculator-builder' ); ?>
+							</button>
 						</div>
 					</div>
 				</div>

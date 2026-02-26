@@ -14,6 +14,13 @@
         @change="changeValue"
       />
       <span class="ccb-radio-label">{{ option.optionText }}</span>
+      <div class="ccb-toggle-item__postfix" v-if="option.optionHint">
+        <Hint>
+          <template #content>
+            <span v-html="option.optionHint"></span>
+          </template>
+        </Hint>
+      </div>
     </label>
   </div>
 </template>
@@ -22,6 +29,7 @@
 import { toRefs } from "vue";
 import { IOptions, ISingleOptionsField } from "@/widget/shared/types/fields";
 import { useSingleOptionChildShared } from "@/widget/actions/fields/composable/useSingleOptionChildShared.ts";
+import Hint from "@/widget/shared/ui/components/Hint";
 
 const emit = defineEmits<{
   (event: "update", option: IOptions): void;
@@ -62,6 +70,12 @@ const { optionValues, changeValue, getName } = useSingleOptionChildShared(
 
   &.ccb-vertical-radio {
     flex-direction: column;
+  }
+
+  .ccb-toggle-item__postfix {
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
   label {

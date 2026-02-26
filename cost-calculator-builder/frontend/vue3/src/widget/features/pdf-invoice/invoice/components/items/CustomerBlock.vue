@@ -43,7 +43,7 @@
 </template>
 
 <script setup lang="ts">
-import { toRefs, defineProps, computed } from "vue";
+import { toRefs, computed } from "vue";
 import { IPdfSettings } from "@/widget/shared/types/settings";
 import { useSubmissionStore } from "@/widget/app/providers/stores/submissionStore.ts";
 import { useOrderFormStore } from "@/widget/app/providers/stores/orderFormStore.ts";

@@ -601,38 +601,18 @@ const parseFormattedValue = (value: string) => {
   let decimalSeparator: string =
     settings.getCurrencySettings?.decimalSeparator || ".";
 
-  let thousandsSeparator: string =
-    settings.getCurrencySettings?.thousandsSeparator || ",";
-
   if (field.value.fieldCurrency) {
     numAfterInteger = field.value?.fieldCurrencySettings?.numAfterInteger || 0;
     decimalSeparator =
       field.value?.fieldCurrencySettings?.decimalSeparator || ".";
-    thousandsSeparator =
-      field.value?.fieldCurrencySettings?.thousandsSeparator || ",";
   }
-
-  let parts;
-  if (value.includes(".") && value.includes(",")) {
-    parts = value.split(decimalSeparator);
-  } else if (value.includes(",")) {
-    parts = value.split(",");
-  } else if (value.includes(".")) {
-    parts = value.split(".");
-  } else {
-    parts = [value];
-  }
-
-  parts[0] = parts[0].split(thousandsSeparator).join("");
-
-  let sanitizedValue = parts.join(decimalSeparator);
 
   const options = currencyInstance.getCurrencyOptions(field.value);
 
-  let result = currencyInstance.parseCurrency(sanitizedValue, options);
+  let result = currencyInstance.parseCurrency(value, options);
 
   if (isNaN(result)) {
-    return sanitizedValue;
+    return value;
   }
 
   const decimalsRaw =

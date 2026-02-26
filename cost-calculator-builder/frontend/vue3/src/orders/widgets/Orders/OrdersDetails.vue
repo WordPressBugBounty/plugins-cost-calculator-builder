@@ -106,6 +106,8 @@
         ></i>
       </span>
 
+      <Invoice ref="invoice" v-if="orderDetails?.order_id" />
+
       <StatusList
         v-if="showStatusList && orderDetails"
         @close="showStatusList = false"
@@ -141,6 +143,7 @@ import { debounce } from "@/orders/shared/utils/useDebounce";
 import StatusList from "@/orders/shared/ui/common/StatusList.vue";
 import ActionList from "@/orders/shared/ui/common/ActionList.vue";
 import { useOrdersTranslationsStore } from "@/orders/app/providers/stores/useTranslations";
+import Invoice from "@/orders/features/pdf-invoice/invoice/Invoice.vue";
 
 const ordersStore = useOrdersStore();
 const translationsStore = useOrdersTranslationsStore();
@@ -153,6 +156,8 @@ type LocalAttachments = {
   name: string;
   url: string;
 };
+
+const invoice = ref(null);
 
 const props = defineProps<Props>();
 const { orderDetails } = toRefs(props);
@@ -242,6 +247,12 @@ const selectActions = (action: string) => {
   } else if (action === "send_to_email") {
     ordersStore.setEmails(orderDetails.value?.emails || []);
     ordersStore.setModalType("send_to_email");
+  } else if (
+    action === "download_pdf" &&
+    invoice.value &&
+    "generate" in invoice.value
+  ) {
+    (invoice.value as any).generate();
   } else if (action === "delete" && orderDetails.value?.order_id) {
     ordersStore.deleteOrder(orderDetails.value.order_id);
     close();
@@ -260,6 +271,11 @@ const getActionItems = computed((): IActions[] => {
     {
       label: translations.sendToEmail,
       action: "send_to_email",
+      is_danger: false,
+    },
+    {
+      label: "Download PDF",
+      action: "download_pdf",
       is_danger: false,
     },
     {

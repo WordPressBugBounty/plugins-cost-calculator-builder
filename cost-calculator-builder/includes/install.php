@@ -118,6 +118,7 @@ function ccb_add_admin_nonces() {
 		'ccb_delete_orders'             => wp_create_nonce( 'ccb_delete_orders' ),
 		'ccb_update_orders_status'      => wp_create_nonce( 'ccb_update_orders_status' ),
 		'ccb_send_to_email'             => wp_create_nonce( 'ccb_send_to_email' ),
+		'ccb_get_pdf_settings'          => wp_create_nonce( 'ccb_get_pdf_settings' ),
 	);
 
 	echo ( '<script type="text/javascript">window.ccb_nonces = ' . json_encode( $variables ) . ';</script>' ); //phpcs:ignore

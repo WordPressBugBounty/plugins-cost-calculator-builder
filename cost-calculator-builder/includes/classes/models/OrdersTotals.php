@@ -146,4 +146,20 @@ class OrdersTotals extends DataBaseModel {
 
 		return $wpdb->query( $sql ); // phpcs:ignore
 	}
+
+	public static function get_totals_field_by_id( $id ) {
+		global $wpdb;
+		if ( empty( $id ) || ! is_numeric( $id ) ) {
+			return false;
+		}
+
+		// phpcs:disable
+		$sql = $wpdb->prepare(
+			'SELECT * FROM %1$s WHERE id = %2$d',
+			self::_table(),
+			$id
+		);
+		// phpcs:enable
+		return $wpdb->get_row( $sql, ARRAY_A ); // phpcs:ignore
+	}
 }

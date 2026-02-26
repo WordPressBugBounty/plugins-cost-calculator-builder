@@ -25,6 +25,7 @@ class OrdersDiscounts extends DataBaseModel {
 			discount_type VARCHAR(255) NOT NULL,
 			discount_amount DECIMAL(10,2) NOT NULL,
 			discount_value VARCHAR(255) DEFAULT NULL,
+			before_discount_value DECIMAL(10,2) NOT NULL,
 			created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 			updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 			PRIMARY KEY ({$primary_key}),
@@ -81,5 +82,33 @@ class OrdersDiscounts extends DataBaseModel {
 		);
 		// phpcs:enable
 		return $wpdb->get_results( $sql, ARRAY_A ); // phpcs:ignore
+	}
+
+	public static function get_discounts() {
+		global $wpdb;
+		//phpcs:disable
+		$discounts_table = self::_table();
+		return $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT * FROM `%1s`;",
+				$discounts_table
+			),
+			ARRAY_A
+		);
+		//phpcs:enable
+	}
+
+	public static function fill_before_discount_value( $id, $value ) {
+		global $wpdb;
+		//phpcs:disable
+		$discounts_table = self::_table();
+		return $wpdb->query(
+			$wpdb->prepare(
+				"UPDATE `$discounts_table` SET `before_discount_value` = %f WHERE id = %d", // phpcs:ignore
+				$value,
+				$id
+			)
+		);
+		//phpcs:enable
 	}
 }

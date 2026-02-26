@@ -119,7 +119,13 @@ const addRepeater = () => {
     }
   }
 
+  const lastIdx = field.value.groupElements.length - 1;
+
   field.value.groupElements.push(groupElements);
+
+  if (field.value?.collapseOnAddAnother && lastIdx >= 0) {
+    collapseStore.value[lastIdx] = true;
+  }
 
   fieldsStore.recalculateTotals();
 };

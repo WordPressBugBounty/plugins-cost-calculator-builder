@@ -56,8 +56,31 @@
       v-if="otherTotals.length > 0"
     >
       <div class="total-item" v-for="total in otherTotals">
-        <span>{{ total.label }}</span>
-        <span>{{ total.converted }}</span>
+        <span
+          v-if="total.has_discount && total.discount"
+          class="total-item-discount"
+          :data-extra="total?.discount?.discount_view"
+          :class="{
+            'with-badge':
+              total?.discount?.discount_view === 'show_without_title',
+          }"
+        >
+          <span class="total-item-discount__title-box">
+            <span class="total-item-discount__title-box-label">Discount: </span>
+            <span class="total-item-discount__title-box-value">{{
+              getDiscountAmount(total)
+            }}</span>
+          </span>
+          <span class="total-item-discount__value">{{
+            formatCurrency(total.discount.before_discount_value || 0)
+          }}</span>
+        </span>
+        <span class="total-info">
+          <span class="total-item-unit">{{ total.label }}</span>
+          <span class="total-item-unit">{{
+            formatCurrency(total.converted)
+          }}</span>
+        </span>
       </div>
     </div>
 
@@ -66,15 +89,41 @@
       v-if="totals.length > 0"
     >
       <div class="total-item" v-for="total in totals">
-        <span>{{ total.label }}</span>
-        <span>{{ total.converted }}</span>
+        <span
+          v-if="total.has_discount && total.discount"
+          class="total-item-discount"
+          :class="{
+            'with-badge':
+              total?.discount?.discount_view === 'show_without_title',
+          }"
+        >
+          <span class="total-item-discount__title-box">
+            <span class="total-item-discount__title-box-label">Discount: </span>
+            <span class="total-item-discount__title-box-value">{{
+              getDiscountAmount(total)
+            }}</span>
+          </span>
+          <span class="total-item-discount__value">{{
+            formatCurrency(total.discount.before_discount_value || 0)
+          }}</span>
+        </span>
+        <span class="total-info">
+          <span class="total-item-unit">{{ total.label }}</span>
+          <span class="total-item-unit">{{
+            formatCurrency(total.converted)
+          }}</span>
+        </span>
       </div>
     </div>
 
     <div class="order-details-calculator-fields__item totals">
       <div class="total-item">
-        <span>{{ translations.total }}</span>
-        <span>{{ formatCurrency(total_amount) }}</span>
+        <span class="total-info">
+          <span class="total-item-unit">{{ translations.total }}</span>
+          <span class="total-item-unit">{{
+            formatCurrency(total_amount || 0)
+          }}</span>
+        </span>
       </div>
     </div>
   </div>
@@ -114,6 +163,28 @@ type IOrderDetails = {
 
 const props = defineProps<Props>();
 const { fields, totals, otherTotals, total_amount, currency } = toRefs(props);
+
+const getDiscountAmount = computed(() => {
+  return (total: ITotals) => {
+    if (total.discount.discount_view === "show_with_title") {
+      return total.discount.discount_title || "Discount";
+    }
+
+    if (total.discount.discount_type === "percent_of_amount") {
+      return `${total.discount.discount_amount}%`;
+    }
+
+    const formattedValue = formatCurrency.value(
+      Number(total.discount.discount_amount || 0),
+    );
+
+    if (total.discount.discount_view === "show_with_title") {
+      return `-${formattedValue}`;
+    }
+
+    return `-${formattedValue} off`;
+  };
+});
 
 const translationsStore = useOrdersTranslationsStore();
 const translations = translationsStore.getTranslations;
@@ -201,6 +272,10 @@ const getFields = computed(() => {
 
 const formatCurrency = computed(() => {
   return (amount: number | string) => {
+    if (isNaN(Number(amount))) {
+      return String(amount);
+    }
+
     return currencyConvertor(Number(amount), {
       currency: currency.value.currency_sign || "",
       currencyPosition: currency.value.currency_position,
@@ -287,10 +362,60 @@ const isArrayValues = computed(() => {
 
       .total-item {
         display: flex;
-        justify-content: space-between;
         width: 100%;
+        flex-direction: column;
+        row-gap: 5px;
 
-        span {
+        .total-info {
+          display: flex;
+          justify-content: space-between;
+          width: 100%;
+        }
+
+        .total-item-discount {
+          display: flex;
+          justify-content: space-between;
+          width: 100%;
+          line-height: 1;
+
+          &__title-box {
+            display: flex;
+            column-gap: 5px;
+            align-items: center;
+
+            &-label {
+              color: #162432;
+              font-size: 14px;
+              font-weight: 500;
+            }
+
+            &-value {
+              color: #162432;
+              font-size: 12px;
+              font-weight: 500;
+            }
+          }
+
+          &__value {
+            color: #162432;
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: line-through;
+          }
+
+          &.with-badge {
+            .total-item-discount__title-box-value {
+              display: flex;
+              padding: 2px 4px;
+              border-radius: 4px;
+              background: #1ab163;
+              color: #fff;
+              font-size: 10px;
+            }
+          }
+        }
+
+        .total-item-unit {
           color: #162432;
           font-size: 16px;
           font-weight: 700;

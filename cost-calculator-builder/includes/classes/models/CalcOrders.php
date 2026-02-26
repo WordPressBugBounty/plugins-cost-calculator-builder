@@ -166,7 +166,7 @@ class CalcOrders extends DataBaseModel {
 					'alias'          => ! empty( $total['alias'] ) ? $total['alias'] : '',
 					'label'          => ! empty( $total['label'] ) ? $total['label'] : '',
 					'original_value' => ! empty( $total['originalValue'] ) ? $total['originalValue'] : '',
-					'value'          => ! empty( $total['value'] ) ? $total['value'] : '',
+					'value'          => ! empty( $total['converted'] ) ? $total['converted'] : '',
 					'is_primary'     => 1,
 				);
 				$field_id          = OrdersTotals::create_totals_field( $order_id, $create_total_data );
@@ -187,7 +187,7 @@ class CalcOrders extends DataBaseModel {
 					'sort_id'        => ! empty( $other_total['sort_id'] ) ? $other_total['sort_id'] : $idx,
 					'alias'          => ! empty( $other_total['alias'] ) ? $other_total['alias'] : '',
 					'label'          => ! empty( $other_total['label'] ) ? $other_total['label'] : '',
-					'value'          => ! empty( $other_total['value'] ) ? $other_total['value'] : '',
+					'value'          => ! empty( $other_total['converted'] ) ? $other_total['converted'] : '',
 					'original_value' => ! empty( $other_total['originalValue'] ) ? $other_total['originalValue'] : '',
 				);
 
@@ -258,11 +258,13 @@ class CalcOrders extends DataBaseModel {
 				ot.original_value AS totals_original_value,
 
 				od.id AS discount_id,
+				od.before_discount_value AS discount_before_discount_value,
 				od.discount_view,
 				od.discount_title,
 				od.discount_type,
 				od.discount_amount,
 				od.discount_value,
+				od.field_id AS discount_field_id,
 
 				op.id AS promo_id,
 				op.promo_code,
@@ -357,6 +359,8 @@ class CalcOrders extends DataBaseModel {
 				od.discount_type,
 				od.discount_amount,
 				od.discount_value,
+				od.before_discount_value AS discount_before_discount_value,
+				od.field_id AS discount_field_id,
 
 				op.id AS promo_id,
 				op.promo_code,
@@ -683,11 +687,13 @@ class CalcOrders extends DataBaseModel {
 				ot.original_value AS totals_original_value,
 
 				od.id AS discount_id,
+				od.before_discount_value AS discount_before_discount_value,
 				od.discount_view,
 				od.discount_title,
 				od.discount_type,
 				od.discount_amount,
 				od.discount_value,
+				od.field_id AS discount_field_id,
 
 				op.id AS promo_id,
 				op.promo_code,
@@ -761,7 +767,6 @@ class CalcOrders extends DataBaseModel {
 					'order_form_details'  => array(),
 					'calculator_fields'   => array(),
 					'currency'            => array(),
-					'discounts'           => array(),
 					'promocodes'          => array(),
 					'notes'               => array(),
 					'payment_status'      => $order['payment_status'],
@@ -843,6 +848,18 @@ class CalcOrders extends DataBaseModel {
 
 			if ( ! empty( $order['totals_id'] ) && ! empty( $order['totals_is_primary'] ) ) {
 				if ( empty( $order_data[ $order_id ]['totals'][ $order['totals_id'] ] ) ) {
+					$discount = array();
+					if ( ! empty( $order['discount_field_id'] ) && $order['discount_field_id'] === $order['totals_id'] ) {
+						$discount = array(
+							'discount_view'         => $order['discount_view'],
+							'discount_title'        => $order['discount_title'],
+							'discount_type'         => $order['discount_type'],
+							'discount_amount'       => $order['discount_amount'],
+							'discount_value'        => $order['discount_value'],
+							'before_discount_value' => $order['discount_before_discount_value'],
+						);
+					}
+
 					$order_data[ $order_id ]['totals'][ $order['totals_id'] ] = array(
 						'id'             => $order['totals_id'],
 						'sort_id'        => $order['totals_sort_id'],
@@ -852,12 +869,26 @@ class CalcOrders extends DataBaseModel {
 						'original_value' => $order['totals_original_value'],
 						'is_primary'     => $order['totals_is_primary'],
 						'converted'      => $order['totals_value'],
+						'discount'       => $discount,
+						'has_discount'   => ! empty( $discount ),
 					);
 				}
 			}
 
 			if ( ! empty( $order['totals_id'] ) && empty( $order['totals_is_primary'] ) ) {
 				if ( empty( $order_data[ $order_id ]['other_totals'][ $order['totals_id'] ] ) ) {
+					$discount = array();
+					if ( ! empty( $order['discount_field_id'] ) && $order['discount_field_id'] === $order['totals_id'] ) {
+						$discount = array(
+							'discount_view'         => $order['discount_view'],
+							'discount_title'        => $order['discount_title'],
+							'discount_type'         => $order['discount_type'],
+							'discount_amount'       => $order['discount_amount'],
+							'discount_value'        => $order['discount_value'],
+							'before_discount_value' => $order['discount_before_discount_value'],
+						);
+					}
+
 					$order_data[ $order_id ]['other_totals'][ $order['totals_id'] ] = array(
 						'id'             => $order['totals_id'],
 						'sort_id'        => $order['totals_sort_id'],
@@ -867,18 +898,8 @@ class CalcOrders extends DataBaseModel {
 						'original_value' => $order['totals_original_value'],
 						'is_primary'     => $order['totals_is_primary'],
 						'converted'      => $order['totals_value'],
-					);
-				}
-			}
-
-			if ( ! empty( $order['discount_id'] ) ) {
-				if ( empty( $order_data[ $order_id ]['discounts'][ $order['discount_id'] ] ) ) {
-					$order_data[ $order_id ]['discounts'][ $order['discount_id'] ] = array(
-						'discount_view'   => $order['discount_view'],
-						'discount_title'  => $order['discount_title'],
-						'discount_type'   => $order['discount_type'],
-						'discount_amount' => $order['discount_amount'],
-						'discount_value'  => $order['discount_value'],
+						'discount'       => $discount,
+						'has_discount'   => ! empty( $discount ),
 					);
 				}
 			}

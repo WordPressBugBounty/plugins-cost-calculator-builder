@@ -5,6 +5,7 @@ import {
 } from "@/orders/shared/types/orders.type";
 import { ITableSettings } from "@/orders/shared/types/table.settings";
 import { IOrdersSettings } from "@/orders/shared/types/orders.settings";
+import { IPdfSettings } from "@/widget/shared/types/settings";
 
 export interface IFetchOrdersResponse {
   success: boolean;
@@ -107,4 +108,12 @@ export interface IDeleteOrdersResponse {
 export interface ISendToEmailResponse {
   success: boolean;
   message: string;
+}
+
+export interface IFetchPdfSettingsResponse {
+  success: boolean;
+  message: string;
+  data: {
+    settings: IPdfSettings;
+  };
 }

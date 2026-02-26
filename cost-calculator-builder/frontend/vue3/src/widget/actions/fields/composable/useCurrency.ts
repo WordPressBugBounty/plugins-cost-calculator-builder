@@ -88,21 +88,17 @@ export function useCurrency(): IUseCurrencyResult {
 
     let value = inputValue.replace(currency, "").trim();
 
-    let parts;
-    if (value.includes(".") && value.includes(",")) {
-      parts = value.split(decimalSeparator);
-    } else if (value.includes(",")) {
-      parts = value.split(",");
-    } else if (value.includes(".")) {
-      parts = value.split(".");
-    } else {
-      parts = [value];
+    // Remove thousands separators first
+    if (thousandsSeparator) {
+      value = value.split(thousandsSeparator).join("");
     }
 
-    parts[0] = parts[0].split(thousandsSeparator).join("");
+    // Replace decimal separator with standard dot for parseFloat
+    if (decimalSeparator && decimalSeparator !== ".") {
+      value = value.replace(decimalSeparator, ".");
+    }
 
-    let sanitizedValue = parts.join(".");
-    let result = parseFloat(sanitizedValue) || 0;
+    let result = parseFloat(value) || 0;
 
     if (numAfterInteger !== undefined) {
       let factor = Math.pow(10, numAfterInteger);

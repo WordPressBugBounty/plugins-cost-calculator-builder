@@ -141,7 +141,6 @@ const generateQuote = async () => {
 // Todo: get order id from store
 const getOrderId = computed(() => {
   const submissionStore = useSubmissionStore();
-  11;
   return submissionStore.getOrderId;
 });
 

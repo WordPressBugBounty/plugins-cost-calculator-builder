@@ -553,4 +553,23 @@ class OrdersPatch {
 
 		return $alias;
 	}
+
+	public static function ccb_patch_maybe_fill_before_discount_value_to_orders_discounts() {
+		$discounts = OrdersDiscounts::get_discounts();
+		if ( ! empty( $discounts ) ) {
+			foreach ( $discounts as $discount ) {
+				$field_id    = $discount['field_id'];
+				$total_field = OrdersTotals::get_totals_field_by_id( $field_id );
+				if ( ! empty( $total_field ) && ! empty( $discount['discount_type'] ) ) {
+					$total_amount = $total_field['value'];
+					if ( 'percent_of_amount' === $discount['discount_type'] ) {
+						$total_amount = $total_amount / ( 1 - $discount['discount_amount'] / 100 );
+					} elseif ( 'fixed_amount' === $discount['discount_type'] ) {
+						$total_amount = $total_amount + $discount['discount_amount'];
+					}
+					OrdersDiscounts::fill_before_discount_value( $discount['id'], $total_amount );
+				}
+			}
+		}
+	}
 }

@@ -1331,3 +1331,29 @@ function ccb_slug_to_label( $slug ) {
 
 	return implode( ' ', $words );
 }
+
+function ccb_totals_email_discount( $value, $currency_settings ) {
+	if ( ! is_numeric( $value ) ) {
+		return $value;
+	}
+
+	$decimals           = $currency_settings['number_of_decimals'] ?? 2;
+	$decimal_point      = $currency_settings['decimal_separator'] ?? '.';
+	$thousand_separator = $currency_settings['thousand_separator'] ?? ',';
+	$position           = $currency_settings['currency_position'] ?? 'left';
+	$currency_sign      = $currency_settings['currency_sign'] ?? '$';
+
+	$formattedValue = number_format( $value, $decimals, $decimal_point, $thousand_separator );
+
+	switch ( $position ) {
+		case 'left_with_space':
+			return $currency_sign . ' ' . $formattedValue;
+		case 'right_with_space':
+			return $formattedValue . ' ' . $currency_sign;
+		case 'right':
+			return $formattedValue . $currency_sign;
+		case 'left':
+		default:
+			return $currency_sign . $formattedValue;
+	}
+}

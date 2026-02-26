@@ -26,7 +26,7 @@ class CCBOrderController {
 		}
 	}
 
-	protected static function validateFile( $file, $field_id, $calc_id ) {
+	public static function validateFile( $file, $field_id, $calc_id ) {
 		if ( empty( $file ) ) {
 			return false;
 		}
@@ -167,6 +167,7 @@ class CCBOrderController {
 			}
 		}
 
+		$uploaded_files = array();
 		if ( empty( self::$errors ) && 'POST' === $_SERVER['REQUEST_METHOD'] ) {
 			$settings = CCBSettingsData::get_calc_single_settings( $data['id'] );
 			if ( array_key_exists( 'num_after_integer', $settings['currency'] ) ) {
@@ -264,6 +265,11 @@ class CCBOrderController {
 						if ( $file_info && empty( $file_info['error'] ) ) {
 							array_push( $file_url[ $field_id ], $file_info );
 						}
+
+						$uploaded_files[ $file_key ] = array(
+							'file_info'  => $file_info,
+							'short_hash' => $short_hash,
+						);
 					}
 				}
 
@@ -319,20 +325,22 @@ class CCBOrderController {
 				'total'          => $total,
 			);
 
-			$discounts = array();
-			if ( ! empty( $data['totals'] ) ) {
-				foreach ( $data['totals'] as $total ) {
+			$discounts    = array();
+			$merged_array = array_merge( $data['totals'], $data['otherTotals'] );
+			if ( ! empty( $merged_array ) ) {
+				foreach ( $merged_array as $total ) {
 					if ( ! empty( $total['hasDiscount'] ) ) {
 						if ( empty( $discounts[ $total['alias'] ] ) ) {
 							$discounts[ $total['alias'] ] = array();
 						}
 
 						$discounts[ $total['alias'] ][] = array(
-							'discount_view'   => $total['discount']['discountView'],
-							'discount_title'  => $total['discount']['discountTitle'],
-							'discount_type'   => $total['discount']['discountType'],
-							'discount_amount' => $total['discount']['discountAmount'],
-							'discount_value'  => $total['discount']['discountValue'],
+							'discount_view'         => $total['discount']['discountView'],
+							'discount_title'        => $total['discount']['discountTitle'],
+							'discount_type'         => $total['discount']['discountType'],
+							'discount_amount'       => $total['discount']['discountAmount'],
+							'discount_value'        => $total['discount']['discountValue'],
+							'before_discount_value' => $total['summary'],
 						);
 					}
 				}
@@ -381,19 +389,19 @@ class CCBOrderController {
 				$data['orderId'] = $id;
 				$data['calcId']  = $data['id'];
 				if ( 'no_payments' === $data['paymentMethod'] ) {
-					\cBuilder\Classes\CCBContactForm::ccb_send_form( $id, $data );
+					\cBuilder\Classes\CCBContactForm::ccb_send_form( $id, $data, $uploaded_files );
 					$message = esc_html__( 'Your order has been placed', 'cost-calculator-builder' );
 				} elseif ( 'cash_payment' === $data['paymentMethod'] ) {
-					\cBuilder\Classes\Payments\CCBCashPayment::renderPayment( $data, $id );
+					\cBuilder\Classes\Payments\CCBCashPayment::renderPayment( $data, $id, $uploaded_files );
 					$message = esc_html__( 'Cash payment applied successfully', 'cost-calculator-builder' );
 				} elseif ( 'paypal' === $data['paymentMethod'] ) {
-					\cBuilder\Classes\Payments\CCBPayPal::renderPayment( $data, $id );
+					\cBuilder\Classes\Payments\CCBPayPal::renderPayment( $data, $id, $uploaded_files );
 					$message = esc_html__( 'Paypal payment applied successfully', 'cost-calculator-builder' );
 				} elseif ( 'stripe' === $data['paymentMethod'] ) {
-					\cBuilder\Classes\Payments\CCBStripe::intent_payment( $data, $id );
+					\cBuilder\Classes\Payments\CCBStripe::intent_payment( $data, $id, $uploaded_files );
 					$message = esc_html__( 'Stripe payment applied successfully', 'cost-calculator-builder' );
 				} elseif ( 'razorpay' === $data['paymentMethod'] ) {
-					\cBuilder\Classes\Payments\CCBRazorPay::renderPayment( $data, $id );
+					\cBuilder\Classes\Payments\CCBRazorPay::renderPayment( $data, $id, $uploaded_files );
 					$message = esc_html__( 'Razorpay payment applied successfully', 'cost-calculator-builder' );
 				} elseif ( 'woocommerce' === $data['paymentMethod'] ) {
 					\cBuilder\Classes\CCBWooCheckout::init( $data, $id );
@@ -1090,5 +1098,28 @@ class CCBOrderController {
 		$result = CCBContactForm::sendEmail( $params, $result );
 
 		wp_send_json( $result );
+	}
+
+	public static function fetch_pdf_settings() {
+		check_ajax_referer( 'ccb_get_pdf_settings', 'nonce' );
+
+		$response = array(
+			'success' => false,
+			'message' => __( 'Invalid data', 'cost-calculator-builder' ),
+			'data'    => array(
+				'settings' => null,
+			),
+		);
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			$response['message'] = __( 'You are not allowed to run this action', 'cost-calculator-builder' );
+			wp_send_json( $response );
+		}
+
+		$general_settings             = CCBSettingsData::get_calc_global_settings();
+		$response['success']          = true;
+		$response['message']          = __( 'PDF settings fetched successfully', 'cost-calculator-builder' );
+		$response['data']['settings'] = ! empty( $general_settings['pdf_manager']['data'] ) ? $general_settings['pdf_manager']['data'] : array();
+		wp_send_json( $response );
 	}
 }

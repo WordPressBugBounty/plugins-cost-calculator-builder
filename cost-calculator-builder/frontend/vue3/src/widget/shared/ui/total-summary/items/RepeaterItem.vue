@@ -45,6 +45,7 @@
 import { computed, ref, toRefs } from "vue";
 import { Field, IRepeaterField } from "@/widget/shared/types/fields";
 import TotalSummaryItem from "@/widget/shared/ui/total-summary/TotalSummaryItem.vue";
+import { useFieldsStore } from "@/widget/app/providers/stores/fieldsStore";
 
 type Props = {
   summary: IRepeaterField;
@@ -54,6 +55,7 @@ const props = defineProps<Props>();
 const { summary } = toRefs(props);
 
 const collapseStore = ref<Record<number, boolean>>({});
+const fieldsStore = useFieldsStore();
 
 const getFieldsFromMap = computed(() => {
   return (data: Map<string, Field>): Field[] => {
@@ -61,68 +63,9 @@ const getFieldsFromMap = computed(() => {
   };
 });
 
-const getGroupTotal = computed(() => {
-  return (data: Map<string, Field>): number => {
-    if (summary.value.enableFormula) {
-      // If formula mode is enabled for repeater, calculate per-group total by formula
-      const baseFormula =
-        (summary.value.originalFormula &&
-          summary.value.originalFormula.trim()) ||
-        (summary.value.formula && summary.value.formula.trim()) ||
-        "0";
-
-      let groupFormula = baseFormula;
-
-      const fieldsAliasList = groupFormula.match(/\w+_field_id_\d+/g) || [];
-
-      fieldsAliasList.forEach((alias: string) => {
-        let numeric = 0;
-        for (const field of data.values()) {
-          if (field.alias === alias) {
-            numeric =
-              typeof field.value === "number"
-                ? (field.value as number)
-                : Number(
-                    (field as any)?.displayValue
-                      ?.toString()
-                      ?.replace(/[^\d.-]/g, ""),
-                  );
-            if (Number.isNaN(numeric)) numeric = 0;
-            break;
-          }
-        }
-
-        groupFormula = groupFormula.replace(
-          new RegExp("\\b" + alias + "\\b", "g"),
-          numeric.toString(),
-        );
-      });
-
-      try {
-        const res = Number(eval(groupFormula));
-        return Number.isFinite(res) ? res : 0;
-      } catch {
-        return 0;
-      }
-    } else {
-      // Default behavior: sum fields that are added to summary
-      const items = Array.from(data.values()).filter(
-        (item: Field) => item.addToSummary,
-      );
-      return items.reduce((sum: number, item: Field) => {
-        const numeric =
-          typeof item.value === "number"
-            ? item.value
-            : Number(
-                (item as any)?.displayValue
-                  ?.toString()
-                  ?.replace(/[^\d.-]/g, ""),
-              );
-        return sum + (isNaN(numeric) ? 0 : numeric);
-      }, 0);
-    }
-  };
-});
+const getGroupTotal = (data: Map<string, Field>): number => {
+  return fieldsStore.getRepeaterGroupTotal(summary.value, data);
+};
 </script>
 
 <style lang="scss">

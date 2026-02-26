@@ -63,7 +63,7 @@
 			</div>
 			<div class="row ccb-p-t-15">
 				<div class="col-12">
-					<div class="ccb-options-container radio">
+					<div class="ccb-options-container drop-down">
 						<div class="ccb-options-header">
 							<span><?php esc_html_e( 'Label', 'cost-calculator-builder' ); ?></span>
 							<span style="display: flex"><?php esc_html_e( 'Value', 'cost-calculator-builder' ); ?>

@@ -23,7 +23,7 @@ function cBuilder_admin_enqueue() {
 		wp_enqueue_style( 'ccb-admin-app-css', CALC_URL . '/frontend/dist/css/admin.css', array(), CALC_VERSION );
 		wp_enqueue_style( 'ccb-templates-css', CALC_URL . '/frontend/dist/css/templates.css', array(), CALC_VERSION );
 
-		wp_enqueue_script( 'ccb-quick-tour-core-js', CALC_URL . '/frontend/dist/quick-tour/quick-tour-core.js', array( 'cbb-bundle-js' ), CALC_VERSION, true );
+		wp_enqueue_script( 'ccb-quick-tour-core-js', CALC_URL . '/frontend/dist/quick-tour/quick-tour-core.js', array(), CALC_VERSION, true );
 		wp_enqueue_script( 'cbb-feedback', CALC_URL . '/frontend/dist/feedback.js', array(), CALC_VERSION, true );
 
 		wp_enqueue_style( 'ccb-calc-font', CALC_URL . '/frontend/dist/css/font/font.css', array(), CALC_VERSION );

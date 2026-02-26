@@ -51,6 +51,7 @@ interface IOrdersStore {
   emailText: string;
   emails: string[];
   currentOrderId: number | null;
+  currentOrder: IOrders | null;
 }
 
 export const useOrdersStore = defineStore("orders_store", {
@@ -92,6 +93,7 @@ export const useOrdersStore = defineStore("orders_store", {
     },
     default_complete_status: 0,
     default_pending_status: 0,
+    currentOrder: null,
   }),
 
   getters: {
@@ -129,6 +131,8 @@ export const useOrdersStore = defineStore("orders_store", {
     getEmails: (state: IOrdersStore): string[] => state.emails,
     getCurrentOrderId: (state: IOrdersStore): number | null =>
       state.currentOrderId,
+    getCurrentOrder: (state: IOrdersStore): IOrders | null =>
+      state.currentOrder,
   },
 
   actions: {
@@ -268,6 +272,10 @@ export const useOrdersStore = defineStore("orders_store", {
 
     setCurrentOrderId(id: number | null): void {
       this.currentOrderId = id;
+    },
+
+    setCurrentOrder(order: IOrders | null): void {
+      this.currentOrder = order;
     },
 
     async fetchOrders() {

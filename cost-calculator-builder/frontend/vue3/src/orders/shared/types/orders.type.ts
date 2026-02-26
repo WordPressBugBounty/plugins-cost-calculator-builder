@@ -29,6 +29,15 @@ export interface ITotals {
   sort_id: number;
   value: string;
   converted: string;
+  has_discount: boolean;
+  discount: {
+    discount_view: string;
+    discount_title: string;
+    discount_type: string;
+    discount_amount: number;
+    discount_value: number;
+    before_discount_value: number;
+  };
 }
 
 export interface ICurrency {

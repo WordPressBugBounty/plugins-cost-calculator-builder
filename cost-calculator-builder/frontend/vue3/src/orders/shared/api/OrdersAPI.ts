@@ -14,6 +14,7 @@ import {
   IDeleteOrdersRequestParams,
   IUpdateOrdersStatusRequestParams,
   ISendToEmailRequestParams,
+  IPdfSettingsRequestParams,
 } from "@/orders/shared/types/api/request.type";
 import {
   IUpdateOrderStatusResponse,
@@ -30,6 +31,7 @@ import {
   IDeleteOrdersResponse,
   IUpdateOrdersStatusResponse,
   ISendToEmailResponse,
+  IFetchPdfSettingsResponse,
 } from "@/orders/shared/types/api/response.type";
 
 // @ts-ignore
@@ -387,6 +389,27 @@ export class OrdersAPI {
 
     try {
       const response = await axios.post(ajaxUrl, data);
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.error("Axios error:", error.message);
+      } else {
+        console.error("Unexpected error:", error);
+      }
+      throw error;
+    }
+  }
+
+  public static async fetchPdfSettings(
+    params: IPdfSettingsRequestParams,
+  ): Promise<IFetchPdfSettingsResponse> {
+    const { action, nonce } = params;
+
+    let ajaxUrl = (window as any).ajaxurl || "/wp-admin/admin-ajax.php";
+    ajaxUrl = `${ajaxUrl}?action=${action}&_ajax_nonce=${nonce}`;
+
+    try {
+      const response = await axios.get(ajaxUrl);
       return response.data;
     } catch (error) {
       if (axios.isAxiosError(error)) {

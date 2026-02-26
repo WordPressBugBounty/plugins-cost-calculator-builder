@@ -16,6 +16,7 @@ use cBuilder\Classes\Database\AnalyticsViews;
 use cBuilder\Classes\Database\AnalyticsInteractions;
 use cBuilder\Classes\OrdersPatch;
 use cBuilder\Classes\Database\OrdersCalcFieldsAttrs;
+use cBuilder\Classes\Database\OrdersDiscounts;
 use cBuilder\Classes\Database\OrdersStatuses;
 
 
@@ -1636,6 +1637,21 @@ class CCBUpdatesCallbacks {
 		} else {
 			OrdersPayments::create_table();
 			OrdersPayments::maybe_fill_data();
+		}
+	}
+
+	public static function ccb_add_before_discount_value_to_orders_discounts() {
+		global $wpdb;
+		$discounts_table = OrdersDiscounts::_table();
+		if ( ! $wpdb->get_var( $wpdb->prepare( 'SHOW COLUMNS FROM `%1s` LIKE %s;', $discounts_table, 'before_discount_value' ) ) ) { // phpcs:ignore
+			$wpdb->query(
+				$wpdb->prepare(
+					"ALTER TABLE `%1s` ADD COLUMN `before_discount_value` DECIMAL(10,2) NOT NULL AFTER `discount_value`;", // phpcs:ignore
+					$discounts_table
+				)
+			);
+
+			OrdersPatch::ccb_patch_maybe_fill_before_discount_value_to_orders_discounts();
 		}
 	}
 }

@@ -142,6 +142,9 @@ class CCBUpdates {
 		'3.6.13' => array(
 			'ccb_maybe_create_payments_table',
 		),
+		'3.6.14' => array(
+			'ccb_add_before_discount_value_to_orders_discounts',
+		),
 	);
 
 	public static function init() {

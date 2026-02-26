@@ -470,12 +470,14 @@ export function createRepeaterField(data: ISourceField): IRepeaterField {
   const enableFormula: boolean = data.enableFormula || false;
   const sumAllAvailable: boolean =
     (!data.enableFormula && data?.sumAllAvailable) || false;
+  const collapseOnAddAnother: boolean = data?.collapseOnAddAnother || false;
 
   return reactive<IRepeaterField>({
     ...createField(data),
     originalElements: data.groupElements || [],
     groupElements: [groupElements],
     sumAllAvailable,
+    collapseOnAddAnother,
     enableFormula,
     repeatCount: data.repeatCount || 1,
     formula: data.costCalcFormula || "0",

@@ -6,7 +6,7 @@ Tags: cost calculator, calculator, calculator form builder, cost estimation, shi
 Requires at least: 6.2
 Requires PHP: 8.0.3
 Tested up to: 6.9
-Stable tag: 3.6.13
+Stable tag: 3.6.14
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -207,6 +207,10 @@ Also, you can import the demo sample using Tools -> Import -> WordPress Import.
 Demo sample XML file included in plugin archive.
 
 == Changelog ==
+
+= 3.6.14 =
+- Enhancement: Added the ability to add hints for options in Radio field.
+- Fix: Fixed values above 1000 being treated as decimals in Quantity field when Set Measurement Unit or Currency Settings is enabled and Number of Decimals is set to 0.
 
 = 3.6.13 =
 - Fix: Fixed default values not working for Dropdown and Radio when Option Values are left empty.
