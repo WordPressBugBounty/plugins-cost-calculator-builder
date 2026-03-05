@@ -145,6 +145,9 @@ class CCBUpdates {
 		'3.6.14' => array(
 			'ccb_add_before_discount_value_to_orders_discounts',
 		),
+		'3.6.15'  => array(
+			'ccb_update_element_columns_by_box_style',
+		),
 	);
 
 	public static function init() {

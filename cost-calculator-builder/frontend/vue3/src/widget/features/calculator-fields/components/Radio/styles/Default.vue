@@ -1,5 +1,5 @@
 <template>
-  <div class="ccb-default-radio">
+  <div class="ccb-default-radio ccb-radio-grid">
     <label
       v-for="(option, idx) in options"
       :class="{
@@ -67,11 +67,6 @@ const { optionValues, changeValue, getName } = useSingleOptionChildShared(
     font-size: var(--ccb-mobile-field-size);
     font-weight: var(--ccb-mobile-field-weight);
   }
-
-  &.ccb-vertical-radio {
-    flex-direction: column;
-  }
-
   .ccb-toggle-item__postfix {
     display: flex;
     justify-content: center;
@@ -82,7 +77,7 @@ const { optionValues, changeValue, getName } = useSingleOptionChildShared(
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
-    align-items: center;
+    align-items: flex-start;
     padding: 0;
     margin: 0;
     cursor: pointer;
@@ -135,18 +130,6 @@ const { optionValues, changeValue, getName } = useSingleOptionChildShared(
     .ccb-radio-label {
       word-break: break-word;
     }
-  }
-}
-
-.ccb-vertical-radio {
-  .ccb-default-radio {
-    flex-direction: column;
-  }
-}
-
-.ccb-horizontal {
-  .ccb-default-radio {
-    flex-direction: row;
   }
 }
 </style>

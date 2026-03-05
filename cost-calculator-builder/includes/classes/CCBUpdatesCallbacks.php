@@ -1601,6 +1601,102 @@ class CCBUpdatesCallbacks {
 		}
 	}
 
+	public static function ccb_update_element_columns_by_box_style() {
+		$calculators = self::get_calculators();
+
+		$horizontal_map = array(
+			'toggle'            => '3',
+			'checkbox'          => '3',
+			'checkbox_with_img' => '2',
+			'radio'             => '4',
+			'radio_with_img'    => '2',
+		);
+
+		foreach ( $calculators as $calculator ) {
+			$fields = get_post_meta( $calculator->ID, 'stm-fields', true );
+
+			if ( ! is_array( $fields ) ) {
+				continue;
+			}
+
+			$process_node = function ( &$node ) use ( &$process_node, $horizontal_map ) {
+				if ( ! is_array( $node ) ) {
+					return;
+				}
+
+				$type = $node['type'] ?? null;
+
+				if ( 'page-break' === $type ) {
+					if ( ! empty( $node['groupElements'] ) && is_array( $node['groupElements'] ) ) {
+						foreach ( $node['groupElements'] as &$ge ) {
+							$process_node( $ge );
+						}
+						unset( $ge );
+					}
+					return;
+				}
+
+				if ( 'section' === $type ) {
+					if ( ! empty( $node['fields'] ) && is_array( $node['fields'] ) ) {
+						foreach ( $node['fields'] as &$f ) {
+							$process_node( $f );
+						}
+						unset( $f );
+					}
+					return;
+				}
+
+				if ( 'Group' === $type || 'Repeater' === $type ) {
+					if ( ! empty( $node['groupElements'] ) && is_array( $node['groupElements'] ) ) {
+						foreach ( $node['groupElements'] as &$nested ) {
+							$process_node( $nested );
+						}
+						unset( $nested );
+					}
+					return;
+				}
+
+				if ( isset( $node['alias'] ) ) {
+					$field_name = preg_replace( '/_field_id.*/', '', (string) $node['alias'] );
+
+					if ( in_array( $field_name, array( 'toggle', 'checkbox', 'checkbox_with_img', 'radio', 'radio_with_img' ), true ) ) {
+						if ( ! isset( $node['styles'] ) || ! is_array( $node['styles'] ) ) {
+							$node['styles'] = array();
+						}
+
+						$box_style = $node['styles']['box_style'] ?? '';
+
+						if ( 'horizontal' === $box_style ) {
+							$node['styles']['elementColumns'] = $horizontal_map[ $field_name ];
+						} elseif ( 'vertical' === $box_style ) {
+							$node['styles']['elementColumns'] = '1';
+						}
+					}
+				}
+
+				if ( ! empty( $node['fields'] ) && is_array( $node['fields'] ) ) {
+					foreach ( $node['fields'] as &$inner ) {
+						$process_node( $inner );
+					}
+					unset( $inner );
+				}
+				if ( ! empty( $node['groupElements'] ) && is_array( $node['groupElements'] ) ) {
+					foreach ( $node['groupElements'] as &$inner2 ) {
+						$process_node( $inner2 );
+					}
+					unset( $inner2 );
+				}
+			};
+
+			foreach ( $fields as &$root ) {
+				$process_node( $root );
+			}
+			unset( $root );
+
+			update_post_meta( $calculator->ID, 'stm-fields', $fields );
+		}
+	}
+
 	public static function ccb_add_parent_alias_field() {
 		global $wpdb;
 

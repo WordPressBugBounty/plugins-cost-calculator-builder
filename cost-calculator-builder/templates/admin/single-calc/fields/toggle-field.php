@@ -64,6 +64,38 @@
 					</div>
 				</div>
 			</div>
+			<div class="row ccb-p-t-15" v-if="toggleField.styles">
+				<div class="col-12">
+					<div class="ccb-builder-radio-wrapper">
+						<span class="ccb-radio-label"><?php esc_html_e( 'Element columns', 'cost-calculator-builder' ); ?></span>
+						<div class="ccb-radio-box">
+							<input class="ccb-builder-radio__radio" :id="'ccb-option-columns-1-' + toggleField.alias" type="radio" :name="'columns-' + toggleField.alias" value="1" v-model="toggleField.styles.elementColumns">
+							<label class="ccb-builder-radio__option" :for="'ccb-option-columns-1-' + toggleField.alias"><?php esc_html_e( '1', 'cost-calculator-builder' ); ?></label>
+							
+							<input class="ccb-builder-radio__radio" :id="'ccb-option-columns-2-' + toggleField.alias" type="radio" :name="'columns-' + toggleField.alias" value="2" v-model="toggleField.styles.elementColumns">
+							<label class="ccb-builder-radio__option" :for="'ccb-option-columns-2-' + toggleField.alias"><?php esc_html_e( '2', 'cost-calculator-builder' ); ?></label>
+							
+							<input class="ccb-builder-radio__radio" :id="'ccb-option-columns-3-' + toggleField.alias" type="radio" :name="'columns-' + toggleField.alias" value="3" v-model="toggleField.styles.elementColumns">
+							<label class="ccb-builder-radio__option" :for="'ccb-option-columns-3-' + toggleField.alias"><?php esc_html_e( '3', 'cost-calculator-builder' ); ?></label>
+							
+							<input class="ccb-builder-radio__radio" :id="'ccb-option-columns-4-' + toggleField.alias" type="radio" :name="'columns-' + toggleField.alias" value="4" v-model="toggleField.styles.elementColumns">
+							<label class="ccb-builder-radio__option" :for="'ccb-option-columns-4-' + toggleField.alias"><?php esc_html_e( '4', 'cost-calculator-builder' ); ?></label>
+							
+							<input class="ccb-builder-radio__radio" :id="'ccb-option-columns-5-' + toggleField.alias" type="radio" :name="'columns-' + toggleField.alias" value="5" v-model="toggleField.styles.elementColumns">
+							<label class="ccb-builder-radio__option" :for="'ccb-option-columns-5-' + toggleField.alias"><?php esc_html_e( '5', 'cost-calculator-builder' ); ?></label>
+							
+							<input class="ccb-builder-radio__radio" :id="'ccb-option-columns-6-' + toggleField.alias" type="radio" :name="'columns-' + toggleField.alias" value="6" v-model="toggleField.styles.elementColumns">
+							<label class="ccb-builder-radio__option" :for="'ccb-option-columns-6-' + toggleField.alias"><?php esc_html_e( '6', 'cost-calculator-builder' ); ?></label>
+							
+							<input class="ccb-builder-radio__radio" :id="'ccb-option-columns-7-' + toggleField.alias" type="radio" :name="'columns-' + toggleField.alias" value="7" v-model="toggleField.styles.elementColumns">
+							<label class="ccb-builder-radio__option" :for="'ccb-option-columns-7-' + toggleField.alias"><?php esc_html_e( '7', 'cost-calculator-builder' ); ?></label>
+							
+							<input class="ccb-builder-radio__radio" :id="'ccb-option-columns-8-' + toggleField.alias" type="radio" :name="'columns-' + toggleField.alias" value="8" v-model="toggleField.styles.elementColumns">
+							<label class="ccb-builder-radio__option" :for="'ccb-option-columns-8-' + toggleField.alias"><?php esc_html_e( '8', 'cost-calculator-builder' ); ?></label>
+						</div>
+					</div>
+				</div>
+			</div>
 			<div class="row ccb-p-t-15">
 				<div class="col-12 ccb-select-box">
 					<span class="ccb-select-label"><?php esc_html_e( 'Default Value(s)', 'cost-calculator-builder' ); ?></span>
@@ -172,19 +204,6 @@
 		</div>
 		<div class="container" v-show="tab === 'style' && typeof toggleField.styles !== 'undefined'">
 			<?php if ( defined( 'CCB_PRO' ) ) : ?>
-				<div class="row ccb-p-t-15" v-if="toggleField.styles">
-					<div class="col-12">
-						<div class="ccb-field-style-tabs">
-							<div class="ccb-field-style-tab" :class="{'active': toggleField.styles.box_style === 'horizontal'}" @click="toggleField.styles.box_style = 'horizontal'">
-								<?php esc_html_e( 'Horizontal', 'cost-calculator-builder' ); ?>
-							</div>
-							<div class="ccb-field-style-tab" :class="{'active': toggleField.styles.box_style === 'vertical'}" @click="toggleField.styles.box_style = 'vertical'">
-								<?php esc_html_e( 'Vertical', 'cost-calculator-builder' ); ?>
-							</div>
-						</div>
-					</div>
-				</div>
-
 				<div class="row ccb-p-t-15" v-if="toggleField.styles">
 					<div class="col-12">
 						<div class="ccb-style-preview ccb-field-style-preview" v-for="style in getToggleStyles" :key="style.value" :class="{'active': toggleField.styles.style === style.value}" @click="toggleField.styles.style = style.value">

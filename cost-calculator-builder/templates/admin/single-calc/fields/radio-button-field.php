@@ -47,7 +47,7 @@
 			<div class="row ccb-p-t-15">
 				<div class="col-12">
 					<div class="ccb-builder-radio-wrapper">
-						<span class="ccb-radio-label"><?php esc_html_e( 'Element Width (%)', 'cost-calculator-builder' ); ?></span>
+						<span class="ccb-radio-label"><?php esc_html_e( 'Element width (%)', 'cost-calculator-builder' ); ?></span>
 						<div class="ccb-radio-box">
 							<input class="ccb-builder-radio__radio" :id="'ccb-width-25-' + radioField.alias" type="radio" :name="'width-' + radioField.alias" value="25" v-model="radioField.width" @change="document.dispatchEvent(new CustomEvent('ccb_field_width_change', { detail: { alias: id.alias, width: 25 } }))">
 							<label class="ccb-builder-radio__option" :for="'ccb-width-25-' + radioField.alias"><?php esc_html_e( '25', 'cost-calculator-builder' ); ?></label>
@@ -60,6 +60,88 @@
 
 							<input class="ccb-builder-radio__radio" :id="'ccb-width-100-' + radioField.alias" type="radio" :name="'width-' + radioField.alias" value="100" v-model="radioField.width" @change="document.dispatchEvent(new CustomEvent('ccb_field_width_change', { detail: { alias: id.alias, width: 100 } }))">
 							<label class="ccb-builder-radio__option" :for="'ccb-width-100-' + radioField.alias"><?php esc_html_e( '100', 'cost-calculator-builder' ); ?></label>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row ccb-p-t-15" v-if="radioField.styles">
+				<div class="col-12">
+					<div class="ccb-builder-radio-wrapper">
+						<span class="ccb-radio-label"><?php esc_html_e( 'Element columns', 'cost-calculator-builder' ); ?></span>
+						<div class="ccb-radio-box">
+							<input class="ccb-builder-radio__radio" :id="'ccb-option-columns-1-' + radioField.alias" type="radio" :name="'columns-' + radioField.alias" value="1" v-model="radioField.styles.elementColumns">
+							<label class="ccb-builder-radio__option" :for="'ccb-option-columns-1-' + radioField.alias"><?php esc_html_e( '1', 'cost-calculator-builder' ); ?></label>
+							
+							<input class="ccb-builder-radio__radio" :id="'ccb-option-columns-2-' + radioField.alias" type="radio" :name="'columns-' + radioField.alias" value="2" v-model="radioField.styles.elementColumns">
+							<label class="ccb-builder-radio__option" :for="'ccb-option-columns-2-' + radioField.alias"><?php esc_html_e( '2', 'cost-calculator-builder' ); ?></label>
+							
+							<input class="ccb-builder-radio__radio" :id="'ccb-option-columns-3-' + radioField.alias" type="radio" :name="'columns-' + radioField.alias" value="3" v-model="radioField.styles.elementColumns">
+							<label class="ccb-builder-radio__option" :for="'ccb-option-columns-3-' + radioField.alias"><?php esc_html_e( '3', 'cost-calculator-builder' ); ?></label>
+							
+							<input class="ccb-builder-radio__radio" :id="'ccb-option-columns-4-' + radioField.alias" type="radio" :name="'columns-' + radioField.alias" value="4" v-model="radioField.styles.elementColumns">
+							<label class="ccb-builder-radio__option" :for="'ccb-option-columns-4-' + radioField.alias"><?php esc_html_e( '4', 'cost-calculator-builder' ); ?></label>
+							
+							<input class="ccb-builder-radio__radio" :id="'ccb-option-columns-5-' + radioField.alias" type="radio" :name="'columns-' + radioField.alias" value="5" v-model="radioField.styles.elementColumns">
+							<label class="ccb-builder-radio__option" :for="'ccb-option-columns-5-' + radioField.alias"><?php esc_html_e( '5', 'cost-calculator-builder' ); ?></label>
+							
+							<input class="ccb-builder-radio__radio" :id="'ccb-option-columns-6-' + radioField.alias" type="radio" :name="'columns-' + radioField.alias" value="6" v-model="radioField.styles.elementColumns">
+							<label class="ccb-builder-radio__option" :for="'ccb-option-columns-6-' + radioField.alias"><?php esc_html_e( '6', 'cost-calculator-builder' ); ?></label>
+							
+							<input class="ccb-builder-radio__radio" :id="'ccb-option-columns-7-' + radioField.alias" type="radio" :name="'columns-' + radioField.alias" value="7" v-model="radioField.styles.elementColumns">
+							<label class="ccb-builder-radio__option" :for="'ccb-option-columns-7-' + radioField.alias"><?php esc_html_e( '7', 'cost-calculator-builder' ); ?></label>
+							
+							<input class="ccb-builder-radio__radio" :id="'ccb-option-columns-8-' + radioField.alias" type="radio" :name="'columns-' + radioField.alias" value="8" v-model="radioField.styles.elementColumns">
+							<label class="ccb-builder-radio__option" :for="'ccb-option-columns-8-' + radioField.alias"><?php esc_html_e( '8', 'cost-calculator-builder' ); ?></label>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row ccb-p-t-15">
+				<div class="col-12">
+					<div class="ccb-options-container radio">
+						<div class="ccb-options-header">
+							<span><?php esc_html_e( 'Label', 'cost-calculator-builder' ); ?></span>
+							<span style="display: flex;"><?php esc_html_e( 'Value', 'cost-calculator-builder' ); ?>
+								<span class="ccb-options-tooltip">
+									<i class="ccb-icon-circle-question"></i>
+									<span class="ccb-options-tooltip__text"><?php esc_html_e( 'This value can be used for calculation purposes, Use numbers only' ); ?></span>
+								</span>
+							</span>
+						</div>
+						<draggable
+								v-model="fieldOptions"
+								class="ccb-options"
+								draggable=".ccb-option"
+								:animation="200"
+								handle=".ccb-option-drag"
+						>
+							<div class="ccb-option" v-for="(option, index) in fieldOptions" :key="index">
+								<div class="ccb-option-drag" :class="{disabled: fieldOptions.length === 1}">
+									<i class="ccb-icon-drag-dots"></i>
+								</div>
+								<div class="ccb-option-delete" @click.prevent="removeOption(index, option.optionValue)" :class="{disabled: fieldOptions.length === 1}">
+									<i class="ccb-icon-close"></i>
+								</div>
+								<div class="ccb-option-inner">
+									<div class="ccb-input-wrapper">
+										<input type="text" v-model="option.optionText" placeholder="<?php esc_attr_e( 'Option label', 'cost-calculator-builder' ); ?>">
+									</div>
+								</div>
+								<div class="ccb-option-inner">
+									<div class="ccb-input-wrapper">
+										<input type="text" min="0" step="1" :name="'option_' + index" @keyup="checkRequired('errorOptionValue' + index)" v-model="option.optionValue" placeholder="<?php esc_attr_e( 'Option Value', 'cost-calculator-builder' ); ?>">
+										<span @click="numberCounterActionForOption(index)" class="input-number-counter up"></span>
+										<span @click="numberCounterActionForOption(index, '-')" class="input-number-counter down"></span>
+									</div>
+									<span :id="'errorOptionValue' + index"></span>
+								</div>
+							</div>
+						</draggable>
+						<div class="ccb-option-actions">
+							<button class="ccb-button light" @click.prevent="addOption">
+								<i class="ccb-icon-Path-3453"></i>
+								<?php esc_html_e( 'Add option', 'cost-calculator-builder' ); ?>
+							</button>
 						</div>
 					</div>
 				</div>
@@ -157,19 +239,6 @@
 		</div>
 		<div class="container" v-show="tab === 'style' && typeof radioField.styles !== 'undefined'">
 			<?php if ( defined( 'CCB_PRO' ) ) : ?>
-				<div class="row ccb-p-t-15" v-if="radioField.styles">
-					<div class="col-12">
-						<div class="ccb-field-style-tabs">
-							<div class="ccb-field-style-tab" :class="{'active': radioField.styles.box_style === 'horizontal'}" @click="radioField.styles.box_style = 'horizontal'">
-								<?php esc_html_e( 'Horizontal', 'cost-calculator-builder' ); ?>
-							</div>
-							<div class="ccb-field-style-tab" :class="{'active': radioField.styles.box_style === 'vertical'}" @click="radioField.styles.box_style = 'vertical'">
-								<?php esc_html_e( 'Vertical', 'cost-calculator-builder' ); ?>
-							</div>
-						</div>
-					</div>
-				</div>
-
 				<div class="row ccb-p-t-15" v-if="radioField.styles">
 					<div class="col-12">
 						<div class="ccb-style-preview ccb-field-style-preview" v-for="style in getRadioStyles" :key="style.value" :class="{'active': radioField.styles.style === style.value}" @click="radioField.styles.style = style.value">

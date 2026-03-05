@@ -1,5 +1,5 @@
 <template>
-  <div class="ccb-default-toggle">
+  <div class="ccb-default-toggle ccb-toggle-grid">
     <div
       class="ccb-toggle-item"
       v-for="(option, idx) in field.options"
@@ -137,15 +137,6 @@ const { optionValues, changeValue, getName } = useMultiOptionChildShared(
       input:checked + label {
         background: var(--ccb-accent-color);
       }
-    }
-  }
-}
-
-.ccb-vertical-toggle {
-  .ccb-default-toggle {
-    flex-direction: column;
-    .ccb-toggle-item {
-      width: 100%;
     }
   }
 }

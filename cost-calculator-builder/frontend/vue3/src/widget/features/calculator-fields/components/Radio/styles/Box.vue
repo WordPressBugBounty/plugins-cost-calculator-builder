@@ -1,5 +1,5 @@
 <template>
-  <div class="ccb-box-radio">
+  <div class="ccb-box-radio ccb-radio-grid">
     <label
       class="ccb-radio-label"
       v-for="(option, idx) in options"
@@ -46,12 +46,6 @@ const { optionValues, changeValue, getName } = useSingleOptionChildShared(
 </script>
 
 <style lang="scss" scoped>
-.ccb-vertical-radio {
-  .ccb-box-radio {
-    flex-direction: column;
-  }
-}
-
 .ccb-box-radio {
   display: flex;
   gap: 10px;
@@ -66,13 +60,9 @@ const { optionValues, changeValue, getName } = useSingleOptionChildShared(
     font-weight: var(--ccb-mobile-field-weight);
   }
 
-  &.ccb-vertical-radio {
-    flex-direction: column;
-  }
-
   label {
     margin: 0;
-    padding: 12px 30px;
+    padding: 12px;
     background: var(--ccb-container-color);
     border: 1px solid var(--ccb-fields-border-color);
     border-radius: var(--ccb-fields-border-radius);
@@ -81,7 +71,11 @@ const { optionValues, changeValue, getName } = useSingleOptionChildShared(
     align-items: center;
     justify-content: center;
     line-height: 1.25;
+    text-align: center;
 
+    .ccb-radio-label {
+      word-break: break-all;
+    }
     input {
       display: none;
     }

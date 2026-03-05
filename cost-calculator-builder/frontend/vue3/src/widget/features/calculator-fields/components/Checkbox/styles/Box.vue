@@ -1,5 +1,5 @@
 <template>
-  <div class="ccb-box-checkbox">
+  <div class="ccb-box-checkbox ccb-checkbox-grid">
     <template v-for="(option, idx) in field.options">
       <label
         :for="getName + '_' + idx"
@@ -73,6 +73,10 @@ const { optionValues, changeValue, getName } = useMultiOptionChildShared(
     border: 1px solid var(--ccb-fields-border-color);
     border-radius: var(--ccb-fields-border-radius);
 
+    .ccb-checkbox-label {
+      word-break: break-word;
+    }
+
     input {
       display: none;
     }
@@ -87,16 +91,6 @@ const { optionValues, changeValue, getName } = useMultiOptionChildShared(
     background: var(--ccb-accent-color);
     border-color: var(--ccb-accent-color);
     color: #fff;
-  }
-}
-
-.ccb-vertical-checkbox {
-  .ccb-box-checkbox {
-    flex-direction: column;
-  }
-
-  .ccb-checkbox-label {
-    word-break: break-word;
   }
 }
 </style>

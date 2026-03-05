@@ -1,5 +1,5 @@
 <template>
-  <div class="ccb-default-image-radio-withicon">
+  <div class="ccb-default-image-radio-withicon ccb-radio-img-grid">
     <div
       v-for="(option, idx) in options"
       :key="idx"
@@ -94,7 +94,7 @@ const addOrRemove = (option: IOptions): void => {
     position: relative;
     border-radius: 4px;
     cursor: pointer;
-    padding: 10px 18px;
+    padding: 10px;
     row-gap: 7px;
     box-sizing: border-box;
 
@@ -130,6 +130,7 @@ const addOrRemove = (option: IOptions): void => {
       display: flex;
       justify-content: center;
       row-gap: 10px;
+      text-align: center;
     }
 
     &__label {
@@ -211,22 +212,6 @@ const addOrRemove = (option: IOptions): void => {
 
     .ccb-radio-label {
       word-break: break-word;
-    }
-  }
-}
-
-.ccb-vertical-radio {
-  .ccb-default-radio-image {
-    flex-direction: column;
-  }
-}
-
-.ccb-horizontal {
-  .ccb_field_with_radio_with_img {
-    grid-column: 1 / span 2;
-    .ccb-radio-image {
-      max-width: 200px !important;
-      width: fit-content !important;
     }
   }
 }

@@ -7,6 +7,7 @@ export interface IStyles {
   applyToAll?: boolean;
   textColor?: string;
   backgroundColor?: string;
+  elementColumns?: string;
 }
 
 export interface IOptions {

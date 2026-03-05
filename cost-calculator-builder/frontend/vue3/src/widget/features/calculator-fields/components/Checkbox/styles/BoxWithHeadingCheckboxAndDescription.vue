@@ -1,5 +1,5 @@
 <template>
-  <div class="ccb-box-with-heading-checkbox-description">
+  <div class="ccb-box-with-heading-checkbox-and-description ccb-checkbox-grid">
     <template v-for="(option, idx) in field.options">
       <label
         :for="getName + '_' + idx + '_' + generateId"
@@ -52,7 +52,7 @@ const generateId = computed(() => {
 </script>
 
 <style lang="scss" scoped>
-.ccb-box-with-heading-checkbox-description {
+.ccb-box-with-heading-checkbox-and-description {
   display: flex;
   gap: 10px;
   font-size: var(--ccb-field-size);
@@ -93,6 +93,10 @@ const generateId = computed(() => {
     background: var(--ccb-fields-bg-color);
     border: 1px solid var(--ccb-fields-border-color);
     border-radius: var(--ccb-fields-border-radius);
+
+    .ccb-checkbox-label {
+      word-break: break-word;
+    }
 
     &:before {
       right: 15px;
@@ -145,16 +149,6 @@ const generateId = computed(() => {
 
   label:has(input[type="checkbox"]:checked):after {
     transform: rotate(-45deg) scale(1) translateY(-10%);
-  }
-}
-
-.ccb-vertical-checkbox {
-  .ccb-box-with-heading-checkbox-description {
-    flex-direction: column;
-  }
-
-  .ccb-checkbox-label {
-    word-break: break-word;
   }
 }
 </style>

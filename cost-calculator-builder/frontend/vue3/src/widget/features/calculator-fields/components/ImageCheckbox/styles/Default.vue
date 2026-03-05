@@ -1,5 +1,5 @@
 <template>
-  <div class="ccb-default-checkbox-image">
+  <div class="ccb-default-checkbox-image ccb-image-checkbox-grid">
     <template v-for="(option, idx) in field.options">
       <label
         :for="getName + '_' + idx + '_' + generateId"
@@ -107,8 +107,7 @@ const {
     border-radius: 4px;
     cursor: pointer;
     max-width: unset;
-    width: 48%;
-    min-height: 220px;
+    width: 100%;
     padding: 0;
     margin: 0;
     box-sizing: border-box;
@@ -156,7 +155,6 @@ const {
       line-height: 0.7;
       width: 100%;
       height: 100%;
-      display: flex;
       box-sizing: border-box;
 
       img {
@@ -225,30 +223,6 @@ const {
 
   label:has(input[type="checkbox"]:checked):after {
     transform: rotate(-45deg) scale(1) translateY(-10%);
-  }
-}
-
-.ccb-vertical-checkbox {
-  flex-direction: column;
-  .ccb-default-checkbox-image {
-    .ccb-checkbox-image {
-      width: 100%;
-    }
-  }
-}
-
-.ccb-horizontal {
-  .ccb-field {
-    &.ccb_field_with_checkbox_with_img {
-      grid-column: 1 / span 2;
-      .ccb-checkbox-image {
-        max-width: 200px !important;
-        min-height: 220px;
-      }
-      .ccb-default-checkbox-image {
-        flex-direction: row;
-      }
-    }
   }
 }
 </style>

@@ -47,7 +47,7 @@
 			<div class="row ccb-p-t-15">
 				<div class="col-12">
 					<div class="ccb-builder-radio-wrapper">
-						<span class="ccb-radio-label"><?php esc_html_e( 'Element Width (%)', 'cost-calculator-builder' ); ?></span>
+						<span class="ccb-radio-label"><?php esc_html_e( 'Element width (%)', 'cost-calculator-builder' ); ?></span>
 						<div class="ccb-radio-box">
 							<input class="ccb-builder-radio__radio" :id="'ccb-width-25-' + checkboxField.alias" type="radio" :name="'width-' + checkboxField.alias" value="25" v-model="checkboxField.width" @change="document.dispatchEvent(new CustomEvent('ccb_field_width_change', { detail: { alias: id.alias, width: 25 } }))">
 							<label class="ccb-builder-radio__option" :for="'ccb-width-25-' + checkboxField.alias"><?php esc_html_e( '25', 'cost-calculator-builder' ); ?></label>
@@ -60,6 +60,38 @@
 
 							<input class="ccb-builder-radio__radio" :id="'ccb-width-100-' + checkboxField.alias" type="radio" :name="'width-' + checkboxField.alias" value="100" v-model="checkboxField.width" @change="document.dispatchEvent(new CustomEvent('ccb_field_width_change', { detail: { alias: id.alias, width: 100 } }))">
 							<label class="ccb-builder-radio__option" :for="'ccb-width-100-' + checkboxField.alias"><?php esc_html_e( '100', 'cost-calculator-builder' ); ?></label>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row ccb-p-t-15" v-if="checkboxField.styles">
+				<div class="col-12">
+					<div class="ccb-builder-radio-wrapper">
+						<span class="ccb-radio-label"><?php esc_html_e( 'Element columns', 'cost-calculator-builder' ); ?></span>
+						<div class="ccb-radio-box">
+							<input class="ccb-builder-radio__radio" :id="'ccb-option-columns-1-' + checkboxField.alias" type="radio" :name="'columns-' + checkboxField.alias" value="1" v-model="checkboxField.styles.elementColumns">
+							<label class="ccb-builder-radio__option" :for="'ccb-option-columns-1-' + checkboxField.alias"><?php esc_html_e( '1', 'cost-calculator-builder' ); ?></label>
+							
+							<input class="ccb-builder-radio__radio" :id="'ccb-option-columns-2-' + checkboxField.alias" type="radio" :name="'columns-' + checkboxField.alias" value="2" v-model="checkboxField.styles.elementColumns">
+							<label class="ccb-builder-radio__option" :for="'ccb-option-columns-2-' + checkboxField.alias"><?php esc_html_e( '2', 'cost-calculator-builder' ); ?></label>
+							
+							<input class="ccb-builder-radio__radio" :id="'ccb-option-columns-3-' + checkboxField.alias" type="radio" :name="'columns-' + checkboxField.alias" value="3" v-model="checkboxField.styles.elementColumns">
+							<label class="ccb-builder-radio__option" :for="'ccb-option-columns-3-' + checkboxField.alias"><?php esc_html_e( '3', 'cost-calculator-builder' ); ?></label>
+							
+							<input class="ccb-builder-radio__radio" :id="'ccb-option-columns-4-' + checkboxField.alias" type="radio" :name="'columns-' + checkboxField.alias" value="4" v-model="checkboxField.styles.elementColumns">
+							<label class="ccb-builder-radio__option" :for="'ccb-option-columns-4-' + checkboxField.alias"><?php esc_html_e( '4', 'cost-calculator-builder' ); ?></label>
+							
+							<input class="ccb-builder-radio__radio" :id="'ccb-option-columns-5-' + checkboxField.alias" type="radio" :name="'columns-' + checkboxField.alias" value="5" v-model="checkboxField.styles.elementColumns">
+							<label class="ccb-builder-radio__option" :for="'ccb-option-columns-5-' + checkboxField.alias"><?php esc_html_e( '5', 'cost-calculator-builder' ); ?></label>
+							
+							<input class="ccb-builder-radio__radio" :id="'ccb-option-columns-6-' + checkboxField.alias" type="radio" :name="'columns-' + checkboxField.alias" value="6" v-model="checkboxField.styles.elementColumns">
+							<label class="ccb-builder-radio__option" :for="'ccb-option-columns-6-' + checkboxField.alias"><?php esc_html_e( '6', 'cost-calculator-builder' ); ?></label>
+							
+							<input class="ccb-builder-radio__radio" :id="'ccb-option-columns-7-' + checkboxField.alias" type="radio" :name="'columns-' + checkboxField.alias" value="7" v-model="checkboxField.styles.elementColumns">
+							<label class="ccb-builder-radio__option" :for="'ccb-option-columns-7-' + checkboxField.alias"><?php esc_html_e( '7', 'cost-calculator-builder' ); ?></label>
+							
+							<input class="ccb-builder-radio__radio" :id="'ccb-option-columns-8-' + checkboxField.alias" type="radio" :name="'columns-' + checkboxField.alias" value="8" v-model="checkboxField.styles.elementColumns">
+							<label class="ccb-builder-radio__option" :for="'ccb-option-columns-8-' + checkboxField.alias"><?php esc_html_e( '8', 'cost-calculator-builder' ); ?></label>
 						</div>
 					</div>
 				</div>
@@ -173,20 +205,7 @@
 		</div>
 		<div class="container" v-show="tab === 'style' && typeof checkboxField.styles !== 'undefined'">
 			<?php if ( defined( 'CCB_PRO' ) ) : ?>
-			<div class="row ccb-p-t-15" v-if="checkboxField.styles">
-				<div class="col-12">
-					<div class="ccb-field-style-tabs">
-						<div class="ccb-field-style-tab" :class="{'active': checkboxField.styles.box_style === 'horizontal'}" @click="checkboxField.styles.box_style = 'horizontal'">
-							<?php esc_html_e( 'Horizontal', 'cost-calculator-builder' ); ?>
-						</div>
-						<div class="ccb-field-style-tab" :class="{'active': checkboxField.styles.box_style === 'vertical'}" @click="checkboxField.styles.box_style = 'vertical'">
-							<?php esc_html_e( 'Vertical', 'cost-calculator-builder' ); ?>
-						</div>
-					</div>
-				</div>
-			</div>
-
-			<div class="row ccb-p-t-15" v-if="checkboxField.styles">
+			<div class="row ccb-p-t-30" v-if="checkboxField.styles">
 				<div class="col-12">
 					<div class="ccb-style-preview ccb-field-style-preview" v-for="style in getCheckboxStyles" :key="style.value" :class="{'active': checkboxField.styles.style === style.value}" @click="checkboxField.styles.style = style.value">
 						<span class="ccb-style-preview-header">{{ style.label }}</span>

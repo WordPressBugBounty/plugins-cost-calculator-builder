@@ -1,5 +1,5 @@
 <template>
-  <div class="ccb-box-toggle">
+  <div class="ccb-box-toggle ccb-toggle-grid">
     <label
       class="ccb-toggle-item"
       v-for="(option, idx) in field.options"
@@ -111,6 +111,7 @@ const toggleOption = (value: string) => {
     &__label-wrap {
       display: flex;
       flex-direction: column;
+      word-break: break-all;
     }
 
     .ccb-toggle-wrapper {
