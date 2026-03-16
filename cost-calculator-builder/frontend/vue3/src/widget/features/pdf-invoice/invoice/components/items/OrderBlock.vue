@@ -649,7 +649,7 @@ const updateFieldsWithOrderDetails = (orderDetails: any[]): any[] => {
 };
 
 const getOrderDetails = computed(() => {
-  let fields = fieldsStore.getSummaryList.filter((f: Field) => !f.hidden);
+  let fields = fieldsStore.getSummaryBase.filter((f: Field) => !f.hidden);
 
   if (getOrderData.value?.orderDetails) {
     fields = updateFieldsWithOrderDetails(getOrderData.value.orderDetails);

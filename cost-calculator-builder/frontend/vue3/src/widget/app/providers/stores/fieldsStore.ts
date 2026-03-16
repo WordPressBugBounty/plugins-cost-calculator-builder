@@ -105,13 +105,81 @@ export const useFieldsStore = () => {
 
       getSummaryList(): Field[] {
         const settings = useSettingsStore();
-        const fields = Array.from(this.fields.values());
+        let result: Field[] = this.getSummaryBase;
+
+        if (!settings.general?.hideEmpty) {
+          result = result.filter((f) => {
+            if ("selectedOption" in f && Array.isArray(f.selectedOption)) {
+              return f.selectedOption.length > 0;
+            } else if (
+              "selectedOption" in f &&
+              !Array.isArray(f.selectedOption) &&
+              f.selectedOption
+            ) {
+              return f.selectedOption.optionValue;
+            } else if (["validated_form", "text"].includes(f.fieldName)) {
+              return f.displayValue;
+            } else if (
+              f.fieldName === "geolocation" &&
+              "geoType" in f &&
+              f.geoType === "multiplyLocation"
+            ) {
+              return f.displayValue;
+            } else if (
+              (f.fieldName === "datePicker" && f.displayValue.length > 0) ||
+              (f.fieldName === "timePicker" && f.displayValue.length > 0)
+            ) {
+              return f.displayValue;
+            } else {
+              return f.value;
+            }
+          });
+
+          result = result.filter((f) => {
+            if (["validated_form", "text"].includes(f.fieldName)) {
+              return f.displayValue;
+            } else if (
+              f.fieldName === "geolocation" &&
+              "geoType" in f &&
+              f.geoType === "multiplyLocation"
+            ) {
+              return f.displayValue;
+            } else if (
+              f.fieldName === "file_upload" &&
+              "allowPrice" in f &&
+              "files" in f &&
+              Array.isArray(f.files) &&
+              f.files.length > 0
+            ) {
+              return f.files.length > 0;
+            } else {
+              if (
+                "summaryView" in f &&
+                ["show_label_calculable", "show_label_not_calculable"].includes(
+                  f.summaryView,
+                )
+              ) {
+                return true;
+              } else {
+                return f.value;
+              }
+            }
+          });
+        }
+
+        return result;
+      },
+
+      getSummaryBase(): Field[] {
+        const fields: Field[] = Array.from(this.fields.values());
+
         if (Array.isArray(fields)) {
           const excludeFields = ["total", "line", "html"];
           let result: Field[] = [];
           const sectionFields = fields.filter((f): f is ISectionField => {
             return "fields" in f && f.fields instanceof Map;
           });
+
           sectionFields.forEach((sectionField) => {
             sectionField.fields.forEach((f: Field) => {
               if (f.fieldName.includes("repeater")) {
@@ -147,67 +215,6 @@ export const useFieldsStore = () => {
               result.push(f);
             });
           });
-
-          if (!settings.general?.hideEmpty) {
-            result = result.filter((f) => {
-              if ("selectedOption" in f && Array.isArray(f.selectedOption)) {
-                return f.selectedOption.length > 0;
-              } else if (
-                "selectedOption" in f &&
-                !Array.isArray(f.selectedOption) &&
-                f.selectedOption
-              ) {
-                return f.selectedOption.optionValue;
-              } else if (["validated_form", "text"].includes(f.fieldName)) {
-                return f.displayValue;
-              } else if (
-                f.fieldName === "geolocation" &&
-                "geoType" in f &&
-                f.geoType === "multiplyLocation"
-              ) {
-                return f.displayValue;
-              } else if (
-                (f.fieldName === "datePicker" && f.displayValue.length > 0) ||
-                (f.fieldName === "timePicker" && f.displayValue.length > 0)
-              ) {
-                return f.displayValue;
-              } else {
-                return f.value;
-              }
-            });
-
-            result = result.filter((f) => {
-              if (["validated_form", "text"].includes(f.fieldName)) {
-                return f.displayValue;
-              } else if (
-                f.fieldName === "geolocation" &&
-                "geoType" in f &&
-                f.geoType === "multiplyLocation"
-              ) {
-                return f.displayValue;
-              } else if (
-                f.fieldName === "file_upload" &&
-                "allowPrice" in f &&
-                "files" in f &&
-                Array.isArray(f.files) &&
-                f.files.length > 0
-              ) {
-                return f.files.length > 0;
-              } else {
-                if (
-                  "summaryView" in f &&
-                  [
-                    "show_label_calculable",
-                    "show_label_not_calculable",
-                  ].includes(f.summaryView)
-                ) {
-                  return true;
-                } else {
-                  return f.value;
-                }
-              }
-            });
-          }
 
           return result;
         }

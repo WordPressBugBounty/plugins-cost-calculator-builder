@@ -47,7 +47,7 @@ $pro_active = defined( 'CCB_PRO' ) ? 'active' : '';
 				<div class="ccb-fields-builder">
 					<div class="ccb-fields-builder__header">
 						<div class="ccb-fields-builder__pages">
-							<draggable v-model="builderPages" style="display: flex;">
+							<draggable v-model="builderPages" style="display: flex; flex-wrap: wrap;">
 								<div class="ccb-fields-builder__page" v-for="page in builderPages" @click="setActivePage(page.alias)" :key="page.id" :class="{'ccb-fields-builder__page-active': activePageId === page.alias, 'ccb-fields-builder__page-error': checkErrorsPages().includes(page.alias)}">
 									<div class="ccb-fields-builder__page-icon">
 										<i class="ccb-icon-drag-dots"></i>
@@ -60,14 +60,14 @@ $pro_active = defined( 'CCB_PRO' ) ? 'active' : '';
 										<i class="ccb-icon-Path-3503"></i>
 									</div>
 								</div>
+								<div class="ccb-fields-builder__add-page" @click="addPage" :class="{'ccb-fields-builder__add-page-lock': !proActive}">
+									<i class="ccb-icon-Path-3493"></i>
+									<span class="ccb-item-lock-inner" v-if="!proActive"><i class="ccb-icon-Path-3482"></i> <span>Pro</span></span>
+								</div>
+								<div class="ccb-fields-builder__page-settings" @click.stop="e => editField(e, 'page-navigation', null, null, { pageId: activePageId })" v-if="enoughPages">
+									<i class="ccb-icon-Union-28"></i>
+								</div>
 							</draggable>
-						</div>
-						<div class="ccb-fields-builder__add-page" @click="addPage" :class="{'ccb-fields-builder__add-page-lock': !proActive}">
-							<i class="ccb-icon-Path-3493"></i>
-							<span class="ccb-item-lock-inner" v-if="!proActive"><i class="ccb-icon-Path-3482"></i> <span>Pro</span></span>
-						</div>
-						<div class="ccb-fields-builder__page-settings" @click.stop="e => editField(e, 'page-navigation', null, null, { pageId: activePageId })" v-if="enoughPages">
-							<i class="ccb-icon-Union-28"></i>
 						</div>
 					</div>
 				</div>

@@ -792,7 +792,16 @@ const hideEmptyFields = (existingField: Field): string | boolean => {
       if (existingField.summaryView === "show_value") {
         let sum = 0;
         for (const option of existingField.selectedOption) {
-          sum += +option.optionValue?.split("|")?.[0] || 0;
+          let parts: string[] = [];
+          if (option.optionValue?.includes("|")) {
+            parts = option.optionValue.split("|");
+          }
+
+          if (!parts.length && option.optionValue?.includes("_")) {
+            parts = option.optionValue.split("_");
+          }
+
+          sum += +parts?.[0] || 0;
         }
         return sum > 0;
       }
@@ -804,8 +813,16 @@ const hideEmptyFields = (existingField: Field): string | boolean => {
       existingField.selectedOption
     ) {
       if (existingField.summaryView === "show_value") {
-        const splitValue = existingField.selectedOption.optionValue?.split("|");
-        return (+splitValue?.[0] || 0) as unknown as boolean;
+        let parts: string[] = [];
+        if (existingField.selectedOption.optionValue?.includes("|")) {
+          parts = existingField.selectedOption.optionValue.split("|");
+        }
+
+        if (existingField.selectedOption.optionValue?.includes("_")) {
+          parts = existingField.selectedOption.optionValue.split("_");
+        }
+
+        return (+parts?.[0] || 0) as unknown as boolean;
       }
 
       return true;

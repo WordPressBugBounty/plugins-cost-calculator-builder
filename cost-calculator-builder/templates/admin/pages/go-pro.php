@@ -94,8 +94,8 @@ function get_freemius_info() {
 $freemius_info = get_freemius_info();
 
 
-$start_date   = new DateTime( '2025-12-22 00:00:00' );
-$end_date     = new DateTime( '2026-01-08 23:59:00' );
+$start_date   = new DateTime( '2026-03-16 00:00:00' );
+$end_date     = new DateTime( '2026-03-22 23:59:00' );
 $current_time = new DateTime();
 
 
@@ -146,7 +146,7 @@ if ( array_key_exists( 'from', $params_array ) && ! empty( $params_array['from']
 			</div>
 			<?php if ( $is_promotion ) : ?>
 				<div class="stm-discount">
-					<a href="https://stylemixthemes.com/cost-calculator-plugin/pricing/?utm_source=wpadmin&utm_medium=push&utm_campaign=costcalculator&utm_content=gopro&utm_term=bfcm2025&plugin_coupon=XMAS2025" target="_blank"></a>
+					<a href="https://stylemixthemes.com/cost-calculator-plugin/pricing/?utm_source=wpadmin&utm_medium=push&utm_campaign=costcalculator&utm_content=gopro&utm_term=springsale26&plugin_coupon=SPRING26" target="_blank"></a>
 				</div>
 			<?php endif; ?>
 			<?php if ( isset( $freemius_info['plan'] ) ) : ?>
@@ -216,7 +216,7 @@ if ( array_key_exists( 'from', $params_array ) && ! empty( $params_array['from']
 									}
 
 									if ( $is_promotion ) {
-										$get_now_link .= '&plugin_coupon=XMAS2025';
+										$get_now_link .= '&plugin_coupon=SPRING26';
 									}
 									?>
 									<a href="<?php echo esc_url( $get_now_link ); ?>" class="stm_plan__btn stm_plan__btn--buy" data-checkout-url="<?php echo esc_url( $data_url ); ?>" target="_blank">

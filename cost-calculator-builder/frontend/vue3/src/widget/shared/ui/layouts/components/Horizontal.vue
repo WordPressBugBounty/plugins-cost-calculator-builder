@@ -348,7 +348,7 @@ const formDisplaySummaryStatus = computed(() => {
 });
 
 const summaryLastPage = computed(() => {
-  return pageBreakerSettings?.summaryAfterLastPage;
+  return enoughPages.value && pageBreakerSettings?.summaryAfterLastPage;
 });
 
 const getStickyId = computed(() => {

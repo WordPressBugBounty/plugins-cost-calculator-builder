@@ -2,20 +2,15 @@ import {
   DiscountsStore,
   IDiscount,
   IDiscountCondition,
-  OriginalDiscountsStore,
 } from "@/widget/shared/types/discounts";
-import { computed, ref } from "vue";
+import { computed } from "vue";
 import { IFormulaField, IRepeaterField } from "@/widget/shared/types/fields";
 import { useCurrency } from "@/widget/actions/fields/composable/useCurrency.ts";
 import { useConditions } from "@/widget/actions/conditions/composable/useConditions.ts";
 import { ComputedRef } from "vue-demi";
 import { useFieldsStore } from "@/widget/app/providers/stores/fieldsStore.ts";
 import { useTranslationsStore } from "@/widget/app/providers/stores/translationsStore.ts";
-
-const discounts = ref<DiscountsStore>({});
-const originalDiscounts = ref<OriginalDiscountsStore>({});
-const promocodes = ref<string[]>([]);
-const originalPromocodes = ref<string[]>([]);
+import { useDiscountsStore } from "@/widget/app/providers/stores/discountsStore.ts";
 
 interface DiscountsResult {
   addDiscounts: (rawDiscounts: IDiscount[]) => void;
@@ -30,15 +25,19 @@ interface DiscountsResult {
 }
 
 function addDiscounts(rawDiscounts: IDiscount[]): void {
+  const discountsStore = useDiscountsStore();
   const structuredDiscounts: DiscountsStore = {};
 
   rawDiscounts.forEach((discount) => {
     if (
       discount.isPromo &&
       discount.promocode &&
-      !originalPromocodes.value.includes(discount.promocode)
+      !discountsStore.getOriginalPromocodes.includes(discount.promocode)
     ) {
-      originalPromocodes.value.push(discount.promocode);
+      discountsStore.setOriginalPromocodes([
+        ...discountsStore.getOriginalPromocodes,
+        discount.promocode,
+      ]);
     }
 
     discount.conditions.forEach((condition: IDiscountCondition) => {
@@ -59,18 +58,21 @@ function addDiscounts(rawDiscounts: IDiscount[]): void {
       });
     });
 
-    originalDiscounts.value[+discount.discountId] = discount;
+    const originalDiscounts = discountsStore.getOriginalDiscounts;
+    originalDiscounts[+discount.discountId] = discount;
+    discountsStore.setOriginalDiscounts(originalDiscounts);
   });
 
-  discounts.value = structuredDiscounts;
+  discountsStore.setDiscounts(structuredDiscounts);
 }
 
 function applyDiscounts(
   field: IFormulaField | IRepeaterField,
 ): IFormulaField | IRepeaterField {
-  if (!discounts.value[field?.alias]) return field;
+  const discountsStore = useDiscountsStore();
+  if (!discountsStore.getDiscounts[field?.alias]) return field;
   const conditions = JSON.parse(
-    JSON.stringify(discounts.value[field.alias]),
+    JSON.stringify(discountsStore.getDiscounts[field.alias]),
   )?.reverse();
 
   const withPromocodes = conditions.filter(
@@ -85,7 +87,8 @@ function applyDiscounts(
 
   let applied = false;
   for (const condition of result) {
-    const discount: IDiscount = originalDiscounts.value[condition.discountId];
+    const discount: IDiscount =
+      discountsStore.getOriginalDiscounts[condition.discountId];
     if (
       discount &&
       isDiscountValid(discount) &&
@@ -141,10 +144,11 @@ function isDiscountValid(discount: IDiscount): boolean {
 }
 
 function checkPromocodeConditions(discount: IDiscount) {
+  const discountsStore = useDiscountsStore();
   return discount.isPromo
-    ? promocodes.value.length &&
+    ? discountsStore.getPromocodes.length &&
         discount.isPromo &&
-        !!promocodes.value.includes(discount?.promocode || "")
+        !!discountsStore.getPromocodes.includes(discount?.promocode || "")
     : true;
 }
 
@@ -214,11 +218,12 @@ function parseAppliedDiscount(
 }
 
 function applyPromocode(promocode: string): void {
+  const discountsStore = useDiscountsStore();
   const fieldStore = useFieldsStore();
   const { triggerCondition } = useConditions();
 
-  if (!promocodes.value.includes(promocode)) {
-    promocodes.value.push(promocode);
+  if (!discountsStore.getPromocodes.includes(promocode)) {
+    discountsStore.setPromocodes([...discountsStore.getPromocodes, promocode]);
     fieldStore.recalculateTotals();
     triggerCondition();
     fieldStore.recalculateTotals();
@@ -226,9 +231,12 @@ function applyPromocode(promocode: string): void {
 }
 
 function removePromocode(idx: number): void {
+  const discountsStore = useDiscountsStore();
   const fieldStore = useFieldsStore();
   const { triggerCondition } = useConditions();
-  promocodes.value = promocodes.value.filter((_, i: number) => i !== idx);
+  discountsStore.setPromocodes(
+    discountsStore.getPromocodes.filter((_, i: number) => i !== idx),
+  );
 
   fieldStore.recalculateTotals();
   triggerCondition();
@@ -236,17 +244,19 @@ function removePromocode(idx: number): void {
 }
 
 function hasPromocodes(): boolean {
-  return originalPromocodes.value.length > 0;
+  const discountsStore = useDiscountsStore();
+  return discountsStore.getOriginalPromocodes.length > 0;
 }
 
 export function useDiscounts(): DiscountsResult {
+  const discountsStore = useDiscountsStore();
   return {
     addDiscounts,
     applyDiscounts,
     applyPromocode,
     removePromocode,
     hasPromocodes,
-    promocodes: computed(() => promocodes.value),
-    originalPromocodes: computed(() => originalPromocodes.value),
+    promocodes: computed(() => discountsStore.getPromocodes),
+    originalPromocodes: computed(() => discountsStore.getOriginalPromocodes),
   };
 }

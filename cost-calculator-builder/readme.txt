@@ -5,8 +5,8 @@ Donate link: https://stylemixthemes.com
 Tags: cost calculator, calculator, calculator form builder, cost estimation, shipping calculator, taxi fare calculator, price calculator, tax calculation, cost, calc, cost calc, calc builder
 Requires at least: 6.2
 Requires PHP: 8.0.3
-Tested up to: 6.9
-Stable tag: 3.6.15
+Tested up to: 6.9.4
+Stable tag: 3.6.16
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -207,6 +207,13 @@ Also, you can import the demo sample using Tools -> Import -> WordPress Import.
 Demo sample XML file included in plugin archive.
 
 == Changelog ==
+
+= 3.6.16 =
+- Fix: Fixed Summary on Final Page remaining active even when Page Breaker is not enabled. (PRO)
+- Fix: Fixed Zero values in Orders, PDF Entries, Emails setting not applying to PDFs. (PRO)
+- Fix: Fixed Dropdown, Radio, Checkbox, and Switch elements not displaying or being calculated in Emails and Orders regardless of their value when Zero values in Orders, PDF Entries, Emails is enabled. (PRO)
+- Fix: Fixed discounts not working when multiple calculators are present on the same page. (PRO)
+- Fix: Fixed Page Breaker page tabs going outside the border when many pages are added. (PRO)
 
 = 3.6.15 =
 - New: Added a setting that allows you to control the number of columns displayed for Radio select, Switch Toggle, and Checkbox elements.
