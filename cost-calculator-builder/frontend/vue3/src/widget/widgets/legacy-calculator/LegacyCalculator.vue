@@ -116,7 +116,6 @@ import Notifications from "@/widget/shared/ui/components/Notifications";
 import CCBPopup from "@/widget/shared/ui/components/Popup/Popup.vue";
 import ThankYouPage from "@/widget/features/thank-you-page/ThankYouPage.vue";
 import Layout from "@/widget/shared/ui/layouts/Layout.vue";
-import LiveDemoLayout from "@/widget/shared/ui/layouts/LiveDemoLaout.vue";
 import Wrapper from "@/widget/shared/ui/wrappers/Wrapper.vue";
 import Grid from "@/widget/shared/ui/grids/Grid.vue";
 import CalculatorField from "@/widget/features/calculator-fields/CalculatorField.vue";

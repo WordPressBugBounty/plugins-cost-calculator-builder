@@ -6,7 +6,7 @@ Tags: cost calculator, calculator, calculator form builder, cost estimation, shi
 Requires at least: 6.2
 Requires PHP: 8.0.3
 Tested up to: 6.9.4
-Stable tag: 3.6.16
+Stable tag: 3.6.17
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -207,6 +207,11 @@ Also, you can import the demo sample using Tools -> Import -> WordPress Import.
 Demo sample XML file included in plugin archive.
 
 == Changelog ==
+
+= 3.6.17 =
+- Fix: Fixed thousands separator settings not applying to Min and Max indicators on Basic Slider and Multi Range.
+- Fix: Fixed Round Value not working correctly.
+- Fix: Fixed both Email fields being required in Order Form when only one is set as required. (PRO)
 
 = 3.6.16 =
 - Fix: Fixed Summary on Final Page remaining active even when Page Breaker is not enabled. (PRO)

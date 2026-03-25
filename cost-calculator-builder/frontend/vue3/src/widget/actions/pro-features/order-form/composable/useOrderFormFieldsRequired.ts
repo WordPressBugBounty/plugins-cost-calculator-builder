@@ -24,10 +24,11 @@ const emailFieldValidation = (field: IFormField): boolean => {
     );
   }
 
-  return (
-    field.type === "email" &&
-    (field.value?.trim() === "" || !validateEmail(field.value))
-  );
+  if (field.type === "email" && field.value?.trim()) {
+    return !validateEmail(field.value || "");
+  }
+
+  return false;
 };
 
 const textFieldValidation = (field: IFormField): boolean => {

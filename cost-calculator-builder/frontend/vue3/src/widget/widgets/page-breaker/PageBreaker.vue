@@ -14,7 +14,16 @@
     <div class="ccb-page-breaker__content">
       <PaginationItem v-if="hidePagination && enoughPages" />
       <EditButton />
-      <Layout></Layout>
+      <template v-if="isLiveDemoLayout">
+        <LiveDemoLayout>
+          <slot />
+        </LiveDemoLayout>
+      </template>
+      <template v-else>
+        <Layout>
+          <slot />
+        </Layout>
+      </template>
       <CCBPopup size="medium" ref="popup" v-if="appStore.isProActive">
         <ThankYouPage />
       </CCBPopup>
@@ -120,6 +129,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
 import Layout from "@/widget/shared/ui/layouts/Layout.vue";
+import LiveDemoLayout from "@/widget/shared/ui/layouts/LiveDemoLayout.vue";
 import Wrapper from "@/widget/shared/ui/wrappers/Wrapper.vue";
 import PaginationItem from "@/widget/shared/ui/components/Step-pagination/PaginationItem.vue";
 import { useFieldsStore } from "@/widget/app/providers/stores/fieldsStore.ts";
@@ -148,6 +158,10 @@ const pageBreakerSettings = settingsStore.getPageBreakerSettings;
 
 const notificationsStore = useNotificationsStore();
 const translationsStore = useTranslationsStore();
+
+const isLiveDemoLayout = computed(() => {
+  return appStore.getIsLive && !enoughPages.value;
+});
 
 const getThankYouPageSettings = computed(() => settingsStore.thankYouPage);
 

@@ -10,7 +10,7 @@
         @click="handleMinClick(min)"
       >
         <span class="tick"></span>
-        <span class="label">{{ min }}</span>
+        <span class="label">{{ formatMinMax(min) }}</span>
       </div>
       <div
         class="slider-min-max-item"
@@ -18,7 +18,7 @@
         @click="handleClick(max)"
       >
         <span class="tick"></span>
-        <span class="label">{{ max }}</span>
+        <span class="label">{{ formatMinMax(max) }}</span>
       </div>
     </div>
     <Slider
@@ -64,6 +64,7 @@
 import { toRefs, ref, computed, watch } from "vue";
 import { IMultiRangeField } from "@/widget/shared/types/fields";
 import Slider from "@vueform/slider";
+import { useFieldsExtraOptions } from "@/widget/features/calculator-fields/composable/useFieldsExtraOptions";
 
 type Props = {
   field: IMultiRangeField;
@@ -72,6 +73,8 @@ type Props = {
 
 const props = defineProps<Props>();
 const { field } = toRefs(props);
+
+const { formatMinMax } = useFieldsExtraOptions(field);
 
 const step = computed(() =>
   field.value.jump ? 1 : Number(field.value.step || 1),

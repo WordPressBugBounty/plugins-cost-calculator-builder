@@ -2,10 +2,10 @@
   <div class="slider-wrapper ccb-default-range-field">
     <div class="slider-min-max">
       <div class="slider-min-max-item first">
-        <span class="label">{{ field.min }}</span>
+        <span class="label">{{ formatMinMax(field.min) }}</span>
       </div>
       <div class="slider-min-max-item">
-        <span class="label">{{ field.max }}</span>
+        <span class="label">{{ formatMinMax(field.max) }}</span>
       </div>
     </div>
     <Slider
@@ -26,6 +26,7 @@
 import { toRefs, computed } from "vue";
 import { IRangeField } from "@/widget/shared/types/fields";
 import Slider from "@vueform/slider";
+import { useFieldsExtraOptions } from "@/widget/features/calculator-fields/composable/useFieldsExtraOptions";
 
 type Props = {
   field: IRangeField;
@@ -34,6 +35,8 @@ type Props = {
 
 const props = defineProps<Props>();
 const { field } = toRefs(props);
+
+const { formatMinMax } = useFieldsExtraOptions(field);
 
 const emit = defineEmits<{
   (event: "update:modelValue", value: number): void;

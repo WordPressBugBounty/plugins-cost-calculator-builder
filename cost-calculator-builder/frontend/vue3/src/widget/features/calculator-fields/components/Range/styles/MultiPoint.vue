@@ -6,7 +6,7 @@
     <div class="slider-min-max">
       <div class="slider-min-max-item first" @click="handleClick(min)">
         <span class="tick"></span>
-        <span class="label">{{ min }}</span>
+        <span class="label">{{ formatMinMax(min) }}</span>
       </div>
       <div
         class="slider-min-max-item"
@@ -14,7 +14,7 @@
         @click="handleClick(max)"
       >
         <span class="tick"></span>
-        <span class="label">{{ max }}</span>
+        <span class="label">{{ formatMinMax(max) }}</span>
       </div>
     </div>
     <Slider
@@ -57,6 +57,7 @@
 import { toRefs, computed, watch, ref, onBeforeUnmount, onMounted } from "vue";
 import Slider from "@vueform/slider";
 import { IRangeField } from "@/widget/shared/types/fields";
+import { useFieldsExtraOptions } from "@/widget/features/calculator-fields/composable/useFieldsExtraOptions";
 
 type Props = {
   field: IRangeField;
@@ -71,6 +72,8 @@ const emit = defineEmits<{
 const realValue = ref(props.modelValue);
 
 const { field } = toRefs(props);
+
+const { formatMinMax } = useFieldsExtraOptions(field);
 
 const value = computed({
   get: () => props.modelValue,

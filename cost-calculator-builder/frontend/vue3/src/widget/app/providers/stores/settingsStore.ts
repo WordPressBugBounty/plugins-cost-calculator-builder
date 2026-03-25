@@ -175,6 +175,10 @@ export const useSettingsStore = defineStore("settings_store", {
   },
 
   actions: {
+    setLayout(layout: string): void {
+      this.general!.layout = layout;
+    },
+
     initGeolocationSettingsStore(data: IGeolocation): void {
       const convertedData = convertKeysToCamelCase(data);
       this.geolocation = convertedData as IGeolocation;

@@ -76,11 +76,16 @@ function getCommonFieldDisplayView(
     originalValue = field.originalValue?.toString() || "";
   }
 
-  let displayValue = field.value?.toString();
+  let fieldValue = (field.value || 0).toString();
+  if ("round" in field && field.round) {
+    fieldValue = Math.round(Number(fieldValue)).toString();
+  }
+
+  let displayValue = fieldValue;
 
   if (field.useCurrency || field.fieldCurrency) {
     displayValue = currencyInstance.formatCurrency(
-      field.value || 0,
+      Number(fieldValue),
       currencyInstance.getCurrencyOptions(field),
     );
   } else {
