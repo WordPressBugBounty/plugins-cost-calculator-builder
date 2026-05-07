@@ -1,14 +1,17 @@
 <template>
-  <div class="ccb-progress-with-bar" :ref="'progress-with-bar'">
+  <div class="ccb-progress-with-bar">
     <div class="ccb-progress-with-bar__title">
       {{ calcTitle.length > 25 ? calcTitle.slice(0, 22) + "..." : calcTitle }}
     </div>
-    <div class="ccb-progress-with-bar__bar">
-      <div class="count">
+    <div class="ccb-progress-with-bar__right">
+      <div class="ccb-progress-with-bar__count">
         {{ translationsStore.getTranslations.step }} {{ step }}/{{ count }}
       </div>
-      <div class="bar">
-        <span :style="calculateProgressWith"></span>
+      <div class="ccb-progress-with-bar__track">
+        <span
+          class="ccb-progress-with-bar__fill"
+          :style="calculateProgressWith"
+        ></span>
       </div>
     </div>
   </div>
@@ -16,7 +19,7 @@
 
 <script lang="ts" setup>
 import { toRefs, defineProps, computed } from "vue";
-import { useTranslationsStore } from "@/widget/app/providers/stores/translationsStore";
+import { useTranslationsStore } from "@/widget/app/providers/stores/translationsStore.ts";
 
 type Props = {
   pages: [];
@@ -41,49 +44,52 @@ const calculateProgressWith = computed(() => {
 });
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
 .ccb-progress-with-bar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 14px;
-  font-style: normal;
-  font-weight: 500;
-  line-height: 20px;
   width: 100%;
+  padding: 8px 20px;
   box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 
   &__title {
-    width: 50%;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 20px;
     color: var(--ccb-fields-description-color);
   }
 
-  &__bar {
+  &__right {
     display: flex;
     flex-direction: column;
-    max-width: 270px;
-    width: 50%;
+    align-items: flex-end;
+    gap: 6px;
+    max-width: 200px;
+    width: 40%;
+  }
+
+  &__count {
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1;
     color: var(--ccb-fields-description-color);
+  }
 
-    .count {
-      margin-bottom: 4px;
-    }
+  &__track {
+    width: 100%;
+    height: 6px;
+    border-radius: 4px;
+    background: var(--ccb-fields-bg-color);
+  }
 
-    .bar {
-      width: 100%;
-      height: 6px;
-      border-radius: 4px;
-      background: var(--ccb-fields-border-color);
-
-      span {
-        display: block;
-        background-color: var(--ccb-accent-color);
-        height: 100%;
-        width: 50%;
-        border-radius: 4px;
-        transition: width 0.5s ease-in-out;
-      }
-    }
+  &__fill {
+    display: block;
+    background: var(--ccb-accent-color);
+    height: 100%;
+    width: 0;
+    border-radius: 4px;
+    transition: width 0.4s ease;
   }
 }
 </style>

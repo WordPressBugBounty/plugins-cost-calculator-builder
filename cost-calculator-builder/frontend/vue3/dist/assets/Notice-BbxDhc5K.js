@@ -1,0 +1,2 @@
+import{d as o,f as t,i as s,x as a,p as c}from"./vendor-vue-runtime-core-BlqoKYKI.js";import{a as r}from"./vendor-vue-shared-DrzsEcag.js";import{_ as n}from"./vendor-vue3-html2pdf-DhFce1X6.js";const p={class:"ccb-notice__content"},i=o({__name:"Notice",props:{type:{}},setup(_){return(e,d)=>(s(),t("div",{class:r(["ccb-notice",e.type])},[a("div",p,[c(e.$slots,"default",{},void 0,!0)])],2))}}),u=n(i,[["__scopeId","data-v-416f511d"]]);export{u as N};
+//# sourceMappingURL=Notice-BbxDhc5K.js.map

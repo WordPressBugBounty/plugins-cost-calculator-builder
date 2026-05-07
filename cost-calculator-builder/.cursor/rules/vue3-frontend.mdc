@@ -1,0 +1,837 @@
+---
+description: Rules and coding standards for Vue3 + TypeScript frontend part of the Cost Calculator Builder plugin.
+globs: **/frontend/vue3/**/*
+alwaysApply: false
+---
+
+## File Structure
+
+```
+frontend/vue3/src/admin/
+├── app/
+│   └── providers/
+│       └── stores/           # Pinia stores
+├── features/                 # Feature modules
+│   ├── builder/
+│   ├── conditions/
+│   ├── settings/
+│   └── flow/
+└── shared/                   # Shared resources
+    ├── types/               # TypeScript types
+    ├── ui/components/       # UI components
+    └── utils/               # Utilities
+```
+
+## Naming Conventions
+
+### Files
+
+```typescript
+// ✅ Good
+MyComponent.vue; // Components - PascalCase
+useMyStore.ts; // Stores - camelCase with 'use' prefix
+myTypes.type.ts; // Types - camelCase + .type.ts
+myUtils.ts; // Utils - camelCase
+myService.ts; // Services - camelCase
+
+// ❌ Bad
+my - component.vue; // Wrong case
+MyStore.ts; // Missing 'use' prefix
+types.ts; // Not descriptive
+```
+
+### Components
+
+```vue
+<!-- ✅ Good -->
+<script setup lang="ts">
+// PascalCase for components
+import CalculatorField from './CalculatorField.vue';
+import BuilderSidebar from './BuilderSidebar.vue';
+</script>
+
+<template>
+  <CalculatorField />
+  <BuilderSidebar />
+</template>
+
+<!-- ❌ Bad -->
+<calculator-field />
+<!-- kebab-case in import -->
+```
+
+### Variables & Functions
+
+```typescript
+// ✅ Good
+const calculatorId = ref<number>(0);
+const builderFields = ref<IField[]>([]);
+const isLoading = computed(() => store.loading);
+
+function saveCalculator() {}
+function handleFieldUpdate() {}
+
+// ❌ Bad
+const CalculatorId = ref(0); // PascalCase for variables
+const builder_fields = ref([]); // snake_case
+function SaveCalculator() {} // PascalCase for functions
+```
+
+### Types & Interfaces
+
+```typescript
+// ✅ Good
+interface ICalculator {}
+interface IField {}
+type builderContentType = 'calculator' | 'settings';
+
+// ❌ Bad
+interface Calculator {} // Without I prefix
+type BuilderContent = 'calculator' | 'settings'; // PascalCase
+```
+
+## TypeScript
+
+### Always Use TypeScript
+
+```vue
+<!-- ✅ Good -->
+<script setup lang="ts">
+import { ref } from 'vue';
+
+const count = ref<number>(0);
+</script>
+
+<!-- ❌ Bad -->
+<script setup>
+// No TypeScript
+</script>
+```
+
+### 🔴 CRITICAL: Always Use Explicit Types with Ref
+
+**Never rely on type inference for refs.** Always specify the type explicitly:
+
+```typescript
+// ✅ Good - Explicit types
+const count = ref<number>(0);
+const message = ref<string>('');
+const isActive = ref<boolean>(false);
+const items = ref<IField[]>([]);
+
+// ❌ Bad - Relying on inference
+const count = ref(0);
+const message = ref('');
+const items = ref([]);
+```
+
+### Props Typing
+
+```vue
+<script setup lang="ts">
+// ✅ Good - Explicit interface
+interface Props {
+  calculatorId: number;
+  title: string;
+  fields?: IField[];
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  fields: () => [],
+});
+
+// ❌ Bad - No types
+const props = defineProps({
+  calculatorId: Number,
+  title: String,
+});
+</script>
+```
+
+### Emits Typing
+
+```vue
+<script setup lang="ts">
+// ✅ Good
+const emit = defineEmits<{
+  'update:modelValue': [value: string];
+  save: [id: number, data: ICalculator];
+  cancel: [];
+}>();
+
+// Usage
+emit('update:modelValue', 'new value');
+emit('save', 123, calculatorData);
+
+// ❌ Bad - No types
+const emit = defineEmits(['update:modelValue', 'save']);
+</script>
+```
+
+### Refs Typing
+
+**Always provide explicit types for refs, even when TypeScript could infer them.**
+
+```typescript
+// ✅ Good - Explicit types
+const count = ref<number>(0);
+const message = ref<string>('');
+const isActive = ref<boolean>(false);
+const myInput = ref<HTMLInputElement | null>(null);
+const calculator = ref<ICalculator | null>(null);
+const items = ref<IField[]>([]);
+
+// ❌ Bad - No explicit types (relies on inference)
+const count = ref(0); // Inferred but not explicit
+const message = ref(''); // Inferred as string but not explicit
+const myInput = ref(null); // any type
+const items = ref([]); // any[]
+```
+
+## Composition API
+
+### Use Composition API (not Options API)
+
+```vue
+<!-- ✅ Good - Composition API -->
+<script setup lang="ts">
+import { ref, computed, onMounted } from 'vue';
+
+const count = ref<number>(0);
+const double = computed(() => count.value * 2);
+
+onMounted(() => {
+  console.log('Component mounted');
+});
+</script>
+
+<!-- ❌ Bad - Options API (legacy) -->
+<script>
+export default {
+  data() {
+    return { count: 0 };
+  },
+  computed: {
+    double() {
+      return this.count * 2;
+    },
+  },
+};
+</script>
+```
+
+### Script Setup
+
+```vue
+<!-- ✅ Good - Use <script setup> -->
+<script setup lang="ts">
+import { ref } from 'vue';
+
+const count = ref<number>(0);
+const increment = () => count.value++;
+</script>
+
+<!-- ❌ Bad - Verbose setup() -->
+<script lang="ts">
+import { ref } from 'vue';
+
+export default {
+  setup() {
+    const count = ref<number>(0);
+    const increment = () => count.value++;
+
+    return {
+      count,
+      increment,
+    };
+  },
+};
+</script>
+```
+
+### Composables
+
+```typescript
+// composables/useCalculator.ts
+
+// ✅ Good
+export function useCalculator(calculatorId: number) {
+    const loading = ref<boolean>(false);
+    const calculator = ref<ICalculator | null>(null);
+
+    async function loadCalculator() {
+        loading.value = true;
+        try {
+            const response = await api.getCalculator(calculatorId);
+            calculator.value = response.data;
+        } catch (error) {
+            console.error(error);
+        } finally {
+            loading.value = false;
+        }
+    }
+
+    return {
+        loading,
+        calculator,
+        loadCalculator
+    };
+}
+
+// Usage in component
+<script setup lang="ts">
+const { loading, calculator, loadCalculator } = useCalculator(123);
+</script>
+```
+
+## Pinia Stores
+
+### Store Structure
+
+```typescript
+// stores/useBuilderStore.ts
+
+// ✅ Good
+import { defineStore } from 'pinia';
+
+interface IBuilderStore {
+  rawFields: IField[];
+  builderFields: IPageBreaker[];
+}
+
+export const useBuilderStore = defineStore('builder_store', {
+  state: (): IBuilderStore => ({
+    rawFields: [],
+    builderFields: [],
+  }),
+
+  getters: {
+    getRawFields: (state): IField[] => state.rawFields,
+
+    getFieldByAlias: (state) => {
+      return (alias: string): IField | undefined => {
+        return state.rawFields.find((f) => f.alias === alias);
+      };
+    },
+  },
+
+  actions: {
+    setRawFields(fields: IField[]): void {
+      this.rawFields = fields;
+    },
+
+    async fetchFields(calcId: number): Promise<void> {
+      const response = await api.getFields(calcId);
+      this.rawFields = response.data;
+    },
+  },
+});
+```
+
+### Using Stores in Components
+
+```vue
+<script setup lang="ts">
+import { useBuilderStore } from '@/admin/app/providers/stores/useBuilderStore';
+import { storeToRefs } from 'pinia';
+
+// Get store instance
+const builderStore = useBuilderStore();
+
+// Reactive refs (use storeToRefs for reactivity)
+const { rawFields, builderFields } = storeToRefs(builderStore);
+
+// Actions (direct access, no need for storeToRefs)
+const { setRawFields, fetchFields } = builderStore;
+
+// Or call directly
+builderStore.setRawFields(fields);
+
+// Getters
+const field = builderStore.getFieldByAlias('field_1');
+</script>
+```
+
+### Don't Destructure State Directly
+
+```typescript
+// ❌ Bad - Loses reactivity
+const { rawFields } = builderStore;
+
+// ✅ Good - Maintains reactivity
+const { rawFields } = storeToRefs(builderStore);
+```
+
+## Component Structure
+
+```vue
+<template>
+  <!-- Template here -->
+  <div class="calculator-field">
+    <label>{{ props.label }}</label>
+    <input v-model="localValue" @input="handleInput" />
+  </div>
+</template>
+
+<script setup lang="ts">
+/**
+ * Calculator Field Component
+ *
+ * @description Input field for calculator
+ */
+
+// Imports
+import { ref, computed, watch, onMounted } from 'vue';
+import { useBuilderStore } from '@/stores/useBuilderStore';
+
+// Types/Interfaces
+interface Props {
+  modelValue: string;
+  label: string;
+  required?: boolean;
+}
+
+// Props
+const props = withDefaults(defineProps<Props>(), {
+  required: false,
+});
+
+// Emits
+const emit = defineEmits<{
+  'update:modelValue': [value: string];
+}>();
+
+// Stores
+const builderStore = useBuilderStore();
+
+// Refs
+const localValue = ref<string>(props.modelValue);
+
+// Computed
+const isValid = computed(() => {
+  if (!props.required) return true;
+  return localValue.value.length > 0;
+});
+
+// Methods
+function handleInput() {
+  emit('update:modelValue', localValue.value);
+}
+
+// Watchers
+watch(
+  () => props.modelValue,
+  (newVal) => {
+    localValue.value = newVal;
+  }
+);
+
+// Lifecycle
+onMounted(() => {
+  console.log('Component mounted');
+});
+</script>
+
+<style scoped>
+.calculator-field {
+  /* Styles here */
+}
+</style>
+```
+
+## V-Model
+
+### Use v-model correctly
+
+```vue
+<!-- ✅ Good - Vue3 style -->
+<script setup lang="ts">
+interface Props {
+  modelValue: string; // Notice: modelValue, not value
+}
+
+const props = defineProps<Props>();
+
+const emit = defineEmits<{
+  'update:modelValue': [value: string];
+}>();
+
+// Update
+emit('update:modelValue', 'new value');
+</script>
+
+<!-- Usage -->
+<MyComponent v-model="value" />
+
+<!-- Multiple v-models -->
+<MyComponent v-model:title="title" v-model:content="content" />
+```
+
+## Imports
+
+### Use Path Aliases
+
+```typescript
+// ✅ Good - Use @ alias
+import { useBuilderStore } from '@/admin/app/providers/stores/useBuilderStore';
+import { IField } from '@/admin/shared/types/fields.type';
+
+// ❌ Bad - Relative paths
+import { useBuilderStore } from '../../../app/providers/stores/useBuilderStore';
+```
+
+### Import Order
+
+```typescript
+// 1. Vue & core libraries
+import { ref, computed, watch } from 'vue';
+import { defineStore } from 'pinia';
+
+// 2. External libraries
+import axios from 'axios';
+
+// 3. Internal - stores
+import { useBuilderStore } from '@/admin/app/providers/stores/useBuilderStore';
+
+// 4. Internal - types
+import { IField, ICalculator } from '@/admin/shared/types/fields.type';
+
+// 5. Internal - components
+import CalculatorField from './CalculatorField.vue';
+
+// 6. Internal - utils
+import { formatCurrency } from '@/admin/shared/utils/formatters';
+
+// 7. Styles (if any)
+import './styles.css';
+```
+
+## API Calls
+
+### Create API Service
+
+```typescript
+// services/api.service.ts
+
+import axios, { AxiosResponse } from 'axios';
+
+const API_URL = (window as any).ajaxurl;
+
+interface ApiResponse<T> {
+  success: boolean;
+  data: T;
+}
+
+export const api = {
+  async getCalculator(id: number): Promise<ApiResponse<ICalculator>> {
+    const response = await axios.post(API_URL, {
+      action: 'calc_get_calculator',
+      nonce: (window as any).ccb_nonces.get_calculator,
+      id,
+    });
+    return response.data;
+  },
+
+  async saveCalculator(data: ICalculator): Promise<ApiResponse<void>> {
+    const response = await axios.post(API_URL, {
+      action: 'calc_save_calculator',
+      nonce: (window as any).ccb_nonces.save_calculator,
+      ...data,
+    });
+    return response.data;
+  },
+};
+```
+
+### Use in Components/Stores
+
+```typescript
+// In store action
+async fetchCalculator(id: number) {
+    try {
+        const response = await api.getCalculator(id);
+        if (response.success) {
+            this.calculator = response.data;
+        }
+    } catch (error) {
+        console.error('Failed to fetch calculator:', error);
+    }
+}
+```
+
+## Reactivity
+
+### Ref vs Reactive
+
+```typescript
+// ✅ Good - Use ref for primitives with explicit types
+const count = ref<number>(0);
+const message = ref<string>('');
+const isActive = ref<boolean>(false);
+
+// ✅ Good - Use ref for objects too (easier to replace)
+const user = ref<IUser | null>(null);
+user.value = newUser;
+
+// ⚠️ Reactive - can be used, but ref is preferred
+const state = reactive({
+  count: 0,
+  message: '',
+});
+
+// ❌ Don't destructure reactive
+const { count } = reactive({ count: 0 }); // Loses reactivity
+```
+
+### Computed vs Method
+
+```typescript
+// ✅ Good - Use computed for derived state
+const double = computed(() => count.value * 2);
+
+// ✅ Good - Use method for actions/events
+function increment() {
+  count.value++;
+}
+
+// ❌ Bad - Method for derived state (recalculated every render)
+function getDouble() {
+  return count.value * 2;
+}
+```
+
+## Watchers
+
+```typescript
+// ✅ Good - Watch single source
+watch(
+  () => props.calculatorId,
+  (newId) => {
+    loadCalculator(newId);
+  }
+);
+
+// ✅ Good - Watch multiple sources
+watch([count, message], ([newCount, newMessage]) => {
+  console.log(newCount, newMessage);
+});
+
+// ✅ Good - Deep watch
+watch(
+  () => props.calculator,
+  (newVal) => {
+    console.log('Calculator changed');
+  },
+  { deep: true }
+);
+
+// ⚠️ Immediate watch
+watch(
+  () => props.calculatorId,
+  (newId) => {
+    loadCalculator(newId);
+  },
+  { immediate: true } // Will be called immediately
+);
+```
+
+## Conditional Rendering
+
+```vue
+<template>
+  <!-- ✅ Good - v-if for expensive components -->
+  <ExpensiveComponent v-if="isVisible" />
+
+  <!-- ✅ Good - v-show for toggle visibility -->
+  <div v-show="isVisible">Content</div>
+
+  <!-- ✅ Good - v-for with :key -->
+  <div v-for="field in fields" :key="field.alias">
+    {{ field.label }}
+  </div>
+
+  <!-- ❌ Bad - No key -->
+  <div v-for="field in fields">
+    {{ field.label }}
+  </div>
+</template>
+```
+
+## Events
+
+```vue
+<script setup lang="ts">
+// ✅ Good - Typed emits
+const emit = defineEmits<{
+  save: [id: number];
+  update: [field: IField];
+}>();
+
+function handleSave() {
+  emit('save', calculatorId);
+}
+
+// ✅ Good - Event with data
+function handleUpdate(field: IField) {
+  emit('update', field);
+}
+</script>
+
+<template>
+  <!-- ✅ Good - Named handler -->
+  <button @click="handleSave">Save</button>
+
+  <!-- ✅ Good - Inline for simple -->
+  <button @click="count++">Increment</button>
+
+  <!-- ❌ Bad - Complex logic inline -->
+  <button
+    @click="
+      loading = true;
+      fetchData();
+      loading = false;
+    "
+  >
+    Load
+  </button>
+</template>
+```
+
+## Slots
+
+```vue
+<!-- Component with slots -->
+<template>
+  <div class="card">
+    <div class="card-header">
+      <slot name="header">Default Header</slot>
+    </div>
+    <div class="card-body">
+      <slot>Default Content</slot>
+    </div>
+    <div class="card-footer">
+      <slot name="footer" :count="count"> Default Footer </slot>
+    </div>
+  </div>
+</template>
+
+<!-- Usage -->
+<Card>
+    <template #header>
+        <h2>Title</h2>
+    </template>
+    
+    <p>Body content</p>
+    
+    <template #footer="{ count }">
+        <p>Count: {{ count }}</p>
+    </template>
+</Card>
+```
+
+## Performance
+
+### Lazy Loading Components
+
+```typescript
+// ✅ Good - Lazy load heavy components
+const HeavyComponent = defineAsyncComponent(
+  () => import('./HeavyComponent.vue')
+);
+```
+
+### Computed Caching
+
+```typescript
+// ✅ Good - Computed caches result
+const expensiveValue = computed(() => {
+  return fields.value.reduce((sum, f) => sum + f.value, 0);
+});
+
+// ❌ Bad - Method recalculates every time
+function getExpensiveValue() {
+  return fields.value.reduce((sum, f) => sum + f.value, 0);
+}
+```
+
+### V-Once for Static Content
+
+```vue
+<template>
+  <!-- ✅ Good - Render once -->
+  <div v-once>
+    <h1>{{ staticTitle }}</h1>
+    <p>{{ staticDescription }}</p>
+  </div>
+</template>
+```
+
+## Error Handling
+
+```typescript
+// In store/composable
+async function fetchCalculator(id: number) {
+  try {
+    loading.value = true;
+    const response = await api.getCalculator(id);
+
+    if (!response.success) {
+      throw new Error(response.data || 'Failed to fetch');
+    }
+
+    calculator.value = response.data;
+    error.value = null;
+  } catch (err) {
+    error.value = err instanceof Error ? err.message : 'Unknown error';
+    console.error('Error fetching calculator:', err);
+  } finally {
+    loading.value = false;
+  }
+}
+```
+
+## Testing Considerations
+
+```typescript
+// ✅ Good - Pure functions easy to test
+function calculateTotal(fields: IField[]): number {
+  return fields.reduce((sum, field) => sum + field.value, 0);
+}
+
+// ✅ Good - Expose testable methods
+export function useCalculator() {
+  // ...
+
+  return {
+    calculator,
+    loading,
+    fetchCalculator,
+    // Expose for testing
+    _test: {
+      calculateTotal,
+    },
+  };
+}
+```
+
+## Comments
+
+```typescript
+// ✅ Good - JSDoc for complex functions
+/**
+ * Calculate total based on fields and conditions
+ *
+ * @param fields - Array of calculator fields
+ * @param conditions - Array of conditions to apply
+ * @returns Calculated total value
+ */
+function calculateTotal(fields: IField[], conditions: ICondition[]): number {
+  // Implementation
+}
+
+// ✅ Good - Inline comments for complex logic
+// Check if all required fields are filled
+const allFilled = fields.every((f) => {
+  return !f.required || f.value !== '';
+});
+```

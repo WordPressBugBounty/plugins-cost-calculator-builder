@@ -32,7 +32,14 @@ export function useMultiOptionChildShared(
 
   const changeValue = () => {
     const optionsLength = optionValues.value.length;
-    if (+field.value.maxAllowedOptions < optionsLength) {
+    const maxAllowedOptions = Number(field.value.maxAllowedOptions);
+
+    // 0/empty/NaN means "no limit" for multi-select fields.
+    if (
+      Number.isFinite(maxAllowedOptions) &&
+      maxAllowedOptions > 0 &&
+      optionsLength > maxAllowedOptions
+    ) {
       optionValues.value.shift();
     }
 

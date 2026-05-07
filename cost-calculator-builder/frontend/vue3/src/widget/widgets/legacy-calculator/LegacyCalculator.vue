@@ -1,9 +1,6 @@
 <template>
   <div class="ccb-legacy" v-if="!hideThankYouPage">
-    <Component
-      :is="isLiveDemoLayout ? LiveDemoLayout : Layout"
-      class="ccb-layout-container"
-    >
+    <Component :is="calcComponent" class="ccb-layout-container">
       <EditButton />
 
       <Wrapper wrapper="fields" class="ccb-fields-block">
@@ -34,71 +31,21 @@
       </Wrapper>
 
       <Wrapper wrapper="subtotal" class="ccb-subtotals-block" :id="getStickyId">
-        <template v-slot:default>
-          <template v-if="formDisplaySummaryStatus || !appStore.isProActive">
-            <TotalSummaryList list-type="summary">
-              <template v-for="summary in fieldsStore.getSummaryList">
-                <Transition name="fade">
-                  <TotalSummaryItem
-                    v-if="!summary.hidden"
-                    :item-type="getFieldItemType(summary)"
-                    :summary="summary"
-                  ></TotalSummaryItem>
-                </Transition>
-              </template>
-            </TotalSummaryList>
-
-            <TotalSummaryList list-type="total">
-              <template
-                v-for="summary in fieldsStore.getTotalsList"
-                :key="summary.alias"
-              >
-                <Transition name="fade">
-                  <TotalSummaryItem
-                    v-if="!summary.hidden"
-                    item-type="total"
-                    :summary="summary"
-                  ></TotalSummaryItem>
-                </Transition>
-              </template>
-            </TotalSummaryList>
-          </template>
-          <template v-else>
-            <HeaderTitle
-              :title="settingsStore.getFormSettings?.summaryDisplay?.formTitle"
-            />
-          </template>
-
-          <template v-if="appStore.isProActive">
-            <Promocode v-if="hasPromocodes()" />
-
-            <WooRedirectCart v-if="showWooRedirectCart" />
-
-            <div
-              class="ccb-actions"
-              :class="activeActionCount"
-              ref="actionsRef"
-              :style="{
-                flexDirection: !orderFormStore.getNextButtonStatus
-                  ? 'column'
-                  : 'row',
-                flexWrap: flexWrap ? 'nowrap' : 'wrap',
-              }"
-              v-if="appStore.isProActive"
-            >
-              <Submission class="ccb-actions__item" />
-              <PdfInvoice class="ccb-actions__item" />
-            </div>
-          </template>
-        </template>
-        <template v-slot:notifications>
-          <Notifications
-            v-if="showNotifications && appStore.isProActive"
-            :type="notificationsStore.notificationType"
-            :message="notificationsStore.message"
-            :description="notificationsStore.description"
-          />
-        </template>
+        <TotalSummary
+          :summaries="
+            fieldsStore.getSummaryList.filter((summary) => !summary.hidden)
+          "
+          :totals="
+            fieldsStore.getTotalsList.filter((summary) => !summary.hidden)
+          "
+          :show-summary="formDisplaySummaryStatus || !appStore.isProActive"
+          :form-title="settingsStore.getFormSettings?.summaryDisplay?.formTitle"
+          :show-notifications="showNotifications && appStore.isProActive"
+          :notification-type="notificationsStore.notificationType"
+          :notification-message="notificationsStore.message"
+          :notification-description="notificationsStore.description"
+          :show-woo-redirect-cart="showWooRedirectCart"
+        />
       </Wrapper>
     </Component>
     <CCBPopup size="medium" ref="popup" v-if="appStore.isProActive">
@@ -108,33 +55,20 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch, onMounted } from "vue";
+import { computed, ref, watch, onMounted, defineAsyncComponent } from "vue";
 import { useFieldsStore } from "@/widget/app/providers/stores/fieldsStore.ts";
 import { useAppStore } from "@/widget/app/providers/stores/appStore.ts";
 
-import Notifications from "@/widget/shared/ui/components/Notifications";
 import CCBPopup from "@/widget/shared/ui/components/Popup/Popup.vue";
 import ThankYouPage from "@/widget/features/thank-you-page/ThankYouPage.vue";
-import Layout from "@/widget/shared/ui/layouts/Layout.vue";
 import Wrapper from "@/widget/shared/ui/wrappers/Wrapper.vue";
 import Grid from "@/widget/shared/ui/grids/Grid.vue";
 import CalculatorField from "@/widget/features/calculator-fields/CalculatorField.vue";
 import HeaderTitle from "@/widget/shared/ui/wrappers/components/HeaderTitle.vue";
-import WooRedirectCart from "@/widget/shared/ui/wrappers/components/WooRedirectCart.vue";
-import TotalSummaryList from "@/widget/shared/ui/total-summary/TotalSummaryList.vue";
-import TotalSummaryItem from "@/widget/shared/ui/total-summary/TotalSummaryItem.vue";
+import TotalSummary from "@/widget/shared/ui/wrappers/components/TotalSummary.vue";
 import EditButton from "@/widget/shared/ui/components/Edit-button/EditButton.vue";
 
-import { useOrderFormStore } from "@/widget/app/providers/stores/orderFormStore.ts";
-
-const orderFormStore = useOrderFormStore();
-
-import Submission from "@/widget/features/submission";
-import PdfInvoice from "@/widget/features/pdf-invoice/send-quote";
-
 import { Field } from "@/widget/shared/types/fields";
-import Promocode from "@/widget/features/discounts/components";
-import { useDiscounts } from "@/widget/actions/discounts/composable/useDiscounts.ts";
 import { useNotificationsStore } from "@/widget/app/providers/stores/notificationsStore.ts";
 import { useSettingsStore } from "@/widget/app/providers/stores/settingsStore.ts";
 import { useSubmissionStore } from "@/widget/app/providers/stores/submissionStore.ts";
@@ -146,47 +80,24 @@ const notificationsStore = useNotificationsStore();
 const submissionStore = useSubmissionStore();
 const settingsStore = useSettingsStore();
 const appearanceStore = useAppearanceStore();
-const { hasPromocodes } = useDiscounts();
 
 const popup = ref();
 const pageBreakEnabled = computed(() => fieldsStore.getPageBreakEnabled);
-const actionsRef = ref<HTMLElement | null>(null);
 
 const isLiveDemoLayout = computed(() => {
+  return false;
   return appStore.getIsLive && !pageBreakEnabled.value;
 });
 
-const flexWrap = computed(() => {
-  return settingsStore.getFormSettings?.accessEmail;
-});
-
-const activeActionCount = computed(() => {
-  const getActionsCount = (): number => {
-    if (actionsRef.value) {
-      let count = 0;
-      const children = actionsRef.value.children;
-      for (let i = 0; i < children.length; i++) {
-        if ((children[i] as HTMLElement).offsetHeight > 0) {
-          count++;
-        }
-      }
-      return count;
-    }
-    return 0;
-  };
-
-  let count = getActionsCount();
-
-  if (showShareBtn.value) {
-    count++;
+const calcComponent = computed(() => {
+  if (isLiveDemoLayout.value) {
+    return defineAsyncComponent(
+      () => import("@/widget/shared/ui/layouts/LiveDemoLayout.vue"),
+    );
   }
 
-  return showShareBtn.value ? `button-${count} has-share` : `button-${count} `;
-});
-
-const showShareBtn = computed(() => {
-  return (
-    settingsStore.getInvoice?.useInAll && settingsStore.getInvoice?.emailButton
+  return defineAsyncComponent(
+    () => import("@/widget/shared/ui/layouts/Layout.vue"),
   );
 });
 
@@ -222,17 +133,6 @@ const showThankYouPage = computed((): boolean => {
     settingsStore.hasThankYouPage &&
     notificationsStore.notificationType === "finish"
   );
-});
-
-const getFieldItemType = computed(() => {
-  return (summary: Field): "summary" | "repeater" | "group" | "total" => {
-    const types: { [key: string]: "repeater" | "group" | "total" } = {
-      repeater: "repeater",
-      group: "group",
-      total: "total",
-    };
-    return types[summary.fieldName as keyof typeof types] || "summary";
-  };
 });
 
 const showNotifications = computed((): boolean => {

@@ -1,0 +1,24 @@
+---
+description: 'PHP must follow WordPress Coding Standards (PHPCS/WPCS mindset)'
+globs:
+  - '*.php'
+  - 'includes/**/*.php'
+  - 'templates/**/*.php'
+alwaysApply: false
+---
+
+## WordPress PHPCS expectations
+
+- Write code in WordPress Coding Standards style.
+- Use tabs for indentation (WP style).
+- Keep lines readable; avoid overly complex one-liners.
+- Prefer early returns to reduce nesting.
+
+## Input/Output discipline
+
+- Sanitize ALL external input ($_GET/$\_POST/REST args).
+- Escape ALL output by context: esc_html, esc_attr, esc_url, wp_kses_post.
+
+## Compatibility
+
+- Do not introduce new dependencies or PHP features that could reduce compatibility unless requested.

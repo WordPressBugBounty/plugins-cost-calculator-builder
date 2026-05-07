@@ -1,0 +1,32 @@
+import type { IFileUploadField } from "@/admin/shared/types/fields.type";
+import { DEFAULT_CURRENCY_SETTINGS } from "./base";
+
+export const fileUploadDefaults = (): Partial<IFileUploadField> => ({
+  _id: null,
+  _event: "change",
+  _tag: "cost-file-upload",
+  additionalCss: "",
+  additionalStyles: "",
+  alias: "file_upload_field_id_",
+  addToSummary: true,
+  allowCurrency: false,
+  calculateHidden: false,
+  fieldCurrency: false,
+  uploadFromUrl: false,
+  seperateCurrency: false,
+  description: "",
+  desc_option: "after",
+  fileFormats: [],
+  hidden: false,
+  icon: "ccb-icon-Path-2572",
+  label: "",
+  max_attached_files: 1,
+  max_file_size: false,
+  price: 0,
+  required: false,
+  type: "File Upload",
+  calculatePerEach: false,
+  allowPrice: true,
+  width: "100",
+  fieldCurrencySettings: { ...DEFAULT_CURRENCY_SETTINGS },
+});

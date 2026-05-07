@@ -31,5 +31,10 @@
     "allowSyntheticDefaultImports": true,
     "types": ["google.maps"]
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue"]
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/**/*.vue",
+    "src/admin/shared/ui/components/SubHeader"
+  ]
 }

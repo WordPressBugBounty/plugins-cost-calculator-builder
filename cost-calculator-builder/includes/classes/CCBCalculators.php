@@ -58,26 +58,34 @@ class CCBCalculators {
 	/**
 	 * Get Default Data
 	 */
-	private static function get_default_calculator_data() {
+	public static function get_default_calculator_data() {
 		return array(
-			'id'           => '',
-			'title'        => '',
-			'forms'        => array(),
-			'pages'        => array(),
-			'fields'       => array(),
-			'builder'      => array(),
-			'formula'      => array(),
-			'settings'     => array(),
-			'products'     => array(),
-			'categories'   => array(),
-			'conditions'   => array(),
-			'success'      => false,
-			'appearance'   => array(),
-			'desc_options' => array(
+			'pages'              => array(),
+			'calculator_builder' => array(
+				'id'      => '',
+				'title'   => '',
+				'formula' => array(),
+				'fields'  => array(),
+				'builder' => array(),
+			),
+			'settings'           => array(),
+			'total_summary'      => array(),
+			'general_settings'   => array(),
+			'products'           => array(),
+			'categories'         => array(),
+			'conditions'         => array(),
+			'appearance'         => array(),
+			'desc_options'       => array(
 				self::DESC_POSITION_BEFORE => __( 'Show before field', 'cost-calculator-builder' ),
 				self::DESC_POSITION_AFTER  => __( 'Show after field', 'cost-calculator-builder' ),
 			),
-			'message'      => __( 'There is no calculator with this id', 'cost-calculator-builder' ),
+			'order_form_manager' => array(
+				'order_form_fields'        => array(),
+				'active_form_id'           => null,
+				'order_forms'              => array(),
+				'calc_active_form_fields'  => array(),
+				'order_active_form_fields' => array(),
+			),
 		);
 	}
 
@@ -112,6 +120,35 @@ class CCBCalculators {
 				'has_more' => $loaded_count < $total_count,
 				'page'     => $page,
 				'success'  => true,
+			)
+		);
+	}
+
+	public static function getWooCategories() {
+		check_ajax_referer( 'calc_load_woo_categories', 'nonce' );
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( __( 'You are not allowed to run this action', 'cost-calculator-builder' ) );
+		}
+
+		$category_ids = array();
+
+		$page     = ! empty( $_GET['page'] ) ? (int) $_GET['page'] : 1;
+		$search   = ! empty( $_GET['search'] ) ? sanitize_text_field( $_GET['search'] ) : '';
+		$per_page = ! empty( $_GET['per_page'] ) ? (int) $_GET['per_page'] : 5;
+
+		if ( ! empty( $_GET['category_ids'] ) ) {
+			$category_ids = explode( ',', sanitize_text_field( $_GET['category_ids'] ) );
+		}
+
+		$data = ccb_woo_categories_paginated( $page, $per_page, $search, $category_ids );
+
+		wp_send_json(
+			array(
+				'categories' => $data['items'],
+				'has_more'   => $data['has_more'],
+				'page'       => $page,
+				'success'    => true,
 			)
 		);
 	}
@@ -151,7 +188,6 @@ class CCBCalculators {
 
 	public static function edit_calc() {
 		check_ajax_referer( 'ccb_edit_calc', 'nonce' );
-
 		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_send_json_error( __( 'You are not allowed to run this action', 'cost-calculator-builder' ) );
 		}
@@ -173,19 +209,13 @@ class CCBCalculators {
 
 	public static function edit_calc_body( $params ) {
 		$result = self::get_default_calculator_data();
-
 		if ( ! empty( $params['calc_id'] ) ) {
 			$calc_id = (int) sanitize_text_field( $params['calc_id'] );
 
-			$result['id']                       = $calc_id;
-			$result['title']                    = get_post_meta( $calc_id, 'stm-name', true );
-			$result['fields']                   = CCBFieldsHelper::fields();
 			$result['order_form_fields']        = CCBOrderFormFieldsHelper::order_form_fields();
 			$result['activeFormId']             = CCBOrderFormFieldsHelper::get_active_form_id( $calc_id );
 			$result['order_forms']              = Forms::get_all_forms();
 			$result['order_active_form_fields'] = FormFields::get_active_fields( $result['activeFormId'] );
-			$result['formula']                  = get_post_meta( $calc_id, 'stm-formula', true );
-			$result['conditions']               = get_post_meta( $calc_id, 'stm-conditions', true );
 
 			$result['saved']  = get_post_meta( $calc_id, 'calc_saved', true );
 			$general_settings = CCBSettingsData::get_calc_global_settings();
@@ -231,19 +261,12 @@ class CCBCalculators {
 
 			$result['general_settings'] = $general_settings;
 
-			$stm_fields        = get_post_meta( $calc_id, 'stm-fields', true );
-			$result['builder'] = ! empty( $stm_fields ) ? $stm_fields : array();
-
 			$discount_params = array();
 			if ( isset( $params['discount'] ) ) {
 				$discount_params = self::get_filter_data( $params['discount'] );
 			}
 
 			$discount_params['calc_id'] = $calc_id;
-			$result['discounts']        = array(
-				'discounts'       => Discounts::get_all_discounts( $discount_params ),
-				'discounts_count' => Discounts::get_total_discounts( $discount_params ),
-			);
 
 			$preset_key = get_post_meta( $calc_id, 'ccb_calc_preset_idx', true );
 			$preset_key = empty( $preset_key ) ? 'default' : $preset_key;
@@ -272,14 +295,14 @@ class CCBCalculators {
 			}
 
 			$settings = CCBSettingsData::get_calc_single_settings( $calc_id );
-			/* pro-features */
-			$result['pages']      = self::fetch_page_ids( $settings );
-			$result['forms']      = ccb_contact_forms();
-			$result['products']   = self::fetch_product_ids( $settings );
-			$result['categories'] = ccb_woo_categories();
 
 			if ( ccb_pro_active() ) {
-				$result['payments'] = \cBuilder\Classes\CCBProSettings::get_payments();
+				/* pro-features */
+				$result['payments']   = \cBuilder\Classes\CCBProSettings::get_payments();
+				$result['pages']      = self::fetch_page_ids( $settings );
+				$result['forms']      = ccb_contact_forms();
+				$result['products']   = self::fetch_product_ids( $settings );
+				$result['categories'] = ccb_woo_categories();
 			}
 
 			$result['sp_list'] = array();
@@ -329,9 +352,6 @@ class CCBCalculators {
 			$general_settings   = CCBSettingsData::get_calc_global_settings();
 			$ccb_sync           = ccb_sync_settings_from_general_settings( $result['settings'], $general_settings );
 			$result['settings'] = $ccb_sync['settings'];
-
-			$page_params           = self::get_filter_data( $params['page_params'] );
-			$result['calculators'] = self::get_calculator_list( $page_params );
 		}
 
 		return $result;
@@ -349,85 +369,12 @@ class CCBCalculators {
 	}
 
 	/**
-	 * Duplicate Calculator
-	 */
-	public static function duplicate_calc() {
-
-		check_ajax_referer( 'ccb_duplicate_calc', 'nonce' );
-
-		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_send_json_error( __( 'You are not allowed to run this action', 'cost-calculator-builder' ) );
-		}
-
-		$result = array(
-			'calculators' => array(),
-			'success'     => false,
-			'message'     => __( "Couldn't duplicate calculator, please try again!', 'cost-calculator-builder" ),
-		);
-
-		$params = self::get_filter_data( $_GET );
-
-		if ( isset( $_GET['calculator_ids'] ) ) {
-
-			$ids = array_map(
-				function ( $item ) {
-					return (int) sanitize_text_field( $item );
-				},
-				explode( ',', $_GET['calculator_ids'] )
-			);
-
-			$result_ids = array();
-			foreach ( $ids as $id ) {
-				$new_calculator = array(
-					'post_parent' => $id,
-					'post_status' => 'publish',
-					'post_type'   => 'cost-calc',
-				);
-
-				$duplicated_post_id = wp_insert_post( $new_calculator );
-
-				$data = array(
-					'id'         => $duplicated_post_id,
-					'title'      => self::get_calculator_name_for_duplicate( $id ),
-					'formula'    => get_post_meta( $id, 'stm-formula', true ),
-					'settings'   => CCBSettingsData::get_calc_single_settings( $id ),
-					'builder'    => get_post_meta( $id, 'stm-fields', true ),
-					'conditions' => get_post_meta( $id, 'stm-conditions', true ),
-					'appearance' => get_post_meta( $id, 'ccb-appearance', true ),
-					'preset_idx' => get_post_meta( $id, 'ccb_calc_preset_idx', true ),
-				);
-
-				if ( ccb_update_calc_values( $data ) ) {
-					array_push( $result_ids, $duplicated_post_id );
-				}
-			}
-
-			$result['success']        = true;
-			$result['calculators']    = self::get_calculator_list( $params );
-			$result['duplicated_ids'] = $result_ids;
-			$result['message']        = __( 'Calculators duplicated successfully', 'cost-calculator-builder' );
-		}
-
-		if ( ! empty( $_GET['calc_id'] ) ) {
-			$data = self::duplicate_target_calc( $_GET['calc_id'] );
-			if ( ccb_update_calc_values( $data ) ) {
-				$result['success']       = true;
-				$result['calculators']   = self::get_calculator_list( $params );
-				$result['message']       = __( 'Calculator duplicated successfully', 'cost-calculator-builder' );
-				$result['duplicated_id'] = $_GET['calc_id'];
-			}
-		}
-
-		wp_send_json( $result );
-	}
-
-	/**
 	 * Duplicate target calc
 	 *
 	 * @param $calc_id
 	 * @return array
 	 */
-	private static function duplicate_target_calc( $calc_id, $copy_title = true ) {
+	public static function duplicate_target_calc( $calc_id, $copy_title = true ) {
 		$calc_id = (int) sanitize_text_field( $calc_id );
 
 		$my_post = array(
@@ -536,59 +483,6 @@ class CCBCalculators {
 	}
 
 	/**
-	 * Delete calc by id
-	 */
-	public static function delete_calc() {
-		check_ajax_referer( 'ccb_delete_calc', 'nonce' );
-
-		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_send_json_error( __( 'You are not allowed to run this action', 'cost-calculator-builder' ) );
-		}
-
-		$result = array(
-			'success'     => false,
-			'calculators' => array(),
-			'message'     => __( 'Could not delete calculator, please try again!', 'cost-calculator-builder' ),
-		);
-
-		$params = self::get_filter_data( $_GET );
-
-		if ( isset( $_GET['calculator_ids'] ) ) {
-			$ids = array_map(
-				function ( $item ) {
-					return (int) sanitize_text_field( $item );
-				},
-				explode( ',', $_GET['calculator_ids'] )
-			);
-
-			foreach ( $ids as $id ) {
-				wp_delete_post( $id );
-				clearMetaData( $id );
-				ccb_update_woocommerce_calcs( $id, true );
-			}
-
-			$result['success']     = true;
-			$result['calculators'] = self::get_calculator_list( $params );
-			$result['message']     = __( 'Calculators deleted successfully', 'cost-calculator-builder' );
-		}
-
-		if ( isset( $_GET['calc_id'] ) ) {
-
-			$calc_id = (int) sanitize_text_field( $_GET['calc_id'] );
-
-			wp_delete_post( $calc_id );
-			clearMetaData( $calc_id );
-			ccb_update_woocommerce_calcs( $calc_id, true );
-
-			$result['success']     = true;
-			$result['calculators'] = self::get_calculator_list( $params );
-			$result['message']     = __( 'Calculator deleted successfully', 'cost-calculator-builder' );
-		}
-
-		wp_send_json( $result );
-	}
-
-	/**
 	 * Save Custom Styles
 	 */
 	public static function save_custom() {
@@ -616,36 +510,103 @@ class CCBCalculators {
 				$appearance = $content['appearance'];
 			}
 
-			$preset_key = ! isset( $data['selectedIdx'] ) ? 'default' : $data['selectedIdx'];
-			if ( 'custom' !== $preset_key ) {
-				if ( 'saved' === $preset_key ) {
-					$presets                = get_option( 'ccb_appearance_presets', array() );
-					$count                  = count( $presets ) + 1;
-					$new_preset             = CCBPresetGenerator::generate_new_preset( $count, $appearance );
-					$preset_key             = $new_preset['key'];
-					$presets[ $preset_key ] = $new_preset;
-
-					CCBPresetGenerator::update_presets( $presets );
+			$preset_key = ! isset( $data['selectedIdx'] ) ? 'default' : sanitize_text_field( $data['selectedIdx'] );
+			if ( 'saved' === $preset_key ) {
+				$presets = CCBPresetGenerator::get_static_preset_from_db( true );
+				$max_idx = 0;
+				foreach ( array_keys( $presets ) as $k ) {
+					if ( preg_match( '/^saved_(\d+)$/', $k, $m ) ) {
+						$max_idx = max( $max_idx, (int) $m[1] );
+					}
 				}
+				$new_preset             = CCBPresetGenerator::generate_new_preset( $max_idx + 1, $appearance );
+				$preset_key             = $new_preset['key'];
+				$presets[ $preset_key ] = $new_preset;
 
-				CCBPresetGenerator::save_custom( $preset_key, $appearance );
-				CCBPresetGenerator::update_preset_key( $data['id'], sanitize_text_field( $preset_key ) );
-			} else {
+				CCBPresetGenerator::update_presets( $presets );
+			}
+
+			if ( ! CCBPresetGenerator::preset_exist( $preset_key ) ) {
 				$preset_key = 'default';
 			}
 
+			CCBPresetGenerator::save_custom( $preset_key, $appearance );
+			CCBPresetGenerator::update_preset_key( $data['id'], sanitize_text_field( $preset_key ) );
+
 			$presets_data = CCBAppearanceHelper::get_appearance_data( $preset_key );
+			$appearance   = self::get_save_custom_appearance_response( $preset_key, $presets_data );
 
 			$result['success'] = true;
 			$result['message'] = 'Changes Saved successfully';
 			$result['data']    = array(
-				'presetIdx'  => $preset_key,
-				'appearance' => ! isset( $presets_data['data'] ) ? array() : $presets_data['data'],
-				'presets'    => ! isset( $presets_data['list'] ) ? array() : $presets_data['list'],
+				'appearance' => $appearance,
+				'presetIdx'  => $appearance['selected_preset_key'],
+				'presets'    => $appearance['presets'],
 			);
 		}
 
 		wp_send_json( $result );
+	}
+
+	private static function get_save_custom_appearance_response( $preset_key, $presets_data ) {
+		$active_preset = isset( $presets_data['data'] ) && is_array( $presets_data['data'] ) ? $presets_data['data'] : array();
+		if ( ! isset( $active_preset['preset_key'] ) ) {
+			$active_preset['preset_key'] = $preset_key;
+		}
+
+		return array(
+			'presets'             => self::normalize_save_custom_presets( $presets_data['list'] ?? array() ),
+			'active_preset'       => $active_preset,
+			'selected_preset_key' => $preset_key,
+		);
+	}
+
+	private static function normalize_save_custom_presets( $presets ) {
+		if ( ! is_array( $presets ) ) {
+			return array();
+		}
+
+		$result = array();
+		foreach ( $presets as $preset ) {
+			$preset_id = isset( $preset['key'] ) ? $preset['key'] : '';
+			if ( empty( $preset_id ) ) {
+				continue;
+			}
+
+			$preset_appearance = CCBAppearanceHelper::get_appearance_data( $preset_id );
+			$appearance_data   = isset( $preset_appearance['data'] ) && is_array( $preset_appearance['data'] ) ? $preset_appearance['data'] : array();
+
+			$result[] = array(
+				'id'     => $preset_id,
+				'name'   => isset( $preset['title'] ) ? $preset['title'] : '',
+				'colors' => self::extract_save_custom_preset_colors( $appearance_data ),
+			);
+		}
+
+		return $result;
+	}
+
+	private static function extract_save_custom_preset_colors( $appearance_data ) {
+		$color_keys = array( 'container', 'primary_color', 'accent_color', 'secondary_color', 'error_color' );
+		$result     = array();
+
+		foreach ( $color_keys as $key ) {
+			$value = '';
+
+			if ( isset( $appearance_data['desktop']['colors']['data'][ $key ]['value'] ) ) {
+				$value = $appearance_data['desktop']['colors']['data'][ $key ]['value'];
+			} elseif ( isset( $appearance_data['desktop']['colors'][ $key ] ) ) {
+				$value = $appearance_data['desktop']['colors'][ $key ];
+			}
+
+			if ( is_array( $value ) && isset( $value['color'] ) ) {
+				$value = $value['color'];
+			}
+
+			$result[] = $value;
+		}
+
+		return $result;
 	}
 
 	public static function calc_skip_hint() {
@@ -753,62 +714,11 @@ class CCBCalculators {
 
 			if ( empty( $global_settings['ai']['gpt_api_key'] ) ) {
 				$global_settings['ai']['gpt_api_key'] = $key;
-				update_option( 'ccb_general_settings', $global_settings );
+				CCBSettingsData::update_calc_global_settings( $global_settings );
 
 				$result['success'] = true;
-				$result['message'] = 'Key updated successfully';
+				$result['message'] = __( 'Key updated successfully', 'cost-calculator-builder' );
 			}
-		}
-
-		wp_send_json( $result );
-	}
-
-	/**
-	 * Save all calculator settings via calc id
-	 */
-	public static function save_settings() {
-		check_ajax_referer( 'ccb_save_settings', 'nonce' );
-
-		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_send_json_error( __( 'You are not allowed to run this action', 'cost-calculator-builder' ) );
-		}
-
-		$result = array(
-			'success' => false,
-			'message' => 'Something went wrong',
-		);
-
-		if ( 'done' !== get_option( 'ccb_quick_tour_type', 'quick_tour_start' ) ) {
-			update_option( 'ccb_quick_tour_type', 'done' );
-		}
-
-		$request_body = file_get_contents( 'php://input' );
-		$request_data = json_decode( $request_body, true );
-		$data         = apply_filters( 'stm_ccb_sanitize_array', $request_data );
-
-		if ( isset( $data['settings']['formFields']['body'] ) ) {
-			$content                                = $data['settings']['formFields']['body'];
-			$content                                = str_replace( '\\n', '<br>', $content );
-			$data['settings']['formFields']['body'] = str_replace( '\\', '', $content );
-		}
-
-		if ( ! empty( $data ) && ccb_update_calc_values( $data ) ) {
-			$general_settings = CCBSettingsData::get_calc_global_settings();
-			if ( isset( $general_settings['backup_settings'] ) && true === filter_var( $general_settings['backup_settings']['auto_backup'], FILTER_VALIDATE_BOOLEAN ) ) {
-				self::savepoint( $data );
-			}
-
-			$params = array(
-				'discount'    => $data['discount'] ?? '',
-				'page_params' => self::get_filter_data( $data['params'] ?? array() ),
-			);
-
-			$params['calc_id'] = ! empty( $data['id'] ) ? sanitize_text_field( $data['id'] ) : '';
-			$result['data']    = self::edit_calc_body( $params );
-
-			$result['success']     = true;
-			$result['message']     = 'Calculator updated successfully';
-			$result['calculators'] = self::get_calculator_list();
 		}
 
 		wp_send_json( $result );
@@ -867,7 +777,7 @@ class CCBCalculators {
 				self::clear_all_history();
 			}
 
-			update_option( 'ccb_general_settings', $data['settings'] );
+			CCBSettingsData::update_calc_global_settings( $data['settings'] );
 			$result['success'] = true;
 			$result['message'] = __( 'Settings updated successfully', 'cost-calculator-builder' );
 		}
@@ -1078,6 +988,149 @@ class CCBCalculators {
 		wp_send_json( $result );
 	}
 
+	public static function ccb_duplicate_preset() {
+		check_ajax_referer( 'ccb_duplicate_preset', 'nonce' );
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( __( 'You are not allowed to run this action', 'cost-calculator-builder' ) );
+		}
+
+		$result = array(
+			'success' => false,
+			'message' => 'Something went wrong',
+		);
+
+		if ( isset( $_GET['selectedIdx'] ) ) {
+			$preset_key      = sanitize_text_field( $_GET['selectedIdx'] );
+			$presets_from_db = CCBPresetGenerator::get_static_preset_from_db( true );
+
+			$source_data = null;
+			if ( isset( $presets_from_db[ $preset_key ]['data'] ) ) {
+				$source_data = $presets_from_db[ $preset_key ]['data'];
+			} else {
+				$default_presets = CCBPresetGenerator::default_presets();
+				if ( isset( $default_presets[ $preset_key ]['data'] ) ) {
+					$source_data = $default_presets[ $preset_key ]['data'];
+				}
+			}
+
+			if ( ! empty( $source_data ) ) {
+				$max_idx = 0;
+				foreach ( array_keys( $presets_from_db ) as $k ) {
+					if ( preg_match( '/^saved_(\d+)$/', $k, $m ) ) {
+						$max_idx = max( $max_idx, (int) $m[1] );
+					}
+				}
+				$new_preset                  = CCBPresetGenerator::extend_preset( $max_idx + 1, $source_data );
+				$new_key                     = $new_preset['key'];
+				$presets_from_db[ $new_key ] = $new_preset;
+
+				CCBPresetGenerator::update_presets( apply_filters( 'ccb_appearance_data_update', $presets_from_db ) );
+
+				$presets_data = CCBAppearanceHelper::get_appearance_data( $new_key );
+				$result       = array(
+					'success'        => true,
+					'message'        => 'Preset duplicated successfully',
+					'list'           => self::normalize_save_custom_presets( $presets_data['list'] ?? array() ),
+					'data'           => $presets_data['data'] ?? array(),
+					'new_preset_key' => $new_key,
+				);
+			}
+		}
+
+		wp_send_json( $result );
+	}
+
+	public static function ccb_extend_preset() {
+		check_ajax_referer( 'ccb_extend_preset', 'nonce' );
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( __( 'You are not allowed to run this action', 'cost-calculator-builder' ) );
+		}
+
+		$result = array(
+			'success' => false,
+			'message' => 'Something went wrong',
+		);
+
+		if ( isset( $_GET['selectedIdx'] ) ) {
+			$preset_key = sanitize_text_field( $_GET['selectedIdx'] );
+			$presets    = CCBAppearanceHelper::get_appearance_data( $preset_key );
+
+			if ( isset( $presets['data'] ) ) {
+				$result = array(
+					'success' => true,
+					'message' => 'Preset extended successfully',
+					'data'    => $presets['data'],
+				);
+			}
+		}
+
+		wp_send_json( $result );
+	}
+
+	public static function ccb_get_preset() {
+		check_ajax_referer( 'ccb_get_preset', 'nonce' );
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( __( 'You are not allowed to run this action', 'cost-calculator-builder' ) );
+		}
+
+		$result = array(
+			'success' => false,
+			'message' => 'Something went wrong',
+		);
+
+		if ( isset( $_GET['selectedIdx'] ) ) {
+			$preset_key = sanitize_text_field( $_GET['selectedIdx'] );
+			$presets    = CCBAppearanceHelper::get_appearance_data( $preset_key );
+
+			if ( isset( $presets['data'] ) ) {
+				$result = array(
+					'success' => true,
+					'message' => 'Theme loaded',
+					'data'    => $presets['data'],
+				);
+			}
+		}
+
+		wp_send_json( $result );
+	}
+
+	public static function ccb_select_preset() {
+		check_ajax_referer( 'ccb_select_preset', 'nonce' );
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( __( 'You are not allowed to run this action', 'cost-calculator-builder' ) );
+		}
+
+		$result = array(
+			'success' => false,
+			'message' => 'Something went wrong',
+		);
+
+		if ( isset( $_GET['calc_id'] ) && isset( $_GET['selectedIdx'] ) ) {
+			$calc_id    = intval( $_GET['calc_id'] );
+			$preset_key = sanitize_text_field( $_GET['selectedIdx'] );
+
+			if ( ! CCBPresetGenerator::preset_exist( $preset_key ) ) {
+				$preset_key = 'default';
+			}
+
+			CCBPresetGenerator::update_preset_key( $calc_id, $preset_key );
+
+			$result = array(
+				'success' => true,
+				'message' => 'Theme selected',
+				'data'    => array(
+					'selected_preset_key' => $preset_key,
+				),
+			);
+		}
+
+		wp_send_json( $result );
+	}
+
 	public static function ccb_update_preset() {
 		check_ajax_referer( 'ccb_update_preset', 'nonce' );
 
@@ -1092,8 +1145,7 @@ class CCBCalculators {
 
 		if ( isset( $_GET['calc_id'] ) && isset( $_GET['selectedIdx'] ) ) {
 			$preset_key = sanitize_text_field( $_GET['selectedIdx'] );
-			$temp_key   = ! empty( $_GET['editCustom'] ) ? sanitize_text_field( $_GET['editCustom'] ) : $preset_key;
-			$presets    = CCBAppearanceHelper::get_appearance_data( $temp_key );
+			$presets    = CCBAppearanceHelper::get_appearance_data( $preset_key );
 
 			if ( isset( $presets['data'] ) ) {
 				$result = array(
@@ -1103,9 +1155,7 @@ class CCBCalculators {
 					'list'    => $presets['list'],
 				);
 
-				if ( 'custom' !== $preset_key ) {
-					CCBPresetGenerator::update_preset_key( $_GET['calc_id'], sanitize_text_field( $preset_key ) );
-				}
+				CCBPresetGenerator::update_preset_key( $_GET['calc_id'], sanitize_text_field( $preset_key ) );
 			}
 		}
 
@@ -1280,7 +1330,7 @@ class CCBCalculators {
 		wp_send_json( $result );
 	}
 
-	private static function savepoint( $data = array() ) {
+	public static function savepoint( $data = array() ) {
 		if ( empty( $data ) ) {
 			return false;
 		}
@@ -1416,12 +1466,12 @@ class CCBCalculators {
 						$calc_settings['sticky_calc']['display_type'] = $type;
 					}
 
-					update_option( 'stm_ccb_form_settings_' . sanitize_text_field( $calculator->ID ), apply_filters( 'stm_ccb_sanitize_array', $calc_settings ) );
+					CCBSettingsData::update_calc_single_settings( $calculator->ID, $calc_settings );
 				}
 			} elseif ( 'btn' === $type ) {
 				$calc_settings                                = CCBSettingsData::get_calc_single_settings( $calc_id );
 				$calc_settings['sticky_calc']['display_type'] = 'btn';
-				update_option( 'stm_ccb_form_settings_' . sanitize_text_field( $calc_id ), apply_filters( 'stm_ccb_sanitize_array', $calc_settings ) );
+				CCBSettingsData::update_calc_single_settings( $calc_id, $calc_settings );
 			}
 
 			$result['success'] = true;

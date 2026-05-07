@@ -1,0 +1,26 @@
+---
+description: 'Security rules: capability, nonce, sanitization, escaping'
+globs:
+  - 'includes/**/*.php'
+alwaysApply: false
+---
+
+## State-changing actions
+
+- Must validate capability (current_user_can) and nonce.
+- Never trust client-provided IDs; verify ownership/permissions server-side.
+
+## Sanitization
+
+- Sanitize by type:
+  - text: sanitize_text_field
+  - textarea: sanitize_textarea_field
+  - email: sanitize_email
+  - url: esc_url_raw
+  - int: absint
+- Validate enums with allow-lists (in_array/array_key_exists).
+
+## AJAX
+
+- Use check_ajax_referer.
+- Return wp_send_json_success / wp_send_json_error.

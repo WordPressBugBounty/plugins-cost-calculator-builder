@@ -129,6 +129,7 @@ const { optionValues, changeValue, getName } = useSingleOptionChildShared(
 
     .ccb-radio-label {
       word-break: break-word;
+      font-size: var(--ccb-fields-button-size);
     }
   }
 }

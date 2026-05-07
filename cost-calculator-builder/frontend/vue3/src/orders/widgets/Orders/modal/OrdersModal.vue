@@ -66,7 +66,7 @@ import {
   SendToEmail,
 } from "./index";
 import { useOrdersStore } from "@/orders/app/providers/stores/orders";
-import { debounce } from "@/orders/shared/utils/useDebounce";
+import { debounce } from "@/common/shared/utils/useDebounce";
 import { useOrdersTranslationsStore } from "@/orders/app/providers/stores/useTranslations";
 
 const ordersStore = useOrdersStore();

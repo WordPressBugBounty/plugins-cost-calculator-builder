@@ -1,0 +1,11 @@
+---
+description: 'Internationalization policy (no hardcoded UI strings)'
+globs:
+  - '**/*.php'
+alwaysApply: false
+---
+
+## PHP
+
+- All user-facing strings must use localization functions: **(), \_e(), esc_html**(), esc_attr\_\_(), etc.
+- Keep text domain consistent with the project conventions.

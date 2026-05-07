@@ -422,16 +422,23 @@ class CCBDiscountController {
 		);
 
 		if ( isset( $_GET['calc_id'] ) ) {
-			$params            = self::get_filter_data( $_GET );
-			$params['calc_id'] = $_GET['calc_id'];
-			$discount_params   = array(
-				'calc_id' => $_GET['calc_id'],
-			);
+			if ( ccb_pro_active() ) {
+				$params            = self::get_filter_data( $_GET );
+				$params['calc_id'] = $_GET['calc_id'];
+				$discount_params   = array(
+					'calc_id' => $_GET['calc_id'],
+				);
 
-			$result['data']['discounts'] = array(
-				'discounts'       => Discounts::get_all_discounts( $params ),
-				'discounts_count' => Discounts::get_total_discounts( $discount_params ),
-			);
+				$result['data']['discounts'] = array(
+					'discounts'       => Discounts::get_all_discounts( $params ),
+					'discounts_count' => Discounts::get_total_discounts( $discount_params ),
+				);
+			} else {
+				$result['data']['discounts'] = array(
+					'discounts'       => array(),
+					'discounts_count' => 0,
+				);
+			}
 
 			$result['success'] = true;
 			$result['message'] = 'Discount list';
@@ -455,7 +462,7 @@ class CCBDiscountController {
 			'page'      => $page,
 			'limit'     => $limit,
 			'offset'    => $offset,
-			'sort_by'   => $sort_by,
+			'orderBy'   => $sort_by,
 			'direction' => $direction,
 		);
 	}

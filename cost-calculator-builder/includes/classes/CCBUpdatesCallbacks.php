@@ -75,7 +75,7 @@ class CCBUpdatesCallbacks {
 				$calc_settings['webhooks']['enableEmailQuote'] = false;
 				$calc_settings['webhooks']['enablePaymentBtn'] = false;
 
-				update_option( 'stm_ccb_form_settings_' . sanitize_text_field( $calculator->ID ), apply_filters( 'stm_ccb_sanitize_array', $calc_settings ) );
+				CCBSettingsData::update_calc_single_settings( $calculator->ID, $calc_settings );
 			}
 		}
 	}
@@ -170,7 +170,7 @@ class CCBUpdatesCallbacks {
 			}
 
 			$calc_settings['woo_products'] = $woo_products;
-			update_option( 'stm_ccb_form_settings_' . sanitize_text_field( $calculator->ID ), apply_filters( 'stm_ccb_sanitize_array', $calc_settings ) );
+			CCBSettingsData::update_calc_single_settings( $calculator->ID, $calc_settings );
 		}
 	}
 
@@ -306,7 +306,7 @@ class CCBUpdatesCallbacks {
 			if ( ! isset( $calc_settings['thankYouPage'] ) ) {
 				$calc_settings['thankYouPage'] = $settings['thankYouPage'];
 			}
-			update_option( 'stm_ccb_form_settings_' . sanitize_text_field( $calculator->ID ), apply_filters( 'stm_ccb_sanitize_array', $calc_settings ) );
+			CCBSettingsData::update_calc_single_settings( $calculator->ID, $calc_settings );
 		}
 	}
 
@@ -317,7 +317,7 @@ class CCBUpdatesCallbacks {
 		foreach ( $calculators as $calculator ) {
 			$calc_settings = CCBSettingsData::get_calc_single_settings( $calculator->ID );
 			$sync_settings = ccb_array_merge_recursive_left_source( $settings, $calc_settings ); // phpcs:ignore
-			update_option( 'stm_ccb_form_settings_' . sanitize_text_field( $calculator->ID ), apply_filters( 'stm_ccb_sanitize_array', $sync_settings ) );
+			CCBSettingsData::update_calc_single_settings( $calculator->ID, $sync_settings );
 		}
 	}
 
@@ -326,7 +326,7 @@ class CCBUpdatesCallbacks {
 		$calc_static_settings  = \cBuilder\Classes\CCBSettingsData::general_settings_data();
 		$sync_settings         = ccb_array_merge_recursive_left_source( $calc_static_settings, $calc_options_settings ); // phpcs:ignore
 
-		update_option( 'ccb_general_settings', $sync_settings );
+		CCBSettingsData::update_calc_global_settings( $sync_settings );
 	}
 
 	public static function ccb_update_checkbox_conditions() {
@@ -377,7 +377,7 @@ class CCBUpdatesCallbacks {
 			}
 		}
 
-		update_option( 'ccb_general_settings', $general_settings );
+		CCBSettingsData::update_calc_global_settings( $general_settings );
 	}
 
 	public static function fix_payment_totals( $formulas, $totals ) {
@@ -407,7 +407,7 @@ class CCBUpdatesCallbacks {
 				$calc_settings['woo_checkout']['formulas'] = self::fix_payment_totals( $calc_settings['woo_checkout']['formulas'], $totals );
 			}
 
-			update_option( 'stm_ccb_form_settings_' . $calculator->ID, $calc_settings );
+			CCBSettingsData::update_calc_single_settings( $calculator->ID, $calc_settings );
 		}
 	}
 
@@ -595,7 +595,7 @@ class CCBUpdatesCallbacks {
 				}
 
 				unset( $calc_settings['general']['boxStyle'] );
-				update_option( 'stm_ccb_form_settings_' . $calculator->ID, $calc_settings );
+				CCBSettingsData::update_calc_single_settings( $calculator->ID, $calc_settings );
 			}
 
 			CCBPresetGenerator::update_presets( $presets );
@@ -657,7 +657,7 @@ class CCBUpdatesCallbacks {
 				$calc_settings['woo_products']['by_product']  = false;
 				$calc_settings['woo_products']['product_ids'] = array();
 
-				update_option( 'stm_ccb_form_settings_' . sanitize_text_field( $calculator->ID ), apply_filters( 'stm_ccb_sanitize_array', $calc_settings ) );
+				CCBSettingsData::update_calc_single_settings( $calculator->ID, $calc_settings );
 			}
 		}
 	}
@@ -677,7 +677,7 @@ class CCBUpdatesCallbacks {
 		if ( ! empty( $default_general_settings ) ) {
 			$general_settings = CCBSettingsData::get_calc_global_settings();
 			$update_data      = self::set_payment_gateway( $general_settings, $default_general_settings );
-			update_option( 'ccb_general_settings', $update_data );
+			CCBSettingsData::update_calc_global_settings( $update_data );
 		}
 
 		$calculators      = self::get_calculators();
@@ -690,7 +690,7 @@ class CCBUpdatesCallbacks {
 				}
 				$inner_update_data = self::set_payment_gateway( $calc_settings, $default_settings );
 
-				update_option( 'stm_ccb_form_settings_' . $calculator->ID, $inner_update_data );
+				CCBSettingsData::update_calc_single_settings( $calculator->ID, $inner_update_data );
 			}
 		}
 	}
@@ -771,7 +771,7 @@ class CCBUpdatesCallbacks {
 
 				$calc_settins['texts']['form_fields']['terms_and_conditions_field'] = 'Please, check out our terms and click on the checkbox';
 
-				update_option( 'stm_ccb_form_settings_' . sanitize_text_field( $calculator->ID ), apply_filters( 'stm_ccb_sanitize_array', $calc_settings ) );
+				CCBSettingsData::update_calc_single_settings( $calculator->ID, $calc_settings );
 			}
 		}
 	}
@@ -834,10 +834,10 @@ class CCBUpdatesCallbacks {
 		$summary_display = $settings['formFields']['summary_display'];
 
 		foreach ( $calculators as $calculator ) {
-			$calc_settings = get_option( 'stm_ccb_form_settings_' . $calculator->ID );
+			$calc_settings = CCBSettingsData::get_calc_single_settings( $calculator->ID );
 			if ( empty( $calc_settings['formFields']['summary_display'] ) ) {
 				$calc_settings['formFields']['summary_display'] = $summary_display;
-				update_option( 'stm_ccb_form_settings_' . sanitize_text_field( $calculator->ID ), apply_filters( 'stm_ccb_sanitize_array', $calc_settings ) );
+				CCBSettingsData::update_calc_single_settings( $calculator->ID, $calc_settings );
 			}
 		}
 
@@ -892,7 +892,7 @@ class CCBUpdatesCallbacks {
 	public static function ccb_update_paypal_data() {
 		$calculators = self::get_calculators();
 		foreach ( $calculators as $calculator ) {
-			$calc_settings = get_option( 'stm_ccb_form_settings_' . $calculator->ID );
+			$calc_settings = CCBSettingsData::get_calc_single_settings( $calculator->ID );
 
 			if ( empty( $calc_settings['payment_gateway']['paypal']['integration_type'] ) ) {
 				$calc_settings['payment_gateway']['paypal']['integration_type'] = 'legacy';
@@ -915,7 +915,7 @@ class CCBUpdatesCallbacks {
 					unset( $calc_settings['stripe'] );
 				}
 
-				update_option( 'stm_ccb_form_settings_' . sanitize_text_field( $calculator->ID ), apply_filters( 'stm_ccb_sanitize_array', $calc_settings ) );
+				CCBSettingsData::update_calc_single_settings( $calculator->ID, $calc_settings );
 			}
 		}
 
@@ -1215,7 +1215,7 @@ class CCBUpdatesCallbacks {
 
 		if ( ! isset( $global_settings['email_templates']['header_bg']['value'] ) ) {
 			$global_settings['email_templates']['header_bg']['value'] = $content_bg_value;
-			update_option( 'ccb_general_settings', $global_settings );
+			CCBSettingsData::update_calc_global_settings( $global_settings );
 		}
 	}
 
@@ -1533,24 +1533,26 @@ class CCBUpdatesCallbacks {
 				'two_column' => 'two-column-layout',
 			);
 
-			if ( str_contains( $preset_key, 'saved' ) && isset( $presets[ $preset_key ] ) ) {
-				$preset    = $presets[ $preset_key ];
-				$box_style = $preset['data']['desktop']['layout']['box_style'];
+			if ( ! isset( $calc_settings['general']['layout'] ) ) {
+				if ( str_contains( $preset_key, 'saved' ) && isset( $presets[ $preset_key ] ) ) {
+					$preset    = $presets[ $preset_key ];
+					$box_style = $preset['data']['desktop']['layout']['box_style'];
 
-				$calc_settings['general']['layout'] = $layouts[ $box_style ];
+					$calc_settings['general']['layout'] = $layouts[ $box_style ];
 
-				update_option(
-					'stm_ccb_form_settings_' . sanitize_text_field( $calculator->ID ),
-					apply_filters( 'stm_ccb_sanitize_array', $calc_settings )
-				);
-			} elseif ( str_contains( $preset_key, 'saved' ) && isset( $presets[ $preset_key ] ) && $fields[0]['type'] && 'page-break' === $fields[0]['type'] ) {
-				$box_style = 'vertical';
-			} else {
-				$calc_settings['general']['layout'] = 'vertical-layout';
-				update_option(
-					'stm_ccb_form_settings_' . sanitize_text_field( $calculator->ID ),
-					apply_filters( 'stm_ccb_sanitize_array', $calc_settings )
-				);
+					update_option(
+						'stm_ccb_form_settings_' . sanitize_text_field( $calculator->ID ),
+						apply_filters( 'stm_ccb_sanitize_array', $calc_settings )
+					);
+				} elseif ( str_contains( $preset_key, 'saved' ) && isset( $presets[ $preset_key ] ) && $fields[0]['type'] && 'page-break' === $fields[0]['type'] ) {
+					$box_style = 'vertical';
+				} else {
+					$calc_settings['general']['layout'] = 'vertical-layout';
+					update_option(
+						'stm_ccb_form_settings_' . sanitize_text_field( $calculator->ID ),
+						apply_filters( 'stm_ccb_sanitize_array', $calc_settings )
+					);
+				}
 			}
 
 			if ( ! is_array( $fields ) ) {
@@ -1661,15 +1663,10 @@ class CCBUpdatesCallbacks {
 
 					if ( in_array( $field_name, array( 'toggle', 'checkbox', 'checkbox_with_img', 'radio', 'radio_with_img' ), true ) ) {
 						if ( ! isset( $node['styles'] ) || ! is_array( $node['styles'] ) ) {
-							$node['styles'] = array();
-						}
-
-						$box_style = $node['styles']['box_style'] ?? '';
-
-						if ( 'horizontal' === $box_style ) {
-							$node['styles']['elementColumns'] = $horizontal_map[ $field_name ];
-						} elseif ( 'vertical' === $box_style ) {
-							$node['styles']['elementColumns'] = '1';
+							$node['styles'] = array(
+								'elementColumns' => '1',
+								'style'          => 'default',
+							);
 						}
 					}
 				}
@@ -1748,6 +1745,186 @@ class CCBUpdatesCallbacks {
 			);
 
 			OrdersPatch::ccb_patch_maybe_fill_before_discount_value_to_orders_discounts();
+		}
+	}
+
+
+
+	public static function ccb_v4_patch() {
+		self::ccb_v4_appearance_patch();
+		self::ccb_v4_conditions_patch();
+		self::ccb_add_total_summary_meta();
+	}
+
+	private static function ccb_v4_appearance_patch() {
+		$calculators = self::get_calculators();
+		foreach ( $calculators as $calculator ) {
+			$settings = CCBSettingsData::get_calc_single_settings( $calculator->ID );
+
+			if ( ! isset( $settings['layout'] ) || ! is_array( $settings['layout'] ) ) {
+				$layout_data = array(
+					'max_width'           => 970,
+					'summary_width'       => 40,
+					'calculator_width'    => 60,
+					'summary_position'    => 'right',
+					'header_position'     => 'top',
+					'navigation_position' => 'bottom',
+				);
+
+				$calc_preset_idx = get_post_meta( $calculator->ID, 'ccb_calc_preset_idx', true );
+				if ( ! empty( $calc_preset_idx ) ) {
+					$preset = new CCBPresetGenerator( $calc_preset_idx );
+					if ( ! empty( $preset ) ) {
+						$appearance_data = $preset->generate_desktop_data();
+						if ( ! empty( $appearance_data['layout']['data']['box_style']['value'] ) ) {
+							$box_style = ! empty( $settings['general']['layout'] ) ? $settings['general']['layout'] : 'vertical';
+							$width_key = 'container_vertical_max_width';
+
+							if ( 'horizontal-layout' === $box_style ) {
+								$width_key = 'container_horizontal_max_width';
+
+								$layout_data['summary_width']    = 100;
+								$layout_data['calculator_width'] = 100;
+								$layout_data['summary_position'] = 'bottom';
+							} elseif ( 'two-column-layout' === $box_style ) {
+								$width_key = 'container_two_column_max_width';
+
+								$layout_data['summary_width']    = 40;
+								$layout_data['calculator_width'] = 60;
+								$layout_data['summary_position'] = 'right';
+							}
+
+							if ( ! empty( $appearance_data['elements_sizes']['data'][ $width_key ]['value'] ) ) {
+								$layout_data['max_width'] = $appearance_data['elements_sizes']['data'][ $width_key ]['value'];
+							}
+
+							$settings['layout'] = $layout_data;
+						}
+					}
+				}
+
+				CCBSettingsData::update_calc_single_settings( $calculator->ID, $settings );
+			}
+		}
+	}
+
+	private static function ccb_v4_conditions_patch() {
+		$calculators = self::get_calculators();
+		foreach ( $calculators as $calculator ) {
+			$conditions = get_post_meta( $calculator->ID, 'stm-conditions', true );
+			$space_slug = ccb_generate_random_string( 15 );
+
+			if ( empty( $conditions['spaces'] ) ) {
+				$conditions['spaces'] = array(
+					array(
+						'id'      => 1,
+						'label'   => 'Space 1',
+						'slug'    => $space_slug,
+						'sort_id' => 1,
+					),
+				);
+
+				update_post_meta( $calculator->ID, 'stm-conditions', apply_filters( 'stm_ccb_sanitize_array', $conditions ) );
+			}
+
+			$nodes = isset( $conditions['nodes_v4'] ) ? $conditions['nodes_v4'] : $conditions['nodes'];
+			$links = isset( $conditions['links_v4'] ) ? $conditions['links_v4'] : $conditions['links'];
+
+			if ( ! empty( $nodes ) > 0 && isset( $nodes[0]['data'] ) ) {
+				continue;
+			}
+
+			$new_nodes = array();
+			$new_links = array();
+
+			foreach ( $nodes as $node ) {
+				$new_nodes[] = array(
+					'id'       => ccb_generate_random_string( 15 ),
+					'type'     => 'custom',
+					'position' => array(
+						'x' => $node['x'],
+						'y' => $node['y'],
+					),
+					'data'     => array(
+						'label'      => $node['label'],
+						'alias'      => $node['options'],
+						'space'      => $space_slug,
+						'calculable' => $node['calculable'],
+						'icon'       => $node['icon'],
+						'old_id'     => $node['id'],
+					),
+				);
+			}
+
+			foreach ( $links as $link ) {
+				$source_handle = 'bottom';
+				$target_handle = 'top';
+
+				$source_x = isset( $link['target']['x'] ) ? floatval( $link['target']['x'] ) : 0;
+				$target_x = isset( $link['input_coordinates']['x'] ) ? floatval( $link['input_coordinates']['x'] ) : 0;
+
+				if ( $source_x < $target_x ) {
+					$source_handle = 'right';
+					$target_handle = 'left';
+				} else {
+					$source_handle = 'left';
+					$target_handle = 'right';
+				}
+
+				$source_id = '';
+				$target_id = '';
+
+				foreach ( $new_nodes as $node ) {
+					if ( intval( $node['data']['old_id'] ) === intval( $link['from'] ) ) {
+						$source_id = $node['id'];
+					}
+
+					if ( intval( $node['data']['old_id'] ) === intval( $link['to'] ) ) {
+						$target_id = $node['id'];
+					}
+				}
+
+				$new_links[] = array(
+					'id'           => ccb_generate_random_string( 15 ),
+					'type'         => 'button',
+					'sourceHandle' => $source_handle,
+					'targetHandle' => $target_handle,
+					'source'       => $source_id,
+					'target'       => $target_id,
+					'data'         => array(
+						'space'        => $space_slug,
+						'condition'    => $link['condition'],
+						'old_id'       => $link['id'],
+						'old_from'     => $link['from'],
+						'old_to'       => $link['to'],
+						'options_from' => $link['options_from'],
+						'options_to'   => $link['options_to'],
+					),
+				);
+			}
+
+			$conditions['nodes_v4'] = $new_nodes;
+			$conditions['links_v4'] = $new_links;
+			update_post_meta( $calculator->ID, 'stm-conditions', apply_filters( 'stm_ccb_sanitize_array', $conditions ) );
+		}
+	}
+
+	private static function ccb_add_total_summary_meta() {
+		$calculators = self::get_calculators();
+
+		foreach ( $calculators as $calculator ) {
+			$calc_id = intval( $calculator->ID );
+			$meta    = get_post_meta( $calc_id, 'stm-total-summary', true );
+
+			if ( ! empty( $meta ) ) {
+				continue;
+			}
+
+			$calc_settings = CCBSettingsData::get_calc_single_settings( $calc_id );
+			$general       = isset( $calc_settings['general'] ) && is_array( $calc_settings['general'] ) ? $calc_settings['general'] : array();
+
+			$total_summary = CCBSettingsData::total_summary_settings_data( $general );
+			update_post_meta( $calc_id, 'stm-total-summary', apply_filters( 'stm_ccb_sanitize_array', $total_summary ) );
 		}
 	}
 }

@@ -1,23 +1,24 @@
 <template>
-  <div class="ccb-rectangle-tab" :class="{ 'hide-title': hideTitle }">
-    <div class="ccb-calc-title">
-      {{ calcTitle }}
-    </div>
-    <div class="tabs">
+  <div class="ccb-rectangle-tab">
+    <div class="ccb-rectangle-tab__steps">
       <div
-        class="tab"
-        :class="[{ active: step === page.id }, { done: step > page.id }]"
-        v-for="page in pages"
+        v-for="(page, index) in pages"
         :key="page.id"
-        :ref="'tab-' + page.id"
+        class="ccb-rectangle-tab__step"
+        :class="{
+          'is-active': index + 1 === step,
+          'is-done': index + 1 < step,
+        }"
       >
-        <span class="tab__item" :id="page.id.toString()">
-          <span class="count">{{ page.id }}</span>
-          <span class="complete">
-            <i class="ccb-icon-radius-check" style="font-size: 12px"></i>
-          </span>
+        <span class="ccb-rectangle-tab__rect">
+          <i v-if="index + 1 < step" class="ccb-icon-radius-check"></i>
+          <span v-else>{{ index + 1 }}</span>
         </span>
-        <span class="tab__title" :title="page.label">
+        <span
+          class="ccb-rectangle-tab__label"
+          v-if="!hideTitle"
+          :title="page.label"
+        >
           {{ page.title }}
         </span>
       </div>
@@ -26,108 +27,87 @@
 </template>
 
 <script setup lang="ts">
-import { toRefs, defineProps } from "vue";
-
-type Page = {
-  id: number;
-  label: string;
-  title: string;
-};
-
-type Props = {
-  pages: Page[];
+defineProps<{
+  pages: { id: number; label: string; title: string }[];
   step: number;
   hideTitle: boolean;
   calcTitle: string;
-};
-
-const props = defineProps<Props>();
-
-const { pages, step, hideTitle, calcTitle } = toRefs(props);
+}>();
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
 .ccb-rectangle-tab {
-  overflow-x: auto;
+  width: 100%;
+  padding: 8px 20px;
+  box-sizing: border-box;
 
-  .ccb-calc-title {
-    top: -40px;
-    left: 0px;
-  }
-
-  .tabs {
-    display: flex;
-    justify-content: flex-start;
-    width: max-content;
-  }
-
-  .tab {
-    margin: 0 10px;
+  &__steps {
     display: flex;
     align-items: center;
+    gap: 8px;
+    width: 100%;
+    overflow-x: auto;
+  }
 
-    &.done {
-      .complete {
-        display: flex;
-        color: var(--ccb-accent-color);
-      }
+  &__step {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+    padding: 4px 8px 4px 4px;
+    border-radius: 8px;
+    transition: background 0.2s ease;
 
-      .tab__item {
-        background: var(--ccb-page-done-bg-color);
-      }
-
-      .tab__title {
-        color: var(--ccb-text-color);
-        opacity: 1;
-      }
-
-      .count {
-        display: none;
-      }
-    }
-
-    &.active {
-      .tab__item {
-        background: var(--ccb-accent-color);
-        color: var(--ccb-container-color);
-      }
-      .tab__title {
-        font-weight: 600;
-        opacity: 1;
-      }
-    }
-
-    &__item {
-      margin-right: 6px;
-      width: 36px;
-      height: 36px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-shrink: 0;
-      max-width: 140px;
-      border-radius: 6px;
-      background-color: var(--ccb-fields-bg-color);
-      color: var(--ccb-fields-description-color);
-
-      .complete {
-        display: none;
-      }
-    }
-
-    &__title {
-      font-size: 13px;
-      font-style: normal;
-      font-weight: 500;
-      line-height: 16px;
-      opacity: 0.5;
+    &:hover {
+      background: var(--ccb-wb-hover, #f3f4f6);
     }
   }
 
-  &.hide-title {
-    .tab__title {
-      display: none !important;
+  &__rect {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 600;
+    flex-shrink: 0;
+    background: var(--ccb-fields-bg-color);
+    color: var(--ccb-fields-description-color);
+    transition: all 0.25s ease;
+
+    i {
+      font-size: 14px;
     }
+  }
+
+  &__label {
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 16px;
+    color: var(--ccb-fields-description-color);
+    white-space: nowrap;
+    transition: all 0.25s ease;
+  }
+
+  &__step.is-active &__rect {
+    background: var(--ccb-accent-color);
+    color: var(--ccb-container-color);
+  }
+
+  &__step.is-active &__label {
+    color: var(--ccb-text-color);
+    font-weight: 600;
+  }
+
+  &__step.is-done &__rect {
+    background-color: var(--ccb-page-done-bg-color, var(--ccb-container-color));
+    color: var(--ccb-accent-color);
+  }
+
+  &__step.is-done &__label {
+    color: var(--ccb-text-color);
   }
 }
 </style>

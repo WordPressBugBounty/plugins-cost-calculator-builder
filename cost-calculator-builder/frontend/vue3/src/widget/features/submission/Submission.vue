@@ -83,14 +83,29 @@ const getSubmissionComponent = computed(() => {
     let payments: string[] = getPayments.value;
 
     if (formSettings?.summaryDisplay?.enable) {
+      const actionAfterSubmit = formSettings?.summaryDisplay?.actionAfterSubmit;
+
+      if (actionAfterSubmit === "send_to_email") {
+        if (!formSettings?.payment || !payments.length) {
+          return defineAsyncComponent(
+            () => import("@/widget/features/submission/order-form"),
+          );
+        }
+
+        setIsPaymentAfterSubmit(true);
+
+        return defineAsyncComponent(
+          () => import("@/widget/features/submission/payment-after-submit"),
+        );
+      }
+
       if (formSettings?.payment && formSettings?.paymentMethods?.length) {
         setIsPaymentAfterSubmit(true);
       }
 
       if (
-        formSettings?.summaryDisplay?.actionAfterSubmit ===
-          "show_summary_block_with_pdf" ||
-        formSettings?.summaryDisplay?.actionAfterSubmit === "show_summary_block"
+        actionAfterSubmit === "show_summary_block_with_pdf" ||
+        actionAfterSubmit === "show_summary_block"
       ) {
         if (
           settings.getSummaryDisplayShowSummary &&

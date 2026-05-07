@@ -129,7 +129,7 @@ const additionalClasses = computed(() => {
     min-height: var(--ccb-field-button-height);
 
     @media only screen and (max-width: 480px) {
-      padding: 12px var(--ccb-mobile-field-side-indent);
+      padding: 0 var(--ccb-mobile-field-side-indent);
       min-height: var(--ccb-mobile-field-button-height);
     }
   }

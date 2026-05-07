@@ -7,6 +7,7 @@ import {
   IEmailOptions,
   IFormFields,
   IGeneral,
+  ILayout,
   IInvoice,
   INotice,
   IPageBreak,
@@ -25,6 +26,7 @@ import {
 
 interface SettingsStore {
   general: IGeneral | null;
+  layout: ILayout | null;
   currency: ICurrency | null;
   thankYouPage: IThankYouPage | null;
   editCalcButton: IEditCalcButton | null;
@@ -50,6 +52,7 @@ interface SettingsStore {
 export const useSettingsStore = defineStore("settings_store", {
   state: (): SettingsStore => ({
     general: null,
+    layout: null,
     currency: null,
     thankYouPage: null,
     stickyCalc: null,
@@ -85,6 +88,8 @@ export const useSettingsStore = defineStore("settings_store", {
 
     getGeneralSettings: (state: SettingsStore): IGeneral | null =>
       state.general,
+
+    getLayoutSettings: (state: SettingsStore): ILayout | null => state.layout,
 
     getCurrencySettings: (state: SettingsStore): ICurrency | null =>
       state.currency,
@@ -211,6 +216,7 @@ export const useSettingsStore = defineStore("settings_store", {
       const convertedData = convertKeysToCamelCase(data);
 
       this.general = convertedData.general as IGeneral;
+      this.layout = convertedData.layout as ILayout;
       this.currency = convertedData.currency as ICurrency;
       this.thankYouPage = convertedData.thankYouPage as IThankYouPage;
       this.stickyCalc = convertedData.stickyCalc as ISticky;
@@ -240,14 +246,6 @@ export const useSettingsStore = defineStore("settings_store", {
           siteKey,
           secretKey,
         } as IRecaptcha;
-      }
-
-      if (
-        this.formFields?.summaryDisplay?.enable &&
-        this.formFields?.summaryDisplay?.actionAfterSubmit ===
-          "show_summary_block"
-      ) {
-        this.thankYouPage.enable = false;
       }
     },
 

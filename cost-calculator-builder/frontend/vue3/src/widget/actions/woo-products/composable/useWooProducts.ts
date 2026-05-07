@@ -2,8 +2,12 @@ import { WooMetaAction } from "@/widget/shared/types/fields";
 import { useFieldsStore } from "@/widget/app/providers/stores/fieldsStore.ts";
 import { Field } from "@/widget/shared/types/fields";
 import { useSingleField } from "@/widget/actions/fields/composable/useSingleField.ts";
-import { useConditions } from "@/widget/actions/conditions/composable/useConditions.ts";
+import {
+  useConditions,
+  prepareSetValue,
+} from "@/widget/actions/conditions/composable/useConditions.ts";
 import { useSettingsStore } from "@/widget/app/providers/stores/settingsStore.ts";
+import { useCallbackStore } from "@/widget/app/providers/stores/callbackStore";
 
 interface IWooProductsResult {
   applyWooMetaActions: (actions: WooMetaAction[]) => void;
@@ -48,10 +52,30 @@ export function useWooProducts(): IWooProductsResult {
 
     const field: Field | undefined = fieldStore.getField(calcField);
     if (field) {
-      if (action === "set_value") {
-        field.value = value;
-      } else if (action === "set_value_disable") {
-        field.value = value;
+      const callbackStore = useCallbackStore();
+      const parseValue = prepareSetValue(field, value);
+
+      field.value = parseValue;
+
+      if ("originalValue" in field) {
+        field.originalValue = parseValue;
+      }
+
+      if (field.fieldName === "quantity") {
+        callbackStore.runCallback(
+          "updateQuantity",
+          true,
+          parseValue,
+          field.alias,
+          true,
+        );
+      }
+
+      if (field.fieldName === "range") {
+        callbackStore.runCallback("updateRange", parseValue, field.alias, true);
+      }
+
+      if (action === "set_value_disable") {
         field.disabled = true;
       }
 

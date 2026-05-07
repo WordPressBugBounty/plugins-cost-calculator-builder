@@ -1,88 +1,45 @@
 <?php
-$ccb_pages = \cBuilder\Classes\CCBSettingsData::get_general_settings_pages();
+$is_settings = isset( $_GET['tab'] ) && sanitize_text_field( $_GET['tab'] ) === 'settings'; // phpcs:ignore WordPress.Security.NonceVerification
+wp_enqueue_script( 'cbb-bundle-js', CALC_URL . '/frontend/dist/admin.js', array(), CALC_VERSION, true );
+wp_localize_script(
+	'cbb-bundle-js',
+	'ajax_window',
+	array(
+		'preview_link'      => get_admin_url( null, 'admin.php?page=cost_calculator_preview&preview_calc_id=' ),
+		'ajax_url'          => admin_url( 'admin-ajax.php' ),
+		'condition_actions' => \cBuilder\Helpers\CCBConditionsHelper::getActions(),
+		'condition_states'  => \cBuilder\Helpers\CCBConditionsHelper::getConditionStates(),
+		'dateFormat'        => get_option( 'date_format' ),
+		'language'          => substr( get_bloginfo( 'language' ), 0, 2 ),
+		'plugin_url'        => CALC_URL,
+		'site_url'          => site_url(),
+		'templates'         => \cBuilder\Helpers\CCBFieldsHelper::get_fields_templates(),
+		'order_templates'   => \cBuilder\Helpers\CCBFieldsHelper::get_order_fields_templates(),
+		'translations'      => array_merge( \cBuilder\Classes\CCBTranslations::get_frontend_translations(), \cBuilder\Classes\CCBTranslations::get_backend_translations() ),
+		'pro_active'        => ccb_pro_active(),
+		'edit_pencil'       => CALC_URL . '/frontend/dist/img/edit_pencil.svg',
+	)
+);
 ?>
-<div class="ccb-tab-sections" style="overflow: hidden">
-	<loader v-if="preloader"></loader>
-	<template v-else>
-		<div class="ccb-settings-tab" style="overflow: hidden; height: calc(100vh - 140px)">
-			<div class="ccb-settings-tab-sidebar global-settings" style="height: 100vh">
-				<div class="ccb-settings-tab-wrapper border-bottom">
-					<span class="ccb-settings-tab-header"><?php esc_html_e( 'Basic', 'cost-calculator-builder' ); ?></span>
-					<span class="ccb-settings-tab-list">
-					<?php foreach ( $ccb_pages as $ccb_page ) : ?>
-						<?php if ( isset( $ccb_page['type'] ) && sanitize_text_field( $ccb_page['type'] ) === 'basic' ) : ?>
-							<span class="ccb-settings-tab-list-item" :class="{active: tab === '<?php echo esc_attr( $ccb_page['slug'] ); ?>'}" @click="tab = '<?php echo esc_attr( $ccb_page['slug'] ); ?>'">
-							<i class="<?php echo esc_attr( $ccb_page['icon'] ); ?>"></i>
-							<span><?php echo esc_html( $ccb_page['title'] ); ?></span>
-							<span class="
-							<?php
-							if ( isset( $ccb_page['icon-warning'] ) ) {
-								echo esc_attr( $ccb_page['icon-warning'] );
-							}
-							?>
-							" v-if="isErrorTab('<?php echo esc_attr( $ccb_page['slug'] ); ?>')"></span>
-						</span>
-						<?php endif; ?>
-					<?php endforeach; ?>
-				</span>
+
+<?php require_once CALC_PATH . '/templates/admin/components/notice-mobile.php'; ?>
+
+<div class="ccb-settings-wrapper calculator-settings" id="cost_calculator_main_page">
+	<calc-builder inline-template>
+		<div class="ccb-main-container">
+			<template v-if="!$store.getters.getHideHeader">
+				<?php require_once CALC_PATH . '/templates/admin/components/header.php'; ?>
+			</template>
+			<div class="ccb-tab-content">
+				<div class="ccb-tab-sections ccb-loader-section" v-if="loader">
+					<loader></loader>
 				</div>
-				<div class="ccb-settings-tab-wrapper">
-					<span class="ccb-settings-tab-header"><?php esc_html_e( 'Integrations', 'cost-calculator-builder' ); ?></span>
-					<span class="ccb-settings-tab-list">
-					<?php foreach ( $ccb_pages as $ccb_page ) : ?>
-						<?php if ( isset( $ccb_page['type'] ) && sanitize_text_field( $ccb_page['type'] ) === 'pro' ) : ?>
-							<span class="ccb-settings-tab-list-item" :class="{active: tab === '<?php echo esc_attr( $ccb_page['slug'] ); ?>'}" @click="tab = '<?php echo esc_attr( $ccb_page['slug'] ); ?>'">
-								<i class="<?php echo esc_attr( $ccb_page['icon'] ); ?>"></i>
-								<span><?php echo esc_html( $ccb_page['title'] ); ?></span>
-							</span>
-						<?php endif; ?>
-					<?php endforeach; ?>
-				</span>
-				</div>
-			</div>
-			<div class="ccb-settings-tab-sidebar ccb-settings-tab-sidebar-mobile" style="height: 100vh">
-				<span class="ccb-settings-header-mobile" @click="mobileSwitcher"><?php esc_html_e( 'Setting menu', 'cost-calculator-builder' ); ?><i class="ccb-icon-Down" :class="{'toggle': mobileState}"></i></span>
-				<template v-if="mobileState">
-					<div class="ccb-settings-tab-wrapper" :class="{'border-bottom': mobileState}">
-					<span class="ccb-settings-tab-header"><?php esc_html_e( 'Global setting', 'cost-calculator-builder' ); ?></span>
-							<span class="ccb-settings-tab-list">
-							<?php foreach ( $ccb_pages as $ccb_page ) : ?>
-								<?php if ( isset( $ccb_page['type'] ) && sanitize_text_field( $ccb_page['type'] ) === 'basic' ) : ?>
-									<span class="ccb-settings-tab-list-item" :class="{active: tab === '<?php echo esc_attr( $ccb_page['slug'] ); ?>'}" @click="tab = '<?php echo esc_attr( $ccb_page['slug'] ); ?>'">
-									<i class="<?php echo esc_attr( $ccb_page['icon'] ); ?>"></i>
-									<span><?php echo esc_html( $ccb_page['title'] ); ?></span>
-								</span>
-								<?php endif; ?>
-							<?php endforeach; ?>
-						</span>
-					</div>
-					<div class="ccb-settings-tab-wrapper" :class="{'border-bottom': mobileState}">
-						<span class="ccb-settings-tab-list">
-						<?php foreach ( $ccb_pages as $ccb_page ) : ?>
-							<?php if ( isset( $ccb_page['type'] ) && sanitize_text_field( $ccb_page['type'] ) === 'pro' ) : ?>
-								<span class="ccb-settings-tab-list-item" :class="{active: tab === '<?php echo esc_attr( $ccb_page['slug'] ); ?>'}" @click="tab = '<?php echo esc_attr( $ccb_page['slug'] ); ?>'">
-									<i class="<?php echo esc_attr( $ccb_page['icon'] ); ?>"></i>
-									<span><?php echo esc_html( $ccb_page['title'] ); ?></span>
-								</span>
-							<?php endif; ?>
-						<?php endforeach; ?>
-						</span>
-					</div>
+				<template v-else>
+					<general-settings inline-template>
+						<?php require_once CALC_PATH . '/templates/admin/pages/global-settings.php'; ?>
+					</general-settings>
 				</template>
 			</div>
-			<div class="ccb-settings-tab-content global-settings ccb-settings-tab-content-mobile">
-				<div class="ccb-settings-container ccb-custom-scrollbar" style="padding: 0; margin: 0;">
-					<?php foreach ( $ccb_pages as $ccb_page ) : ?>
-						<component
-								inline-template
-								:is="getComponent"
-								v-if="tab === '<?php echo esc_attr( $ccb_page['slug'] ); ?>'"
-						>
-							<?php require_once CALC_PATH . '/templates/admin/general-settings/' . $ccb_page['slug'] . '.php'; //phpcs:ignore ?>
-						</component>
-					<?php endforeach; ?>
-				</div>
-			</div>
 		</div>
-	</template>
+	</calc-builder>
 </div>

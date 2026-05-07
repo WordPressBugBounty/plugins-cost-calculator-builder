@@ -14,6 +14,7 @@ export interface ISingleOptionsField extends IBaseField {
   round: boolean;
   showValueInOption: boolean;
   disableOptions: number[];
+  selectValue?: string | number;
 }
 
 export interface IMultiOptionsField extends Omit<IBaseField, "displayValue"> {
@@ -28,8 +29,19 @@ export interface IMultiOptionsField extends Omit<IBaseField, "displayValue"> {
   maxAllowedOptions: number;
   disableOptions: number[];
   showValueInOption: boolean;
+  showPrice?: boolean;
+  priceValue?: string | number;
+  checkedLength?: number;
 }
 
 export type FieldWithMultipleDisplayView =
   | IMultiOptionsField
   | ISingleOptionsField;
+
+export type IRadioField = ISingleOptionsField;
+export type IDropdownField = ISingleOptionsField;
+export type IImageRadioField = ISingleOptionsField;
+export type IImageDropdownField = ISingleOptionsField;
+export type ICheckboxField = IMultiOptionsField;
+export type IToggleField = IMultiOptionsField;
+export type IImageCheckboxField = IMultiOptionsField;

@@ -1,7 +1,8 @@
-import { computed, onMounted, ref, toRefs } from "vue";
+import { computed, onMounted, ref, toRef } from "vue";
 import { IOptions, ISingleOptionsField } from "@/widget/shared/types/fields";
 import { useAppearanceStore } from "@/widget/app/providers/stores/appearanceStore";
 import { colorFilter } from "@/widget/shared/utils/color-filter.utils";
+
 export function useSingleOptionChildShared(
   props: {
     options: IOptions[];
@@ -12,7 +13,10 @@ export function useSingleOptionChildShared(
   },
   emit: (event: "update", option: IOptions) => void,
 ) {
-  const { options, alias, current, repeater } = toRefs(props);
+  const options = toRef(() => props.options);
+  const alias = toRef(() => props.alias);
+  const current = toRef(() => props.current);
+  const repeater = toRef(() => props.repeater);
 
   const optionValues = ref<string>("");
 

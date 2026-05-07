@@ -60,6 +60,7 @@ const getCurrentComponents = computed(() => {
   border-radius: 8px;
   margin-top: 10px;
   box-shadow: 0 0 0 #cccccc !important;
+  width: 100%;
   &.finish,
   &.success {
     background-color: var(--ccb-orders-notice-color);

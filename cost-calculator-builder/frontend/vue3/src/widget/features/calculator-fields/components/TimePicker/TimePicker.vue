@@ -225,8 +225,9 @@ const additionalClasses = computed(() => {
 .ccb-timePicker-field {
   input {
     color: var(--ccb-text-color);
-    padding: 12px var(--ccb-field-side-indent);
+    padding: 0 var(--ccb-field-side-indent);
     padding-left: max(30px, var(--ccb-field-side-indent));
+    min-height: var(--ccb-field-button-height);
 
     @media only screen and (max-width: 480px) {
       padding-left: max(30px, var(--ccb-mobile-field-side-indent));

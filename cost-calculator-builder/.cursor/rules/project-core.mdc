@@ -1,0 +1,33 @@
+---
+description: 'Cost Calculator Builder – core engineering rules (WP plugin: PHP/Vue3/Typescript/SCSS)'
+alwaysApply: true
+---
+
+## Non-negotiables
+
+- Do not break backward compatibility unless explicitly requested.
+- Prefer minimal, incremental diffs. Avoid broad rewrites.
+- Do not change public hook names, option/meta keys, REST routes, AJAX action names, or script handles unless explicitly requested.
+
+## WordPress fundamentals
+
+- Any state-changing action MUST have:
+  - capability check (current_user_can)
+  - nonce verification (check_ajax_referer / check_admin_referer / wp_verify_nonce)
+  - input sanitization (context-appropriate)
+- Escape output late and by context (esc_html / esc_attr / esc_url / wp_kses_post).
+
+## Performance & UX
+
+- Do not enqueue heavy assets globally. Enqueue only where needed.
+- Keep includes vs frontend assets separated.
+- Prefer existing patterns in the codebase.
+
+## Deliverables expectation
+
+When implementing changes, provide:
+
+- a short summary of changes
+- list of files touched
+- risk/backward-compat notes
+- a short manual test plan

@@ -83,7 +83,7 @@
 				<img src="<?php echo esc_url( CALC_URL . '/frontend/dist/img/welcome/appearancee.png' ); ?>" class="appearance"/>
 			</div>
 			<div class="wizard-finish__welcome_column appearance-column">
-				<img src="<?php echo esc_url( CALC_URL . '/frontend/dist/img/welcome/appearanceee2.png' ); ?>" class="intro-img"/>
+				<img src="<?php echo esc_url( CALC_URL . '/frontend/dist/img/welcome/appearanceee3.png' ); ?>" class="intro-img"/>
 			</div>
 		</div>
 		<div class="wizard-finish__links">

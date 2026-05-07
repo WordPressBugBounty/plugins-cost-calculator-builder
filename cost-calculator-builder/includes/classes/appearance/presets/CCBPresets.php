@@ -55,17 +55,6 @@ class CCBPresets {
 			}
 		}
 
-		$preset_data[] = array(
-			'title'     => __( 'Custom', 'cost-calculator-builder' ),
-			'key'       => 'custom',
-			'image'     => array(
-				'vertical'   => CALC_URL . '/frontend/dist/img/appearance/theme-custom.png',
-				'horizontal' => CALC_URL . '/frontend/dist/img/appearance/theme-custom.png',
-				'two_column' => CALC_URL . '/frontend/dist/img/appearance/theme-custom.png',
-			),
-			'box_style' => 'vertical',
-		);
-
 		return $preset_data;
 	}
 }

@@ -1,10 +1,8 @@
 <template>
   <div
     class="ccb-field"
-    :class="[
-      'ccb_field_with_' + field.fieldName,
-      `field-width-${field.width ? field.width : '100'}`,
-    ]"
+    :class="['ccb_field_with_' + field.fieldName]"
+    :style="{ width: field.width ? field.width + '%' : '100%' }"
     :data-id="field.alias"
     :data-repeater="field.repeaterIdx"
   >
@@ -32,7 +30,6 @@ type Props = {
 
 const props = defineProps<Props>();
 const { field, name } = toRefs(props);
-
 const FieldComponent = computed(() => {
   const key: keyof IFields = name.value as keyof IFields;
   return fieldRegistry[key];
@@ -41,6 +38,8 @@ const FieldComponent = computed(() => {
 
 <style lang="scss">
 .ccb-field {
+  padding: 0 4px;
+  box-sizing: border-box;
   @media (min-width: 1025px) {
     min-width: 0;
     &.field-width-25 {

@@ -1,0 +1,53 @@
+---
+description: Vue2 to Vue3 migration - work with vue3/ts, avoid modifying src folder
+globs: **/frontend/{src,vue3}/**/*
+alwaysApply: false
+---
+
+# Vue2 to Vue3 Migration Structure
+
+⚠️ **CRITICAL**: This project is undergoing a partial migration from Vue2 to Vue3.
+
+## Folder Structure
+
+- `frontend/src/` - **OLD Vue2 code** (legacy)
+- `frontend/vue3/` - **NEW Vue3 + TypeScript** (active development)
+
+## Rules
+
+### ❌ DO NOT
+
+- **You can scan or analyze** files in `frontend/src/`
+- **DO NOT modify** any files in `frontend/src/`
+- **DO NOT delete** any files in `frontend/src/`
+- **You can suggest** moving or refactoring code from `frontend/src/`
+
+The `src` folder contains legacy Vue2 code that is still in use. Some functionality remains in Vue2 temporarily during the migration period.
+
+### ✅ DO
+
+- **Work exclusively with** `frontend/vue3/` for all frontend widget development
+- **Use TypeScript** for all new Vue3 components
+- **Add new features** in `frontend/vue3/`
+- **Modify existing features** only in `frontend/vue3/`
+
+## When Adding or Modifying Frontend Widgets
+
+Always work in the `frontend/vue3/` directory with TypeScript:
+
+```
+frontend/vue3/
+  ├── src/
+  │   ├── components/
+  │   ├── composables/
+  │   └── ...
+```
+
+## Migration Status
+
+This is a **partial migration**. Both Vue2 and Vue3 code coexist:
+
+- Legacy features run on Vue2 (`frontend/src/`)
+- New/migrated features run on Vue3 (`frontend/vue3/`)
+
+Do not attempt to complete the migration or consolidate the folders.

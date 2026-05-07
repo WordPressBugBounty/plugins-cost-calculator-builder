@@ -1,0 +1,2 @@
+import{t as c,r as u}from"./vendor-vue-reactivity-CheHbvBM.js";import{c as r}from"./vendor-vue-runtime-core-BlqoKYKI.js";function m(l,o,t){const{field:s}=c(l),e=u(!1),n=a=>{t.value&&"contains"in t.value&&!t.value.contains(a.target)&&(e.value=!1,o("toggle",!1))},i=()=>{e.value=!e.value,o("toggle",e.value),e.value?document.addEventListener("click",n):document.removeEventListener("click",n)};return r(()=>{document.removeEventListener("click",n)}),{field:s,isBodyVisible:e,toggleBody:i}}export{m as u};
+//# sourceMappingURL=useOrderFormDropdown-DGH5n_vz.js.map

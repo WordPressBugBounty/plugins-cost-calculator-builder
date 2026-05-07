@@ -97,13 +97,20 @@ const multiOptionsFieldValidation = (field: Field): boolean => {
 };
 
 const datePickerFieldValidation = (field: Field): boolean => {
+  let fieldRange = false;
+
+  if ("range" in field) {
+    fieldRange =
+      typeof field.range === "boolean" ? field.range : field.range === "1";
+  }
+
   if (field.required) {
     return (
       field.fieldName === "datePicker" &&
       "selectedDate" in field &&
-      ((!field.range && field.selectedDate === null) ||
-        (field.range && !Array.isArray(field.selectedDate)) ||
-        (field.range &&
+      ((!fieldRange && field.selectedDate === null) ||
+        (fieldRange && !Array.isArray(field.selectedDate)) ||
+        (fieldRange &&
           Array.isArray(field.selectedDate) &&
           (field.selectedDate[0] === null || field.selectedDate[1] === null)))
     );
@@ -112,7 +119,7 @@ const datePickerFieldValidation = (field: Field): boolean => {
   return (
     field.fieldName === "datePicker" &&
     "selectedDate" in field &&
-    field.range &&
+    fieldRange &&
     Array.isArray(field.selectedDate) &&
     (field.selectedDate[0] === null || field.selectedDate[1] === null)
   );

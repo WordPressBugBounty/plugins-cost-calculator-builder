@@ -44,22 +44,50 @@ class Forms extends DataBaseModel {
 	}
 
 	public static function delete_form( $form_id ) {
-		$result = self::delete( $form_id );
+		if ( ! is_numeric( $form_id ) ) {
+			return false;
+		}
+
+		$form_id          = intval( $form_id );
+		$fallback_form_id = self::get_fallback_form_id( $form_id );
+		$result           = self::delete( $form_id );
 
 		global $wpdb;
 
-		$meta_key   = 'form_id';
-		$meta_value = $form_id;
-
-		$wpdb->query(
-			$wpdb->prepare(
-				"DELETE FROM $wpdb->postmeta WHERE meta_key = %s AND meta_value = %s",
-				$meta_key,
-				$meta_value
-			)
-		);
+		if ( $result && $fallback_form_id > 0 ) {
+			$wpdb->query(
+				$wpdb->prepare(
+					"UPDATE $wpdb->postmeta SET meta_value = %d WHERE meta_key = %s AND meta_value = %d",
+					$fallback_form_id,
+					'form_id',
+					$form_id
+				)
+			);
+		}
 
 		return $result;
+	}
+
+	public static function get_fallback_form_id( $excluded_form_id = 0 ) {
+		$forms = self::get_all_forms();
+		if ( empty( $forms ) ) {
+			return 0;
+		}
+
+		$form_ids = array();
+		foreach ( $forms as $form ) {
+			$current_form_id = intval( $form['id'] ?? 0 );
+			if ( 0 < $current_form_id && $current_form_id !== intval( $excluded_form_id ) ) { // phpcs:ignore
+				$form_ids[] = $current_form_id;
+			}
+		}
+
+		if ( empty( $form_ids ) ) {
+			return 0;
+		}
+
+		// Oldest created form is the smallest id.
+		return min( $form_ids );
 	}
 
 	public static function duplicate_form( $form_id ) {

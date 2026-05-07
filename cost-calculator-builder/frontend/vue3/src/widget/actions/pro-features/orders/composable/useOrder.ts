@@ -730,14 +730,6 @@ const createOrder = async (
       paymentAfterSubmitStore.setLastOrderId(response.data.orderId);
       paymentAfterSubmitStore.setSubmit(true);
     } else if (
-      paymentAfterSubmitStore.isPaymentAfterSubmit &&
-      type &&
-      type !== "no_payments"
-    ) {
-      const paymentStore = usePaymentStore();
-      paymentAfterSubmitStore.setSubmit(false);
-      paymentStore.updatePaymentType("");
-    } else if (
       type === "woocommerce" &&
       settingsStore.getWooCheckoutSettings?.redirectTo !== "stay"
     ) {
@@ -754,6 +746,14 @@ const createOrder = async (
         success: true,
         message: "Stay on page",
       };
+    } else if (
+      paymentAfterSubmitStore.isPaymentAfterSubmit &&
+      type &&
+      type !== "no_payments"
+    ) {
+      const paymentStore = usePaymentStore();
+      paymentAfterSubmitStore.setSubmit(false);
+      paymentStore.updatePaymentType("");
     }
 
     submissionStore.setSendPaymentType(type);

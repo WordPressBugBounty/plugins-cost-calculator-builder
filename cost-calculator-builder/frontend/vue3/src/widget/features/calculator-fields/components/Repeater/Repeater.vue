@@ -153,9 +153,9 @@ const additionalClasses = computed(() => {
     row-gap: 8px;
 
     &--fields {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      row-gap: 20px;
       .field-width-25 {
         grid-column: span 1;
       }

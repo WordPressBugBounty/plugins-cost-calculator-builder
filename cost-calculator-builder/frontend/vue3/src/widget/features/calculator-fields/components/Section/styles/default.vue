@@ -84,13 +84,16 @@ const showTitle = computed(() => field.value.showName);
   box-shadow: var(--ccb-container-shadow-x-offset)
     var(--ccb-container-shadow-y-offset) var(--ccb-container-shadow-blur)
     var(--ccb-container-shadow-color);
-  padding: 20px;
+  padding: var(--ccb-container-padding-top) var(--ccb-container-padding-right)
+    var(--ccb-container-padding-bottom) var(--ccb-container-padding-left);
   border-radius: var(--ccb-container-border-radius);
   border: var(--ccb-container-border) var(--ccb-container-border-style)
     var(--ccb-container-border-color);
   background-color: var(--ccb-container-converted);
   backdrop-filter: var(--ccb-container-invert);
   -webkit-backdrop-filter: var(--ccb-container-invert);
+  margin: var(--ccb-container-margin-top) var(--ccb-container-margin-right)
+    var(--ccb-container-margin-bottom) var(--ccb-container-margin-left);
 
   &.collapsed {
     .ccb-section__header {

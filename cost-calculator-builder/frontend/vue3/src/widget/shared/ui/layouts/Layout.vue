@@ -19,12 +19,14 @@ const appearanceStore = useAppearanceStore();
 const settingsStore = useSettingsStore();
 
 const currentComponents = computed(() => {
-  if (settingsStore.getGeneralSettings?.layout === "horizontal-layout") {
-    return defineAsyncComponent(() => import("./components/Horizontal.vue"));
-  } else if (settingsStore.getGeneralSettings?.layout === "vertical-layout") {
-    return defineAsyncComponent(() => import("./components/Vertical.vue"));
-  } else {
-    return defineAsyncComponent(() => import("./components/TwoColumns.vue"));
+  const layout = settingsStore.getLayoutSettings;
+
+  if (layout?.summaryPosition === "right") {
+    return defineAsyncComponent(() => import("./components/RightSummary.vue"));
+  } else if (layout?.summaryPosition === "left") {
+    return defineAsyncComponent(() => import("./components/LeftSummary.vue"));
+  } else if (layout?.summaryPosition === "bottom") {
+    return defineAsyncComponent(() => import("./components/BottomSummary.vue"));
   }
 });
 </script>

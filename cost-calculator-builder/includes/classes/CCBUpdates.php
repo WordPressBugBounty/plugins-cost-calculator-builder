@@ -88,7 +88,6 @@ class CCBUpdates {
 		),
 		'3.2.25' => array(
 			'ccb_update_paypal_data',
-			'ccb_sync_calc_settings',
 		),
 		'3.2.26' => array(
 			'ccb_sync_general_settings',
@@ -145,8 +144,12 @@ class CCBUpdates {
 		'3.6.14' => array(
 			'ccb_add_before_discount_value_to_orders_discounts',
 		),
-		'3.6.15'  => array(
+		'3.6.15' => array(
 			'ccb_update_element_columns_by_box_style',
+		),
+		'4.0.0'  => array(
+			'ccb_v4_patch',
+			'ccb_sync_calc_settings',
 		),
 	);
 

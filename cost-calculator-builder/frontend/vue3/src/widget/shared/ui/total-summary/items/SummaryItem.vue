@@ -153,20 +153,45 @@ const { summary } = toRefs(props);
   }
 
   &__title {
+    min-width: 0;
+
+    .ccb-summary-title {
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+
     .description {
       font-size: 0.9em;
       padding-left: 10px;
       color: var(--ccb-summary-description-color);
       text-transform: none;
       text-align: left;
+      min-width: 0;
+      overflow-wrap: anywhere;
+      word-break: break-word;
     }
+  }
+
+  &__values,
+  &__value {
+    min-width: 0;
+    overflow-wrap: anywhere;
+    word-break: break-word;
   }
 }
 
 .ccb-summary-item__options {
   display: flex;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
   column-gap: 7px;
+  row-gap: 2px;
   text-transform: none;
+  min-width: 0;
+
+  > span {
+    min-width: 0;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
 }
 </style>

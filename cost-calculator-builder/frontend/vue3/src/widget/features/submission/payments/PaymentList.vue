@@ -1,20 +1,28 @@
 <template>
-  <div class="ccb-payments" :class="{ 'is-live': appStore.getIsLive }">
+  <div
+    class="ccb-payments"
+    :class="{ 'is-live': appStore.getIsLive }"
+    v-if="paymentsStatus"
+    style="width: 100%"
+  >
     <div class="ccb-payments__title">
       {{ translationsStore.getTranslations.paymentMethods }}
       <ProBadge />
     </div>
     <div class="ccb-payments__list">
       <PaymentMethod
-        v-for="payment in getPayments"
-        :type="payment"
-        :key="payment"
+        v-for="p in getPayments"
+        :type="p"
+        :key="p"
         :name="getName"
       />
     </div>
   </div>
-
-  <OrderForm style="padding-top: 20px" v-if="!payment" :payment="true" />
+  <OrderForm
+    style="padding-top: 20px"
+    v-if="!payment && paymentsStatus && !paymentAfterSubmitStatus"
+    :payment="true"
+  />
 </template>
 
 <script setup lang="ts">
@@ -27,6 +35,7 @@ import PaymentMethod from "@/widget/features/submission/payments/PaymentMethod.v
 import OrderForm from "@/widget/features/submission/order-form";
 import { useAppStore } from "@/widget/app/providers/stores/appStore";
 import { useMainStore } from "@/widget/app/providers/stores/mainStore.ts";
+import { usePaymentAfterSubmitStore } from "@/widget/app/providers/stores/paymentAfterSubmit.ts";
 
 type Props = {
   payment?: boolean;
@@ -37,6 +46,10 @@ const { payment } = toRefs(props);
 
 const translationsStore = useTranslationsStore();
 const appStore = useAppStore();
+
+const paymentAfterSubmitStatus = computed(() => {
+  return usePaymentAfterSubmitStore().isPaymentAfterSubmit;
+});
 
 const getName = computed(() => {
   const calcStore = useMainStore();
@@ -95,6 +108,32 @@ const getPayments = computed(() => {
   }
 
   return payments;
+});
+
+const paymentsStatus = computed(() => {
+  const settingsStore = useSettingsStore();
+  const paymentAfterSubmitStore = usePaymentAfterSubmitStore();
+  const cashPaymentEnabled =
+    settingsStore.getPaymentGateway?.cashPayment?.enable;
+  const razorpayEnabled =
+    settingsStore.getPaymentGateway?.cards?.cardPayments?.razorpay?.enable;
+  const stripeEnabled =
+    settingsStore.getPaymentGateway?.cards?.cardPayments?.stripe?.enable;
+  const paypalEnabled = settingsStore.getPaymentGateway?.paypal?.enable;
+  const wooCheckoutEnabled = settingsStore.getWooCheckoutSettings?.enable;
+  const orderFormStatus = settingsStore.getFormSettings?.accessEmail;
+  const hasAnyPayment =
+    cashPaymentEnabled ||
+    razorpayEnabled ||
+    stripeEnabled ||
+    paypalEnabled ||
+    wooCheckoutEnabled;
+
+  if (orderFormStatus && paymentAfterSubmitStore.isPaymentAfterSubmit) {
+    return hasAnyPayment;
+  }
+
+  return !orderFormStatus && hasAnyPayment;
 });
 </script>
 

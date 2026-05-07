@@ -30,7 +30,7 @@
         v-model="date"
         :locale="currentLang"
         :auto-apply="field.autoCloseEnabled"
-        :range="field.range"
+        :range="getFieldRange"
         :placeholder="getPlaceholder"
         :enable-time-picker="false"
         :disabled-week-days="getDisabledWeekDays"
@@ -225,6 +225,14 @@ const getExtraDisplayValue = computed(() => {
   return [];
 });
 
+const getFieldRange = computed(() => {
+  if (typeof field.value.range === "boolean") {
+    return field.value.range;
+  }
+
+  return field.value.range === "1";
+});
+
 const getValue = computed(() => {
   if (!field.value.dayPriceEnabled) return 0;
 
@@ -295,11 +303,12 @@ callbackStore.add("updateDatePicker", updateValue);
 
 .ccb-datePicker {
   input {
-    padding: 12px var(--ccb-field-side-indent);
+    padding: 0 var(--ccb-field-side-indent);
     padding-left: max(30px, var(--ccb-field-side-indent)) !important;
+    min-height: var(--ccb-field-button-height);
 
     @media only screen and (max-width: 480px) {
-      padding: 12px var(--ccb-mobile-field-side-indent);
+      padding: 0 var(--ccb-mobile-field-side-indent);
       padding-left: max(30px, var(--ccb-mobile-field-side-indent)) !important;
     }
 

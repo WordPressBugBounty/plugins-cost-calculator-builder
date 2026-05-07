@@ -21,6 +21,16 @@ export interface IGeneral {
   orderButton: boolean;
 }
 
+export interface ILayout {
+  maxWidth: number;
+  summaryWidth: number;
+  calculatorWidth: number;
+  summaryPosition: "right" | "left" | "bottom";
+  headerPosition: "top" | "bottom" | "hidden";
+  navigationPosition: "top" | "bottom" | "hidden";
+  navigationButtonsPosition: "top" | "bottom" | "hidden";
+}
+
 export interface IGeolocation {
   maps: object;
   markerIconPath: string;

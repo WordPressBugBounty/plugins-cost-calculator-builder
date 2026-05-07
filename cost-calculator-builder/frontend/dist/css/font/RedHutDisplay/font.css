@@ -1,0 +1,111 @@
+@font-face {
+    font-family: "Red Hat Display";
+    src: url(RedHatDisplay-Regular.ttf) format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: block;
+}
+
+@font-face {
+    font-family: "Red Hat Display";
+    src: url(RedHatDisplay-Italic.ttf) format('truetype');
+    font-weight: 400;
+    font-style: italic;
+    font-display: block;
+}
+
+@font-face {
+    font-family: "Red Hat Display";
+    src: url(RedHatDisplay-Light.ttf) format('truetype');
+    font-weight: 300;
+    font-style: normal;
+    font-display: block;
+}
+
+@font-face {
+    font-family: "Red Hat Display";
+    src: url(RedHatDisplay-LightItalic.ttf) format('truetype');
+    font-weight: 300;
+    font-style: italic;
+    font-display: block;
+}
+
+@font-face {
+    font-family: "Red Hat Display";
+    src: url(RedHatDisplay-Medium.ttf) format('truetype');
+    font-weight: 500;
+    font-style: normal;
+    font-display: block;
+}
+
+@font-face {
+    font-family: "Red Hat Display";
+    src: url(RedHatDisplay-MediumItalic.ttf) format('truetype');
+    font-weight: 500;
+    font-style: italic;
+    font-display: block;
+}
+
+@font-face {
+    font-family: "Red Hat Display";
+    src: url(RedHatDisplay-SemiBold.ttf) format('truetype');
+    font-weight: 600;
+    font-style: normal;
+    font-display: block;
+}
+
+@font-face {
+    font-family: "Red Hat Display";
+    src: url(RedHatDisplay-SemiBoldItalic.ttf) format('truetype');
+    font-weight: 600;
+    font-style: italic;
+    font-display: block;
+}
+
+@font-face {
+    font-family: "Red Hat Display";
+    src: url(RedHatDisplay-Bold.ttf) format('truetype');
+    font-weight: 700;
+    font-style: normal;
+    font-display: block;
+}
+
+@font-face {
+    font-family: "Red Hat Display";
+    src: url(RedHatDisplay-BoldItalic.ttf) format('truetype');
+    font-weight: 700;
+    font-style: italic;
+    font-display: block;
+}
+
+@font-face {
+    font-family: "Red Hat Display";
+    src: url(RedHatDisplay-ExtraBold.ttf) format('truetype');
+    font-weight: 800;
+    font-style: normal;
+    font-display: block;
+}
+
+@font-face {
+    font-family: "Red Hat Display";
+    src: url(RedHatDisplay-ExtraBoldItalic.ttf) format('truetype');
+    font-weight: 800;
+    font-style: italic;
+    font-display: block;
+}
+
+@font-face {
+    font-family: "Red Hat Display";
+    src: url(RedHatDisplay-Black.ttf) format('truetype');
+    font-weight: 900;
+    font-style: normal;
+    font-display: block;
+}
+
+@font-face {
+    font-family: "Red Hat Display";
+    src: url(RedHatDisplay-BlackItalic.ttf) format('truetype');
+    font-weight: 900;
+    font-style: italic;
+    font-display: block;
+}

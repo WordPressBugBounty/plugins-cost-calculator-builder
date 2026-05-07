@@ -4,47 +4,46 @@
       <div
         class="ccb-live-demo-layout__item"
         :class="{
-          'ccb-live-demo-layout__item--active':
-            activeLayout === 'two-columns-layout',
+          'ccb-live-demo-layout__item--active': activeLayout === 'left-summary',
         }"
-        @click="settingsStore.setLayout('two-columns-layout')"
+        @click="settingsStore.setLayout('left-summary')"
       >
         <i class="ccb-icon-Union-27"></i>
-        <span>Two Columns</span>
+        <span>Left Summary</span>
       </div>
       <div
         class="ccb-live-demo-layout__item"
         :class="{
           'ccb-live-demo-layout__item--active':
-            activeLayout === 'vertical-layout',
+            activeLayout === 'right-summary',
         }"
-        @click="settingsStore.setLayout('vertical-layout')"
+        @click="settingsStore.setLayout('right-summary')"
       >
         <i class="ccb-icon-Union-26"></i>
-        <span>Vertical</span>
+        <span>Right Summary</span>
       </div>
       <div
         class="ccb-live-demo-layout__item"
         :class="{
           'ccb-live-demo-layout__item--active':
-            activeLayout === 'horizontal-layout',
+            activeLayout === 'bottom-summary',
         }"
-        @click="settingsStore.setLayout('horizontal-layout')"
+        @click="settingsStore.setLayout('bottom-summary')"
       >
         <i class="ccb-icon-Union-25"></i>
-        <span>Horizontal</span>
+        <span>Bottom Summary</span>
       </div>
     </div>
     <div class="layout-switch">
-      <HorizontalLayout v-show="activeLayout === 'horizontal-layout'">
+      <RightSummary v-show="activeLayout === 'right-summary'">
         <slot />
-      </HorizontalLayout>
-      <VerticalLayout v-show="activeLayout === 'vertical-layout'">
+      </RightSummary>
+      <LeftSummary v-show="activeLayout === 'left-summary'">
         <slot />
-      </VerticalLayout>
-      <TwoColumnsLayout v-show="activeLayout === 'two-columns-layout'">
+      </LeftSummary>
+      <BottomSummary v-show="activeLayout === 'bottom-summary'">
         <slot />
-      </TwoColumnsLayout>
+      </BottomSummary>
     </div>
   </div>
 </template>
@@ -59,24 +58,18 @@ const appStore = useAppStore();
 const fieldsStore = useFieldsStore();
 const settingsStore = useSettingsStore();
 
-const HorizontalLayout = defineAsyncComponent(
-  () => import("./components/Horizontal.vue"),
+const RightSummary = defineAsyncComponent(
+  () => import("./components/RightSummary.vue"),
 );
-const VerticalLayout = defineAsyncComponent(
-  () => import("./components/Vertical.vue"),
+const LeftSummary = defineAsyncComponent(
+  () => import("./components/LeftSummary.vue"),
 );
-const TwoColumnsLayout = defineAsyncComponent(
-  () => import("./components/TwoColumns.vue"),
+const BottomSummary = defineAsyncComponent(
+  () => import("./components/BottomSummary.vue"),
 );
-
-const layoutMap = {
-  "horizontal-layout": HorizontalLayout,
-  "vertical-layout": VerticalLayout,
-  "two-columns-layout": TwoColumnsLayout,
-} as const;
 
 const activeLayout = computed(() => {
-  return settingsStore.getGeneralSettings?.layout ?? "two-columns-layout";
+  return settingsStore.getGeneralSettings?.layout ?? "bottom-summary";
 });
 
 const enoughPages = computed(() => {

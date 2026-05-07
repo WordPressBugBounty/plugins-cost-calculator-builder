@@ -52,6 +52,14 @@ class CCBBuilderAdminMenu {
 		);
 		add_submenu_page(
 			'cost_calculator_builder',
+			esc_html__( "What's New", 'cost-calculator-builder' ),
+			esc_html__( "What's New", 'cost-calculator-builder' ),
+			'manage_options',
+			'cost_calculator_builder_whats_new',
+			array( $this, 'render_whats_new' )
+		);
+		add_submenu_page(
+			'cost_calculator_builder',
 			esc_html__( 'Templates', 'cost-calculator-builder' ),
 			esc_html__( 'Templates', 'cost-calculator-builder' ),
 			'manage_options',
@@ -75,8 +83,8 @@ class CCBBuilderAdminMenu {
 			esc_html__( 'Global Settings', 'cost-calculator-builder' ),
 			esc_html__( 'Global Settings', 'cost-calculator-builder' ),
 			'manage_options',
-			'cost_calculator_builder&tab=settings',
-			array( $this, 'render_page' )
+			'cost_calculator_builder_settings',
+			array( $this, 'render_settings_page' )
 		);
 
 		if ( defined( 'CCB_PRO_VERSION' ) ) {
@@ -182,6 +190,10 @@ class CCBBuilderAdminMenu {
 		echo CCBTemplate::load( 'admin/pages/templates' ); //phpcs:ignore
 	}
 
+	public function render_whats_new() {
+		echo CCBTemplate::load( 'admin/pages/whats-new' ); //phpcs:ignore
+	}
+
 	public function render_preview() {
 		echo CCBTemplate::load( 'admin/pages/preview' ); //phpcs:ignore
 	}
@@ -196,6 +208,10 @@ class CCBBuilderAdminMenu {
 
 	public function render_page() {
 		echo CCBTemplate::load( 'admin/index' ); //phpcs:ignore
+	}
+
+	public function render_settings_page() {
+		echo CCBTemplate::load( 'admin/pages/settings' ); //phpcs:ignore
 	}
 
 	public function calc_orders_page() {

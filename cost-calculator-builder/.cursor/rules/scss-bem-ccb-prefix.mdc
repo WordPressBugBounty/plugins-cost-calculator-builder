@@ -1,0 +1,48 @@
+---
+description: 'SCSS/CSS conventions: BEM + ccb prefix + low specificity'
+globs:
+  - 'frontend/assets/scss/**/*.scss'
+  - 'frontend/vue3/assets/scss/**/*.scss'
+  - 'frontend/vue3/src/**/*.vue'
+  - '**/*.scss'
+  - '**/*.css'
+  - '**/*.vue'
+alwaysApply: false
+---
+
+## Naming: ccb + BEM
+
+- All new CSS classes MUST be prefixed with `ccb-`.
+- Use BEM naming:
+  - Block: `.ccb-<block>`
+  - Element: `.ccb-<block>__<element>`
+  - Modifier: `.ccb-<block>--<modifier>`
+  - State (optional): `.is-active`, `.is-loading` (only when it matches existing patterns)
+
+## Scope & collisions
+
+- Always scope styles under a plugin root wrapper when possible to avoid theme conflicts.
+- Do not write broad selectors (e.g., `div p a`, `input`, `.button`) unless strictly necessary and already used by the plugin.
+
+## Specificity & structure
+
+- Avoid deep nesting (max ~2 levels).
+- Prefer class selectors over tag selectors.
+- Keep modifiers separate; avoid `&--mod` chains that create high specificity.
+
+## Theme style override pattern (required for form controls and links)
+
+- To override theme styles reliably, do NOT use global element selectors like `input {}` or `a {}`.
+- Use an explicit ccb-prefixed utility/override class and apply it directly on elements:
+  - `input.ccb-<control-class>`
+  - `textarea.ccb-<control-class>`
+  - `select.ccb-<control-class>`
+  - `button.ccb-<control-class>`
+  - `a.ccb-<link-class>`
+- Prefer this pattern over increasing selector specificity or using `!important`.
+- Keep these override classes minimal and consistent across the UI.
+
+## Practical constraints
+
+- Follow existing codebase conventions if they differ in specific directories (legacy vs new stack).
+- Do not rename existing classes unless explicitly requested (may be used in templates/JS).

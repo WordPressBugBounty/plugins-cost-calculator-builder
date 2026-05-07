@@ -39,6 +39,8 @@ export interface IQuantityField extends IBaseInputField {
 export interface IRangeField extends IBaseInputField {
   min: number;
   max: number;
+  minValue?: number;
+  maxValue?: number;
   multipliedTotal: boolean;
   styles: {
     style: string;
@@ -55,6 +57,7 @@ export interface IRangeField extends IBaseInputField {
   badgeVariant?: string;
   badgeFormat?: string;
   originalValue: number;
+  default?: string | number;
 }
 
 export interface IMultiRangeField extends IRangeField {

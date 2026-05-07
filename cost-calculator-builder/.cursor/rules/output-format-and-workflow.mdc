@@ -1,0 +1,18 @@
+---
+description: 'Response format + workflow (Plan first, then implement)'
+alwaysApply: true
+---
+
+## Workflow
+
+- Use Plan Mode behavior: first locate entrypoints & relevant files, then propose a concrete plan, then implement.
+- Keep diffs small. Prefer targeted edits over refactors.
+
+## Output format for coding tasks
+
+Provide:
+
+1. Summary (1–3 bullets)
+2. Files changed (bullet list)
+3. Notes on backward compatibility / risks
+4. Manual test plan (step-by-step)

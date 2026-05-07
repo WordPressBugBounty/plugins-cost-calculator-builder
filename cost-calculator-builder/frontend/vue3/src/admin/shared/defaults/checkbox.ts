@@ -1,0 +1,43 @@
+import type { IMultiOptionsField } from "@/admin/shared/types/fields.type";
+import { DEFAULT_CURRENCY_SETTINGS } from "./base";
+
+export const checkboxDefaults = (): Partial<IMultiOptionsField> => ({
+  _id: null,
+  label: "",
+  default: "",
+  description: "",
+  required: false,
+  _event: "change",
+  type: "Checkbox",
+  allowRound: false,
+  additionalCss: "",
+  additionalStyles: "",
+  addToSummary: true,
+  allowCurrency: false,
+  hasNextTick: true,
+  nextTickCount: 0,
+  disableOptions: [],
+  calculateHidden: false,
+  fieldCurrency: false,
+  checkedLength: 0,
+  minChecked: 0,
+  _tag: "cost-checkbox",
+  icon: "ccb-icon-Path-3512",
+  alias: "checkbox_field_id_",
+  desc_option: "after",
+  summary_view: "show_value",
+  styles: {
+    elementColumns: "4",
+    box_style: "vertical",
+    style: "default",
+  },
+  options: [
+    { optionText: "Option 1", optionValue: "10", optionHint: "" },
+    { optionText: "Option 2", optionValue: "20", optionHint: "" },
+    { optionText: "Option 3", optionValue: "30", optionHint: "" },
+    { optionText: "Option 4", optionValue: "40", optionHint: "" },
+  ],
+  apply_style_for_all: false,
+  width: "100",
+  fieldCurrencySettings: { ...DEFAULT_CURRENCY_SETTINGS },
+});

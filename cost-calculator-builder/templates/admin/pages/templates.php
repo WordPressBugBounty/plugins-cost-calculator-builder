@@ -1,24 +1,9 @@
 <?php
-wp_enqueue_style( 'ccb-bootstrap-css', CALC_URL . '/frontend/dist/css/bootstrap.min.css', array(), CALC_VERSION );
-wp_enqueue_style( 'ccb-front-app-css', CALC_URL . '/frontend/dist/css/templates.css', array(), CALC_VERSION );
-wp_enqueue_style( 'ccb-front-app-css', CALC_URL . '/frontend/dist/css/style.css', array(), CALC_VERSION );
-wp_enqueue_style( 'ccb-admin-app-css', CALC_URL . '/frontend/dist/css/admin.css', array(), CALC_VERSION );
-wp_enqueue_script( 'cbb-feedback', CALC_URL . '/frontend/dist/feedback.js', array(), CALC_VERSION, true );
-wp_enqueue_script( 'cbb-templates-js', CALC_URL . '/frontend/dist/templates.js', array(), CALC_VERSION, true );
-wp_localize_script(
-	'cbb-templates-js',
-	'ajax_window',
-	array(
-		'ajax_url'     => admin_url( 'admin-ajax.php' ),
-		'language'     => substr( get_bloginfo( 'language' ), 0, 2 ),
-		'plugin_url'   => CALC_URL,
-		'translations' => array_merge( \cBuilder\Classes\CCBTranslations::get_frontend_translations(), \cBuilder\Classes\CCBTranslations::get_backend_translations() ),
-		'pro_active'   => ccb_pro_active(),
-	)
-);
+// Silence is golden
+$page_param   = isset( $_GET['page'] ) ? sanitize_text_field( $_GET['page'] ) : 'calculator'; // phpcs:ignore WordPress.Security.NonceVerification
+$action_param = isset( $_GET['action'] ) ? sanitize_text_field( $_GET['action'] ) : null; // phpcs:ignore WordPress.Security.NonceVerification
+$id_param     = isset( $_GET['id'] ) ? sanitize_text_field( $_GET['id'] ) : null; // phpcs:ignore WordPress.Security.NonceVerification
+
 ?>
-<div class="ccb-settings-wrapper calculator-templates" id="cost_calculator_templates">
-	<template-container inline-template>
-		<?php require_once CALC_PATH . '/templates/admin/single-calc/templates.php'; ?>
-	</template-container>
-</div>
+
+<div id="calculator_admin" data-page="<?php echo esc_attr( $page_param ); ?>" data-action-mode="<?php echo esc_attr( $action_param ); ?>" data-calc-id="<?php echo esc_attr( $id_param ); ?>"></div>

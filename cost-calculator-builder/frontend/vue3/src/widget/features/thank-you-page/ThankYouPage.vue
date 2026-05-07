@@ -183,10 +183,8 @@ onMounted(() => {
   display: flex;
   justify-content: center;
   margin: 0 auto;
+  max-width: var(--ccb-container-max-width);
 
-  &.vertical {
-    max-width: var(--ccb-vertical-max-width);
-  }
   .thank-you-page {
     width: 100%;
     border-radius: 6px;

@@ -28,6 +28,7 @@ import Loader from "@/widget/shared/ui/components/Loader/index.ts";
 import { useSubmissionStore } from "@/widget/app/providers/stores/submissionStore.ts";
 import { useMainStore } from "@/widget/app/providers/stores/mainStore.ts";
 import { usePageBreakerStore } from "@/widget/app/providers/stores/pageBreakerStore.ts";
+import { useTotalSummaryStore } from "@/widget/app/providers/stores/totalSummaryStore.ts";
 import { handleCalcAnalyticsRequest } from "@/widget/shared/api/handlerCalcAnalytics";
 import { getNonce } from "@/widget/shared/utils/nonce.utils";
 
@@ -44,6 +45,7 @@ const pageBreakerStore = usePageBreakerStore();
 const translationsStore = useTranslationsStore();
 const submissonStore = useSubmissionStore();
 const mainStore = useMainStore();
+const totalSummaryStore = useTotalSummaryStore();
 
 const calcId = inject("calc_id") as number;
 const key: any = `calc_data_${calcId}`;
@@ -63,6 +65,7 @@ if ("settings" in calcData) {
   settingsStore.initGeolocationSettingsStore(calcData.geolocation);
   settingsStore.initPdfSettings(calcData.pdf_settings);
   settingsStore.initQuoteSettings(calcData.quote_settings);
+  totalSummaryStore.initTotalSummary(calcData.total_summary);
   translationsStore.initTranslations(calcData.translations);
   appStore.setCustomThankYouPage(calcData.is_custom_thank_you_page);
   submissonStore.setOrderId(calcData.order_id);

@@ -1,5 +1,5 @@
 <template>
-  <div class="ccb-promocodes">
+  <div class="ccb-promocodes" style="width: 100%">
     <div class="ccb-promocodes__labels">
       <div class="ccb-promocodes__labels--info">
         {{ translationsStore.getTranslations.havePromoCode }}

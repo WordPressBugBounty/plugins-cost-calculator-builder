@@ -37,7 +37,7 @@ if ( ! empty( $settings ) && isset( $settings[0] ) && isset( $settings[0]['gener
 }
 
 if ( empty( $settings['general'] ) ) {
-	$settings = \cBuilder\Classes\CCBSettingsData::settings_data();
+	$settings = CCBSettingsData::settings_data();
 }
 
 $settings['calc_id'] = $calc_id;
@@ -225,10 +225,14 @@ if ( ! is_plugin_active( 'woocommerce/woocommerce.php' ) ) {
 	$settings['woo_products']['enable'] = '';
 	$settings['woo_checkout']['enable'] = '';
 
-	if ( ! empty( $settings['formFields']['paymentMethods'] ) && in_array( 'woo_checkout', $settings['formFields']['paymentMethods'] ) ) {
+	if ( ! empty( $settings['formFields']['paymentMethods'] ) && in_array( 'woo_checkout', $settings['formFields']['paymentMethods'], true ) ) {
 		$settings['formFields']['paymentMethods'] = array_diff( $settings['formFields']['paymentMethods'], array( 'woo_checkout' ) );
 	}
 }
+
+$total_summary = \cBuilder\Classes\CCBCalculatorsHandler::get_total_summary( $calc_id, $settings );
+$settings      = CCBSettingsData::merge_settings_and_total_summary( $settings, $total_summary );
+$total_summary = CCBSettingsData::normalize_total_summary( $total_summary );
 
 $data = array(
 	'id'                       => $calc_id,
@@ -254,6 +258,7 @@ $data = array(
 	'pdf_settings'             => \cBuilder\Classes\pdfManager\CCBPdfManager::ccb_get_pdf_manager_data(),
 	'quote_settings'           => $general_settings['invoice'],
 	'is_custom_thank_you_page' => false,
+	'total_summary'            => $total_summary,
 );
 
 $custom_defined = false;

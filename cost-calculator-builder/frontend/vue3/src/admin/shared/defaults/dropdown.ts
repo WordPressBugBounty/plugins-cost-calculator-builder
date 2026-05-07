@@ -1,0 +1,37 @@
+import type { ISingleOptionsField } from "@/admin/shared/types/fields.type";
+import { DEFAULT_CURRENCY_SETTINGS } from "./base";
+
+export const dropdownDefaults = (): Partial<ISingleOptionsField> => ({
+  label: "",
+  _id: null,
+  default: "",
+  description: "",
+  required: false,
+  _event: "change",
+  type: "Drop Down",
+  allowRound: false,
+  additionalCss: "",
+  additionalStyles: "",
+  allowCurrency: false,
+  calculateHidden: false,
+  hasNextTick: true,
+  nextTickCount: 0,
+  disableOptions: [],
+  fieldCurrency: false,
+  seperateCurrency: false,
+  addToSummary: true,
+  _tag: "cost-drop-down",
+  icon: "ccb-icon-dropdown-2",
+  alias: "dropDown_field_id_",
+  desc_option: "after",
+  summary_view: "show_value",
+  options: [
+    { optionText: "Option 1", optionValue: "10" },
+    { optionText: "Option 2", optionValue: "20" },
+    { optionText: "Option 3", optionValue: "30" },
+    { optionText: "Option 4", optionValue: "40" },
+  ],
+  show_value_in_option: true,
+  width: "100",
+  fieldCurrencySettings: { ...DEFAULT_CURRENCY_SETTINGS },
+});

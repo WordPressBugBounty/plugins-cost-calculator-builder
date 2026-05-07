@@ -15,7 +15,7 @@ function ccb_update_calc_new_values( $data ) {
 			)
 		);
 
-		update_option( 'stm_ccb_form_settings_' . sanitize_text_field( $data['id'] ), apply_filters( 'stm_ccb_sanitize_array', $data['settings'] ) );
+		\cBuilder\Classes\CCBSettingsData::update_calc_single_settings( $data['id'], $data['settings'] );
 		update_post_meta( $data['id'], 'stm-name', $title );
 		update_post_meta( $data['id'], 'stm-formula', ! empty( $data['formula'] ) ? apply_filters( 'stm_ccb_sanitize_array', $data['formula'] ) : array() );
 
@@ -28,16 +28,25 @@ function ccb_update_calc_new_values( $data ) {
 				if ( isset( $builder['label'] ) ) {
 					$data['builder'][ $idx ]['label'] = ccb_get_sanitized_text( $builder['label'] );
 				}
-
-				if ( isset( $builder['placeholder'] ) ) {
-					$data['builder'][ $idx ]['placeholder'] = ccb_get_sanitized_text( $builder['placeholder'] );
-				}
 			}
 		}
 
 		update_post_meta( $data['id'], 'stm-fields', ! empty( $data['builder'] ) ? apply_filters( 'stm_ccb_sanitize_array', $data['builder'] ) : array() );
-		update_post_meta( $data['id'], 'stm-conditions', ! empty( $data['conditions'] ) ? apply_filters( 'stm_ccb_sanitize_array', $data['conditions'] ) : array() );
 		update_post_meta( $data['id'], 'calc_saved', true );
+
+		$summary_meta = isset( $data['total_summary'] ) ? $data['total_summary'] : get_post_meta( $data['id'], 'stm-total-summary', true );
+		if ( empty( $summary_meta ) ) {
+			$summary_meta = \cBuilder\Classes\CCBSettingsData::total_summary_settings_data( $data['settings']['general'] ?? array() );
+		}
+		update_post_meta( $data['id'], 'stm-total-summary', apply_filters( 'stm_ccb_sanitize_array', $summary_meta ) );
+
+		$conditions = array(
+			'nodes_v4' => $data['conditions']['nodes'],
+			'links_v4' => $data['conditions']['links'],
+			'spaces'   => isset( $data['conditions']['spaces'] ) ? $data['conditions']['spaces'] : array(),
+		);
+
+		update_post_meta( $data['id'], 'stm-conditions', apply_filters( 'stm_ccb_sanitize_array', $conditions ) );
 
 		if ( isset( $data['category'] ) ) {
 			update_post_meta( $data['id'], 'category', sanitize_text_field( $data['category'] ) );
@@ -106,12 +115,17 @@ function ccb_update_calc_old_values( $data ) {
 				'post_title' => $title,
 			)
 		);
-		update_option( 'stm_ccb_form_settings_' . sanitize_text_field( $data['id'] ), apply_filters( 'stm_ccb_sanitize_array', $data['settings'] ) );
+		\cBuilder\Classes\CCBSettingsData::update_calc_single_settings( $data['id'], $data['settings'] );
 
 		update_post_meta( $data['id'], 'stm-name', $title );
 		update_post_meta( $data['id'], 'stm-formula', ! empty( $data['formula'] ) ? apply_filters( 'stm_ccb_sanitize_array', $data['formula'] ) : array() );
 		update_post_meta( $data['id'], 'stm-fields', ! empty( $data['builder'] ) ? apply_filters( 'stm_ccb_sanitize_array', $data['builder'] ) : array() );
 		update_post_meta( $data['id'], 'stm-conditions', ! empty( $data['conditions'] ) ? apply_filters( 'stm_ccb_sanitize_array', $data['conditions'] ) : array() );
+		$summary_meta = isset( $data['total_summary'] ) && is_array( $data['total_summary'] ) ? $data['total_summary'] : get_post_meta( $data['id'], 'stm-total-summary', true );
+		if ( empty( $summary_meta ) || ! is_array( $summary_meta ) ) {
+			$summary_meta = \cBuilder\Classes\CCBSettingsData::total_summary_settings_data( $data['settings']['general'] ?? array() );
+		}
+		update_post_meta( $data['id'], 'stm-total-summary', apply_filters( 'stm_ccb_sanitize_array', $summary_meta ) );
 
 		$woo_products_enabled = isset( $data['settings']['woo_products']['enable'] ) && filter_var( $data['settings']['woo_products']['enable'], FILTER_VALIDATE_BOOLEAN );
 		ccb_update_woocommerce_calcs( $data['id'], ! $woo_products_enabled );
@@ -362,6 +376,79 @@ function ccb_woo_categories() {
 	);
 }
 
+function ccb_woo_categories_paginated( $page = 1, $per_page = 5, $search = '', $category_ids = array() ) {
+	$offset      = ( $page - 1 ) * $per_page;
+	$category_ids = array_filter( array_map( 'absint', (array) $category_ids ) );
+	$items       = array();
+
+	if ( ! empty( $category_ids ) ) {
+		$selected = get_terms(
+			array(
+				'taxonomy'   => 'product_cat',
+				'hide_empty' => false,
+				'include'    => $category_ids,
+			)
+		);
+		if ( ! is_wp_error( $selected ) ) {
+			foreach ( $selected as $term ) {
+				$items[] = array(
+					'term_id' => $term->term_id,
+					'name'    => $term->name,
+					'slug'    => $term->slug,
+				);
+			}
+		}
+	}
+
+	$args = array(
+		'taxonomy'   => 'product_cat',
+		'hide_empty' => false,
+		'number'     => $per_page,
+		'offset'     => $offset,
+		'orderby'    => 'name',
+		'order'      => 'ASC',
+	);
+
+	if ( ! empty( $search ) ) {
+		$args['search'] = $search;
+	}
+
+	if ( ! empty( $category_ids ) ) {
+		$args['exclude'] = $category_ids;
+	}
+
+	$terms = get_terms( $args );
+
+	if ( ! is_wp_error( $terms ) ) {
+		foreach ( $terms as $term ) {
+			$items[] = array(
+				'term_id' => $term->term_id,
+				'name'    => $term->name,
+				'slug'    => $term->slug,
+			);
+		}
+	}
+
+	$count_args = array(
+		'taxonomy'   => 'product_cat',
+		'hide_empty' => false,
+		'fields'     => 'count',
+	);
+	if ( ! empty( $search ) ) {
+		$count_args['search'] = $search;
+	}
+	$total = get_terms( $count_args );
+	if ( is_wp_error( $total ) ) {
+		$total = 0;
+	}
+
+	return array(
+		'items'    => $items,
+		'total'    => (int) $total,
+		'has_more' => ( $offset + $per_page ) < (int) $total,
+	);
+}
+
 /**
  * Contact Form 7 Forms
  *
@@ -604,9 +691,10 @@ function ccb_sync_settings_from_general_settings( $settings, $general_settings, 
 				}
 			}
 
-			if ( 'summary_display' === $form_field_key && ! empty( $settings['summary_display']['enable'] ) ) {
+			if ( 'summary_display' === $form_field_key && ! empty( $settings['formFields']['summary_display']['enable'] ) ) {
 				if ( ! empty( $general_settings_cloned['form_fields']['summary_display']['use_in_all'] ) ) {
 					$settings['formFields'][ $form_field_key ] = $form_field_value;
+					$settings['formFields']['summary_display']['enable'] = true;
 				}
 			}
 
@@ -619,6 +707,10 @@ function ccb_sync_settings_from_general_settings( $settings, $general_settings, 
 			}
 
 			if ( 'adminEmailAddress' === $form_field_key && ! empty( $form_field_value ) ) {
+				$settings['formFields'][ $form_field_key ] = $form_field_value;
+			}
+
+			if ( 'emailSubject' === $form_field_key && ! empty( $form_field_value ) ) {
 				$settings['formFields'][ $form_field_key ] = $form_field_value;
 			}
 		}

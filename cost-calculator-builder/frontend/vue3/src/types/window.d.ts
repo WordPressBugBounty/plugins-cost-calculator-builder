@@ -19,6 +19,9 @@ declare global {
       plugin_url: string;
       translations: Record<string, string>;
       pro_active: boolean;
+      woo_active?: boolean;
+      woo_install_url?: string;
+      [string: string]: any;
     };
     wpcf7?: {
       init: (form: HTMLElement) => void;

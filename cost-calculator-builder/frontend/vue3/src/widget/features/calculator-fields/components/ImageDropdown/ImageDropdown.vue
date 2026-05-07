@@ -273,12 +273,15 @@ const additionalClasses = computed(() => {
   &__input {
     padding-right: 10px;
     display: grid;
-    grid-template-columns: 1fr auto;
+    grid-template-columns: minmax(0, 1fr) auto;
     justify-content: space-between;
     cursor: pointer;
+    min-height: var(--ccb-field-button-height);
+    min-width: 0;
+    overflow: hidden;
 
     @media only screen and (max-width: 480px) {
-      padding: 12px var(--ccb-mobile-field-side-indent);
+      padding: 0 var(--ccb-mobile-field-side-indent);
       min-height: var(--ccb-mobile-field-button-height);
     }
   }
@@ -349,11 +352,22 @@ const additionalClasses = computed(() => {
   .ccb-dropdown__label {
     display: flex;
     align-items: center;
+    margin-bottom: 0;
+    min-width: 0;
+    overflow: hidden;
 
     img {
-      width: 30px;
-      height: 30px;
+      width: 28px;
+      height: 28px;
       margin-right: 10px;
+      flex-shrink: 0;
+    }
+
+    > span {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
   }
   &.active {

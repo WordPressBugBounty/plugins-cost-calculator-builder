@@ -43,9 +43,13 @@ function ccb_add_admin_nonces() {
 		'ccb_save_ai_api_key'           => wp_create_nonce( 'ccb_save_ai_api_key' ),
 		'ccb_duplicate_calc'            => wp_create_nonce( 'ccb_duplicate_calc' ),
 		'ccb_update_preset_title'       => wp_create_nonce( 'ccb_update_preset_title' ),
+		'ccb_get_preset'                => wp_create_nonce( 'ccb_get_preset' ),
+		'ccb_select_preset'             => wp_create_nonce( 'ccb_select_preset' ),
 		'ccb_update_preset'             => wp_create_nonce( 'ccb_update_preset' ),
 		'ccb_reset_type'                => wp_create_nonce( 'ccb_reset_type' ),
 		'ccb_add_preset'                => wp_create_nonce( 'ccb_add_preset' ),
+		'ccb_extend_preset'             => wp_create_nonce( 'ccb_extend_preset' ),
+		'ccb_duplicate_preset'          => wp_create_nonce( 'ccb_duplicate_preset' ),
 		'ccb_delete_preset'             => wp_create_nonce( 'ccb_delete_preset' ),
 		'ccb_update_banner'             => wp_create_nonce( 'ccb_update_banner' ),
 		'ccb_preset_hide_notice'        => wp_create_nonce( 'ccb_preset_hide_notice' ),
@@ -98,6 +102,7 @@ function ccb_add_admin_nonces() {
 		'ccb_get_pdf_data'              => wp_create_nonce( 'ccb_get_pdf_data' ),
 		'ccb_get_template_cf7'          => wp_create_nonce( 'ccb_get_template_cf7' ),
 		'calc_load_more_products'       => wp_create_nonce( 'calc_load_more_products' ),
+		'calc_load_woo_categories'      => wp_create_nonce( 'calc_load_woo_categories' ),
 		'calc_load_pages'               => wp_create_nonce( 'calc_load_pages' ),
 		'ccb_get_analytics_data'        => wp_create_nonce( 'ccb_get_analytics_data' ),
 		'ccb_analytics_get_calculators' => wp_create_nonce( 'ccb_analytics_get_calculators' ),
@@ -120,6 +125,14 @@ function ccb_add_admin_nonces() {
 		'ccb_send_to_email'             => wp_create_nonce( 'ccb_send_to_email' ),
 		'ccb_get_pdf_settings'          => wp_create_nonce( 'ccb_get_pdf_settings' ),
 	);
+
+	$new_variables = array(
+		'ccb_fetch_calculators'         => wp_create_nonce( 'ccb_fetch_calculators' ),
+		'ccb_fetch_templates'           => wp_create_nonce( 'ccb_fetch_templates' ),
+		'ccb_get_calculator_admin_data' => wp_create_nonce( 'ccb_get_calculator_admin_data' ),
+	);
+
+	$variables = array_merge( $variables, $new_variables );
 
 	echo ( '<script type="text/javascript">window.ccb_nonces = ' . json_encode( $variables ) . ';</script>' ); //phpcs:ignore
 	echo ( '<script type="text/javascript">window.ccb_frontend_nonces = ' . json_encode( ccb_get_nonces() ) . ';</script>' ); //phpcs:ignore

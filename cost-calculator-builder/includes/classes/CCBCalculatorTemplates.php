@@ -136,9 +136,9 @@ class CCBCalculatorTemplates {
 		}
 
 		$result = array(
-			'success'   => false,
-			'templates' => array(),
-			'message'   => __( 'Could not delete template, please try again!', 'cost-calculator-builder' ),
+			'success' => false,
+			'message' => __( 'Could not delete template, please try again!', 'cost-calculator-builder' ),
+			'data'    => array(),
 		);
 
 		if ( isset( $_GET['template_id'] ) ) {
@@ -163,15 +163,16 @@ class CCBCalculatorTemplates {
 	public static function calc_toggle_favorite() {
 		check_ajax_referer( 'ccb_toggle_favorite', 'nonce' );
 
-		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_send_json_error( __( 'You are not allowed to run this action', 'cost-calculator-builder' ) );
-		}
-
 		$result = array(
-			'success'   => true,
-			'favorites' => array(),
-			'message'   => __( 'Could not toggle favorite, please try again!', 'cost-calculator-builder' ),
+			'success' => false,
+			'data'    => array(),
+			'message' => __( 'Could not toggle favorite, please try again!', 'cost-calculator-builder' ),
 		);
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			$result['message'] = __( 'You are not allowed to run this action', 'cost-calculator-builder' );
+			wp_send_json( $result );
+		}
 
 		$request_body = file_get_contents( 'php://input' );
 		$request_data = json_decode( $request_body, true );
@@ -191,10 +192,11 @@ class CCBCalculatorTemplates {
 			} else {
 				$favorites[]       = $template_id;
 				$result['message'] = 'Added to favorites';
+				$result['success'] = array_values( $favorites );
 			}
 
 			update_option( 'calc_templates_favorites', $favorites );
-			$result['favorites'] = $favorites;
+			$result['data']['favorites'] = array_values( $favorites );
 		}
 
 		wp_send_json( $result );
@@ -294,14 +296,14 @@ class CCBCalculatorTemplates {
 				$resources_json[] = array(
 					'type'        => $type,
 					'title'       => $title,
-					'calc_id'     => $calc_id,
+					'id'          => $id,
 					'category'    => $category,
 					'template_id' => $id,
 					'icon'        => $icon,
 					'link'        => $link,
 					'info'        => $info,
 					'description' => $description,
-					'action'      => 'use_template',
+					'image'       => CALC_URL . '/frontend/vue3/assets/images/calc-preview.png',
 				);
 			}
 		}
@@ -655,7 +657,7 @@ class CCBCalculatorTemplates {
 				return array();
 			}
 
-			$key = array_search( $name, array_column( $contents['calculators'], 'ccb_name' ) );
+			$key = array_search( $name, array_column( $contents['calculators'], 'ccb_name' ), true );
 			if ( false === $key ) {
 				return array();
 			}

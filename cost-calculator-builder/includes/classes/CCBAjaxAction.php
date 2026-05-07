@@ -28,20 +28,48 @@ class CCBAjaxAction {
 	}
 
 	public static function init() {
-		self::addAction( 'calc_create_id', array( CCBCalculators::class, 'create_calc_id' ) );
+		/**
+		 * NEW ACTIONS
+		 * ------------------------------------------------------------- **/
+		self::addAction( 'ccb_fetch_calculators', array( CCBCalculatorsHandler::class, 'ccb_fetch_calculators' ) );
+		self::addAction( 'ccb_fetch_templates', array( CCBCalculatorsHandler::class, 'ccb_fetch_templates' ) );
+		self::addAction( 'calc_create_id', array( CCBCalculatorsHandler::class, 'create_calc_id' ) );
+		self::addAction( 'calc_edit_calc', array( CCBCalculatorsHandler::class, 'edit_calc' ) );
+		self::addAction( 'calc_use_template', array( CCBCalculatorsHandler::class, 'use_template' ) );
+		self::addAction( 'calc_run_updates', array( CCBCalculatorsHandler::class, 'run_calc_updates' ) );
+		self::addAction( 'ccb_delete_calc', array( CCBCalculatorsHandler::class, 'delete_calc' ) );
+		self::addAction( 'ccb_duplicate_calc', array( CCBCalculatorsHandler::class, 'duplicate_calc' ) );
+
+		self::addAction( 'calc_toggle_favorite', array( CCBCalculatorTemplates::class, 'calc_toggle_favorite' ) );
+
+		/** import/export  */
+		self::addAction( 'cost-calculator-custom-import-total', array( CCBExportImport::class, 'custom_import_calculators_total' ) );
+		self::addAction( 'cost-calculator-demo-calculators-total', array( CCBExportImport::class, 'demo_calculators_total' ) );
+		self::addAction( 'cost-calculator-import-run', array( CCBExportImport::class, 'import_run' ) );
+		self::addAction( 'cost-calculator-custom-export-run', array( CCBExportImport::class, 'export_calculators' ) );
+
+		/** Admin actions */
+		self::addAction( 'ccb_get_calculator_admin_data', array( CCBCalculatorsHandler::class, 'get_calculator_admin_data' ) );
+		self::addAction( 'calc_save_settings', array( CCBCalculatorsHandler::class, 'save_settings' ) );
+
+		/**
+		 * OLD ACTIONS
+		 * ------------------------------------------------------------- **/
 		self::addAction( 'calc_get_products', array( CCBCalculators::class, 'getProducts' ) );
+		self::addAction( 'calc_get_woo_categories', array( CCBCalculators::class, 'getWooCategories' ) );
 		self::addAction( 'calc_get_wp_pages', array( CCBCalculators::class, 'get_wp_pages' ) );
-		self::addAction( 'calc_edit_calc', array( CCBCalculators::class, 'edit_calc' ) );
-		self::addAction( 'calc_delete_calc', array( CCBCalculators::class, 'delete_calc' ) );
 		self::addAction( 'calc_save_custom', array( CCBCalculators::class, 'save_custom' ) );
 		self::addAction( 'calc_skip_quick_tour', array( CCBCalculators::class, 'calc_skip_quick_tour' ) );
 		self::addAction( 'calc_skip_hint', array( CCBCalculators::class, 'calc_skip_hint' ) );
 		self::addAction( 'calc_get_existing', array( CCBCalculators::class, 'get_existing' ) );
-		self::addAction( 'calc_save_settings', array( CCBCalculators::class, 'save_settings' ) );
 		self::addAction( 'calc_save_ai_api_key', array( CCBCalculators::class, 'save_api_key' ) );
+		self::addAction( 'ccb_get_preset', array( CCBCalculators::class, 'ccb_get_preset' ) );
+		self::addAction( 'ccb_select_preset', array( CCBCalculators::class, 'ccb_select_preset' ) );
 		self::addAction( 'ccb_update_preset', array( CCBCalculators::class, 'ccb_update_preset' ) );
 		self::addAction( 'ccb_update_preset_title', array( CCBCalculators::class, 'ccb_update_preset_title' ) );
 		self::addAction( 'ccb_add_preset', array( CCBCalculators::class, 'ccb_add_preset' ) );
+		self::addAction( 'ccb_extend_preset', array( CCBCalculators::class, 'ccb_extend_preset' ) );
+		self::addAction( 'ccb_duplicate_preset', array( CCBCalculators::class, 'ccb_duplicate_preset' ) );
 		self::addAction( 'ccb_delete_preset', array( CCBCalculators::class, 'ccb_delete_preset' ) );
 		self::addAction( 'ccb_reset_type', array( CCBCalculators::class, 'ccb_reset_type' ) );
 		self::addAction( 'ccb_preset_hide_notice', array( CCBCalculators::class, 'ccb_preset_hide_notice' ) );
@@ -51,9 +79,6 @@ class CCBAjaxAction {
 		self::addAction( 'ccb_restore_pdf_template', array( CCBCalculators::class, 'ccb_restore_pdf_template' ) );
 		self::addAction( 'calc_save_general_settings', array( CCBCalculators::class, 'save_general_settings' ) );
 		self::addAction( 'calc_get_general_settings', array( CCBCalculators::class, 'calc_get_general_settings' ) );
-		self::addAction( 'calc_duplicate_calc', array( CCBCalculators::class, 'duplicate_calc' ) );
-		self::addAction( 'calc-run-calc-updates', array( CCBUpdates::class, 'run_calc_updates' ) );
-		self::addAction( 'calc_use_template', array( CCBCalculators::class, 'calc_use_template' ) );
 		self::addAction( 'calc_config_settings', array( CCBCalculators::class, 'calc_config_settings' ) );
 		self::addAction( 'calc_delete_payment', array( CCBCalculators::class, 'calc_delete_payment' ) );
 		self::addAction( 'ccb_update_banner', array( CCBCalculators::class, 'ccb_update_banner' ) );
@@ -63,7 +88,6 @@ class CCBAjaxAction {
 		self::addAction( 'calc_save_as_template', array( CCBCalculatorTemplates::class, 'calc_save_as_template' ) );
 		self::addAction( 'calc_get_templates_list', array( CCBCalculatorTemplates::class, 'calc_get_all_templates' ) );
 		self::addAction( 'calc_delete_templates', array( CCBCalculatorTemplates::class, 'calc_delete_template' ) );
-		self::addAction( 'calc_toggle_favorite', array( CCBCalculatorTemplates::class, 'calc_toggle_favorite' ) );
 
 		self::addAction( 'calc_rollback', array( CCBCalculators::class, 'ccb_rollback_handler' ) );
 
@@ -79,19 +103,13 @@ class CCBAjaxAction {
 		self::addAction( 'embed-create-page', array( CCBEmbedCalculator::class, 'create_page' ) );
 		self::addAction( 'embed-get-pages', array( CCBEmbedCalculator::class, 'get_all_pages' ) );
 		self::addAction( 'embed-insert-pages', array( CCBEmbedCalculator::class, 'insert_pages' ) );
-
-		/** import/export  */
-		self::addAction( 'cost-calculator-custom-import-total', array( CCBExportImport::class, 'custom_import_calculators_total' ) );
-		self::addAction( 'cost-calculator-demo-calculators-total', array( CCBExportImport::class, 'demo_import_calculators_total' ) );
-		self::addAction( 'cost-calculator-import-run', array( CCBExportImport::class, 'import_run' ) );
-		self::addAction( 'cost-calculator-custom-export-run', array( CCBExportImport::class, 'export_calculators' ) );
+		self::addAction( 'calc_discount_list', array( CCBDiscountController::class, 'discount_list' ) );
 
 		if ( defined( 'CCB_PRO_VERSION' ) ) {
 			self::addAction( 'calc_create_discount', array( CCBDiscountController::class, 'create' ) );
 			self::addAction( 'calc_update_discount', array( CCBDiscountController::class, 'update' ) );
 			self::addAction( 'calc_delete_discount', array( CCBDiscountController::class, 'delete' ) );
 			self::addAction( 'calc_duplicate_discount', array( CCBDiscountController::class, 'duplicate' ) );
-			self::addAction( 'calc_discount_list', array( CCBDiscountController::class, 'discount_list' ) );
 			self::addAction( 'calc_preview_discount_list', array( CCBDiscountController::class, 'discount_preview_list' ) );
 
 			self::addAction( 'create_cc_order', array( CCBOrderController::class, 'create' ), true );

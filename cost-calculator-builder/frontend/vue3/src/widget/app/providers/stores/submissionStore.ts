@@ -63,30 +63,35 @@ export const useSubmissionStore = () => {
         const paymentStore = usePaymentStore();
         const paymentAfterSubmitStore = usePaymentAfterSubmitStore();
 
-        if (paymentAfterSubmitStore.getSubmit) {
+        const paymentType = paymentStore.paymentType as unknown as string;
+        const type: string = paymentType ? paymentType : "no_payments";
+
+        // For Stripe in payment-after-submit: the Stripe card Element
+        // must stay visible in the DOM while createPaymentMethod reads
+        // it. setSubmit(false) and setSubmissionLoader(true) both hide
+        // the Element (via v-show), so they must be deferred until
+        // after createPaymentMethod resolves.
+        const isStripePaymentAfterSubmit =
+          type === "stripe" && paymentAfterSubmitStore.getSubmit;
+
+        if (paymentAfterSubmitStore.getSubmit && !isStripePaymentAfterSubmit) {
           paymentAfterSubmitStore.setSubmit(false);
         }
 
         if (
           settingsStore.formFields?.summaryDisplay?.enable &&
-          ["show_summary_block", "show_summary_block_with_pdf"].includes(
-            settingsStore.formFields?.summaryDisplay?.actionAfterSubmit,
-          )
+          paymentAfterSubmitStore.isPaymentAfterSubmit &&
+          !paymentStore.paymentType
         ) {
-          if (!settingsStore.getSummaryDisplayShowSummary) {
+          if (
+            ["show_summary_block", "show_summary_block_with_pdf"].includes(
+              settingsStore.formFields?.summaryDisplay?.actionAfterSubmit,
+            )
+          ) {
             settingsStore.setSummaryDisplayShowSummary(true);
-
-            if (
-              settingsStore.formFields?.summaryDisplay?.actionAfterSubmit ===
-                "show_summary_block_with_pdf" ||
-              settingsStore.formFields?.summaryDisplay?.actionAfterSubmit ===
-                "show_summary_block"
-            ) {
-              paymentAfterSubmitStore.setSubmit(true);
-            }
-
-            return;
           }
+          paymentAfterSubmitStore.setSubmit(true);
+          return;
         }
 
         const { createOrder, makePayment, razorpayPaymentReceived } =
@@ -100,12 +105,9 @@ export const useSubmissionStore = () => {
 
         const appStore = useAppStore();
 
-        if (!orderInputs?.length) {
+        if (!orderInputs?.length && !isStripePaymentAfterSubmit) {
           appStore.setSubmissionLoader(true);
         }
-
-        const paymentType = paymentStore.paymentType as unknown as string;
-        const type: string = paymentType ? paymentType : "no_payments";
 
         if (type === "stripe") {
           if (
@@ -130,6 +132,15 @@ export const useSubmissionStore = () => {
                 billing_details: billingDetails,
               })
               .then(async (cardResult: any): Promise<void> => {
+                // Now that createPaymentMethod has read the card data,
+                // it's safe to hide the UI and show the loader.
+                if (isStripePaymentAfterSubmit) {
+                  paymentAfterSubmitStore.setSubmit(false);
+                  if (!orderInputs?.length) {
+                    appStore.setSubmissionLoader(true);
+                  }
+                }
+
                 if (
                   cardResult.error !== undefined &&
                   cardResult.error.message !== undefined
@@ -226,6 +237,9 @@ export const useSubmissionStore = () => {
                 }
               })
               .catch((err: any) => {
+                if (isStripePaymentAfterSubmit) {
+                  paymentAfterSubmitStore.setSubmit(false);
+                }
                 appStore.setSubmissionLoader(false);
                 notificationsStore.updateNotifications({
                   status: true,
@@ -322,7 +336,11 @@ export const useSubmissionStore = () => {
                         ?.actionAfterSubmit,
                     )
                   ) {
-                    appStore.updateThankYouPageStatus(true);
+                    settingsStore.setSummaryDisplayShowSummary(true);
+                    const orderFormStore = useOrderFormStore();
+                    orderFormStore.getFormFields.forEach((field) => {
+                      field.value = "";
+                    });
                   }
 
                   notificationsStore.updateNotifications({

@@ -97,6 +97,8 @@ const showTitle = computed(() => field.value.showName);
   background-color: var(--ccb-container-converted);
   backdrop-filter: var(--ccb-container-invert);
   -webkit-backdrop-filter: var(--ccb-container-invert);
+  margin: var(--ccb-container-margin-top) var(--ccb-container-margin-right)
+    var(--ccb-container-margin-bottom) var(--ccb-container-margin-left);
 
   &.collapsed {
     .ccb-section__header {

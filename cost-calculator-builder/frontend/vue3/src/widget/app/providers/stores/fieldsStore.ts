@@ -1,4 +1,4 @@
-import { inject } from "vue";
+import { inject, getCurrentInstance } from "vue";
 import { defineStore } from "pinia";
 import {
   Field,
@@ -42,7 +42,7 @@ const requiredFieldsInstance = useFieldsRequired();
 export const useFieldsStore = () => {
   const appStore = useAppStore();
   let calcId = appStore.getCalcId || null;
-  if (!calcId) {
+  if (!calcId && getCurrentInstance()) {
     calcId = inject("calc_id") || null;
   }
 

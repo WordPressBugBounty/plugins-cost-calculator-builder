@@ -98,7 +98,7 @@ watch(
   .ccb-quantity-buttons__item {
     border: var(--ccb-fields-border) var(--ccb-fields-border-style)
       var(--ccb-fields-border-color);
-    padding: 12px var(--ccb-field-side-indent);
+    padding: 0 var(--ccb-field-side-indent);
     min-height: var(--ccb-field-button-height);
     background-color: var(--ccb-fields-bg-color);
     font-size: var(--ccb-fields-button-size);

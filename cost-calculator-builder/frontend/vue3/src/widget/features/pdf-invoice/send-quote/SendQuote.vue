@@ -7,14 +7,6 @@
         v-if="!getButtonStatus"
       >
         <Button
-          v-if="showPdfButton"
-          type="light"
-          :text="generatePdfBtnText"
-          @click="generatePdf"
-          :isDemo="isDemo"
-        >
-        </Button>
-        <Button
           v-if="showShareBtn"
           type="light"
           :text="quoteBtnText"
@@ -286,10 +278,6 @@ const showPdfButton = computed(() => {
 
 const quoteSuccesText = computed(() => {
   return getQuoteSettings.value.successText;
-});
-
-const generatePdfBtnText = computed<string>(() => {
-  return settingsStore.getInvoice?.pdfButtonText || "PDF Download";
 });
 
 const showShareBtn = computed(() => {

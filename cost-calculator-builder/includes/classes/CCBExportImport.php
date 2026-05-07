@@ -45,20 +45,26 @@ class CCBExportImport {
 		wp_send_json( $result );
 	}
 
-	/** Get total calculators count for demo file*/
-	public static function demo_import_calculators_total() {
+	/** Get total calculators count for bundled demo file */
+	public static function demo_calculators_total() {
 		check_ajax_referer( 'ccb_demo_import_apply', 'nonce' );
+
 		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_send_json_error( __( 'You are not allowed to run this action', 'cost-calculator-builder' ) );
 		}
 
-		$total_calculators = 0;
+		$result = array(
+			'calculators' => 0,
+		);
+
 		if ( file_exists( self::$demoCalculatorsFilePath ) ) { //phpcs:ignore
-			$file_contents     = file_get_contents( self::$demoCalculatorsFilePath ); // phpcs:ignore
-			$total_calculators = self::get_file_total_calculators( $file_contents );
+			$content               = file_get_contents( self::$demoCalculatorsFilePath ); //phpcs:ignore
+			$result['calculators'] = self::get_file_total_calculators( $content );
 		}
-		wp_send_json( array( 'calculators' => $total_calculators ) );
+
+		wp_send_json( $result );
 	}
+
 
 	/** Load custom and demo import calculators*/
 	public static function import_run() {
@@ -177,7 +183,7 @@ class CCBExportImport {
 			$data['ccb_form_settings']['woo_checkout']['enable'] = false;
 		}
 
-		update_option( 'stm_ccb_form_settings_' . sanitize_text_field( $calculator_id ), apply_filters( 'stm_ccb_sanitize_array', $data['ccb_form_settings'] ) );
+		CCBSettingsData::update_calc_single_settings( $calculator_id, $data['ccb_form_settings'] );
 
 		$presets     = CCBPresetGenerator::get_static_preset_from_db();
 		$themes      = CCBPresetGenerator::default_presets();

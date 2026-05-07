@@ -1,7 +1,7 @@
 import { CurrencyFormatOptions } from "@/widget/shared/types/common/currency.type";
 import { IPeriodData } from "@/widget/shared/types/fields/date.type.ts";
 export interface IStyles {
-  boxStyle?: string;
+  box_style?: string;
   style?: string;
   iconPath?: string;
   applyToAll?: boolean;
@@ -37,6 +37,7 @@ export interface IBaseField {
   disabled: boolean;
   useCurrency: boolean;
   additionalStyles?: string;
+  descriptionPosition?: "before" | "after";
 
   defaultValue: string | number;
   displayValue: string;

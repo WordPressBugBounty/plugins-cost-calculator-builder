@@ -76,6 +76,7 @@ const { optionValues, changeValue, getName } = useMultiOptionChildShared(
   .ccb-checkbox-wrapper {
     display: flex;
     align-items: center;
+    min-height: 20px;
   }
 
   .ccb-toggle-item__postfix {

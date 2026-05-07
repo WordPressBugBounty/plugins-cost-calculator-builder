@@ -1,5 +1,5 @@
 <template>
-  <div class="ccb-block">
+  <div class="ccb-block ccb-fields-block">
     <div class="ccb-fields-wrapper">
       <slot />
     </div>
@@ -8,4 +8,10 @@
 
 <style scoped lang="scss">
 @use "@/styles/widget/_mixins.scss" as mixins;
+
+.ccb-fields-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
 </style>

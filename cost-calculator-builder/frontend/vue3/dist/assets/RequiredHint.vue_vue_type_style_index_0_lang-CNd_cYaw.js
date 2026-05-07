@@ -1,0 +1,2 @@
+import{d as o,f as r,i as n,x as a}from"./vendor-vue-runtime-core-BlqoKYKI.js";import{t as c,u as i}from"./vendor-vue-reactivity-CheHbvBM.js";import{t as p}from"./vendor-vue-shared-DrzsEcag.js";const m={class:"ccb-required-hint"},x=o({__name:"RequiredHint",props:{text:{}},setup(t){const e=t,{text:s}=c(e);return(_,f)=>(n(),r("div",m,[a("span",null,p(i(s)),1)]))}});export{x as _};
+//# sourceMappingURL=RequiredHint.vue_vue_type_style_index_0_lang-CNd_cYaw.js.map

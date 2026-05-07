@@ -1,0 +1,30 @@
+---
+description: 'Project entrypoints & navigation map for this plugin'
+alwaysApply: true
+---
+
+## Entrypoints
+
+- Primary bootstrap: `cost-calculator-builder.php`
+- Init and Post Types: `includes/init.php`
+- Global functions: `includes/functions.php`
+- Global Nonces: `includes/install.php`
+- Assets: `includes/admin/enqueue.php`
+
+# Models
+
+- Models: `includes/classes/models/**/*.php`
+
+## Elementor
+
+- Elementor widget: `includes/widget.php`
+
+## Assets build systems
+
+- Core build: `frontend/vue3/vite.config.ts`
+
+## How to approach tasks
+
+1. Identify which stack the feature touches.
+2. Find the entrypoint hook/route/action.
+3. Update server code + client code + enqueue/build rules consistently if it's required.

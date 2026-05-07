@@ -99,9 +99,10 @@ const styleComponent = computed(() => {
 
 <style lang="scss">
 .ccb-section__fields {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(20%, 1fr));
-  gap: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  columns-gap: 10px;
+  row-gap: var(--ccb-field-spacing);
 
   .field-width-25 {
     grid-column: span 1;

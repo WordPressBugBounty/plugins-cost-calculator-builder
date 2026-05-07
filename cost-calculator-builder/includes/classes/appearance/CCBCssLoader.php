@@ -2,6 +2,8 @@
 
 namespace cBuilder\Classes\Appearance;
 
+use cBuilder\Classes\CCBSettingsData;
+
 class CCBCssLoader {
 	private static $appearance;
 
@@ -127,11 +129,15 @@ class CCBCssLoader {
 		$ccb_container_shadow_color    = $desktop_box_shadow['container_shadow']['value']['color'];
 
 		// Sizes
-		$desktop_sizes             = self::$appearance['desktop']['elements_sizes']['data'];
-		$ccb_field_button_height   = $desktop_sizes['field_and_buttons_height']['value'] . 'px';
-		$ccb_vertical_max_width    = $desktop_sizes['container_vertical_max_width']['value'] . 'px';
-		$ccb_horizontal_max_width  = $desktop_sizes['container_horizontal_max_width']['value'] . 'px';
-		$ccb_two_columns_max_width = $desktop_sizes['container_two_column_max_width']['value'] . 'px';
+		$settings  = CCBSettingsData::get_calc_single_settings( self::$calc_id );
+		$max_width = ! empty( $settings['layout']['max_width'] ) ? $settings['layout']['max_width'] . 'px' : '970px';
+
+		$desktop_sizes           = self::$appearance['desktop']['elements_sizes']['data'];
+		$ccb_field_button_height = $desktop_sizes['field_and_buttons_height']['value'] . 'px';
+		$ccb_container_max_width = $max_width;
+		$summary_width           = ! empty( $settings['layout']['summary_width'] ) ? $settings['layout']['summary_width'] . '%' : '30%';
+		$calculator_width        = ! empty( $settings['layout']['calculator_width'] ) ? $settings['layout']['calculator_width'] . '%' : '70%';
+		$summary_position        = ! empty( $settings['layout']['summary_position'] ) ? $settings['layout']['summary_position'] : 'right';
 
 		// Sizes Mobile
 		$mobile_sizes                   = self::$appearance['mobile']['elements_sizes']['data'];
@@ -144,28 +150,28 @@ class CCBCssLoader {
 		$ccb_summary_spacing           = $desktop_spacing_and_positions['field_spacing']['value'] / 2 . 'px';
 		$ccb_summary_group_spacing     = $desktop_spacing_and_positions['field_spacing']['value'] / 2 / 2 . 'px';
 		$ccb_container_margin_top      = $desktop_spacing_and_positions['container_margin']['value'][0] . 'px';
-		$ccb_container_margin_bottom   = $desktop_spacing_and_positions['container_margin']['value'][1] . 'px';
-		$ccb_container_margin_left     = $desktop_spacing_and_positions['container_margin']['value'][2] . 'px';
-		$ccb_container_margin_right    = $desktop_spacing_and_positions['container_margin']['value'][3] . 'px';
+		$ccb_container_margin_bottom   = $desktop_spacing_and_positions['container_margin']['value'][2] . 'px';
+		$ccb_container_margin_left     = $desktop_spacing_and_positions['container_margin']['value'][3] . 'px';
+		$ccb_container_margin_right    = $desktop_spacing_and_positions['container_margin']['value'][1] . 'px';
 		$ccb_container_padding_top     = $desktop_spacing_and_positions['container_padding']['value'][0] . 'px';
 		$ccb_container_padding_bottom  = $desktop_spacing_and_positions['container_padding']['value'][2] . 'px';
-		$ccb_container_padding_left    = $desktop_spacing_and_positions['container_padding']['value'][1] . 'px';
-		$ccb_container_padding_right   = $desktop_spacing_and_positions['container_padding']['value'][3] . 'px';
+		$ccb_container_padding_left    = $desktop_spacing_and_positions['container_padding']['value'][3] . 'px';
+		$ccb_container_padding_right   = $desktop_spacing_and_positions['container_padding']['value'][1] . 'px';
 
 		// Spacing & Positions Mobile
-		$mobile_spacing_and_positions = self::$appearance['mobile']['spacing_and_positions']['data'];
-		$ccb_mobile_field_side_indent         = $mobile_spacing_and_positions['field_side_indents']['value'] . 'px';
-		$ccb_mobile_field_spacing             = $mobile_spacing_and_positions['field_spacing']['value'] . 'px';
-		$ccb_mobile_summary_spacing           = $mobile_spacing_and_positions['field_spacing']['value'] / 2 . 'px';
-		$ccb_mobile_summary_group_spacing     = $mobile_spacing_and_positions['field_spacing']['value'] / 2 / 2 . 'px';
-		$ccb_mobile_container_margin_top      = $mobile_spacing_and_positions['container_margin']['value'][0] . 'px';
-		$ccb_mobile_container_margin_bottom   = $mobile_spacing_and_positions['container_margin']['value'][1] . 'px';
-		$ccb_mobile_container_margin_left     = $mobile_spacing_and_positions['container_margin']['value'][2] . 'px';
-		$ccb_mobile_container_margin_right    = $mobile_spacing_and_positions['container_margin']['value'][3] . 'px';
-		$ccb_mobile_container_padding_top     = $mobile_spacing_and_positions['container_padding']['value'][0] . 'px';
-		$ccb_mobile_container_padding_bottom  = $mobile_spacing_and_positions['container_padding']['value'][2] . 'px';
-		$ccb_mobile_container_padding_left    = $mobile_spacing_and_positions['container_padding']['value'][1] . 'px';
-		$ccb_mobile_container_padding_right   = $mobile_spacing_and_positions['container_padding']['value'][3] . 'px';
+		$mobile_spacing_and_positions        = self::$appearance['mobile']['spacing_and_positions']['data'];
+		$ccb_mobile_field_side_indent        = $mobile_spacing_and_positions['field_side_indents']['value'] . 'px';
+		$ccb_mobile_field_spacing            = $mobile_spacing_and_positions['field_spacing']['value'] . 'px';
+		$ccb_mobile_summary_spacing          = $mobile_spacing_and_positions['field_spacing']['value'] / 2 . 'px';
+		$ccb_mobile_summary_group_spacing    = $mobile_spacing_and_positions['field_spacing']['value'] / 2 / 2 . 'px';
+		$ccb_mobile_container_margin_top     = $mobile_spacing_and_positions['container_margin']['value'][0] . 'px';
+		$ccb_mobile_container_margin_bottom  = $mobile_spacing_and_positions['container_margin']['value'][1] . 'px';
+		$ccb_mobile_container_margin_left    = $mobile_spacing_and_positions['container_margin']['value'][2] . 'px';
+		$ccb_mobile_container_margin_right   = $mobile_spacing_and_positions['container_margin']['value'][3] . 'px';
+		$ccb_mobile_container_padding_top    = $mobile_spacing_and_positions['container_padding']['value'][0] . 'px';
+		$ccb_mobile_container_padding_bottom = $mobile_spacing_and_positions['container_padding']['value'][2] . 'px';
+		$ccb_mobile_container_padding_left   = $mobile_spacing_and_positions['container_padding']['value'][1] . 'px';
+		$ccb_mobile_container_padding_right  = $mobile_spacing_and_positions['container_padding']['value'][3] . 'px';
 
 		// custom variables
 		$ccb_fields_bg_color           = $ccb_fields_color;
@@ -291,9 +297,10 @@ class CCBCssLoader {
 			        --ccb-container-shadow-color:    $ccb_container_shadow_color;
 
 			        --ccb-field-button-height:        $ccb_field_button_height;
-			        --ccb-vertical-max-width:         $ccb_vertical_max_width;
-			        --ccb-horizontal-max-width:       $ccb_horizontal_max_width;
-			        --ccb-two-columns-max-width:      $ccb_two_columns_max_width;
+					--ccb-container-max-width:        $ccb_container_max_width;
+					--ccb-summary-width:              $summary_width;
+					--ccb-calculator-width:           $calculator_width;
+					--ccb-summary-position:           $summary_position;
 			        --ccb-mobile-field-button-height: $ccb_mobile_field_button_height;
 
 			        --ccb-field-side-indent:         $ccb_field_side_indent;

@@ -44,6 +44,7 @@ const redirectUrl = computed(() => {
   padding: 27px;
   border: 1px solid var(--ccb-accent-color);
   background: var(--ccb-fields-bg-color-alpha);
+  width: 100%;
 
   &__info {
     padding-right: 20px;

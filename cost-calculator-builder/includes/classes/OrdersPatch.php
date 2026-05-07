@@ -482,7 +482,7 @@ class OrdersPatch {
 
 				if ( empty( $calc_fields ) ) {
 					$calc_fields = get_post_meta( $result['calc_id'], 'stm-fields', true );
-					$calc_fields = self::parse_calc_fields( $calc_fields );
+					$calc_fields = self::parse_calc_fields( ! empty( $calc_fields ) ? $calc_fields : array() );
 				}
 
 				$result['alias'] = self::normalize_alias( $result['alias'] );
@@ -502,7 +502,7 @@ class OrdersPatch {
 		}
 	}
 
-	private static function parse_calc_fields( $calc_fields ) {
+	private static function parse_calc_fields( $calc_fields = array() ) {
 		$fields = array();
 
 		foreach ( $calc_fields as $field ) {

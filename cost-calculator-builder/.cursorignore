@@ -1,0 +1,23 @@
+node_modules/
+
+# Builds / artifacts
+**/*.min.js
+**/*.min.css
+**/*.map
+**/.cache/
+**/.vite/
+
+# Vue3
+frontend/vue3/node_modules/
+frontend/vue3/dist/
+
+**/*.log
+**/*.tmp
+**/*.cache
+
+# PHP
+includes/libs/
+includes/gutenberg-block/
+
+images/
+assets-wporg/

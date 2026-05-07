@@ -1,0 +1,38 @@
+import type { IMultiRangeField } from "@/admin/shared/types/fields.type";
+import { DEFAULT_CURRENCY_SETTINGS } from "./base";
+
+export const multiRangeDefaults = (): Partial<IMultiRangeField> => ({
+  step: 1,
+  unit: 1,
+  label: "",
+  _id: null,
+  minValue: 0,
+  maxValue: 100,
+  description: "",
+  _event: "change",
+  default_left: 0,
+  default_right: 50,
+  additionalCss: "",
+  addToSummary: true,
+  allowRound: false,
+  calculateHidden: false,
+  multiply: false,
+  multipliedTotal: false,
+  unitPosition: "right",
+  unitSymbol: "",
+  type: "Multi Range",
+  additionalStyles: "",
+  allowCurrency: false,
+  fieldCurrency: false,
+  _tag: "cost-multi-range",
+  icon: "ccb-icon-Union-6",
+  alias: "multi_range_field_id_",
+  desc_option: "after",
+  jump: false,
+  scalePoints: "",
+  styles: {
+    style: "default",
+  },
+  width: "100",
+  fieldCurrencySettings: { ...DEFAULT_CURRENCY_SETTINGS },
+});

@@ -1,30 +1,7 @@
 <template>
   <div class="ccb-summary-list">
-    <div class="ccb-summary-list__header">
-      <HeaderTitle
-        :title="settingsStore.getGeneralSettings?.headerTitle"
-        :icon="iconPath"
-      />
-
-      <button
-        v-if="settingsStore.general?.descriptions"
-        class="ccb-summary-list__accordion-btn"
-        @click="toggleBody"
-        @keydown.enter.prevent="toggleBody"
-        @keydown.space.prevent="toggleBody"
-        type="button"
-        :aria-label="
-          translationsStore.getTranslations?.details || 'Toggle details'
-        "
-        :aria-expanded="isBodyVisible"
-        :class="{ rotated: !isBodyVisible }"
-      >
-        <i class="ccb-icon-Path-3485"></i>
-      </button>
-    </div>
     <div
       class="ccb-summary-list__body"
-      :class="{ hidden: !isBodyVisible }"
       v-if="settingsStore.general?.descriptions"
     >
       <div class="ccb-summary-list__titles">
@@ -37,57 +14,63 @@
           'ccb-summary-list__wrapper--disable-option-unit': disableOptionUnit,
         }"
       >
-        <slot></slot>
+        <Transition
+          v-for="summary in summaries"
+          :key="summary.alias"
+          name="fade"
+        >
+          <TotalSummaryItem
+            :item-type="getFieldItemType(summary)"
+            :summary="summary"
+          />
+        </Transition>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from "vue";
-import HeaderTitle from "@/widget/shared/ui/wrappers/components/HeaderTitle.vue";
+import { computed } from "vue";
 import { useSettingsStore } from "@/widget/app/providers/stores/settingsStore.ts";
 import { useTranslationsStore } from "@/widget/app/providers/stores/translationsStore";
+import TotalSummaryItem from "@/widget/shared/ui/total-summary/TotalSummaryItem.vue";
+import { Field } from "@/widget/shared/types/fields";
+
+type Props = {
+  summaries?: Field[];
+};
+
+const props = defineProps<Props>();
 
 const settingsStore = useSettingsStore();
 const translationsStore = useTranslationsStore();
+const summaries = computed(() => props.summaries || []);
 
-const isBodyVisible = ref<boolean>(
-  settingsStore.general?.showDetailsAccordion || false,
-);
+const getFieldItemType = (
+  summary: Field,
+): "summary" | "repeater" | "group" | "total" => {
+  const types: { [key: string]: "repeater" | "group" | "total" } = {
+    repeater: "repeater",
+    group: "group",
+    total: "total",
+  };
+
+  return types[summary.fieldName as keyof typeof types] || "summary";
+};
 
 const disableOptionUnit = computed(() => {
   return !settingsStore.general?.showOptionUnit;
 });
-
-const iconPath = computed(() => {
-  return settingsStore.general?.iconPath;
-});
-
-const toggleBody = () => {
-  isBodyVisible.value = !isBodyVisible.value;
-};
 </script>
 
 <style lang="scss">
 .ccb-summary-list {
-  &__header {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    align-items: center;
-    margin-bottom: 20px;
-  }
-
   &__body {
     display: grid;
     gap: 5px;
     transition: all 0.6s;
     max-height: 2000px;
     overflow: hidden;
-
-    &.hidden {
-      max-height: 0;
-    }
   }
 
   &__wrapper {
@@ -120,28 +103,6 @@ const toggleBody = () => {
     @media only screen and (max-width: 480px) {
       font-size: var(--ccb-mobile-summary-header-size);
       font-weight: var(--ccb-mobile-summary-header-weight);
-    }
-  }
-
-  .ccb-summary-list__accordion-btn {
-    cursor: pointer;
-    width: 20px;
-    height: 20px;
-    display: grid;
-    place-items: center;
-    background: var(--ccb-container-dark-color);
-    color: var(--ccb-text-color);
-    border-radius: 20px;
-    font-size: 8px;
-    border: none;
-    padding: 0;
-    line-height: 1;
-    outline: none;
-
-    transition: transform 0.4s;
-
-    &.rotated {
-      transform: rotate(180deg);
     }
   }
 }

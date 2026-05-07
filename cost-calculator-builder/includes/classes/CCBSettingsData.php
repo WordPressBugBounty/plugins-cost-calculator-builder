@@ -9,6 +9,118 @@ class CCBSettingsData {
 		return array( 'calculator', 'conditions', 'settings', 'customize' );
 	}
 
+	public static function total_summary_settings_data( $general = array() ) {
+		$header_title                     = ! empty( $general['header_title'] ) ? $general['header_title'] : 'Total Summary';
+		$sticky                           = isset( $general['sticky'] ) ? (bool) $general['sticky'] : false;
+		$hide_empty_for_orders_pdf_emails = isset( $general['hide_empty_for_orders_pdf_emails'] ) ? (bool) $general['hide_empty_for_orders_pdf_emails'] : true;
+		$details_state                    = ! isset( $general['show_details_accordion'] ) || true === (bool) $general['show_details_accordion'] ? 'expanded' : 'collapsed';
+		$show_zero_values                 = isset( $general['hide_empty'] ) ? (bool) $general['hide_empty'] : true;
+		$cost_breakdown                   = isset( $general['show_option_unit'] ) ? (bool) $general['show_option_unit'] : true;
+
+		$section_items = array(
+			array(
+				'id'      => 'summary_item_total_summary',
+				'title'   => 'Header',
+				'alias'   => 'total_summary',
+				'sort_id' => 1,
+				'locked'  => true,
+				'static'  => true,
+				'options' => array(
+					'title' => $header_title,
+				),
+			),
+			array(
+				'id'      => 'summary_item_details',
+				'title'   => 'Details',
+				'alias'   => 'details',
+				'sort_id' => 2,
+				'locked'  => true,
+				'static'  => true,
+				'options' => array(
+					'default_state'    => $details_state,
+					'show_zero_values' => $show_zero_values,
+					'cost_breakdown'   => $cost_breakdown,
+				),
+			),
+			array(
+				'id'      => 'summary_item_coupons',
+				'title'   => 'Coupons',
+				'alias'   => 'coupons',
+				'sort_id' => 3,
+				'locked'  => false,
+				'static'  => false,
+				'options' => array(),
+			),
+			array(
+				'id'      => 'summary_item_total',
+				'title'   => 'Total',
+				'alias'   => 'total',
+				'sort_id' => 4,
+				'locked'  => true,
+				'static'  => true,
+				'options' => array(),
+			),
+			array(
+				'id'      => 'summary_item_purchase_button',
+				'title'   => 'Purchase Button',
+				'alias'   => 'purchase_button',
+				'sort_id' => 5,
+				'locked'  => true,
+				'static'  => true,
+				'options' => array(
+					'width' => 100,
+				),
+			),
+			array(
+				'id'      => 'summary_item_pdf_button',
+				'title'   => 'PDF Button',
+				'alias'   => 'pdf_button',
+				'sort_id' => 6,
+				'locked'  => true,
+				'static'  => true,
+				'options' => array(
+					'width' => 100,
+				),
+			),
+			array(
+				'id'      => 'summary_item_share_button',
+				'title'   => 'Share Button',
+				'alias'   => 'share_button',
+				'sort_id' => 7,
+				'locked'  => true,
+				'static'  => true,
+				'options' => array(
+					'width' => 100,
+				),
+			),
+			array(
+				'id'        => 'summary_item_payments',
+				'title'     => 'Payments',
+				'alias'     => 'payments',
+				'sort_id'   => 8,
+				'locked'    => true,
+				'static'    => true,
+				'draggable' => true,
+				'options'   => array(
+					'layout' => 'horizontal',
+				),
+			),
+		);
+
+		return array(
+			'sticky'                            => $sticky,
+			'zero_values_for_orders_pdf_emails' => $hide_empty_for_orders_pdf_emails,
+			'arrangement_sections'              => array(
+				array(
+					'id'      => 'summary_section_1',
+					'title'   => 'Section #1',
+					'sort_id' => 1,
+					'items'   => $section_items,
+				),
+			),
+		);
+	}
+
 	public static function settings_data() {
 		return array(
 			'general'         => array(
@@ -233,6 +345,14 @@ class CCBSettingsData {
 				'hide_pagination_title'   => false,
 				'formulas'                => array(),
 			),
+			'layout'          => array(
+				'max_width'           => 970,
+				'summary_width'       => 40,
+				'calculator_width'    => 60,
+				'summary_position'    => 'right',
+				'header_position'     => 'top',
+				'navigation_position' => 'bottom',
+			),
 			'icon'            => 'fas fa-cogs',
 			'type'            => 'Cost Calculator Settings',
 		);
@@ -427,13 +547,6 @@ class CCBSettingsData {
 				'title' => __( 'Warning messages', 'cost-calculator-builder' ),
 				'slug'  => 'texts',
 				'icon'  => 'ccb-icon-Path-3601',
-			),
-			array(
-				'type'      => 'basic',
-				'title'     => __( 'Confirmation page', 'cost-calculator-builder' ),
-				'slug'      => 'thank-you-page',
-				'icon'      => 'ccb-icon-Check-Circle-new',
-				'component' => 'confirmation-page',
 			),
 			array(
 				'type'  => 'pro',
@@ -659,12 +772,17 @@ class CCBSettingsData {
 		return false;
 	}
 
+	public static function update_calc_single_settings( $calc_id, $data ) {
+		update_option( 'stm_ccb_form_settings_' . sanitize_text_field( $calc_id ), apply_filters( 'stm_ccb_sanitize_array', $data ) );
+	}
+
 	public static function update_calc_global_settings( $data ) {
 		update_option( 'ccb_general_settings', $data );
 	}
 
 	public static function get_calc_global_settings() {
 		$global_settings = get_option( 'ccb_general_settings', '' );
+
 		if ( empty( $global_settings ) ) {
 			$global_settings = self::general_settings_data();
 		}
@@ -721,6 +839,12 @@ class CCBSettingsData {
 				'title' => __( 'Analytics', 'cost-calculator-builder' ),
 				'key'   => 'cost_calculator_analytics',
 			),
+			'whats_new'   => array(
+				'icon'  => 'ccb-icon-Union-18',
+				'link'  => get_admin_url() . 'admin.php?page=cost_calculator_builder_whats_new',
+				'title' => __( "What's New", 'cost-calculator-builder' ),
+				'key'   => 'cost_calculator_builder_whats_new',
+			),
 			'settings'    => array(
 				'icon'  => 'ccb-icon-Union-28',
 				'link'  => get_admin_url() . 'admin.php?page=cost_calculator_builder&tab=settings',
@@ -746,5 +870,62 @@ class CCBSettingsData {
 		}
 
 		return $menu_items;
+	}
+
+	public static function merge_settings_and_total_summary( $settings, $total_summary ) {
+
+		if ( empty( $settings['general'] ) ) {
+			return $settings;
+		}
+
+		$settings['general']['sticky']                            = isset( $total_summary['sticky'] ) ? (bool) $total_summary['sticky'] : false;
+		$settings['general']['hide_empty_for_orders_pdf_emails]'] = isset( $total_summary['zero_values_for_orders_pdf_emails'] ) ? (bool) $total_summary['zero_values_for_orders_pdf_emails'] : false;
+
+		if ( ! empty( $total_summary['arrangement_sections'] ) ) {
+			foreach ( $total_summary['arrangement_sections'] as $section ) {
+				if ( ! empty( $section['items'] ) ) {
+					foreach ( $section['items'] as $item ) {
+						if ( 'total_summary' === $item['alias'] && isset( $item['options']['title'] ) ) {
+							$settings['general']['header_title'] = $item['options']['title'];
+						}
+
+						if ( 'details' === $item['alias'] && ! empty( $item['options'] ) ) {
+							$settings['general']['hide_empty']             = isset( $item['options']['show_zero_values'] ) ? (bool) $item['options']['show_zero_values'] : false;
+							$settings['general']['show_details_accordion'] = isset( $item['options']['default_state'] ) ? 'expanded' === $item['options']['default_state'] : false;
+							$settings['general']['show_option_unit']       = isset( $item['options']['cost_breakdown'] ) ? (bool) $item['options']['cost_breakdown'] : true;
+						}
+					}
+				}
+			}
+		}
+
+		return $settings;
+	}
+
+	public static function normalize_total_summary( $total_summary ) {
+		$sections = array();
+
+		if ( ! empty( $total_summary['arrangement_sections'] ) ) {
+			foreach ( $total_summary['arrangement_sections'] as $key => $section ) {
+				$sections[ $key ] = array(
+					'id'      => $section['id'],
+					'title'   => $section['title'],
+					'sort_id' => $section['sort_id'],
+					'items'   => array(),
+				);
+
+				if ( ! empty( $section['items'] ) ) {
+					foreach ( $section['items'] as $item ) {
+						$sections[ $key ]['items'][] = array(
+							'id'      => $item['id'],
+							'alias'   => $item['alias'],
+							'options' => $item['options'],
+						);
+					}
+				}
+			}
+		}
+
+		return $sections;
 	}
 }

@@ -90,7 +90,6 @@ import RequiredHint from "@/widget/shared/ui/components/Required-hint/RequiredHi
 import { useTranslationsStore } from "@/widget/app/providers/stores/translationsStore";
 import { usePageBreakerStore } from "@/widget/app/providers/stores/pageBreakerStore.ts";
 import { useSettingsStore } from "@/widget/app/providers/stores/settingsStore.ts";
-
 type Props = {
   field: ISingleOptionsField;
 };
@@ -104,9 +103,7 @@ const appearanceStore = useAppearanceStore();
 const conditionsStore = useConditionsStore();
 const translationsStore = useTranslationsStore();
 const pageBreakerStore = usePageBreakerStore();
-
 const isBodyVisible = ref<boolean>(false);
-
 const dropdownWrapper = ref<HTMLElement | null>(null);
 
 const requiredWarningText = computed(() => {
@@ -218,6 +215,7 @@ const additionalClasses = computed(() => {
 }
 .ccb-dropdown {
   position: relative;
+
   &--option-converted {
     font-size: calc(var(--ccb-summary-text-size) - 2px);
     color: var(--ccb-text-color);
@@ -231,16 +229,27 @@ const additionalClasses = computed(() => {
     @include mixins.field;
   }
 
+  &__label {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
   &__input {
     padding-right: 10px;
 
     display: grid;
-    grid-template-columns: 1fr auto;
+    grid-template-columns: minmax(0, 1fr) auto;
     justify-content: space-between;
     cursor: pointer;
+    min-height: var(--ccb-field-button-height);
+    align-items: center;
+    min-width: 0;
+    overflow: hidden;
 
     @media only screen and (max-width: 480px) {
-      padding: 12px var(--ccb-mobile-field-side-indent);
+      padding: 0 var(--ccb-mobile-field-side-indent);
       min-height: var(--ccb-mobile-field-button-height);
     }
   }

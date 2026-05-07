@@ -1,0 +1,2 @@
+import{u as r}from"./appStore-N9CoxghK.js";import{d as a,f as p,t as n,i,x as e,z as o}from"./vendor-vue-runtime-core-BlqoKYKI.js";import{u as c}from"./vendor-vue-reactivity-CheHbvBM.js";const m={key:0,class:"is-pro"},x=a({__name:"ProBadge",setup(l){const s=r();return(u,t)=>c(s).getIsLive?(i(),p("span",m,t[0]||(t[0]=[e("span",{class:"pro-tooltip"},[o(" pro "),e("span",{class:"pro-tooltiptext"},[o("Feature Available "),e("br"),o(" in Pro Version")])],-1)]))):n("",!0)}});export{x as _};
+//# sourceMappingURL=ProBadge.vue_vue_type_style_index_0_lang-ymKdLeYN.js.map

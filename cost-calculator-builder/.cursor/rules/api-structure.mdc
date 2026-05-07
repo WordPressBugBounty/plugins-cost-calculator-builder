@@ -1,0 +1,715 @@
+# API Structure Rules
+
+Rules for working with API between Frontend (Vue3) and Backend (PHP).
+
+## Request Format
+
+### AJAX via WordPress
+
+All requests go through WordPress AJAX mechanism:
+
+```typescript
+// Frontend (TypeScript)
+const response = await axios.post(
+    window.ajaxurl,  // WordPress global: /wp-admin/admin-ajax.php
+    {
+        action: 'calc_action_name',
+        nonce: window.ccb_nonces.action_name,
+        ...params
+    }
+);
+```
+
+### Required Parameters
+
+```typescript
+interface BaseRequest {
+    action: string;   // ✅ REQUIRED - WordPress action name
+    nonce: string;    // ✅ REQUIRED - Security nonce
+    // ... other params
+}
+```
+
+## Response Format
+
+### Success Response
+
+```typescript
+interface SuccessResponse<T> {
+    success: true;
+    data: T;
+    message?: string;
+}
+
+// Example
+{
+    "success": true,
+    "data": {
+        "id": 123,
+        "title": "Calculator"
+    },
+    "message": "Operation successful"
+}
+```
+
+### Error Response
+
+```typescript
+interface ErrorResponse {
+    success: false;
+    data: string | {
+        message: string;
+        errors?: Record<string, string>;
+    };
+}
+
+// Simple error
+{
+    "success": false,
+    "data": "Error message"
+}
+
+// Validation errors
+{
+    "success": false,
+    "data": {
+        "message": "Validation failed",
+        "errors": {
+            "title": "Title is required",
+            "fields": "At least one field required"
+        }
+    }
+}
+```
+
+## TypeScript Types
+
+### Define API Types
+
+```typescript
+// types/api/admin.request.type.ts
+
+// Base request
+export interface IBaseRequest {
+    action: string;
+    nonce: string;
+}
+
+// Get calculator request
+export interface IGetCalculatorRequest extends IBaseRequest {
+    action: 'calc_get_calculator';
+    id: number;
+}
+
+// Save calculator request
+export interface ISaveCalculatorRequest extends IBaseRequest {
+    action: 'calc_save_calculator';
+    id: number;
+    title: string;
+    builder: IPageBreaker[];
+    settings: ISettings;
+    conditions: IConditions;
+}
+
+// Response types
+export interface IApiResponse<T> {
+    success: boolean;
+    data: T;
+    message?: string;
+}
+
+export interface ICalculatorResponse {
+    id: number;
+    title: string;
+    fields: IField[];
+    builder: IPageBreaker[];
+    settings: ISettings;
+    conditions: IConditions;
+}
+```
+
+## API Service Layer
+
+### Create Centralized API Service
+
+```typescript
+// services/api.service.ts
+
+import axios, { AxiosResponse } from 'axios';
+import type { IApiResponse, ICalculatorResponse } from '@/types/api';
+
+class ApiService {
+    private baseURL: string;
+    private nonces: Record<string, string>;
+    
+    constructor() {
+        this.baseURL = (window as any).ajaxurl;
+        this.nonces = (window as any).ccb_nonces || {};
+    }
+    
+    /**
+     * Get calculator data
+     */
+    async getCalculator(id: number): Promise<IApiResponse<ICalculatorResponse>> {
+        try {
+            const response = await axios.post(this.baseURL, {
+                action: 'calc_get_calculator',
+                nonce: this.nonces.get_calculator,
+                id
+            });
+            
+            return response.data;
+        } catch (error) {
+            return this.handleError(error);
+        }
+    }
+    
+    /**
+     * Save calculator
+     */
+    async saveCalculator(data: Partial<ICalculatorResponse>): Promise<IApiResponse<void>> {
+        try {
+            const response = await axios.post(this.baseURL, {
+                action: 'calc_save_calculator',
+                nonce: this.nonces.save_calculator,
+                ...data
+            });
+            
+            return response.data;
+        } catch (error) {
+            return this.handleError(error);
+        }
+    }
+    
+    /**
+     * Error handler
+     */
+    private handleError(error: any): IApiResponse<any> {
+        console.error('API Error:', error);
+        
+        return {
+            success: false,
+            data: error.response?.data?.data || 'Network error',
+            message: error.message
+        };
+    }
+}
+
+export const api = new ApiService();
+```
+
+### Use in Stores
+
+```typescript
+// stores/useCalculatorStore.ts
+
+import { api } from '@/services/api.service';
+
+export const useCalculatorStore = defineStore('calculator', {
+    state: () => ({
+        calculator: null as ICalculator | null,
+        loading: false,
+        error: null as string | null
+    }),
+    
+    actions: {
+        async fetchCalculator(id: number) {
+            this.loading = true;
+            this.error = null;
+            
+            try {
+                const response = await api.getCalculator(id);
+                
+                if (response.success) {
+                    this.calculator = response.data;
+                } else {
+                    this.error = typeof response.data === 'string' 
+                        ? response.data 
+                        : response.data.message;
+                }
+            } catch (error) {
+                this.error = 'Failed to fetch calculator';
+            } finally {
+                this.loading = false;
+            }
+        },
+        
+        async saveCalculator() {
+            if (!this.calculator) return;
+            
+            this.loading = true;
+            this.error = null;
+            
+            try {
+                const response = await api.saveCalculator(this.calculator);
+                
+                if (!response.success) {
+                    this.error = typeof response.data === 'string'
+                        ? response.data
+                        : response.data.message;
+                }
+            } catch (error) {
+                this.error = 'Failed to save calculator';
+            } finally {
+                this.loading = false;
+            }
+        }
+    }
+});
+```
+
+## PHP Backend Handlers
+
+### Handler Template
+
+```php
+<?php
+
+namespace cBuilder\Classes;
+
+class CCBCalculatorsHandler {
+    
+    /**
+     * Get calculator action
+     * 
+     * @return void Sends JSON response
+     */
+    public static function getCalcAction() {
+        // 1. Security check
+        check_ajax_referer('ccb_get_calculator', 'nonce');
+        
+        // 2. Capability check
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(__('Not authorized', 'cost-calculator-builder'));
+            return;
+        }
+        
+        // 3. Validate input
+        $calc_id = isset($_POST['id']) ? absint($_POST['id']) : 0;
+        
+        if (empty($calc_id)) {
+            wp_send_json_error(__('Calculator ID is required', 'cost-calculator-builder'));
+            return;
+        }
+        
+        // 4. Get data
+        $calculator = CCBCalculators::get_calculator_data($calc_id);
+        
+        // 5. Send response
+        if ($calculator) {
+            wp_send_json_success($calculator);
+        } else {
+            wp_send_json_error(__('Calculator not found', 'cost-calculator-builder'));
+        }
+    }
+    
+    /**
+     * Save calculator action
+     * 
+     * @return void Sends JSON response
+     */
+    public static function saveCalcAction() {
+        // Security
+        check_ajax_referer('ccb_save_calculator', 'nonce');
+        
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(__('Not authorized', 'cost-calculator-builder'));
+            return;
+        }
+        
+        // Get data
+        $data = [
+            'id' => isset($_POST['id']) ? absint($_POST['id']) : 0,
+            'title' => isset($_POST['title']) ? sanitize_text_field($_POST['title']) : '',
+            'builder' => isset($_POST['builder']) ? $_POST['builder'] : [],
+            'settings' => isset($_POST['settings']) ? $_POST['settings'] : [],
+            'conditions' => isset($_POST['conditions']) ? $_POST['conditions'] : []
+        ];
+        
+        // Validate
+        $validation = self::validateCalculatorData($data);
+        if (!$validation['valid']) {
+            wp_send_json_error([
+                'message' => __('Validation failed', 'cost-calculator-builder'),
+                'errors' => $validation['errors']
+            ]);
+            return;
+        }
+        
+        // Save
+        $result = ccb_update_calc_new_values($data);
+        
+        if ($result) {
+            wp_send_json_success([
+                'message' => __('Calculator saved', 'cost-calculator-builder')
+            ]);
+        } else {
+            wp_send_json_error(__('Failed to save', 'cost-calculator-builder'));
+        }
+    }
+    
+    /**
+     * Validate calculator data
+     * 
+     * @param array $data Calculator data
+     * @return array Validation result
+     */
+    private static function validateCalculatorData($data) {
+        $errors = [];
+        
+        if (empty($data['id'])) {
+            $errors['id'] = __('Calculator ID is required', 'cost-calculator-builder');
+        }
+        
+        if (empty($data['title'])) {
+            $errors['title'] = __('Title is required', 'cost-calculator-builder');
+        }
+        
+        if (!is_array($data['builder'])) {
+            $errors['builder'] = __('Builder must be an array', 'cost-calculator-builder');
+        }
+        
+        return [
+            'valid' => empty($errors),
+            'errors' => $errors
+        ];
+    }
+}
+```
+
+## Error Handling
+
+### Frontend Error Handling
+
+```typescript
+// In component
+async function saveCalculator() {
+    try {
+        loading.value = true;
+        error.value = null;
+        
+        const response = await api.saveCalculator(calculatorData);
+        
+        if (response.success) {
+            // Success
+            showNotification('Calculator saved successfully');
+        } else {
+            // Backend error
+            error.value = typeof response.data === 'string'
+                ? response.data
+                : response.data.message;
+            
+            // Show validation errors
+            if (response.data.errors) {
+                Object.entries(response.data.errors).forEach(([field, message]) => {
+                    showFieldError(field, message);
+                });
+            }
+        }
+    } catch (err) {
+        // Network error
+        error.value = 'Network error. Please try again.';
+        console.error('Save error:', err);
+    } finally {
+        loading.value = false;
+    }
+}
+```
+
+### Backend Error Handling
+
+```php
+public static function someAction() {
+    try {
+        // Process
+        $result = self::complexOperation();
+        
+        if (!$result) {
+            throw new \Exception('Operation failed');
+        }
+        
+        wp_send_json_success($result);
+        
+    } catch (\Exception $e) {
+        // Log error
+        error_log('CCB Error: ' . $e->getMessage());
+        
+        // Send error response
+        wp_send_json_error([
+            'message' => __('An error occurred', 'cost-calculator-builder'),
+            'debug' => WP_DEBUG ? $e->getMessage() : null
+        ]);
+    }
+}
+```
+
+## Data Transformation
+
+### Serialize/Deserialize
+
+```typescript
+// Frontend to Backend
+function prepareForSave(calculator: ICalculator) {
+    return {
+        id: calculator.id,
+        title: calculator.title,
+        // Complex objects as-is (will be JSON encoded by axios)
+        builder: calculator.builder,
+        settings: calculator.settings,
+        conditions: {
+            nodes_v4: calculator.conditions.nodes,
+            links_v4: calculator.conditions.edges,
+            spaces: calculator.conditions.spaces
+        }
+    };
+}
+
+// Backend to Frontend
+function parseFromAPI(data: any): ICalculator {
+    return {
+        id: data.id,
+        title: data.title,
+        builder: data.builder || [],
+        settings: data.settings || {},
+        conditions: {
+            nodes: data.conditions?.nodes_v4 || [],
+            edges: data.conditions?.links_v4 || [],
+            spaces: data.conditions?.spaces || []
+        }
+    };
+}
+```
+
+## Pagination
+
+### Request
+
+```typescript
+interface IPaginationRequest {
+    page: number;
+    per_page: number;
+    search?: string;
+    orderby?: string;
+    order?: 'asc' | 'desc';
+}
+
+// Usage
+const response = await api.getCalculators({
+    page: 1,
+    per_page: 20,
+    search: 'calculator',
+    orderby: 'date',
+    order: 'desc'
+});
+```
+
+### Response
+
+```typescript
+interface IPaginatedResponse<T> {
+    success: true;
+    data: {
+        items: T[];
+        total: number;
+        page: number;
+        per_page: number;
+        pages: number;
+    };
+}
+```
+
+### Backend Implementation
+
+```php
+public static function getCalcsAction() {
+    check_ajax_referer('ccb_get_calculators', 'nonce');
+    
+    if (!current_user_can('manage_options')) {
+        wp_send_json_error(__('Not authorized', 'cost-calculator-builder'));
+        return;
+    }
+    
+    // Get params
+    $page = isset($_GET['page']) ? absint($_GET['page']) : 1;
+    $per_page = isset($_GET['per_page']) ? absint($_GET['per_page']) : 20;
+    $search = isset($_GET['search']) ? sanitize_text_field($_GET['search']) : '';
+    
+    // Query
+    $args = [
+        'post_type' => 'cost-calc',
+        'post_status' => 'publish',
+        'posts_per_page' => $per_page,
+        'paged' => $page,
+        's' => $search
+    ];
+    
+    $query = new \WP_Query($args);
+    
+    // Format response
+    $calculators = array_map(function($post) {
+        return [
+            'id' => $post->ID,
+            'title' => $post->post_title,
+            'created_at' => $post->post_date
+        ];
+    }, $query->posts);
+    
+    wp_send_json_success([
+        'items' => $calculators,
+        'total' => $query->found_posts,
+        'page' => $page,
+        'per_page' => $per_page,
+        'pages' => $query->max_num_pages
+    ]);
+}
+```
+
+## File Uploads
+
+### Frontend
+
+```typescript
+async function uploadFile(file: File) {
+    const formData = new FormData();
+    formData.append('action', 'calc_upload_file');
+    formData.append('nonce', window.ccb_nonces.upload_file);
+    formData.append('file', file);
+    formData.append('calc_id', String(calculatorId));
+    
+    try {
+        const response = await axios.post(window.ajaxurl, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        });
+        
+        if (response.data.success) {
+            return response.data.data.url;
+        }
+    } catch (error) {
+        console.error('Upload failed:', error);
+        throw error;
+    }
+}
+```
+
+### Backend
+
+```php
+public static function uploadFileAction() {
+    check_ajax_referer('ccb_upload_file', 'nonce');
+    
+    if (!current_user_can('manage_options')) {
+        wp_send_json_error(__('Not authorized', 'cost-calculator-builder'));
+        return;
+    }
+    
+    if (empty($_FILES['file'])) {
+        wp_send_json_error(__('No file uploaded', 'cost-calculator-builder'));
+        return;
+    }
+    
+    // Handle upload
+    require_once(ABSPATH . 'wp-admin/includes/file.php');
+    
+    $uploaded = wp_handle_upload($_FILES['file'], ['test_form' => false]);
+    
+    if (isset($uploaded['error'])) {
+        wp_send_json_error($uploaded['error']);
+        return;
+    }
+    
+    wp_send_json_success([
+        'url' => $uploaded['url'],
+        'file' => $uploaded['file']
+    ]);
+}
+```
+
+## Caching Strategy
+
+### Frontend Caching
+
+```typescript
+// Simple cache in store
+export const useCalculatorStore = defineStore('calculator', {
+    state: () => ({
+        cache: new Map<number, ICalculator>()
+    }),
+    
+    actions: {
+        async fetchCalculator(id: number, force = false) {
+            // Check cache
+            if (!force && this.cache.has(id)) {
+                return this.cache.get(id);
+            }
+            
+            // Fetch from API
+            const response = await api.getCalculator(id);
+            if (response.success) {
+                this.cache.set(id, response.data);
+                return response.data;
+            }
+        },
+        
+        clearCache(id?: number) {
+            if (id) {
+                this.cache.delete(id);
+            } else {
+                this.cache.clear();
+            }
+        }
+    }
+});
+```
+
+### Backend Caching
+
+```php
+public static function getCalculatorData($calc_id) {
+    // Try cache
+    $cache_key = 'calculator_' . $calc_id;
+    $calculator = wp_cache_get($cache_key, 'ccb');
+    
+    if (false !== $calculator) {
+        return $calculator;
+    }
+    
+    // Get from DB
+    $calculator = self::buildCalculatorData($calc_id);
+    
+    // Set cache (1 hour)
+    wp_cache_set($cache_key, $calculator, 'ccb', 3600);
+    
+    return $calculator;
+}
+
+public static function invalidateCache($calc_id) {
+    wp_cache_delete('calculator_' . $calc_id, 'ccb');
+}
+```
+
+## Testing API
+
+### Use Axios Interceptors for Logging
+
+```typescript
+// In development
+if (import.meta.env.DEV) {
+    axios.interceptors.request.use(request => {
+        console.log('API Request:', request);
+        return request;
+    });
+    
+    axios.interceptors.response.use(
+        response => {
+            console.log('API Response:', response.data);
+            return response;
+        },
+        error => {
+            console.error('API Error:', error);
+            return Promise.reject(error);
+        }
+    );
+}
+```

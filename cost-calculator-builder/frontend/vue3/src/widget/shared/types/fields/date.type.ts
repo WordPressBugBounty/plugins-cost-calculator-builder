@@ -23,7 +23,7 @@ export interface IDatePickerField extends IBaseField {
   dayPriceEnabled: boolean;
   autoCloseEnabled: boolean;
   calculateUnselectableDays?: boolean;
-  range: boolean;
+  range: boolean | string;
   selectedDate?: Date | Date[];
   extraDisplayView?: string[];
 }

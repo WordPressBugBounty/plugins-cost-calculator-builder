@@ -1,0 +1,252 @@
+# Cost Calculator Builder - Cursor AI Rules
+
+This is a WordPress plugin: **Cost Calculator Builder** (Free version v3).
+
+## 🏗️ Project Architecture
+
+**Hybrid Architecture** - Migrating from Vue2 + jQuery to Vue3 + TypeScript:
+- **Frontend**: `frontend/vue3/src/admin/` - Vue3 + TypeScript + Pinia + Vue Flow
+- **Backend**: `includes/classes/` - PHP 7.4+ with WordPress hooks and namespaces
+- **Database**: WordPress tables (wp_posts, wp_postmeta, wp_options) + custom tables
+- **Build**: Webpack + Laravel Mix
+
+## 📋 Core Concepts
+
+### Calculator Structure (3 levels)
+1. **Calculator** (Post Type: `cost-calc`)
+   - Pages (Page Breaks)
+     - Sections
+       - Fields (Range, Checkbox, Toggle, etc.)
+
+### Data Storage
+- **wp_posts**: Calculator as post (`post_type = 'cost-calc'`)
+- **wp_postmeta**: Fields (`stm-fields`), Conditions (`stm-conditions`), Formula (`stm-formula`)
+- **wp_options**: Settings per calculator (`stm_ccb_form_settings_{id}`)
+- **Custom tables**: Orders, Forms, Promocodes, Analytics
+
+### State Management (Pinia Stores)
+- `useBuilderStore` - Fields, Pages, Sections management
+- `useConditionsStore` - Conditions Editor (Vue Flow based)
+- `useCalculatorStore` - Calculator data, Settings, Forms
+
+## 🎨 Frontend Rules (Vue3 + TypeScript)
+
+### Mandatory Patterns
+```typescript
+// ✅ ALWAYS use Composition API with script setup
+<script setup lang="ts">
+import { ref, computed } from 'vue';
+
+// ✅ ALWAYS type everything
+const count = ref<number>(0);
+const items = ref<IField[]>([]);
+
+// ✅ ALWAYS use Pinia stores (NOT Vuex)
+import { useBuilderStore } from '@/stores/useBuilderStore';
+import { storeToRefs } from 'pinia';
+
+const builderStore = useBuilderStore();
+const { rawFields } = storeToRefs(builderStore); // Maintains reactivity
+</script>
+```
+
+### Naming Conventions
+- **Components**: PascalCase (`CalculatorField.vue`)
+- **Stores**: camelCase with `use` prefix (`useBuilderStore.ts`)
+- **Types**: Interface with `I` prefix (`IField`, `ICalculator`)
+- **Variables/Functions**: camelCase
+
+### Import Order
+1. Vue & core libraries
+2. External libraries
+3. Stores
+4. Types
+5. Components
+6. Utils
+7. Styles
+
+**Full Frontend Rules**: See `.cursor/rules/vue3-frontend.md`
+
+## 🔧 Backend Rules (PHP)
+
+### Mandatory Patterns
+```php
+// ✅ ALWAYS use CCB prefix for classes
+namespace cBuilder\Classes;
+
+class CCBCalculators {
+    // ✅ ALWAYS specify visibility
+    public function getCalculatorData($id) {}
+    
+    // ✅ ALWAYS verify nonce and capabilities in AJAX
+    public static function saveCalcAction() {
+        check_ajax_referer('ccb_save_calculator', 'nonce');
+        
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error('Not authorized');
+        }
+        
+        // ✅ ALWAYS sanitize input
+        $calc_id = absint($_POST['id']);
+        $title = sanitize_text_field($_POST['title']);
+        
+        // ✅ ALWAYS escape output
+        echo esc_html($title);
+        
+        wp_send_json_success($data);
+    }
+}
+```
+
+### Security (CRITICAL)
+- **Nonce**: `check_ajax_referer()` in every AJAX handler
+- **Capability**: `current_user_can()` check
+- **Sanitization**: `sanitize_text_field()`, `absint()`, `wp_kses_post()`
+- **Escaping**: `esc_html()`, `esc_attr()`, `esc_url()`
+- **SQL**: ALWAYS use `$wpdb->prepare()`
+
+**Full PHP Rules**: See `.cursor/rules/php-backend.md`
+
+## 🔄 API Communication
+
+### Pattern
+```typescript
+// Frontend (TypeScript)
+const response = await axios.post(ajaxurl, {
+    action: 'calc_get_calculator',
+    nonce: window.ccb_nonces.get_calculator,
+    id: calculatorId
+});
+```
+
+```php
+// Backend (PHP)
+add_action('wp_ajax_calc_get_calculator', [CCBCalculatorsHandler::class, 'getCalcAction']);
+
+public static function getCalcAction() {
+    check_ajax_referer('ccb_get_calculator', 'nonce');
+    
+    if (!current_user_can('manage_options')) {
+        wp_send_json_error('Not authorized');
+    }
+    
+    $calc_id = absint($_POST['id']);
+    $data = self::getCalculatorData($calc_id);
+    
+    wp_send_json_success($data);
+}
+```
+
+**Full API Rules**: See `.cursor/rules/api-structure.md`
+
+## 🎨 SCSS/CSS Rules (BEM + CCB Prefix)
+
+### Mandatory Patterns
+```scss
+// ✅ ALWAYS use ccb- prefix with BEM naming
+.ccb-calculator {}                    // Block
+.ccb-calculator__field {}            // Element
+.ccb-calculator--dark {}             // Modifier
+.ccb-calculator__field--disabled {}  // Element + Modifier
+
+// ✅ ALWAYS scope styles to avoid theme conflicts
+.ccb-calculator-wrapper {
+    .ccb-field {
+        // Your styles
+    }
+}
+
+// ✅ Override theme styles with explicit classes
+input.ccb-input {}     // NOT just input {}
+button.ccb-button {}   // NOT just button {}
+a.ccb-link {}         // NOT just a {}
+```
+
+### Rules
+- **Prefix**: ALL classes with `ccb-`
+- **BEM**: Use `.ccb-block__element--modifier` pattern
+- **Specificity**: Avoid deep nesting (max 2 levels)
+- **Scope**: Always wrap in plugin root to avoid theme conflicts
+- **Overrides**: Use `.ccb-class` on elements, not global selectors
+
+**Full SCSS Rules**: See `.cursor/rules/scss-bem-ccb-prefix.mdc`
+
+## 📚 Detailed Documentation
+
+When you need detailed information, reference these files:
+
+### Architecture & Structure
+- **`.cursor/docs/architecture.md`** - Complete system architecture, tech stack, file structure
+- **`.cursor/PROJECT-STATUS.md`** - Current project status, migration progress, technical debt
+
+### Data & API
+- **`.cursor/docs/database-schema.md`** - All tables, schemas, models, query examples
+- **`.cursor/docs/api-endpoints.md`** - All API endpoints with request/response examples
+
+### Features & Systems
+- **`.cursor/docs/field-types.md`** - All calculator field types, options, implementation guide
+- **`.cursor/docs/conditions-system.md`** - Conditions Editor (Vue Flow), nodes, edges, execution
+
+### Migration & Guidelines
+- **`.cursor/docs/vue2-to-vue3-migration.md`** - Migration guide, patterns, differences
+
+## 🎯 Skills & Tutorials
+
+For step-by-step guides:
+
+### Adding Features
+- **`.cursor/skills/add-calculator-field.md`** - Complete guide: Add new field type (Vue + TS + PHP)
+
+### Debugging
+- **`.cursor/skills/debug-store.md`** - Debug Pinia stores with Vue DevTools, logging, snapshots
+- **`.cursor/skills/work-with-conditions.md`** - Work with Conditions system (Vue Flow)
+
+## 🚨 Common Pitfalls
+
+### Vue3 Frontend
+- ❌ **Don't** destructure store state directly: `const { field } = store` (loses reactivity)
+- ✅ **Do** use `storeToRefs`: `const { field } = storeToRefs(store)`
+- ❌ **Don't** use Options API: `export default { data() {} }`
+- ✅ **Do** use Composition API: `<script setup lang="ts">`
+
+### PHP Backend
+- ❌ **Don't** skip nonce verification in AJAX handlers
+- ❌ **Don't** use raw SQL queries: `$wpdb->query("SELECT * WHERE id = $id")`
+- ✅ **Do** use prepared statements: `$wpdb->prepare("SELECT * WHERE id = %d", $id)`
+
+### API Communication
+- ❌ **Don't** send data without nonce
+- ❌ **Don't** trust user input without sanitization
+- ✅ **Do** validate and sanitize on both frontend and backend
+
+## 🌐 Language
+
+- **ALL code, comments, and documentation**: English
+- **User communication with AI**: Russian is OK, but generated code must be in English
+
+## 🔍 When to Reference Documentation
+
+- **Adding new field?** → Read `.cursor/skills/add-calculator-field.md`
+- **Working with conditions?** → Read `.cursor/skills/work-with-conditions.md`
+- **Store debugging issues?** → Read `.cursor/skills/debug-store.md`
+- **Need API endpoint info?** → Read `.cursor/docs/api-endpoints.md`
+- **Database queries?** → Read `.cursor/docs/database-schema.md`
+- **Understanding architecture?** → Read `.cursor/docs/architecture.md`
+
+## ✅ Testing Checklist
+
+Before considering any feature complete:
+1. Test in Builder (admin interface)
+2. Test in Frontend (calculator display)
+3. Check Vue DevTools for reactivity
+4. Verify database saves correctly
+5. Check network tab for API calls
+6. Test after page reload (persistence)
+7. Check console for errors
+8. Validate TypeScript types
+9. Check PHP error logs
+10. Test with WordPress debug mode on
+
+---
+
+**Note**: This file provides quick reference. For comprehensive details, always reference the specific documentation files in `.cursor/docs/`, `.cursor/rules/`, and `.cursor/skills/`.

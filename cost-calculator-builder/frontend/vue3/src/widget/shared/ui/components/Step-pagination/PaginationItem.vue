@@ -1,5 +1,8 @@
 <template>
-  <div class="ccb-pagination" :class="pageBreakerSettings?.paginationType">
+  <div
+    class="ccb-pagination"
+    :class="[pageBreakerSettings?.paginationType, headerPosition]"
+  >
     <component
       :is="currentComponents"
       :pages="getPages"
@@ -22,6 +25,10 @@ const pageBreakerSettings = settingsStore.getPageBreakerSettings;
 const appStore = useAppStore();
 const fieldsStore = useFieldsStore();
 const translationsStore = useTranslationsStore();
+
+const headerPosition = computed(() => {
+  return settingsStore.getLayoutSettings?.headerPosition || "top";
+});
 
 const activeStepIndex = computed(() => {
   return fieldsStore.getActivePageIndex + 1;
@@ -80,7 +87,24 @@ const getPages = computed(() => {
 .ccb-pagination {
   position: relative;
   overflow-x: auto;
-  background-color: var(--ccb-container-color);
+  border: var(--ccb-container-border) var(--ccb-container-border-style)
+    var(--ccb-container-border-color);
+  border-radius: var(--ccb-container-border-radius);
+  box-shadow: var(--ccb-container-shadow-x-offset)
+    var(--ccb-container-shadow-y-offset) var(--ccb-container-shadow-blur)
+    var(--ccb-container-shadow-color);
+  margin: var(--ccb-container-margin-top) var(--ccb-container-margin-right)
+    var(--ccb-container-margin-bottom) var(--ccb-container-margin-left);
+  background-color: var(--ccb-container-converted);
+  backdrop-filter: var(--ccb-container-invert);
+
+  &.hidden {
+    display: none !important;
+  }
+
+  &.bottom {
+    order: 2;
+  }
 
   .ccb-calc-title {
     position: absolute;
@@ -142,9 +166,6 @@ const getPages = computed(() => {
       max-width: 140px;
     }
   }
-
-  padding: 20px;
-  border-bottom: 1px solid var(--ccb-fields-bg-color);
 
   .tab__title {
     color: var(--ccb-text-color);

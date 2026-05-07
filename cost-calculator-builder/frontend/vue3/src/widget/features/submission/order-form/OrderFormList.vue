@@ -1,6 +1,7 @@
 <template>
   <div
     class="ccb-order-form"
+    :style="orderFormStyle"
     :class="{
       'ccb-order-form-legacy': !settings.getFormSettings?.contactFormId,
       'is-live-form': !orderFormStore.getNextButtonStatus && isLive,
@@ -8,9 +9,13 @@
     }"
   >
     <ProBadge />
-
+    <template v-if="appStore.getSubmissionLoader">
+      <div class="ccb-order-form__loader ccb-col-12">
+        <Loader type="submit" />
+      </div>
+    </template>
     <template
-      v-if="
+      v-else-if="
         orderFormStore.getNextButtonStatus && getPaymentType !== 'woocommerce'
       "
     >
@@ -25,7 +30,13 @@
     </template>
     <template v-else>
       <template v-if="showSendData && getPaymentType !== 'woocommerce'">
-        <template v-if="settings.getFormSettings?.contactFormId">
+        <template
+          v-if="
+            settings.getFormSettings?.contactFormId &&
+            settings.getFormSettings?.formType === 'contact-form' &&
+            settings.getFormSettings?.accessEmail
+          "
+        >
           <div
             class="ccb-contact-form7"
             :class="{
@@ -88,18 +99,20 @@ import OrderFormItem from "./OrderFormItem.vue";
 import Button from "@/widget/shared/ui/components/Button/Button.vue";
 import TermsAndConditions from "@/widget/features/submission/order-form/terms-and-conditions/TermsAndConditions.vue";
 import ProBadge from "@/widget/shared/ui/components/Pro-badge/ProBadge.vue";
+import Loader from "@/widget/shared/ui/components/Loader/Loader.vue";
 import { IRecaptcha } from "@/widget/shared/types/settings/settings.type";
 import { useNotificationsStore } from "@/widget/app/providers/stores/notificationsStore.ts";
 
 type Props = {
   payment?: boolean;
   skipCreateOrder?: boolean;
+  options?: any;
 };
 
 const captchaIntegrated = ref(false);
 
 const props = defineProps<Props>();
-const { payment } = toRefs(props);
+const { payment, options } = toRefs(props);
 
 const { validateOrderFormSettings } = useOrderForm();
 const orderFormStore = useOrderFormStore();
@@ -110,7 +123,9 @@ const myCf7Root = ref<HTMLElement | null>(null);
 const allowContactForm = ref<boolean>(false);
 const fieldsStore = useFieldsStore();
 
-const orderOpenStatus = ref<boolean>(false);
+const orderOpenStatus = computed((): boolean => {
+  return !orderFormStore.getNextButtonStatus;
+});
 
 const formFields = computed(() => {
   return orderFormStore.getFormFields;
@@ -132,7 +147,10 @@ const getSubmitOrderText = computed((): string => {
     return "Add to cart";
   }
 
-  if (summaryDisplay?.enable) {
+  if (
+    summaryDisplay?.enable &&
+    summaryDisplay?.actionAfterSubmit !== "send_to_email"
+  ) {
     return summaryDisplay.submitBtnText || "View Summary";
   }
 
@@ -244,7 +262,11 @@ const getPaymentType = computed((): string => {
 });
 
 const showButton = computed((): boolean => {
-  if (settings.getFormSettings?.contactFormId) {
+  if (
+    settings.getFormSettings?.accessEmail &&
+    settings.getFormSettings?.formType === "contact-form" &&
+    settings.getFormSettings?.contactFormId
+  ) {
     return false;
   }
 
@@ -279,8 +301,6 @@ const nextButton = () => {
     orderFormStore.updateNextButtonStatus(false);
     orderFormStore.updateNextButton(true);
     allowContactForm.value = true;
-
-    orderOpenStatus.value = true;
 
     setTimeout(() => {
       initContactFormActions();
@@ -500,6 +520,45 @@ const getNextButtonStatus = computed((): boolean => {
   return orderFormStore.getNextButtonStatus;
 });
 
+const buttonWidth = computed((): string | null => {
+  const width = options.value?.width;
+
+  if (width === undefined || width === null || width === "") {
+    return null;
+  }
+
+  if (typeof width === "number") {
+    return `${width}%`;
+  }
+
+  const normalizedWidth = String(width).trim();
+  if (/^\d+(\.\d+)?$/.test(normalizedWidth)) {
+    return `${normalizedWidth}%`;
+  }
+
+  return normalizedWidth;
+});
+
+const orderFormStyle = computed((): Record<string, string> => {
+  const isCollapsedToOpenButton =
+    getNextButtonStatus.value && getPaymentType.value !== "woocommerce";
+
+  if (!isCollapsedToOpenButton) {
+    return {
+      width: "100%",
+    };
+  }
+
+  if (!buttonWidth.value) {
+    return {};
+  }
+
+  return {
+    width: buttonWidth.value,
+    maxWidth: "100%",
+  };
+});
+
 watch(getNextButtonStatus, (newVal) => {
   const captcha = settings.getRecaptchaSettings;
   if (!newVal && captcha?.enable && captcha?.type === "v2") {
@@ -512,6 +571,11 @@ watch(getNextButtonStatus, (newVal) => {
 });
 
 onMounted(() => {
+  const summaryDisplay = settings.getFormSettings?.summaryDisplay;
+  if (summaryDisplay?.enable) {
+    orderFormStore.updateNextButtonStatus(false);
+  }
+
   const captcha = settings.getRecaptchaSettings;
   if (captcha?.enable && captcha?.type === "v3" && !captchaIntegrated.value) {
     setTimeout(() => {
@@ -523,9 +587,19 @@ onMounted(() => {
 
 <style lang="scss">
 .ccb-order-form {
+  width: 100%;
   .is-pro {
     display: none;
   }
+
+  &.ccb-order-form-legacy {
+    &.order-open {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 10px;
+    }
+  }
+
   &.is-live-form {
     position: relative;
     margin-top: 30px;
@@ -555,16 +629,23 @@ onMounted(() => {
       text-align: center;
     }
   }
+  &__loader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 20px 0;
+  }
+
   &__submit {
     display: flex;
+    width: 100%;
     button {
       width: 100%;
     }
   }
 
   &.ccb-order-form-legacy {
-    display: grid;
-    grid-template-columns: repeat(12, 1fr);
     gap: 20px;
 
     .ccb-col-2 {

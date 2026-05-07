@@ -426,7 +426,7 @@ import { ITableSettings } from "@/orders/shared/types/table.settings";
 import { arraysEqualAsSets } from "@/orders/shared/utils/array-compare.utils";
 import { IStatuses } from "@/orders/shared/types/orders.type";
 import EmptyOrders from "@/orders/shared/ui/common/EmptyOrders.vue";
-import { debounce } from "@/orders/shared/utils/useDebounce";
+import { debounce } from "@/common/shared/utils/useDebounce";
 import { ICalculatorFields } from "@/orders/shared/types/orders.type";
 import { currencyConvertor } from "@/orders/shared/utils/useCurrencyConvertor";
 import { useOrdersTranslationsStore } from "@/orders/app/providers/stores/useTranslations";

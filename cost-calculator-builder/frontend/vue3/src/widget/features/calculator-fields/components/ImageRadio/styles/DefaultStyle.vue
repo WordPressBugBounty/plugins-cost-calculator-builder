@@ -11,7 +11,10 @@
       }"
     >
       <div class="ccb-radio-image__box">
-        <img :src="option.src" :alt="'radio-image-field-' + idx" />
+        <img
+          :src="option.src || placeholderImg"
+          :alt="'radio-image-field-' + idx"
+        />
       </div>
       <div class="ccb-radio-image__info">
         <div class="ccb-radio-image__title-box">
@@ -39,6 +42,7 @@ import { IOptions, ISingleOptionsField } from "@/widget/shared/types/fields";
 import { toRefs } from "vue";
 import { useSingleOptionChildShared } from "@/widget/actions/fields/composable/useSingleOptionChildShared.ts";
 import { useTranslationsStore } from "@/widget/app/providers/stores/translationsStore";
+import placeholderImg from "@/images/placeholder.png";
 
 const emit = defineEmits<{
   (event: "update", option: IOptions): void;

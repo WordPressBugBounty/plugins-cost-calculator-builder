@@ -1,0 +1,2 @@
+import{_ as c}from"./vendor-vue3-html2pdf-DhFce1X6.js";import{f as o,i as t,x as s}from"./vendor-vue-runtime-core-BlqoKYKI.js";const r={},n={class:"ccb-chart-skeleton"};function a(i,e){return t(),o("div",n,e[0]||(e[0]=[s("div",{class:"ccb-line-shimmer"},[s("div",{class:"ccb-shimmer-line"})],-1)]))}const m=c(r,[["render",a],["__scopeId","data-v-f3763b38"]]);export{m as S};
+//# sourceMappingURL=Skeleton-DRDuISXv.js.map

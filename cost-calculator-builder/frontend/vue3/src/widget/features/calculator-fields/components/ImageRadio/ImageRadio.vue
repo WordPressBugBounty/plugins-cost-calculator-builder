@@ -142,7 +142,6 @@ const additionalClasses = computed(() => {
       .ccb-default-image-radio-withicon {
         .ccb-radio-image__title-box {
           .ccb-radio-image__label {
-            font-size: 12px !important;
           }
         }
         .ccb-radio-image {
@@ -169,7 +168,6 @@ const additionalClasses = computed(() => {
           .ccb-radio-image__title-box {
             row-gap: 6px;
             .ccb-radio-image__label {
-              font-size: 11px !important;
             }
             .ccb-radio-image__price {
               font-size: 10px;
@@ -182,7 +180,6 @@ const additionalClasses = computed(() => {
       .ccb-default-image-radio-withicon {
         .ccb-radio-image__title-box {
           .ccb-radio-image__label {
-            font-size: 12px !important;
           }
         }
         .ccb-radio-image {
@@ -209,7 +206,6 @@ const additionalClasses = computed(() => {
           .ccb-radio-image__title-box {
             row-gap: 4px;
             .ccb-radio-image__label {
-              font-size: 10px !important;
             }
             .ccb-radio-image__price {
               font-size: 9px;
@@ -240,10 +236,8 @@ const additionalClasses = computed(() => {
             .ccb-radio-image__title-box {
               row-gap: 6px;
               .ccb-radio-image__label {
-                font-size: calc(var(--ccb-fields-button-size) - 3px) !important;
               }
               .ccb-radio-image__price {
-                font-size: calc(var(--ccb-summary-text-size) - 4px) !important;
               }
             }
           }
@@ -260,7 +254,6 @@ const additionalClasses = computed(() => {
           .ccb-radio-image__info {
             .ccb-radio-image__title-box {
               .ccb-radio-image__label {
-                font-size: calc(var(--ccb-fields-button-size) - 3px) !important;
               }
             }
           }
@@ -312,10 +305,8 @@ const additionalClasses = computed(() => {
             .ccb-radio-image__title-box {
               row-gap: 6px;
               .ccb-radio-image__label {
-                font-size: calc(var(--ccb-fields-button-size) - 3px) !important;
               }
               .ccb-radio-image__price {
-                font-size: calc(var(--ccb-summary-text-size) - 4px) !important;
               }
             }
           }
@@ -332,7 +323,6 @@ const additionalClasses = computed(() => {
           .ccb-radio-image__info {
             .ccb-radio-image__title-box {
               .ccb-radio-image__label {
-                font-size: calc(var(--ccb-fields-button-size) - 3px) !important;
               }
             }
           }
@@ -398,10 +388,8 @@ const additionalClasses = computed(() => {
             .ccb-radio-image__title-box {
               row-gap: 6px;
               .ccb-radio-image__label {
-                font-size: calc(var(--ccb-fields-button-size) - 3px) !important;
               }
               .ccb-radio-image__price {
-                font-size: calc(var(--ccb-summary-text-size) - 4px) !important;
               }
             }
           }
@@ -418,7 +406,6 @@ const additionalClasses = computed(() => {
           .ccb-radio-image__info {
             .ccb-radio-image__title-box {
               .ccb-radio-image__label {
-                font-size: calc(var(--ccb-fields-button-size) - 3px) !important;
               }
             }
           }
@@ -504,21 +491,12 @@ const additionalClasses = computed(() => {
         }
         .ccb-radio-image__title-box {
           .ccb-radio-image__label {
-            font-size: calc(var(--ccb-fields-button-size) - 2px) !important;
           }
           .ccb-radio-image__price {
-            font-size: calc(var(--ccb-summary-text-size) - 2px) !important;
           }
         }
       }
     }
-  }
-}
-.ccb-radio-image__label {
-  font-size: var(--ccb-fields-button-size) !important;
-
-  @media only screen and (max-width: 480px) {
-    font-size: var(--ccb-mobile-fields-button-size) !important;
   }
 }
 </style>

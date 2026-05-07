@@ -1,0 +1,1 @@
+.ccb-horizontal-layout{display:flex;flex-direction:column;gap:20px;flex-wrap:wrap}@media (max-width: 1024px){.ccb-horizontal-layout{grid-template-columns:1fr}}.ccb-horizontal-layout.summary-last-page{grid-template-columns:1fr}

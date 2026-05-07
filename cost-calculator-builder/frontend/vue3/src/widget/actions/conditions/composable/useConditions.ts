@@ -354,9 +354,6 @@ function applyConditionForField(fieldAlias: string): void {
             "set_date",
           );
           break;
-        case "set_time":
-          targetField = setTime(conditionResult, targetField, condition);
-          break;
         case "set_period":
           targetField = setPeriod(conditionResult, targetField, condition);
           break;
@@ -367,6 +364,9 @@ function applyConditionForField(fieldAlias: string): void {
             condition,
             "set_period",
           );
+          break;
+        case "set_time":
+          targetField = setTime(conditionResult, targetField, condition);
           break;
         case "set_time_and_disable":
           targetField = setTime(conditionResult, targetField, condition, true);
@@ -403,9 +403,13 @@ function applyConditionForField(fieldAlias: string): void {
         );
     } else {
       if (
-        !["datePicker", "validated_form", "timePicker", "text"].includes(
-          targetField.fieldName,
-        )
+        ![
+          "datePicker",
+          "validated_form",
+          "timePicker",
+          "text",
+          "geolocation",
+        ].includes(targetField.fieldName)
       ) {
         targetField.displayValue = singleFieldMixins.getCommonFieldDisplayView(
           targetField,
@@ -432,22 +436,14 @@ function setLocation(
       const data = targetField.multiplyLocations[Number(pointIndex)];
       targetField.selectedPoint = data;
 
-      if (disable) {
-        targetField.disabled = true;
-      }
-
       callbackStore.runCallback("updateGeolocation", targetField.alias);
     }
-  } else {
-    targetField.disabled = false;
-    if ("selectedPoint" in targetField) {
-      targetField.selectedPoint = {
-        addressName: "",
-        addressLink: "",
-        latitude: 0,
-        longitude: 0,
-      };
+
+    if (disable) {
+      targetField.disabled = true;
     }
+  } else if (disable) {
+    targetField.disabled = false;
   }
 
   setTimeout(() => {
@@ -589,6 +585,7 @@ function disable(
 
     removeFromConditionHistory(targetCondition);
     addConditionHistory(targetCondition);
+
     if (targetCondition.action === "disable_option") {
       const disableOptions: number[] = [];
       const optionsFromCondition: string[] =
@@ -885,7 +882,7 @@ function setTime(
     if (disable) {
       targetField.disabled = true;
     }
-  } else {
+  } else if (disable) {
     targetField.disabled = false;
   }
 
@@ -1112,7 +1109,7 @@ function fieldMinValue(field: Field): number {
   return 0;
 }
 
-function prepareSetValue(field: Field, value: number) {
+export function prepareSetValue(field: Field, value: number) {
   const minValue: number = fieldMinValue(field);
   if (minValue && minValue > value) {
     return minValue;

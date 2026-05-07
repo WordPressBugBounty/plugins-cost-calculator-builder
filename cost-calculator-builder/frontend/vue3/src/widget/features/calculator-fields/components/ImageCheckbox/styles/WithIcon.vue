@@ -9,7 +9,11 @@
           'ccb-option-disabled': field.disableOptions.includes(idx),
         }"
         ><div class="ccb-checkbox-image__box">
-          <img :src="option.icon" alt="field-img" :style="getImageStyles" />
+          <img
+            :src="option.icon || placeholderImg"
+            alt="field-img"
+            :style="getImageStyles"
+          />
         </div>
         <div class="ccb-checkbox-image__info">
           <div class="ccb-checkbox-image__title-box">
@@ -37,7 +41,7 @@
 import { toRefs, computed } from "vue";
 import { IMultiOptionsField } from "@/widget/shared/types/fields";
 import { useMultiOptionChildShared } from "@/widget/actions/fields/composable/useMultiOptionChildShared.ts";
-
+import placeholderImg from "@/images/placeholder.png";
 const emit = defineEmits<{
   (event: "update", value: string): void;
 }>();

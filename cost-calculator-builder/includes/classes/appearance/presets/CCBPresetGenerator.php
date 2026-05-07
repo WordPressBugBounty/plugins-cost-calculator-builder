@@ -206,12 +206,25 @@ class CCBPresetGenerator {
 	 */
 	public static function get_static_preset_from_db( $filter = false ) {
 		$presets = get_option( 'ccb_appearance_presets', array() );
+		$changed = false;
+
+		// Remove legacy custom preset from DB permanently.
+		if ( isset( $presets['custom'] ) ) {
+			unset( $presets['custom'] );
+			$changed = true;
+		}
+
 		if ( $filter ) {
 			foreach ( $presets as $key => $value ) {
 				if ( is_numeric( $key ) ) {
 					unset( $presets[ $key ] );
+					$changed = true;
 				}
 			}
+		}
+
+		if ( $changed ) {
+			update_option( 'ccb_appearance_presets', $presets );
 		}
 
 		return $presets;
@@ -234,10 +247,29 @@ class CCBPresetGenerator {
 			$desktop_sizes      = $desktop['elements_sizes']['data'];
 			$desktop_spacing    = $desktop['spacing_and_positions']['data'];
 			$desktop_others     = $desktop['others']['data'];
+			$container_value    = $desktop_colors['container']['value'] ?? array();
+
+			if ( ! is_array( $container_value ) ) {
+				$container_value = self::get_container_default();
+			}
+
+			if ( isset( $desktop_colors['container']['data']['color']['value'] ) ) {
+				$container_value['color'] = $desktop_colors['container']['data']['color']['value'];
+			}
+
+			if ( isset( $desktop_colors['container']['data']['blur']['value'] ) ) {
+				$container_value['blur'] = $desktop_colors['container']['data']['blur']['value'];
+			}
+
+			if ( isset( $desktop_colors['container']['data']['opacity']['value'] ) ) {
+				$container_value['opacity'] = $desktop_colors['container']['data']['opacity']['value'];
+			}
+
+			$container_value = wp_parse_args( $container_value, self::get_container_default() );
 
 			$desktop_data = array(
 				'colors'                => array(
-					'container'       => $desktop_colors['container']['value'],
+					'container'       => $container_value,
 					'primary_color'   => $desktop_colors['primary_color']['value'],
 					'accent_color'    => $desktop_colors['accent_color']['value'],
 					'secondary_color' => $desktop_colors['secondary_color']['value'],

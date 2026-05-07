@@ -1,25 +1,24 @@
 <template>
-  <div class="ccb-block">
-    <div class="ccb-section ccb-section-subtotal">
-      <div class="ccb-subtotal-wrapper">
-        <slot />
-      </div>
-    </div>
-    <slot name="notifications" />
+  <div class="ccb-subtotal-wrapper" v-bind="attrs">
+    <slot />
   </div>
+  <slot name="notifications" />
 </template>
 
-<style scoped lang="scss">
-@use "@/styles/widget/_mixins.scss" as mixins;
+<script setup lang="ts">
+import { useAttrs } from "vue";
 
+defineOptions({
+  inheritAttrs: false,
+});
+
+const attrs = useAttrs();
+</script>
+
+<style scoped lang="scss">
 .ccb-subtotal-wrapper {
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
-
-.ccb-section {
-  @include mixins.container;
-}
 </style>
-<script setup lang="ts"></script>

@@ -83,7 +83,8 @@ const showTitle = computed(() => field.value.showName);
 
 <style lang="scss" scoped>
 .ccb-section.number {
-  padding: 20px;
+  padding: var(--ccb-container-padding-top) var(--ccb-container-padding-right)
+    var(--ccb-container-padding-bottom) var(--ccb-container-padding-left);
   background-color: var(--ccb-container-converted);
   backdrop-filter: var(--ccb-container-invert);
   -webkit-backdrop-filter: var(--ccb-container-invert);
@@ -95,6 +96,8 @@ const showTitle = computed(() => field.value.showName);
   border: var(--ccb-container-border) var(--ccb-container-border-style)
     var(--ccb-container-border-color);
   border-radius: var(--ccb-container-border-radius);
+  margin: var(--ccb-container-margin-top) var(--ccb-container-margin-right)
+    var(--ccb-container-margin-bottom) var(--ccb-container-margin-left);
 
   .ccb-section__header-left {
     position: relative;

@@ -139,7 +139,7 @@ import {
 } from "@/orders/shared/types/orders.type";
 import { useOrdersStore } from "@/orders/app/providers/stores/orders";
 import { IOrdersSettings } from "@/orders/shared/types/orders.settings";
-import { debounce } from "@/orders/shared/utils/useDebounce";
+import { debounce } from "@/common/shared/utils/useDebounce";
 import StatusList from "@/orders/shared/ui/common/StatusList.vue";
 import ActionList from "@/orders/shared/ui/common/ActionList.vue";
 import { useOrdersTranslationsStore } from "@/orders/app/providers/stores/useTranslations";

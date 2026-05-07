@@ -1,118 +1,73 @@
 <template>
-  <component :is="getCurrentComponent" />
+  <div class="ccb-admin-app"></div>
+  <component v-if="getCurrentComponent" :is="getCurrentComponent" />
 </template>
 
 <script setup lang="ts">
-import { computed, defineAsyncComponent, inject, h, onMounted } from "vue";
-import { useAdminTranslationsStore } from "@/admin/store/analytics/translationsStore";
-import { IAdminTranslations } from "@/admin/shared/types/analytics/translations.type";
+import { computed, defineAsyncComponent, inject, onMounted } from "vue";
+import { useAppStore } from "@/admin/app/providers/stores/useAppStore";
+import type { Page } from "@/admin/app/providers/stores/useAppStore";
+import { useBuilderTranslationsStore } from "@/admin/app/providers/stores/useTranslationsStore";
+import type { IBuilderTranslations } from "@/admin/shared/types/translations.type";
 
-const page = inject("page");
-const demo = inject("demo");
+const appStore = useAppStore();
+const translationsStore = useBuilderTranslationsStore();
+
+appStore.setCalcId(inject("calcId") || null);
+appStore.setEditMode(inject("editMode") || false);
+appStore.setPage(inject("page") as Page);
+appStore.setCurrentPage(inject("currentPage") || "");
 
 const getCurrentComponent = computed(() => {
-  if (page === "analytics") {
-    if (demo) {
-      return defineAsyncComponent(
-        () => import("@/admin/pages/OrderAnalyticsDemo/index.ts"),
-      );
-    }
+  if (appStore.getCurrentPage === "cost_calculator_builder_whats_new") {
+    return defineAsyncComponent(() => import("@/admin/pages/WhatsNew.vue"));
+  }
 
+  if (appStore.getCurrentPage === "cost_calculator_templates") {
+    return defineAsyncComponent(() => import("@/admin/pages/Templates.vue"));
+  }
+
+  if (appStore.getPage === "flow") {
+    return defineAsyncComponent(() => import("@/admin/pages/Flow.vue"));
+  }
+
+  if (appStore.getPage === "calculator") {
     return defineAsyncComponent(
-      () => import("@/admin/pages/OrderAnalytics/index.ts"),
+      () => import("@/admin/pages/CalculatorBuilder.vue"),
     );
   }
 
-  if (page === "calculator-list") {
-    return defineAsyncComponent(
-      () => import("@/admin/pages/CalculatorList/index.ts"),
-    );
-  }
-
-  return h("div", "No page found");
+  return null;
 });
 
 onMounted(() => {
-  const translationsStore = useAdminTranslationsStore();
+  const exportLink = window.ccb_ajax_window?.export_link;
   const translations = window.ccb_ajax_window?.translations;
-  if (!translations) return;
-  translationsStore.initTranslations(
-    translations as unknown as IAdminTranslations,
-  );
+  if (translations) {
+    translationsStore.initTranslations(
+      translations as unknown as IBuilderTranslations,
+    );
+  }
+
+  const isPro = window.ccb_ajax_window?.pro_active || false;
+  const calcUrl = window.ccb_ajax_window?.plugin_url || "";
+  appStore.setIsPro(isPro as boolean);
+  appStore.setCalcUrl(calcUrl);
+  appStore.setExportLink(exportLink as string);
 });
 </script>
 
 <style lang="scss">
-#wpfooter {
-  display: none !important;
+body {
+  background-color: #1d2327 !important;
 }
 
-#wpbody-content,
 #wpcontent {
-  padding-bottom: 0 !important;
+  border-radius: 16px;
+  background: #f4f4f4;
 }
 
-.ccb-custom-scrollbar {
-  /* Scrollbar Styling */
-  &::-webkit-scrollbar {
-    width: 4px;
-    height: 4px;
-  }
-
-  &.ccb-scroll-hide {
-    &::-webkit-scrollbar {
-      display: none;
-    }
-  }
-
-  &::-webkit-scrollbar-track {
-    transition: 300ms ease;
-    background-color: transparent;
-    -webkit-border-radius: 4px;
-    border-radius: 4px;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    transition: 300ms ease;
-    -webkit-border-radius: 4px;
-    border-radius: 4px;
-    background: transparent;
-  }
-
-  &:hover {
-    &::-webkit-scrollbar {
-      background-color: #ebebeb;
-    }
-
-    &::-webkit-scrollbar-thumb {
-      -webkit-border-radius: 4px;
-      border-radius: 4px;
-      background: #808c97;
-    }
-  }
-
-  &.large {
-    &::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
-    }
-
-    &::-webkit-scrollbar-track {
-      -webkit-border-radius: 6px;
-      border-radius: 6px;
-    }
-
-    &::-webkit-scrollbar-thumb {
-      -webkit-border-radius: 6px;
-      border-radius: 6px;
-    }
-
-    &:hover {
-      &::-webkit-scrollbar-thumb {
-        -webkit-border-radius: 6px;
-        border-radius: 6px;
-      }
-    }
-  }
+.Toastify__toast-container {
+  z-index: 999999 !important;
 }
 </style>

@@ -1,0 +1,621 @@
+# PHP Backend Rules
+
+Rules and coding standards for PHP backend part of the Cost Calculator Builder plugin.
+
+## Naming Conventions
+
+### Classes
+- **Prefix**: All classes start with `CCB` (Cost Calculator Builder)
+- **Style**: PascalCase
+- **Location**: `includes/classes/`
+
+```php
+// ✅ Good
+class CCBCalculators {}
+class CCBOrderController {}
+class CCBAjaxCallbacks {}
+
+// ❌ Bad
+class Calculators {}
+class Calculator_Handler {}
+class ccb_orders {}
+```
+
+### Methods
+- **Style**: camelCase
+- **Visibility**: Always specify (public/private/protected)
+- **Static methods**: For utility functions and handlers
+
+```php
+// ✅ Good
+public function getCalculatorData($id) {}
+public static function saveCalcAction() {}
+private function validateFields($fields) {}
+
+// ❌ Bad
+function get_calculator_data($id) {}  // No visibility
+public function Save_Calc() {}         // Wrong case
+```
+
+### Functions (helpers)
+- **Location**: `includes/functions.php`
+- **Prefix**: `ccb_`
+- **Style**: snake_case
+
+```php
+// ✅ Good
+function ccb_update_calc_values($data) {}
+function ccb_get_sanitized_text($text) {}
+
+// ❌ Bad
+function updateCalculator($data) {}   // No prefix
+function CCB_Update_Calc($data) {}    // Wrong case
+```
+
+### Variables
+- **Style**: camelCase (in methods)
+- **Style**: snake_case (in functions)
+
+```php
+// ✅ Good (in class methods)
+$calculatorId = 123;
+$fieldsData = [];
+
+// ✅ Good (in helper functions)
+$calculator_id = 123;
+$fields_data = [];
+```
+
+## Namespace
+
+Use namespace for all classes:
+
+```php
+<?php
+
+namespace cBuilder\Classes;
+
+class CCBCalculators {
+    // ...
+}
+```
+
+**Namespace structure**:
+- `cBuilder\Classes` - Main classes
+- `cBuilder\Classes\Database` - Database models
+- `cBuilder\Classes\Appearance` - Appearance system
+- `cBuilder\Classes\pdfManager` - PDF generation
+- `cBuilder\Helpers` - Helper classes
+
+## WordPress Integration
+
+### Post Type
+
+```php
+// Constant for custom post type
+const CALCULATOR_POST_TYPE = 'cost-calc';
+
+// Usage
+$args = [
+    'post_type' => self::CALCULATOR_POST_TYPE,
+    'post_status' => 'publish'
+];
+```
+
+### Post Meta
+
+```php
+// Keys for post meta (constants or variables)
+const META_FIELDS = 'stm-fields';
+const META_CONDITIONS = 'stm-conditions';
+const META_FORMULA = 'stm-formula';
+
+// Save
+update_post_meta($calc_id, self::META_FIELDS, $fields);
+
+// Get with default value
+$fields = get_post_meta($calc_id, self::META_FIELDS, true) ?: [];
+```
+
+### Options
+
+```php
+// Settings in wp_options with unique key
+$option_key = 'stm_ccb_form_settings_' . $calc_id;
+update_option($option_key, $settings);
+$settings = get_option($option_key, []); // with default
+```
+
+## AJAX Handlers
+
+### Registration
+
+```php
+// In main file or init method
+add_action('wp_ajax_calc_get_calculator', [CCBCalculatorsHandler::class, 'getCalcAction']);
+add_action('wp_ajax_calc_save_calculator', [CCBCalculatorsHandler::class, 'saveCalcAction']);
+```
+
+### Handler Structure
+
+```php
+public static function getCalcAction() {
+    // 1. Nonce verification (REQUIRED)
+    check_ajax_referer('ccb_get_calculator', 'nonce');
+    
+    // 2. Capability check (REQUIRED for admin)
+    if (!current_user_can('manage_options')) {
+        wp_send_json_error(__('You are not allowed to run this action', 'cost-calculator-builder'));
+    }
+    
+    // 3. Sanitize & Validate input
+    $calc_id = isset($_POST['id']) ? absint($_POST['id']) : 0;
+    
+    if (empty($calc_id)) {
+        wp_send_json_error(__('Calculator ID is required', 'cost-calculator-builder'));
+    }
+    
+    // 4. Process
+    $calculator = self::getCalculatorData($calc_id);
+    
+    // 5. Response
+    if ($calculator) {
+        wp_send_json_success($calculator);
+    } else {
+        wp_send_json_error(__('Calculator not found', 'cost-calculator-builder'));
+    }
+}
+```
+
+### Response Format
+
+```php
+// Success
+wp_send_json_success([
+    'data' => $data,
+    'message' => __('Operation successful', 'cost-calculator-builder')
+]);
+
+// Error
+wp_send_json_error(__('Error message', 'cost-calculator-builder'));
+
+// Custom response (rarely)
+wp_send_json([
+    'success' => true,
+    'data' => $data,
+    'meta' => $meta
+]);
+```
+
+## Security
+
+### 1. Nonce Verification
+
+```php
+// Always check nonce in AJAX handlers
+check_ajax_referer('action_name', 'nonce');
+
+// Generate nonce for frontend
+wp_localize_script('script-handle', 'ccb_nonces', [
+    'get_calculator' => wp_create_nonce('ccb_get_calculator'),
+    'save_calculator' => wp_create_nonce('ccb_save_calculator')
+]);
+```
+
+### 2. Capability Checks
+
+```php
+// For admin actions
+if (!current_user_can('manage_options')) {
+    wp_send_json_error('Not authorized');
+}
+
+// For specific capabilities
+if (!current_user_can('edit_posts')) {
+    wp_send_json_error('Not authorized');
+}
+```
+
+### 3. Input Sanitization
+
+```php
+// Text
+$title = sanitize_text_field($_POST['title']);
+
+// Integer
+$calc_id = absint($_POST['id']);
+
+// Email
+$email = sanitize_email($_POST['email']);
+
+// URL
+$url = esc_url_raw($_POST['url']);
+
+// Array/Complex data
+$data = apply_filters('stm_ccb_sanitize_array', $_POST['data']);
+
+// HTML (with allowed tags)
+$html = wp_kses_post($_POST['content']);
+```
+
+### 4. Output Escaping
+
+```php
+// Text
+echo esc_html($title);
+
+// Attributes
+echo '<div data-id="' . esc_attr($id) . '">';
+
+// URL
+echo '<a href="' . esc_url($url) . '">';
+
+// JavaScript
+echo '<script>var data = ' . wp_json_encode($data) . ';</script>';
+```
+
+### 5. SQL Queries
+
+```php
+global $wpdb;
+
+// ✅ Good - Prepared statements
+$results = $wpdb->get_results(
+    $wpdb->prepare(
+        "SELECT * FROM {$wpdb->prefix}ccb_orders WHERE calc_id = %d",
+        $calc_id
+    )
+);
+
+// ❌ Bad - SQL injection risk
+$results = $wpdb->get_results(
+    "SELECT * FROM {$wpdb->prefix}ccb_orders WHERE calc_id = $calc_id"
+);
+```
+
+## Data Validation
+
+```php
+public static function validateCalculatorData($data) {
+    $errors = [];
+    
+    // Required fields
+    if (empty($data['title'])) {
+        $errors['title'] = __('Title is required', 'cost-calculator-builder');
+    }
+    
+    // Type validation
+    if (!is_array($data['fields'])) {
+        $errors['fields'] = __('Fields must be an array', 'cost-calculator-builder');
+    }
+    
+    // Range validation
+    if (isset($data['id']) && $data['id'] < 1) {
+        $errors['id'] = __('Invalid ID', 'cost-calculator-builder');
+    }
+    
+    if (!empty($errors)) {
+        return [
+            'valid' => false,
+            'errors' => $errors
+        ];
+    }
+    
+    return ['valid' => true];
+}
+```
+
+## Database Operations
+
+### Using wpdb
+
+```php
+global $wpdb;
+
+$table_name = $wpdb->prefix . 'ccb_orders';
+
+// INSERT
+$wpdb->insert(
+    $table_name,
+    [
+        'calc_id' => $calc_id,
+        'total' => $total,
+        'order_date' => current_time('mysql')
+    ],
+    ['%d', '%f', '%s'] // format
+);
+
+$order_id = $wpdb->insert_id;
+
+// UPDATE
+$wpdb->update(
+    $table_name,
+    ['status' => 'completed'],  // data
+    ['id' => $order_id],        // where
+    ['%s'],                     // data format
+    ['%d']                      // where format
+);
+
+// SELECT
+$order = $wpdb->get_row(
+    $wpdb->prepare(
+        "SELECT * FROM $table_name WHERE id = %d",
+        $order_id
+    )
+);
+
+// DELETE
+$wpdb->delete(
+    $table_name,
+    ['id' => $order_id],
+    ['%d']
+);
+```
+
+### Using Models
+
+```php
+use cBuilder\Classes\Database\Orders;
+
+// Create
+$order = Orders::create([
+    'calc_id' => $calc_id,
+    'total' => $total
+]);
+
+// Get
+$order = Orders::find($order_id);
+$orders = Orders::where('calc_id', $calc_id)->get();
+
+// Update
+$order->update(['status' => 'completed']);
+
+// Delete
+$order->delete();
+```
+
+## Hooks & Filters
+
+### Creating Hooks
+
+```php
+// Action
+do_action('ccb_calculator_saved', $calc_id, $data);
+do_action('ccb_order_created', $order_id, $order_data);
+
+// Filter
+$settings = apply_filters('ccb_calculator_settings', $settings, $calc_id);
+$fields = apply_filters('ccb_sanitize_fields', $fields);
+```
+
+### Using Hooks
+
+```php
+// Register hooks in constructor or init
+public function __construct() {
+    add_action('ccb_calculator_saved', [$this, 'onCalculatorSaved'], 10, 2);
+    add_filter('ccb_calculator_settings', [$this, 'modifySettings'], 10, 2);
+}
+
+public function onCalculatorSaved($calc_id, $data) {
+    // Handle action
+}
+
+public function modifySettings($settings, $calc_id) {
+    // Modify and return
+    return $settings;
+}
+```
+
+## Error Handling
+
+```php
+public static function getCalculatorData($calc_id) {
+    try {
+        // Validation
+        if (empty($calc_id)) {
+            throw new \Exception('Calculator ID is required');
+        }
+        
+        // Get data
+        $calculator = get_post($calc_id);
+        
+        if (!$calculator || $calculator->post_type !== self::CALCULATOR_POST_TYPE) {
+            throw new \Exception('Calculator not found');
+        }
+        
+        // Process and return
+        return self::processCalculatorData($calculator);
+        
+    } catch (\Exception $e) {
+        // Log error
+        error_log('CCB Error: ' . $e->getMessage());
+        
+        // Return error or false
+        return false;
+    }
+}
+```
+
+## Helper Functions Pattern
+
+```php
+// includes/functions.php
+
+/**
+ * Update calculator values
+ *
+ * @param array $data Calculator data
+ * @return boolean Success status
+ */
+function ccb_update_calc_values($data) {
+    // Validate
+    if (!isset($data['id'])) {
+        return false;
+    }
+    
+    // Process
+    $calc_id = absint($data['id']);
+    $title = sanitize_text_field($data['title']);
+    
+    // Update post
+    wp_update_post([
+        'ID' => $calc_id,
+        'post_title' => $title
+    ]);
+    
+    // Update meta
+    update_post_meta($calc_id, 'stm-fields', $data['fields']);
+    
+    return true;
+}
+
+/**
+ * Get sanitized text (allows HTML)
+ *
+ * @param string $text Input text
+ * @return string Sanitized text
+ */
+function ccb_get_sanitized_text($text) {
+    $allowed_tags = [
+        'b' => [],
+        'i' => [],
+        'strong' => [],
+        'em' => [],
+        'br' => [],
+        'p' => [],
+        'span' => ['class' => [], 'style' => []]
+    ];
+    
+    return wp_kses($text, $allowed_tags);
+}
+```
+
+## Code Organization
+
+### File Structure
+
+```php
+<?php
+/**
+ * File description
+ *
+ * @package Cost Calculator Builder
+ */
+
+namespace cBuilder\Classes;
+
+// Imports
+use cBuilder\Classes\Database\Orders;
+use cBuilder\Helpers\CCBCleanHelper;
+
+/**
+ * Class description
+ */
+class CCBCalculators {
+    
+    /**
+     * Constants
+     */
+    const CALCULATOR_POST_TYPE = 'cost-calc';
+    
+    /**
+     * Properties
+     */
+    private $calculator_id;
+    
+    /**
+     * Constructor
+     */
+    public function __construct($calculator_id = null) {
+        $this->calculator_id = $calculator_id;
+    }
+    
+    /**
+     * Public methods
+     */
+    public function getData() {
+        // Implementation
+    }
+    
+    /**
+     * Static methods (handlers, utilities)
+     */
+    public static function getCalcAction() {
+        // Implementation
+    }
+    
+    /**
+     * Private methods
+     */
+    private function processData($data) {
+        // Implementation
+    }
+}
+```
+
+## Translation
+
+```php
+// Always use translation functions
+__('Text', 'cost-calculator-builder');
+_e('Text', 'cost-calculator-builder');
+_n('Singular', 'Plural', $count, 'cost-calculator-builder');
+
+// With variables
+sprintf(__('Calculator %s saved', 'cost-calculator-builder'), $title);
+
+// In JavaScript
+wp_localize_script('script-handle', 'ccb_i18n', [
+    'save' => __('Save', 'cost-calculator-builder'),
+    'cancel' => __('Cancel', 'cost-calculator-builder')
+]);
+```
+
+## Performance
+
+```php
+// Caching
+$calculator = wp_cache_get('calculator_' . $calc_id, 'ccb');
+if (false === $calculator) {
+    $calculator = self::getCalculatorData($calc_id);
+    wp_cache_set('calculator_' . $calc_id, $calculator, 'ccb', 3600);
+}
+
+// Transients for expensive operations
+$result = get_transient('ccb_analytics_' . $calc_id);
+if (false === $result) {
+    $result = self::calculateAnalytics($calc_id);
+    set_transient('ccb_analytics_' . $calc_id, $result, DAY_IN_SECONDS);
+}
+
+// Batch operations
+$calc_ids = [1, 2, 3, 4, 5];
+$calculators = self::getWPCalculatorsWithIdsData($calc_ids); // One query
+```
+
+## Testing Considerations
+
+```php
+// Make methods testable
+public function calculateTotal($fields, $settings) {
+    // Pure function - easy to test
+    return $total;
+}
+
+// Avoid direct dependencies on globals in logic
+// ❌ Bad
+public function process() {
+    global $wpdb;
+    $data = $wpdb->get_results(...);
+}
+
+// ✅ Better
+public function process($data = null) {
+    if (null === $data) {
+        global $wpdb;
+        $data = $wpdb->get_results(...);
+    }
+    // Process $data
+}
+```

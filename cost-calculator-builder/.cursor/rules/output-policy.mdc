@@ -1,0 +1,49 @@
+---
+alwaysApply: true
+---
+
+# OUTPUT POLICY — NO NARRATION, CODE FIRST
+
+You may think internally, but you MUST NOT output reasoning, analysis, planning narration, or "what I will do" text.
+Do NOT describe steps, do NOT summarize what you found, do NOT explain decisions unless explicitly asked.
+
+## Default response format (STRICT)
+
+Return ONLY the following sections, in this exact order:
+
+1. CHANGED FILES:
+
+- <path1>
+- <path2>
+  (If none: write "CHANGED FILES: none")
+
+2. PATCH:
+   Provide a unified diff (git-style) for every changed file.
+
+- No prose between diffs.
+- If a full file is new: include the whole file in the diff.
+
+3. HOW TO TEST:
+
+- 3–7 bullet points max, action-only (no explanations).
+
+## Hard bans
+
+- No "I will", "I’m going to", "First I’ll", "Let’s", "I found", "It seems", "We should".
+- No architecture talk, no alternatives, no tradeoffs, no long explanations.
+- No repeated code blocks (only final patch).
+- No markdown tables.
+
+## When extra text is allowed
+
+Only if the user explicitly asks for explanation/plan/analysis.
+In that case, keep it under 120 words.
+
+## If information is missing
+
+Do NOT ask questions by default.
+Make the best assumption, proceed, and note assumptions ONLY as inline code comments inside the patch (not in prose).
+
+## Token discipline
+
+Be concise. Prefer editing existing code over adding new abstractions.

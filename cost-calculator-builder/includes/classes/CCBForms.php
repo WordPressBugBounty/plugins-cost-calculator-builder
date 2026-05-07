@@ -3,6 +3,7 @@ namespace cBuilder\Classes;
 
 use cBuilder\Classes\Database\Forms;
 use cBuilder\Classes\Database\FormFields;
+use cBuilder\Helpers\CCBOrderFormFieldsHelper;
 
 class CCBForms {
 	public static function get_all_forms() {
@@ -64,9 +65,9 @@ class CCBForms {
 			$order_form_fields = FormFields::get_active_fields( intval( $_GET['form_id'] ) );
 
 			if ( $status && is_array( $order_form_fields ) ) {
-				$result['success']           = true;
-				$result['order_form_fields'] = $order_form_fields;
-				$result['message']           = 'The form has been applied to calculator';
+				$result['success']                   = true;
+				$result['data']['order_form_fields'] = $order_form_fields;
+				$result['message']                   = 'The form has been applied to calculator';
 			}
 		}
 
@@ -115,13 +116,26 @@ class CCBForms {
 			'data'    => array(),
 		);
 
-		if ( $_GET['form_id'] ) {
-			$form_id = intval( $_GET['form_id'] );
-			Forms::delete_form( $form_id );
-			$result['success'] = true;
-			$result['data']    = Forms::get_all_forms();
-			$result['form_id'] = $form_id;
-			$result['message'] = 'The form has been deleted';
+		$form_id = isset( $_GET['form_id'] ) ? intval( $_GET['form_id'] ) : 0;
+		$calc_id = isset( $_GET['calc_id'] ) ? intval( $_GET['calc_id'] ) : 0;
+
+		if ( $form_id && $calc_id ) {
+			$forms = Forms::get_all_forms();
+			if ( count( $forms ) <= 1 ) {
+				$result['message'] = 'At least one form must remain';
+				wp_send_json( $result );
+			}
+
+			$status = Forms::delete_form( $form_id );
+			if ( $status ) {
+				$active_form_id                   = intval( CCBOrderFormFieldsHelper::get_active_form_id( $calc_id ) );
+				$result['success']                = true;
+				$result['data']['forms']          = Forms::get_all_forms();
+				$result['data']['active_form_id'] = $active_form_id;
+				$result['data']['active_fields']  = FormFields::get_active_fields( $active_form_id );
+				$result['data']['form_id']        = $form_id;
+				$result['message']                = 'The form has been deleted';
+			}
 		}
 
 		wp_send_json( $result );

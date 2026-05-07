@@ -1,0 +1,22 @@
+---
+description: 'Unified contract for AJAX/REST endpoints and client calls'
+globs:
+  - 'includes/**/*.php'
+alwaysApply: false
+---
+
+## REST
+
+- Always define permission_callback.
+- Validate and sanitize args.
+- Return WP_REST_Response on success; WP_Error on failure.
+
+## AJAX
+
+- Always include nonce verification + capability check for state changes.
+- Return JSON consistently via wp_send_json_success / wp_send_json_error.
+
+## Client-side
+
+- Do not hardcode URLs/nonces. Use localized data or existing config objects.
+- Handle error payloads consistently (show message, do not fail silently).

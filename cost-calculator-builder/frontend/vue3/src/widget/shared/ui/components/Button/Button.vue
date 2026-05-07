@@ -31,7 +31,7 @@ type Props = {
   type: "success" | "light" | "danger" | "success-outlined";
   icon?: string;
   iconPosition?: "before" | "after";
-  text: string;
+  text?: string;
   onClick: ((param?: unknown) => void) | (() => void);
   disabled?: boolean;
   isDemo?: boolean;

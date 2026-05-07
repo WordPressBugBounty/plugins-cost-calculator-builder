@@ -45,7 +45,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
 import { useOrdersStore } from "@/orders/app/providers/stores/orders";
-import { debounce } from "@/orders/shared/utils/useDebounce";
+import { debounce } from "@/common/shared/utils/useDebounce";
 
 const ordersStore = useOrdersStore();
 

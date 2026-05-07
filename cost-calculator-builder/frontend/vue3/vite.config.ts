@@ -43,6 +43,7 @@ export default defineConfig({
         widget: '/src/widget/main.ts',
         sticky: '/src/sticky/main.ts',
         orders: '/src/orders/main.ts',
+        admin: '/src/admin/main.ts',
       },
       outDir: './dist',
     }),
@@ -60,12 +61,44 @@ export default defineConfig({
       '@/widget': fileURLToPath(new URL('./src/widget/', import.meta.url)),
       '@/sticky': fileURLToPath(new URL('./src/sticky/', import.meta.url)),
       '@/common': fileURLToPath(new URL('./src/common/', import.meta.url)),
-
+      '@/admin': fileURLToPath(new URL('./src/admin/', import.meta.url)),
       // Force all imports of vue-demi to use the same copy from your project's node_modules
       'vue-demi': path.resolve(__dirname, 'node_modules/vue-demi'),
     },
   },
   build: {
     minify: true,
+    chunkSizeWarningLimit: 500,
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (!id.includes('node_modules')) return;
+
+          // Keep known heavy dependencies in dedicated chunks
+          if (id.includes('apexcharts') || id.includes('vue3-apexcharts')) {
+            return 'vendor-apexcharts';
+          }
+          if (id.includes('@vue-flow')) return 'vendor-vue-flow';
+          if (id.includes('@vuepic/vue-datepicker')) return 'vendor-datepicker';
+          if (id.includes('@vueup/vue-quill') || id.includes('/quill/')) {
+            return 'vendor-quill';
+          }
+          if (id.includes('/jspdf/')) return 'vendor-jspdf';
+          if (id.includes('/html2canvas/')) return 'vendor-html2canvas';
+          if (id.includes('/jszip/')) return 'vendor-jszip';
+
+          // Split remaining vendors by package to avoid oversized chunks
+          const modulePath = id.split('node_modules/')[1];
+          if (!modulePath) return 'vendor';
+
+          const segments = modulePath.split('/');
+          const packageName = segments[0].startsWith('@')
+            ? `${segments[0]}-${segments[1]}`
+            : segments[0];
+
+          return `vendor-${packageName.replace('@', '')}`;
+        },
+      },
+    },
   },
 });

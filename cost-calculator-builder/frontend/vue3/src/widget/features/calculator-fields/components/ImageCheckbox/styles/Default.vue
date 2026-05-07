@@ -9,7 +9,7 @@
           'ccb-option-disabled': field.disableOptions.includes(idx),
         }"
         ><div class="ccb-checkbox-image__box">
-          <img :src="option.src" alt="field-img" />
+          <img :src="option.src || placeholderImg" alt="field-img" />
         </div>
         <div class="ccb-checkbox-image__info">
           <div class="ccb-checkbox-image__title-box">
@@ -43,7 +43,7 @@ import { IMultiOptionsField } from "@/widget/shared/types/fields";
 import { useMultiOptionChildShared } from "@/widget/actions/fields/composable/useMultiOptionChildShared.ts";
 import { useCurrency } from "@/widget/actions/fields/composable/useCurrency.ts";
 import { useTranslationsStore } from "@/widget/app/providers/stores/translationsStore";
-
+import placeholderImg from "@/images/placeholder.png";
 const currencyInstance = useCurrency();
 const translationsStore = useTranslationsStore();
 

@@ -6,7 +6,7 @@ Tags: cost calculator, calculator, calculator form builder, cost estimation, shi
 Requires at least: 6.2
 Requires PHP: 8.0.3
 Tested up to: 6.9.4
-Stable tag: 3.6.17
+Stable tag: 4.0.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -207,6 +207,17 @@ Also, you can import the demo sample using Tools -> Import -> WordPress Import.
 Demo sample XML file included in plugin archive.
 
 == Changelog ==
+
+= 4.0.0 =
+- New: Live editing - the builder canvas now renders the actual calculator with real fonts, colors, spacing, and field styles instead of placeholders. The Preview button has been removed.
+- New: Instant apply - every change in the builder applies immediately. The only Save button is the global one in the header, with Saved, Unsaved, and Saving status indicators. Undo and Redo added.
+- New: Free-canvas layout - fields can now be placed anywhere on the canvas with snap-to-grid, custom widths, and free positioning. Replaces the fixed 25/50/75/100 width grid.
+- New: Flexible Calculator/Summary layout - added 70/30, 30/70, and bottom-stacked options in addition to 50/50.
+- New: Appearance moved into the builder - Appearance is now a tab inside the builder with live preview on the canvas, instead of a separate screen.
+- New: Conditions canvas redesigned - added pan and zoom for navigating large rule sets, auto-align (horizontal or vertical), and improved drag-and-drop. (PRO)
+- New: Contact Form, Confirmation, and other extra screens moved into the builder - they are now tabs alongside Page 1, Page 2, and Total Summary, instead of being configured in Settings. (PRO)
+- Enhancement: Plugin builder fully rewritten on Vue 3 for improved performance, stability, and build speed.
+- Enhancement: General performance improvements across the builder. 
 
 = 3.6.17 =
 - Fix: Fixed thousands separator settings not applying to Min and Max indicators on Basic Slider and Multi Range.
