@@ -330,6 +330,7 @@ callbackStore.add("updateDatePicker", updateValue);
     left: 0 !important;
     color: var(--ccb-text-color) !important;
     max-width: 430px;
+    border-radius: 4px;
   }
 
   .dp__active_date {
@@ -346,25 +347,52 @@ callbackStore.add("updateDatePicker", updateValue);
     border: none;
     box-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.25);
     border-radius: 4px;
+    overflow: hidden;
   }
 
   .dp__menu_inner {
     background: var(--ccb-fields-bg-color);
     border-radius: 4px;
+    padding: 14px;
+  }
+
+  .dp__overlay_container {
+    padding: 4px;
+    padding-left: 6px !important;
+    width: 100%;
+
+    .dp__overlay_cell {
+      font-weight: 400;
+      padding: 15px;
+
+      &:hover {
+        background: color-mix(
+          in srgb,
+          var(--ccb-accent-color),
+          transparent 50%
+        );
+        color: #fff;
+      }
+    }
   }
 
   .dp__overlay_action {
-    background: var(--ccb-fields-bg-color);
+    background: #e4e7ea;
+    width: 96%;
+    border-radius: 4px;
+    margin: 0 auto;
 
     &:hover {
       background: var(--ccb-accent-color);
-      color: var(--ccb-text-color);
+      color: #fff;
     }
   }
 
   .dp__overlay {
     background: var(--ccb-fields-bg-color);
     color: var(--ccb-text-color);
+    display: flex;
+    justify-content: center;
 
     .dp__overlay_cell {
       &:hover {
@@ -380,56 +408,78 @@ callbackStore.add("updateDatePicker", updateValue);
 
   .dp__overlay_cell_active {
     background: var(--ccb-accent-color);
-    color: var(--ccb-text-color);
+    color: #fff;
+    font-weight: 400;
+    padding: 15px;
   }
 
   .dp__action_row {
     background: var(--ccb-fields-bg-color);
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    row-gap: 10px;
+
+    .dp__action_buttons {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-end;
+      row-gap: 10px;
+      column-gap: 10px;
+    }
+
+    padding: 10px 8px 8px 0px;
 
     .dp__action_cancel {
-      padding: 10px;
+      min-width: 86px;
+      height: 32px;
+      padding: 0 14px;
       margin: 0;
-      border: none;
-      flex: 1;
-      border-radius: var(--ccb-fields-border-radius);
+      border: 1px solid transparent;
+      flex: unset;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 16px;
       cursor: pointer;
       transition: 300ms ease;
-      font-size: var(--ccb-fields-button-size);
+      font-size: 14px;
       font-weight: var(--ccb-fields-button-weight);
-      border: 1px solid var(--ccb-fields-border-color);
-      margin-right: 10px;
+      line-height: 1;
       background: var(--ccb-date-picker-day);
       color: var(--ccb-text-color);
 
       @media only screen and (max-width: 480px) {
-        font-size: var(--ccb-mobile-fields-button-size);
+        font-size: 14px;
         font-weight: var(--ccb-mobile-fields-button-weight);
       }
 
       &:hover {
-        background: color-mix(
-          in srgb,
-          var(--ccb-accent-color),
-          transparent 50%
-        );
+        background: hsl(from var(--ccb-fields-bg-color) h s calc(l - 10));
       }
     }
 
     .dp__action_select {
-      padding: 10px;
+      min-width: 86px;
+      height: 32px;
+      padding: 0 14px;
       margin: 0;
       border: none;
-      flex: 1;
-      border-radius: var(--ccb-fields-border-radius);
+      flex: unset;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 16px;
       cursor: pointer;
       transition: 300ms ease;
-      font-size: var(--ccb-fields-button-size);
+      font-size: 14px;
       font-weight: var(--ccb-fields-button-weight);
+      line-height: 1;
       background: var(--ccb-accent-color);
       color: var(--ccb-fields-bg-color);
 
       @media only screen and (max-width: 480px) {
-        font-size: var(--ccb-mobile-fields-button-size);
+        font-size: 14px;
         font-weight: var(--ccb-mobile-fields-button-weight);
       }
 
@@ -439,10 +489,6 @@ callbackStore.add("updateDatePicker", updateValue);
     }
   }
 
-  .dp__menu-inner {
-    padding: 10px;
-  }
-
   .dp__pointer {
     background: var(--ccb-fields-bg-color);
   }
@@ -450,6 +496,7 @@ callbackStore.add("updateDatePicker", updateValue);
   .dp__inner_nav {
     background: var(--ccb-date-picker-day);
     border-radius: 4px;
+    color: var(--ccb-text-color);
   }
 
   .dp__month_year_wrap {
@@ -460,18 +507,28 @@ callbackStore.add("updateDatePicker", updateValue);
       height: 26px;
       font-size: 14px;
       font-weight: 700;
+      color: var(--ccb-text-color);
 
       &:hover {
         background: var(--ccb-accent-color) !important;
+        color: #fff;
       }
     }
   }
 
   .dp__cell_inner {
-    width: auto !important;
+    width: 100% !important;
+    min-width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     border-radius: 0px;
-    font-size: 12px !important;
+    font-size: 14px !important;
+    line-height: 1;
     font-weight: 500;
+    border: 2px solid transparent;
+    border-radius: 4px;
   }
 
   .dp__range_start,
@@ -486,15 +543,20 @@ callbackStore.add("updateDatePicker", updateValue);
 
   .dp--arrow-btn-nav {
     padding: 0px !important;
+    border-radius: 4px;
 
     &:hover {
       background: var(--ccb-accent-color) !important;
+
+      .dp__inner_nav {
+        color: #fff;
+      }
     }
   }
 
-  .dp__calendar_item,
-  .dp__calendar_header_item {
+  .dp__calendar_item {
     color: var(--ccb-text-color) !important;
+    border-radius: 4px;
   }
 
   .dp__calendar_header_item {
@@ -531,7 +593,12 @@ callbackStore.add("updateDatePicker", updateValue);
   .dp__calendar_header {
     font-size: 12px;
     font-weight: 500;
-    opacity: 0.3;
+    padding: 4px 0;
+    border-radius: 5px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    background: var(--ccb-date-picker-day);
+    color: var(--ccb-text-color);
   }
 }
 </style>

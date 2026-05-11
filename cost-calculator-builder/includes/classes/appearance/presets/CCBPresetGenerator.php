@@ -208,6 +208,10 @@ class CCBPresetGenerator {
 		$presets = get_option( 'ccb_appearance_presets', array() );
 		$changed = false;
 
+		if ( ! is_array( $presets ) ) {
+			$presets = array();
+		}
+
 		// Remove legacy custom preset from DB permanently.
 		if ( isset( $presets['custom'] ) ) {
 			unset( $presets['custom'] );

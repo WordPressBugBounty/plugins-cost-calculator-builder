@@ -1,44 +1,37 @@
 <template>
   <div class="ccb-range-timePicker">
     <div class="ccb-range-timePicker__from">
-      <VueDatePicker
+      <TimeDropdown
         v-model="from"
-        time-picker
-        :is-24="format"
-        minutes-grid-increment="5"
+        :format="format"
         @update:model-value="handleFromUpdate"
-      >
-        <template #input-icon>
-          <i class="ccb-icon-timepicker-light-clock"></i>
-        </template>
-      </VueDatePicker>
+      />
     </div>
     <div class="ccb-range-timePicker__separator">
       <span>to</span>
     </div>
     <div class="ccb-range-timePicker__to">
-      <VueDatePicker
+      <TimeDropdown
         v-model="to"
-        time-picker
-        :is-24="format"
-        minutes-grid-increment="5"
+        :format="format"
         @update:model-value="handleToUpdate"
-      >
-        <template #input-icon>
-          <i class="ccb-icon-timepicker-light-clock"></i>
-        </template>
-      </VueDatePicker>
+      />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, watch, onMounted } from "vue";
-import VueDatePicker from "@vuepic/vue-datepicker";
-import "@vuepic/vue-datepicker/dist/main.css";
 import { useCallbackStore } from "@/widget/app/providers/stores/callbackStore.ts";
+import TimeDropdown from "./TimeDropdown.vue";
 
 const callbackStore = useCallbackStore();
+
+type TimeValue = {
+  hours: number;
+  minutes: number;
+  seconds: number;
+};
 
 const props = defineProps<{
   format: boolean;
@@ -61,26 +54,13 @@ const parseInterval = (interval: string): number => {
   return hours + minutes;
 };
 
-const from = ref<Date | { hours: number; minutes: number; seconds: number }>(
-  props.modelValue?.from || new Date(),
-);
+const from = ref<TimeValue>(props.modelValue?.from || getCurrentTime());
 
-const to = ref<Date | { hours: number; minutes: number; seconds: number }>(
-  props.modelValue?.to || new Date(),
-);
+const to = ref<TimeValue>(props.modelValue?.to || getCurrentTime());
 
 onMounted(() => {
   if (props.minInterval) {
-    const initialFromTime =
-      from.value instanceof Date
-        ? {
-            hours: from.value.getHours(),
-            minutes: from.value.getMinutes(),
-            seconds: 0,
-          }
-        : from.value;
-
-    handleFromUpdate(initialFromTime);
+    handleFromUpdate(from.value);
   }
 });
 
@@ -106,15 +86,13 @@ callbackStore.add(
   "updateRangeTimePicker",
   (val: { start: string; end: string }) => {
     from.value = changeFormat(val.start);
-    to.value = changeFormat(val.end);
+    to.value = props.minInterval
+      ? getTimeWithInterval(from.value, parseInterval(props.minInterval))
+      : changeFormat(val.end);
   },
 );
 
-const toDateFromTimeObject = (time: {
-  hours: number;
-  minutes: number;
-  seconds?: number;
-}): Date => {
+const toDateFromTimeObject = (time: TimeValue): Date => {
   const date = new Date();
   date.setHours(time.hours);
   date.setMinutes(time.minutes);
@@ -122,94 +100,68 @@ const toDateFromTimeObject = (time: {
   return date;
 };
 
-const handleFromUpdate = (newTime: {
-  hours: number;
-  minutes: number;
-  seconds: number;
-}) => {
+const handleFromUpdate = (newTime: TimeValue) => {
   from.value = newTime;
-
-  const fromDate = toDateFromTimeObject(newTime);
 
   if (props.minInterval) {
     const interval = parseInterval(props.minInterval);
-    if ("hours" in to.value) {
-      const toDate = toDateFromTimeObject(to.value);
-      const diff = Math.abs(fromDate.getTime() - toDate.getTime()) / 1000 / 60;
-      if (interval < diff) {
-        return;
-      }
-    }
-
-    const newToDate = new Date(fromDate);
-    newToDate.setMinutes(newToDate.getMinutes() + interval);
-
-    to.value = {
-      hours: newToDate.getHours(),
-      minutes: newToDate.getMinutes(),
-      seconds: 0,
-    };
+    to.value = getTimeWithInterval(newTime, interval);
   }
 };
 
-const handleToUpdate = (newTime: {
-  hours: number;
-  minutes: number;
-  seconds: number;
-}) => {
+const handleToUpdate = (newTime: TimeValue) => {
   to.value = newTime;
 
-  const toDate = toDateFromTimeObject(newTime);
   if (props.minInterval) {
     const interval = parseInterval(props.minInterval);
-    if ("hours" in from.value) {
-      const fromDate = toDateFromTimeObject(from.value);
-      const diff = (toDate.getTime() - fromDate.getTime()) / 1000 / 60;
-      if (interval < diff) {
-        return;
-      }
-    }
-
-    const newFromDate = new Date(toDate);
-    newFromDate.setMinutes(newFromDate.getMinutes() - interval);
-
-    from.value = {
-      hours: newFromDate.getHours(),
-      minutes: newFromDate.getMinutes(),
-      seconds: 0,
-    };
+    from.value = getTimeWithInterval(newTime, -interval);
   }
+};
+
+const getTimeWithInterval = (time: TimeValue, interval: number): TimeValue => {
+  const date = toDateFromTimeObject(time);
+  date.setMinutes(date.getMinutes() + interval);
+
+  return {
+    hours: date.getHours(),
+    minutes: date.getMinutes(),
+    seconds: 0,
+  };
 };
 
 watch([from, to], (newTime: unknown) => {
   if (!Array.isArray(newTime)) return;
-
-  const formattedTime = newTime.map((time) => {
-    if (time instanceof Date) {
-      return {
-        hours: time.getHours(),
-        minutes: time.getMinutes(),
-        seconds: 0,
-      };
-    }
-    return time;
-  });
-
-  emit("update:modelValue", formattedTime);
+  emit("update:modelValue", newTime);
 });
+
+function getCurrentTime() {
+  const now = new Date();
+
+  return {
+    hours: now.getHours(),
+    minutes: now.getMinutes(),
+    seconds: 0,
+  };
+}
 </script>
 
 <style lang="scss">
 .ccb-range-timePicker {
   display: flex;
 
+  &__from,
+  &__to {
+    flex: 1;
+    min-width: 0;
+  }
+
   &__separator {
     padding: 0 10px;
-    border: 1px solid var(--ccb-fields-border-color);
+    border: var(--ccb-fields-border) var(--ccb-fields-border-style)
+      var(--ccb-fields-border-color);
     background: var(--ccb-fields-bg-color);
     border-right: none;
     border-left: none;
-    min-height: 44px;
     display: flex;
     align-items: center;
     font-weight: 500;
@@ -225,16 +177,21 @@ watch([from, to], (newTime: unknown) => {
   }
 
   &__from {
-    input {
+    .ccb-time-dropdown__input {
       border-top-right-radius: 0;
       border-bottom-right-radius: 0;
     }
   }
 
   &__to {
-    input {
+    .ccb-time-dropdown__input {
       border-top-left-radius: 0;
       border-bottom-left-radius: 0;
+    }
+
+    .ccb-time-dropdown__panel {
+      left: auto;
+      right: 0;
     }
   }
 }

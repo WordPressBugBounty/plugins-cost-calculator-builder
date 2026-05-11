@@ -9,49 +9,16 @@
         <i class="ccb-icon-ic_next"></i>
       </div>
     </div>
-
-    <div class="ccb-builder-toolbar__group">
-      <div
-        class="ccb-builder-toolbar__item"
-        :class="{ 'is-active': activeTab === 'builder' }"
-        @click="setSidebarContent('builder')"
-      >
-        <i class="ccb-icon-ic_elements"></i>
-      </div>
-
-      <div
-        class="ccb-builder-toolbar__item"
-        :class="{ 'is-active': activeTab === 'layout' }"
-        @click="setSidebarContent('layout')"
-      >
-        <i class="ccb-icon-ic_layout"></i>
-      </div>
-
-      <div
-        class="ccb-builder-toolbar__item"
-        :class="{ 'is-active': activeTab === 'themes' }"
-        @click="setSidebarContent('themes')"
-      >
-        <i class="ccb-icon-ic_collor"></i>
-      </div>
-    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed } from "vue";
 import { useBuilderStore } from "@/admin/app/providers/stores/useBuilderStore";
-import { builderSidebarContentType } from "@/admin/shared/types/builder.type";
 
 const builderStore = useBuilderStore();
 
-const activeTab = computed(() => builderStore.getBuilderContent.sidebarContent);
-
 const isCollapsed = computed(() => builderStore.getSidebarCollapse);
-
-const setSidebarContent = (tab: builderSidebarContentType) => {
-  builderStore.setSidebarContent(tab);
-};
 
 function toggleSidebar() {
   builderStore.setSidebarCollapse(!builderStore.getSidebarCollapse);

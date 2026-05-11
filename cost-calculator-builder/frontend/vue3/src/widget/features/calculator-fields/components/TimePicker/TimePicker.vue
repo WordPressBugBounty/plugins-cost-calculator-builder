@@ -175,197 +175,59 @@ const additionalClasses = computed(() => {
       .ccb-timePicker-field {
         .ccb-range-timePicker {
           flex-direction: column;
+
           .ccb-range-timePicker__from {
-            .dp__input {
+            .ccb-time-dropdown__input {
               border-radius: var(--ccb-fields-border-radius)
                 var(--ccb-fields-border-radius) 0 0;
             }
           }
+
           .ccb-range-timePicker__to {
-            .dp__input {
+            .ccb-time-dropdown__input {
               border-radius: 0 0 var(--ccb-fields-border-radius)
                 var(--ccb-fields-border-radius);
             }
           }
+
           .ccb-range-timePicker__separator {
-            min-height: 24px;
             justify-content: center;
             border: 1px solid var(--ccb-fields-border-color);
             border-top: none;
             border-bottom: none;
+
             span {
               font-size: calc(var(--ccb-fields-button-size) - 2px);
             }
           }
         }
-        .dp__input_wrap {
-          .dp__input {
-            padding: 10px calc(var(--ccb-field-side-indent) - 4px);
-            padding-left: max(
-              24px,
-              var(--ccb-field-side-indent) - 4px
-            ) !important;
-            font-size: calc(var(--ccb-fields-button-size) - 2px);
-          }
-          .dp__input_icon {
-            padding: 6px;
-            font-size: 14px;
-          }
+
+        .ccb-time-dropdown__input {
+          padding: 8px calc(var(--ccb-field-side-indent) - 4px);
+          padding-left: max(24px, var(--ccb-field-side-indent) - 4px);
+          font-size: calc(var(--ccb-fields-button-size) - 2px);
+        }
+
+        .ccb-time-dropdown__panel {
+          width: min(320px, calc(100vw - 40px));
+          padding: 16px;
         }
       }
     }
   }
 }
+
 .ccb-timePicker-field *:focus {
   outline-width: 0;
 }
+
 .ccb-icon-timepicker-light-clock {
   color: var(--ccb-text-color);
 }
+
 .ccb-timePicker-field {
-  input {
-    color: var(--ccb-text-color);
-    padding: 0 var(--ccb-field-side-indent);
-    padding-left: max(30px, var(--ccb-field-side-indent));
-    min-height: var(--ccb-field-button-height);
-
-    @media only screen and (max-width: 480px) {
-      padding-left: max(30px, var(--ccb-mobile-field-side-indent));
-    }
-
-    &.dp__input_focus {
-      border-color: var(--ccb-accent-color);
-    }
-  }
-
-  .dp__input_icon {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: var(--ccb-text-color);
-  }
-
-  .dp__overlay {
-    height: 130px !important;
-  }
-
-  .dp__menu {
-    color: var(--ccb-text-color);
-    border: none;
-  }
-
-  .dp__action_cancel {
-    padding: 10px;
-    margin: 0;
-    border: none;
-    flex: 1;
-    border-radius: var(--ccb-fields-border-radius);
-    cursor: pointer;
-    transition: 300ms ease;
-    font-size: var(--ccb-fields-button-size);
-    font-weight: var(--ccb-fields-button-weight);
-    border: 1px solid (var(--ccb-fields-border-color));
-    margin-right: 10px;
-    background: var(--ccb-date-picker-day);
-    color: var(--ccb-text-color);
-
-    @media only screen and (max-width: 480px) {
-      font-size: var(--ccb-mobile-fields-button-size);
-      font-weight: var(--ccb-mobile-fields-button-weight);
-    }
-
-    &:hover {
-      background: color-mix(in srgb, var(--ccb-accent-color), transparent 50%);
-    }
-  }
-
-  .dp__action_select {
-    padding: 10px;
-    margin: 0;
-    border: none;
-    flex: 1;
-    border-radius: var(--ccb-fields-border-radius);
-    cursor: pointer;
-    transition: 300ms ease;
-    font-size: var(--ccb-fields-button-size);
-    font-weight: var(--ccb-fields-button-weight);
-    background: var(--ccb-accent-color) !important;
-    color: var(--ccb-fields-bg-color);
-
-    @media only screen and (max-width: 480px) {
-      font-size: var(--ccb-mobile-fields-button-size);
-      font-weight: var(--ccb-mobile-fields-button-weight);
-    }
-
-    &:hover {
-      background: hsl(from var(--ccb-accent-color) h s calc(l - 5));
-    }
-  }
-
-  .dp__selection_preview {
-    color: var(--ccb-text-color);
-  }
-
-  .dp__menu,
-  .dp__overlay_row,
-  .dp__arrow_top,
-  .dp__arrow_bottom {
-    background: var(--ccb-fields-bg-color);
-    border: none;
-  }
-  .dp__outer_menu_wrap {
-    box-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.25);
-  }
-
-  .dp__pm_am_button {
-    background: var(--ccb-accent-color);
-    color: var(--ccb-fields-bg-color);
-  }
-
-  .dp__btn {
-    background: var(--ccb-fields-bg-color);
-    transform: 300ms easy;
-
-    &:hover {
-      background: var(--ccb-accent-color);
-      color: var(--ccb-text-color);
-    }
-  }
-
-  .dp__overlay_cell {
-    color: var(--ccb-text-color);
-    &:hover {
-      background: color-mix(in srgb, var(--ccb-accent-color), transparent 50%);
-      color: var(--ccb-text-color);
-    }
-  }
-
-  .dp__input_icon {
-    padding: 10px;
-    font-size: 16px;
-    color: var(--dp-icon-color);
-  }
-
-  .dp__time_col {
-    color: var(--ccb-text-color);
-    gap: 5px;
-    button {
-      color: var(--ccb-text-color);
-      background: var(--ccb-date-picker-day);
-      border-radius: 4px;
-      min-width: 42px;
-      border: 1px solid transparent;
-
-      &:hover {
-        background: color-mix(
-          in srgb,
-          var(--ccb-accent-color),
-          transparent 50%
-        );
-        border-color: var(--ccb-accent-color);
-        color: var(--ccb-text-color);
-      }
-    }
+  .ccb-time-dropdown__input {
+    font-family: inherit;
   }
 }
 </style>

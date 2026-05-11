@@ -1,45 +1,44 @@
 <template>
   <div class="ccb-range-timePicker">
     <div class="ccb-range-timePicker__from">
-      <VueDatePicker
-        v-model="from"
-        time-picker
-        :is-24="format"
-        minutes-grid-increment="5"
-        @update:model-value="handleFromUpdate"
-      >
-        <template #input-icon>
-          <i class="ccb-icon-timepicker-light-clock"></i>
-        </template>
-      </VueDatePicker>
+      <div class="ccb-range-timePicker__input">
+        <i class="ccb-icon-timepicker-light-clock"></i>
+        <span>{{ fromDisplayValue }}</span>
+      </div>
     </div>
     <div class="ccb-range-timePicker__separator">
       <span>to</span>
     </div>
     <div class="ccb-range-timePicker__to">
-      <VueDatePicker
-        v-model="to"
-        time-picker
-        :is-24="format"
-        minutes-grid-increment="5"
-        @update:model-value="handleToUpdate"
-      >
-        <template #input-icon>
-          <i class="ccb-icon-timepicker-light-clock"></i>
-        </template>
-      </VueDatePicker>
+      <div class="ccb-range-timePicker__input">
+        <i class="ccb-icon-timepicker-light-clock"></i>
+        <span>{{ toDisplayValue }}</span>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onMounted } from "vue";
-import VueDatePicker from "@vuepic/vue-datepicker";
-import "@vuepic/vue-datepicker/dist/main.css";
+import { computed, ref, watch, onMounted } from "vue";
 import { useCallbackStore } from "@/widget/app/providers/stores/callbackStore.ts";
 import { useAppearanceColors } from "@/admin/shared/utils/useAppearanceColors";
-const { borderColor, formFieldsColor, textColor } = useAppearanceColors();
+import useAppearanceTypography from "@/admin/shared/utils/useAppearanceTypography";
 const callbackStore = useCallbackStore();
+const {
+  textColor,
+  borderColor,
+  formFieldsColor,
+  borderRadius,
+  borderWidth,
+  borderStyle,
+} = useAppearanceColors();
+const { fieldsBtnFontSize, fieldsBtnFontWeight } = useAppearanceTypography();
+
+type TimeValue = {
+  hours: number;
+  minutes: number;
+  seconds: number;
+};
 
 const props = defineProps<{
   format: boolean;
@@ -62,26 +61,16 @@ const parseInterval = (interval: string): number => {
   return hours + minutes;
 };
 
-const from = ref<Date | { hours: number; minutes: number; seconds: number }>(
-  props.modelValue?.from || new Date(),
-);
+const from = ref<TimeValue>(props.modelValue?.from || getCurrentTime());
 
-const to = ref<Date | { hours: number; minutes: number; seconds: number }>(
-  props.modelValue?.to || new Date(),
-);
+const to = ref<TimeValue>(props.modelValue?.to || getCurrentTime());
+
+const fromDisplayValue = computed(() => formatTime(from.value));
+const toDisplayValue = computed(() => formatTime(to.value));
 
 onMounted(() => {
   if (props.minInterval) {
-    const initialFromTime =
-      from.value instanceof Date
-        ? {
-            hours: from.value.getHours(),
-            minutes: from.value.getMinutes(),
-            seconds: 0,
-          }
-        : from.value;
-
-    handleFromUpdate(initialFromTime);
+    handleFromUpdate(from.value);
   }
 });
 
@@ -107,15 +96,13 @@ callbackStore.add(
   "updateRangeTimePicker",
   (val: { start: string; end: string }) => {
     from.value = changeFormat(val.start);
-    to.value = changeFormat(val.end);
+    to.value = props.minInterval
+      ? getTimeWithInterval(from.value, parseInterval(props.minInterval))
+      : changeFormat(val.end);
   },
 );
 
-const toDateFromTimeObject = (time: {
-  hours: number;
-  minutes: number;
-  seconds?: number;
-}): Date => {
+const toDateFromTimeObject = (time: TimeValue): Date => {
   const date = new Date();
   date.setHours(time.hours);
   date.setMinutes(time.minutes);
@@ -123,101 +110,102 @@ const toDateFromTimeObject = (time: {
   return date;
 };
 
-const handleFromUpdate = (newTime: {
-  hours: number;
-  minutes: number;
-  seconds: number;
-}) => {
+const handleFromUpdate = (newTime: TimeValue) => {
   from.value = newTime;
-
-  const fromDate = toDateFromTimeObject(newTime);
 
   if (props.minInterval) {
     const interval = parseInterval(props.minInterval);
-    if ("hours" in to.value) {
-      const toDate = toDateFromTimeObject(to.value);
-      const diff = Math.abs(fromDate.getTime() - toDate.getTime()) / 1000 / 60;
-      if (interval < diff) {
-        return;
-      }
-    }
-
-    const newToDate = new Date(fromDate);
-    newToDate.setMinutes(newToDate.getMinutes() + interval);
-
-    to.value = {
-      hours: newToDate.getHours(),
-      minutes: newToDate.getMinutes(),
-      seconds: 0,
-    };
+    to.value = getTimeWithInterval(newTime, interval);
   }
 };
 
-const handleToUpdate = (newTime: {
-  hours: number;
-  minutes: number;
-  seconds: number;
-}) => {
-  to.value = newTime;
+const getTimeWithInterval = (time: TimeValue, interval: number): TimeValue => {
+  const date = toDateFromTimeObject(time);
+  date.setMinutes(date.getMinutes() + interval);
 
-  const toDate = toDateFromTimeObject(newTime);
-  if (props.minInterval) {
-    const interval = parseInterval(props.minInterval);
-    if ("hours" in from.value) {
-      const fromDate = toDateFromTimeObject(from.value);
-      const diff = (toDate.getTime() - fromDate.getTime()) / 1000 / 60;
-      if (interval < diff) {
-        return;
-      }
-    }
-
-    const newFromDate = new Date(toDate);
-    newFromDate.setMinutes(newFromDate.getMinutes() - interval);
-
-    from.value = {
-      hours: newFromDate.getHours(),
-      minutes: newFromDate.getMinutes(),
-      seconds: 0,
-    };
-  }
+  return {
+    hours: date.getHours(),
+    minutes: date.getMinutes(),
+    seconds: 0,
+  };
 };
 
 watch([from, to], (newTime: unknown) => {
   if (!Array.isArray(newTime)) return;
-
-  const formattedTime = newTime.map((time) => {
-    if (time instanceof Date) {
-      return {
-        hours: time.getHours(),
-        minutes: time.getMinutes(),
-        seconds: 0,
-      };
-    }
-    return time;
-  });
-
-  emit("update:modelValue", formattedTime);
+  emit("update:modelValue", newTime);
 });
+
+function formatTime(value: TimeValue) {
+  const minutes = value.minutes.toString().padStart(2, "0");
+
+  if (props.format) {
+    return `${value.hours.toString().padStart(2, "0")}:${minutes}`;
+  }
+
+  const period = value.hours >= 12 ? "PM" : "AM";
+  const hours = value.hours % 12 || 12;
+  return `${hours}:${minutes} ${period}`;
+}
+
+function getCurrentTime() {
+  const now = new Date();
+
+  return {
+    hours: now.getHours(),
+    minutes: now.getMinutes(),
+    seconds: 0,
+  };
+}
 </script>
 
 <style lang="scss">
 .ccb-range-timePicker {
   display: flex;
+  pointer-events: none;
+
+  &__from,
+  &__to {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__input {
+    width: 100%;
+    min-height: var(--ccb-field-button-height);
+    padding: 0 var(--ccb-field-side-indent);
+    padding-left: max(35px, var(--ccb-field-side-indent));
+    border: v-bind(borderWidth) v-bind(borderStyle) v-bind(borderColor);
+    border-radius: v-bind(borderRadius);
+    background: v-bind(formFieldsColor);
+    color: v-bind(textColor);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: v-bind(fieldsBtnFontSize);
+    font-weight: v-bind(fieldsBtnFontWeight);
+    position: relative;
+    box-sizing: border-box;
+
+    .ccb-icon-timepicker-light-clock {
+      position: absolute;
+      left: 12px;
+      font-size: 16px;
+    }
+  }
 
   &__separator {
     padding: 0 10px;
-    border: 1px solid v-bind(borderColor);
+    border: v-bind(borderWidth) v-bind(borderStyle) v-bind(borderColor);
     background: v-bind(formFieldsColor);
     border-right: none;
     border-left: none;
-    min-height: 44px;
     display: flex;
     align-items: center;
     font-weight: 500;
     color: v-bind(textColor);
 
     span {
-      font-size: calc(var(--ccb-fields-button-size) - 2px);
+      font-size: v-bind(fieldsBtnFontSize);
 
       @media only screen and (max-width: 480px) {
         font-size: calc(var(--ccb-mobile-fields-button-size) - 2px);
@@ -226,14 +214,14 @@ watch([from, to], (newTime: unknown) => {
   }
 
   &__from {
-    input {
+    .ccb-range-timePicker__input {
       border-top-right-radius: 0;
       border-bottom-right-radius: 0;
     }
   }
 
   &__to {
-    input {
+    .ccb-range-timePicker__input {
       border-top-left-radius: 0;
       border-bottom-left-radius: 0;
     }

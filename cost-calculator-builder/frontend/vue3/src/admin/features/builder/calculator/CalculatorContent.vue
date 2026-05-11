@@ -779,6 +779,10 @@ function selectField(field: IField) {
   builderStore.setSelectedField(field.alias);
   setBuilderSidebarContent();
   builderStore.setBuilderContent("calculator");
+
+  if (builderStore.getSidebarCollapse) {
+    builderStore.setSidebarCollapse(false);
+  }
 }
 
 function openSectionSettings(section: ISection) {
@@ -786,6 +790,9 @@ function openSectionSettings(section: ISection) {
   builderStore.setSelectedField(section.alias);
   builderStore.setSidebarContent("builder");
   setBuilderSidebarContent();
+  if (builderStore.getSidebarCollapse) {
+    builderStore.setSidebarCollapse(false);
+  }
   builderStore.setBuilderContent("calculator");
 }
 

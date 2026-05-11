@@ -1,39 +1,46 @@
 <template>
   <div class="ccb-single-timePicker">
-    <VueDatePicker
-      v-model="time"
-      time-picker
-      :is-24="format"
-      minutes-grid-increment="5"
-      placeholder="hh:mm"
-    >
-      <template #input-icon>
-        <i class="ccb-icon-timepicker-light-clock"></i>
-      </template>
-    </VueDatePicker>
+    <div class="ccb-single-timePicker__input">
+      <i class="ccb-icon-timepicker-light-clock"></i>
+      <span>{{ displayValue }}</span>
+      <i class="ccb-icon-Path-3485 ccb-single-timePicker__chevron"></i>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from "vue";
-import VueDatePicker from "@vuepic/vue-datepicker";
-import "@vuepic/vue-datepicker/dist/main.css";
+import { computed, ref, watch } from "vue";
 import { useCallbackStore } from "@/widget/app/providers/stores/callbackStore.ts";
 import { useAppearanceColors } from "@/admin/shared/utils/useAppearanceColors";
-const { textColor } = useAppearanceColors();
+import useAppearanceTypography from "@/admin/shared/utils/useAppearanceTypography";
+const {
+  textColor,
+  borderColor,
+  formFieldsColor,
+  borderRadius,
+  borderWidth,
+  borderStyle,
+} = useAppearanceColors();
+const { fieldsBtnFontSize, fieldsBtnFontWeight } = useAppearanceTypography();
 
 const callbackStore = useCallbackStore();
 
+type TimeValue = {
+  hours: number;
+  minutes: number;
+  seconds: number;
+};
+
 const props = defineProps<{
   format: boolean;
-  modelValue: { hours: number; minutes: number; seconds: number } | null;
+  modelValue: TimeValue | null;
 }>();
 
 const emit = defineEmits(["update:modelValue"]);
 
-const time = ref<Date | { hours: number; minutes: number; seconds: number }>(
-  props.modelValue || new Date(),
-);
+const time = ref<TimeValue>(props.modelValue || getCurrentTime());
+
+const displayValue = computed(() => formatTime(time.value));
 
 watch(time, (newTime) => {
   if (newTime) {
@@ -60,12 +67,63 @@ callbackStore.add("updateSingleTimePicker", (val: string) => {
     seconds: 0,
   };
 });
+
+function formatTime(value: TimeValue) {
+  const minutes = value.minutes.toString().padStart(2, "0");
+
+  if (props.format) {
+    return `${value.hours.toString().padStart(2, "0")}:${minutes}`;
+  }
+
+  const period = value.hours >= 12 ? "PM" : "AM";
+  const hours = value.hours % 12 || 12;
+  return `${hours}:${minutes} ${period}`;
+}
+
+function getCurrentTime() {
+  const now = new Date();
+
+  return {
+    hours: now.getHours(),
+    minutes: now.getMinutes(),
+    seconds: 0,
+  };
+}
 </script>
 
 <style lang="scss">
 .ccb-single-timePicker {
-  max-width: 162px;
   pointer-events: none;
   color: v-bind(textColor);
+
+  &__input {
+    width: 100%;
+    min-height: var(--ccb-field-button-height);
+    padding: 0 var(--ccb-field-side-indent);
+    padding-left: max(35px, var(--ccb-field-side-indent));
+    border: v-bind(borderWidth) v-bind(borderStyle) v-bind(borderColor);
+    border-radius: v-bind(borderRadius);
+    background: v-bind(formFieldsColor);
+    color: v-bind(textColor);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: v-bind(fieldsBtnFontSize);
+    font-weight: v-bind(fieldsBtnFontWeight);
+    position: relative;
+    box-sizing: border-box;
+
+    .ccb-icon-timepicker-light-clock {
+      position: absolute;
+      left: 12px;
+      font-size: 16px;
+    }
+  }
+
+  &__chevron {
+    margin-left: auto;
+    font-size: 10px;
+    opacity: 0.65;
+  }
 }
 </style>

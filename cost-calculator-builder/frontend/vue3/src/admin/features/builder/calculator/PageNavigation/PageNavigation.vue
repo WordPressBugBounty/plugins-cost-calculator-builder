@@ -114,6 +114,10 @@ function onSelectNavigation() {
   builderStore.setSelectedField(null);
   builderStore.setPageNavigationSelected(true);
   builderStore.setSidebarContent("builder");
+  builderStore.setBuilderContent("calculator");
+  if (builderStore.getSidebarCollapse) {
+    builderStore.setSidebarCollapse(false);
+  }
 }
 
 // ── Drag-hover page switching ──────────────────────────────────────────

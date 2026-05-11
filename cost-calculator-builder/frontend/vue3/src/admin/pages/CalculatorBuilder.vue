@@ -80,12 +80,9 @@
               size="m"
               type="green-ghost"
               iconLeft="ccb-icon-ic_embed"
-              :active="true"
-              :onClick="
-                () => {
-                  isEmbedPopupOpen = true;
-                }
-              "
+              :active="canOpenEmbed"
+              :disabled="!canOpenEmbed"
+              :onClick="handleEmbedClick"
             />
             <Button
               v-if="false"
@@ -240,6 +237,15 @@ const saveButtonType = computed(() => {
   if (isBuilderPage.value && isDirty.value) return "green" as const;
   return "green" as const;
 });
+
+const canOpenEmbed = computed(
+  () => calculatorStore.getIsSaved && !isSaving.value,
+);
+
+const handleEmbedClick = (): void => {
+  if (!canOpenEmbed.value) return;
+  isEmbedPopupOpen.value = true;
+};
 
 const handleSave = async (): Promise<void> => {
   isSaving.value = true;

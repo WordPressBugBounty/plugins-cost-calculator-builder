@@ -6,7 +6,7 @@ Tags: cost calculator, calculator, calculator form builder, cost estimation, shi
 Requires at least: 6.2
 Requires PHP: 8.0.3
 Tested up to: 6.9.4
-Stable tag: 4.0.1
+Stable tag: 4.0.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -207,6 +207,12 @@ Also, you can import the demo sample using Tools -> Import -> WordPress Import.
 Demo sample XML file included in plugin archive.
 
 == Changelog ==
+
+= 4.0.2 =
+- Enhancement: Updated the design of the Date Picker. (PRO)
+- Enhancement: Updated the design of the Time Picker. (PRO)
+- Fix: Fixed collapsing the sidebar in Total Summary also collapsing the sidebar in the calculator builder.
+- Fix: Fixed Embed button being active before the calculator is saved.
 
 = 4.0.1 =
 - Fix: Minor bugfixes.

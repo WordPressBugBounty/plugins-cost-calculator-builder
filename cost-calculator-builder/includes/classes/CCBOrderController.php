@@ -112,12 +112,16 @@ class CCBOrderController {
 
 		self::validate( $data );
 
-		if ( empty( $data['id'] ) && empty( $data['totals'] ) && empty( $data['orderDetails'] ) ) {
+		if ( empty( $data['id'] ) && empty( $data['orderDetails'] ) ) {
 			wp_send_json( $result );
 		}
 
 		if ( ccb_pro_active() ) {
 			$data = CCBCalculator::validate_totals( $data );
+
+			if ( false === $data ) {
+				wp_send_json( $result );
+			}
 		}
 
 		$payment_method = $data['paymentMethod'] ?? '';
@@ -451,6 +455,14 @@ class CCBOrderController {
 
 		$data     = (array) json_decode( stripslashes( $data ), true );
 		$order_id = $data['orderId'] ?? null;
+
+		if ( isset( $data['calcTotals'] ) ) {
+			unset( $data['calcTotals'] );
+		}
+
+		if ( isset( $data['otherTotals'] ) ) {
+			unset( $data['otherTotals'] );
+		}
 
 		if ( is_null( $order_id ) ) {
 			wp_send_json(

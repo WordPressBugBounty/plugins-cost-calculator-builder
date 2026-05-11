@@ -127,6 +127,9 @@ const activeContent = computed(() => {
 
 async function handleTotalSummary() {
   const canLeave = await beforeLeaveOrderForm("total-summary");
+  if (builderStore.getSidebarCollapse) {
+    builderStore.setSidebarCollapse(false);
+  }
   if (!canLeave) return;
   builderStore.setBuilderContent("total-summary");
 }

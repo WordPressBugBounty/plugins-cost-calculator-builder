@@ -498,6 +498,7 @@ class CCBCalculatorsHandler {
 				'builder' => ! empty( $stm_fields ) ? $stm_fields : array(),
 				'fields'  => CCBFieldsHelper::fields(),
 			);
+			$result['saved']              = (bool) get_post_meta( $calc_id, 'calc_saved', true );
 
 			$all_forms = Forms::get_all_forms();
 			if ( empty( $all_forms ) ) {

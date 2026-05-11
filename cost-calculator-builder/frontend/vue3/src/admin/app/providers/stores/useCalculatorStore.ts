@@ -14,6 +14,7 @@ import { contactFormList } from "@/admin/features/settings/sections/consts/setti
 interface ICalculatorStore {
   title: string;
   id?: number;
+  isSaved: boolean;
   requestLoader: boolean;
 }
 
@@ -21,12 +22,14 @@ export const useCalculatorStore = defineStore("calculator_store", {
   state: (): ICalculatorStore => ({
     title: "",
     id: undefined,
+    isSaved: false,
     requestLoader: false,
   }),
 
   getters: {
     getTitle: (state: ICalculatorStore): string => state.title,
     getId: (state: ICalculatorStore): number | undefined => state.id,
+    getIsSaved: (state: ICalculatorStore): boolean => state.isSaved,
     getRequestLoader: (state: ICalculatorStore): boolean => state.requestLoader,
   },
 
@@ -41,6 +44,10 @@ export const useCalculatorStore = defineStore("calculator_store", {
 
     setId(id: number): void {
       this.id = id;
+    },
+
+    setIsSaved(isSaved: boolean): void {
+      this.isSaved = isSaved;
     },
 
     async getCalculatorAdminData(id: number): Promise<void> {
@@ -66,6 +73,7 @@ export const useCalculatorStore = defineStore("calculator_store", {
         if (response.data?.calculator_builder) {
           this.setTitle(response.data.calculator_builder.title);
           this.setId(+response.data.calculator_builder.id);
+          this.setIsSaved(Boolean(response.data.saved));
           builderStore.initBuilder(response.data.calculator_builder);
         }
         settingsStore.setSettings(response.data.settings);
@@ -139,6 +147,7 @@ export const useCalculatorStore = defineStore("calculator_store", {
       });
 
       if (response.success) {
+        this.setIsSaved(true);
         settingsStore.setSettings(response.data.settings);
         totalSummaryStore.setTotalSummary(response.data.total_summary);
 

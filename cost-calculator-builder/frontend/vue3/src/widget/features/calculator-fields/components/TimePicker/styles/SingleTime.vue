@@ -1,24 +1,13 @@
 <template>
   <div class="ccb-single-timePicker">
-    <VueDatePicker
-      v-model="time"
-      time-picker
-      :is-24="format"
-      minutes-grid-increment="5"
-      placeholder="hh:mm"
-    >
-      <template #input-icon>
-        <i class="ccb-icon-timepicker-light-clock"></i>
-      </template>
-    </VueDatePicker>
+    <TimeDropdown v-model="time" :format="format" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, watch, defineEmits, defineProps } from "vue";
-import VueDatePicker from "@vuepic/vue-datepicker";
-import "@vuepic/vue-datepicker/dist/main.css";
+import { ref, watch } from "vue";
 import { useCallbackStore } from "@/widget/app/providers/stores/callbackStore.ts";
+import TimeDropdown from "./TimeDropdown.vue";
 
 const callbackStore = useCallbackStore();
 
@@ -29,8 +18,8 @@ const props = defineProps<{
 
 const emit = defineEmits(["update:modelValue"]);
 
-const time = ref<Date | { hours: number; minutes: number; seconds: number }>(
-  props.modelValue || new Date(),
+const time = ref<{ hours: number; minutes: number; seconds: number }>(
+  props.modelValue || getCurrentTime(),
 );
 
 watch(time, (newTime) => {
@@ -38,6 +27,15 @@ watch(time, (newTime) => {
     emit("update:modelValue", newTime);
   }
 });
+
+watch(
+  () => props.modelValue,
+  (newTime) => {
+    if (newTime) {
+      time.value = newTime;
+    }
+  },
+);
 
 callbackStore.add("updateSingleTimePicker", (val: string) => {
   if (!val) return;
@@ -58,10 +56,14 @@ callbackStore.add("updateSingleTimePicker", (val: string) => {
     seconds: 0,
   };
 });
-</script>
 
-<style lang="scss">
-.ccb-single-timePicker {
-  max-width: 162px;
+function getCurrentTime() {
+  const now = new Date();
+
+  return {
+    hours: now.getHours(),
+    minutes: now.getMinutes(),
+    seconds: 0,
+  };
 }
-</style>
+</script>

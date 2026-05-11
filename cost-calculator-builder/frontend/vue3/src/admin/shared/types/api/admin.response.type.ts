@@ -62,6 +62,7 @@ export interface IGetCalculatorAdminDataResponse {
     appearance: IAppearanceData;
     discounts?: IDiscountsCollection;
     contact_forms?: { id: number; title: string }[];
+    saved?: boolean;
   };
 }
 
