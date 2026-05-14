@@ -312,39 +312,45 @@ class CCBExportImport {
 	}
 
 	public static function export_calculators() {
-		if ( wp_verify_nonce( $_REQUEST['ccb_nonce'], 'ccb_export_nonce' ) ) {
-			if ( ! empty( $_GET['calculator_ids'] ) ) {
-				$ids         = explode( ',', $_GET['calculator_ids'] );
-				$calculators = CCBCalculators::getWPCalculatorsWithIdsData( $ids );
-				$data        = self::parse_export_data( $calculators, array() );
-			} else {
-				$calculators = CCBCalculators::getWPCalculatorsData();
-				/** return if no calculators data */
-				if ( count( $calculators ) <= 0 ) {
-					wp_send_json(
-						array(
-							'success' => true,
-							'message' => 'There is no calculators yet!',
-						)
-					);
-					die();
-				}
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( array( 'message' => 'forbidden' ), 403 );
+		}
 
-				$categories = CCBCategory::calc_categories_list();
-				$data       = self::parse_export_data( $calculators, $categories );
+		if ( ! isset( $_REQUEST['ccb_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['ccb_nonce'] ) ), 'ccb_export_nonce' ) ) {
+			wp_send_json_error( array( 'message' => 'bad nonce' ), 400 );
+		}
+
+		if ( ! empty( $_GET['calculator_ids'] ) ) {
+			$ids         = explode( ',', sanitize_text_field( wp_unslash( $_GET['calculator_ids'] ) ) );
+			$calculators = CCBCalculators::getWPCalculatorsWithIdsData( $ids );
+			$data        = self::parse_export_data( $calculators, array() );
+		} else {
+			$calculators = CCBCalculators::getWPCalculatorsData();
+			/** return if no calculators data */
+			if ( count( $calculators ) <= 0 ) {
+				wp_send_json(
+					array(
+						'success' => true,
+						'message' => 'There is no calculators yet!',
+					)
+				);
+				die();
 			}
 
-			$data     = wp_json_encode( $data );
-			$filename = 'cost_calculator_data_' . date( 'mdYhis' ) . '.txt'; //phpcs:ignore
-
-			header( 'Content-Description: File Transfer' );
-			header( 'Content-Disposition: attachment; filename=' . $filename );
-			header( 'Content-Type: text/xml; charset=' . get_option( 'blog_charset' ), true );
-
-			echo sanitize_without_tag_clean( $data ); //phpcs:ignore
-
-			die();
+			$categories = CCBCategory::calc_categories_list();
+			$data       = self::parse_export_data( $calculators, $categories );
 		}
+
+		$data     = wp_json_encode( $data );
+		$filename = 'cost_calculator_data_' . date( 'mdYhis' ) . '.txt'; //phpcs:ignore
+
+		header( 'Content-Description: File Transfer' );
+		header( 'Content-Disposition: attachment; filename=' . $filename );
+		header( 'Content-Type: text/xml; charset=' . get_option( 'blog_charset' ), true );
+
+		echo sanitize_without_tag_clean( $data ); //phpcs:ignore
+
+		die();
 	}
 
 	public static function parse_export_data( $calculators, $categories ) {

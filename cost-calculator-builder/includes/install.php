@@ -22,6 +22,10 @@ function ccb_add_nonces() {
 }
 
 function ccb_add_admin_nonces() {
+	if ( ! current_user_can( 'edit_pages' ) ) {
+		return;
+	}
+
 	$variables = array(
 		'ccb_ajax_add_feedback'         => wp_create_nonce( 'ccb_ajax_add_feedback' ),
 		'ccb_create_id'                 => wp_create_nonce( 'ccb_create_id' ),
@@ -78,7 +82,6 @@ function ccb_add_admin_nonces() {
 		'ccb_send_code'                 => wp_create_nonce( 'ccb_send_code' ),
 		'ccb_save_invoice_logo'         => wp_create_nonce( 'ccb_save_invoice_logo' ),
 		'ccb_save_email_logo'           => wp_create_nonce( 'ccb_save_email_logo' ),
-		'ccb_export_nonce'              => wp_create_nonce( 'ccb_export_nonce' ),
 		'ccb_webhook_nonce'             => wp_create_nonce( 'ccb_webhook_nonce' ),
 		'ccb_wp_hook_nonce'             => wp_create_nonce( 'ccb_wp_hook_nonce' ),
 		'ccb_rollback_nonce'            => wp_create_nonce( 'ccb_rollback_nonce' ),
@@ -133,6 +136,10 @@ function ccb_add_admin_nonces() {
 	);
 
 	$variables = array_merge( $variables, $new_variables );
+
+	if ( current_user_can( 'manage_options' ) ) {
+		$variables['ccb_export_nonce'] = wp_create_nonce( 'ccb_export_nonce' );
+	}
 
 	echo ( '<script type="text/javascript">window.ccb_nonces = ' . json_encode( $variables ) . ';</script>' ); //phpcs:ignore
 	echo ( '<script type="text/javascript">window.ccb_frontend_nonces = ' . json_encode( ccb_get_nonces() ) . ';</script>' ); //phpcs:ignore

@@ -49,6 +49,7 @@
         v-for="element in getPageElements"
         :key="element.alias"
         class="ccb-sidebar__node vue-flow__node-input"
+        :class="{ 'ccb-sidebar__node--group-child': element.isGroupElement }"
         :draggable="true"
         @dragstart="onDragStart($event, 'input', element)"
       >
@@ -58,7 +59,10 @@
         <div class="ccb-sidebar__node_title-box">
           <div class="ccb-sidebar__node_title">{{ element.label }}</div>
           <div class="ccb-sidebar__node_title-description">
-            [{{ element.alias }}]
+            <span class="ccb-sidebar__node_alias">[{{ element.alias }}]</span>
+            <span v-if="element.isGroupElement" class="ccb-sidebar__node_badge">
+              Group item
+            </span>
           </div>
         </div>
       </div>
@@ -85,6 +89,7 @@ import useDragAndDrop from "@/admin/features/conditions/composable/useDnD";
 import { Text } from "@/admin/shared/ui/UIKit";
 import { useBuilderStore } from "@/admin/app/providers/stores/useBuilderStore";
 import { useBuilderTranslationsStore } from "@/admin/app/providers/stores/useTranslationsStore";
+import type { IField, IGroupField } from "@/admin/shared/types/fields.type";
 
 const conditionsStore = useConditionsStore();
 const translationsStore = useBuilderTranslationsStore();
@@ -143,15 +148,48 @@ watch(pages, () => {
 
 const HIDDEN_ALIASES = ["repeater"];
 
-const getPageElements = computed(() => {
+type SidebarElement = IField & {
+  isGroupElement?: boolean;
+};
+
+function getAliasPrefix(alias: string): string {
+  return alias.replace(/_field_id.*/, "");
+}
+
+function isGroupField(field: IField): field is IGroupField {
+  return (
+    getAliasPrefix(field.alias) === "group" &&
+    "groupElements" in field &&
+    Array.isArray(field.groupElements)
+  );
+}
+
+function isVisibleElement(field: IField): boolean {
+  return !HIDDEN_ALIASES.includes(getAliasPrefix(field.alias));
+}
+
+const getPageElements = computed<SidebarElement[]>(() => {
   const builderStore = useBuilderStore();
   if (!activePage.value) {
     return [];
   }
-  return builderStore.getPageElementsById(activePage.value).filter((el) => {
-    const prefix = el.alias.replace(/_field_id.*/, "");
-    return !HIDDEN_ALIASES.includes(prefix);
-  });
+
+  return builderStore
+    .getPageElementsById(activePage.value)
+    .flatMap((element) =>
+      isGroupField(element)
+        ? [
+            element as SidebarElement,
+            ...element.groupElements.map(
+              (groupElement): SidebarElement => ({
+                ...groupElement,
+                isGroupElement: true,
+              }),
+            ),
+          ]
+        : [element as SidebarElement],
+    )
+    .filter(isVisibleElement);
 });
 </script>
 
@@ -332,6 +370,27 @@ const getPageElements = computed(() => {
     border-radius: 12px;
     border: 1px solid rgba(0, 0, 0, 0.06);
     background: var(--ccb-input-normal);
+    position: relative;
+
+    &--group-child {
+      width: calc(100% - 24px);
+      margin-left: 24px;
+      border-style: dashed;
+      border-color: rgba(0, 122, 255, 0.22);
+      background: rgba(0, 122, 255, 0.03);
+
+      &::before {
+        content: "";
+        position: absolute;
+        left: -14px;
+        top: -4px;
+        width: 14px;
+        height: 33px;
+        border-left: 1px solid rgba(0, 122, 255, 0.24);
+        border-bottom: 1px solid rgba(0, 122, 255, 0.24);
+        border-radius: 0 0 0 8px;
+      }
+    }
 
     &_icon {
       width: 32px;
@@ -370,7 +429,9 @@ const getPageElements = computed(() => {
     }
 
     &_title-description {
-      overflow: hidden;
+      display: flex;
+      align-items: center;
+      column-gap: 6px;
       color: var(--ccb-font-comment);
 
       font-size: 12px;
@@ -383,6 +444,23 @@ const getPageElements = computed(() => {
       overflow: hidden;
       max-width: 200px;
       text-overflow: ellipsis;
+    }
+
+    &_alias {
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    &_badge {
+      flex-shrink: 0;
+      border-radius: 99px;
+      background: var(--ccb-blue-bg-dull-normal);
+      color: var(--ccb-blue-fg-normal);
+      font-size: 10px;
+      font-weight: 600;
+      line-height: 14px;
+      padding: 1px 6px;
+      text-indent: 0;
     }
   }
 }
