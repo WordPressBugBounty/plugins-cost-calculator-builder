@@ -117,6 +117,7 @@ function applyConditionForField(fieldAlias: string): void {
   const singleFieldMixins = useSingleField();
 
   const affectedFields = Object.keys(conditionsStore.conditions[fieldAlias]);
+
   const triggerField: Field | undefined = fieldStore.getField(fieldAlias);
 
   if (!triggerField) return;

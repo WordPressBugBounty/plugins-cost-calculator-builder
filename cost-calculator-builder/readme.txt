@@ -4,9 +4,9 @@ Contributors: Stylemix
 Donate link: https://stylemixthemes.com
 Tags: cost calculator, calculator, calculator form builder, cost estimation, shipping calculator, taxi fare calculator, price calculator, tax calculation, cost, calc, cost calc, calc builder
 Requires at least: 6.2
-Requires PHP: 8.0.3
-Tested up to: 6.9.4
-Stable tag: 4.0.3
+Requires PHP: 8.3
+Tested up to: 7.0
+Stable tag: 4.0.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -207,6 +207,24 @@ Also, you can import the demo sample using Tools -> Import -> WordPress Import.
 Demo sample XML file included in plugin archive.
 
 == Changelog ==
+
+= 4.0.4 =
+- Update: Compatibility with WordPress 7.0
+- Update: Compatibility with PHP 8.3
+- Fix: Conditions are not working with elements from Group [PRO]
+- Fix: Discount text size is too big in the email [PRO]
+- Fix: There is an option to choose different payments when only the WooCommerce method is available [PRO]
+- Fix: Time picker. There is no maximum value limit in the Hours/Minutes field [PRO]
+- Fix: Time picker. Elements go out of the interface bounds on the mobile version of the calculator [PRO]
+- Fix: Date picker. The Calculate disable days option does not count disabled days [PRO]
+- Fix: Date picker. Specific Dates -> Next option: when increasing values using mouse scroll, the entire page scrolls to the top [PRO]
+- Fix: Date picker. Block from today option. It is impossible to remove days that were added as disabled via the calendar widget [PRO]
+- Fix: Date picker. It is possible to enter negative values into the Next field [PRO]
+- Fix: Date picker. The element is located close to the edge [PRO]
+- Fix: Date picker. The interface shrinks at 50% element size [PRO]
+- Fix: Date picker. The text almost completely blends into the background on the dark theme due to its color [PRO]
+- Fix: Time picker. It is possible to enter text into the Hours/Minutes field [PRO]
+- Fix: Date picker. There is a white element in the calendar widget interface on the dark theme [PRO]
 
 = 4.0.3 =
 - Fix: All elements inside a Group are not displayed in the Conditions [PRO].

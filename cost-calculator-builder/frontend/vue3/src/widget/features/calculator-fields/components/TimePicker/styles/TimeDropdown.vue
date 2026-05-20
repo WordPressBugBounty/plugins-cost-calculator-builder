@@ -300,6 +300,10 @@ onBeforeUnmount(() => {
       font-weight: var(--ccb-mobile-fields-button-weight);
     }
 
+    @media (max-width: 480px) {
+      padding-right: 0px;
+    }
+
     &--focus {
       border-color: var(--ccb-accent-color);
       box-shadow: 0 0 0 4px
@@ -323,6 +327,10 @@ onBeforeUnmount(() => {
     &--open {
       transform: rotate(180deg);
     }
+
+    @media (max-width: 480px) {
+      display: none;
+    }
   }
 
   &__panel {
@@ -338,6 +346,11 @@ onBeforeUnmount(() => {
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.16);
     box-sizing: border-box;
     width: 320px;
+
+    @media (max-width: 480px) {
+      width: 100%;
+      min-width: 200px;
+    }
   }
 
   &__header {
@@ -371,6 +384,10 @@ onBeforeUnmount(() => {
 
     &--24 {
       grid-template-columns: 1fr 1fr;
+    }
+
+    @media (max-width: 480px) {
+      grid-template-columns: 1fr 1fr 76px;
     }
   }
 

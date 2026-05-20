@@ -1,28 +1,31 @@
 <template>
-  <div
-    class="ccb-payments"
-    :class="{ 'is-live': appStore.getIsLive }"
-    v-if="paymentsStatus"
-    style="width: 100%"
-  >
-    <div class="ccb-payments__title">
-      {{ translationsStore.getTranslations.paymentMethods }}
-      <ProBadge />
+  <WoocommerceButton v-if="onlyWooCommerce" />
+  <div v-else style="width: 100%">
+    <div
+      class="ccb-payments"
+      :class="{ 'is-live': appStore.getIsLive }"
+      v-if="paymentsStatus"
+      style="width: 100%"
+    >
+      <div class="ccb-payments__title">
+        {{ translationsStore.getTranslations.paymentMethods }}
+        <ProBadge />
+      </div>
+      <div class="ccb-payments__list">
+        <PaymentMethod
+          v-for="p in getPayments"
+          :type="p"
+          :key="p"
+          :name="getName"
+        />
+      </div>
     </div>
-    <div class="ccb-payments__list">
-      <PaymentMethod
-        v-for="p in getPayments"
-        :type="p"
-        :key="p"
-        :name="getName"
-      />
-    </div>
+    <OrderForm
+      style="padding-top: 20px"
+      v-if="!payment && paymentsStatus && !paymentAfterSubmitStatus"
+      :payment="true"
+    />
   </div>
-  <OrderForm
-    style="padding-top: 20px"
-    v-if="!payment && paymentsStatus && !paymentAfterSubmitStatus"
-    :payment="true"
-  />
 </template>
 
 <script setup lang="ts">
@@ -36,6 +39,7 @@ import OrderForm from "@/widget/features/submission/order-form";
 import { useAppStore } from "@/widget/app/providers/stores/appStore";
 import { useMainStore } from "@/widget/app/providers/stores/mainStore.ts";
 import { usePaymentAfterSubmitStore } from "@/widget/app/providers/stores/paymentAfterSubmit.ts";
+import WoocommerceButton from "@/widget/features/submission/payments/payment-types/WoocommerceButton.vue";
 
 type Props = {
   payment?: boolean;
@@ -108,6 +112,14 @@ const getPayments = computed(() => {
   }
 
   return payments;
+});
+
+const onlyWooCommerce = computed(() => {
+  return (
+    getPayments.value.length === 1 &&
+    getPayments.value[0] === "woocommerce" &&
+    !paymentAfterSubmitStatus.value
+  );
 });
 
 const paymentsStatus = computed(() => {

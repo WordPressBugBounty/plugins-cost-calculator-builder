@@ -141,7 +141,7 @@
                 label="Calculate disabled days"
                 size="m"
                 weight="medium"
-                v-model="draft.calculate_unselectable_days"
+                v-model="draft.calculateUnselectableDays"
               />
             </div>
           </template>
@@ -201,7 +201,10 @@
               <input
                 type="number"
                 class="ccb-date-input__input"
+                min="0"
                 v-model="draft.days_from_current"
+                @input="normalizeDaysFromCurrent"
+                @wheel="preventNumberInputWheel"
               />
               <Text
                 text="days from current day"
@@ -216,6 +219,7 @@
               v-model="draft.not_allowed_dates.period"
               add-button-label="Add Period"
               :min-rows="1"
+              :clear-on-min-rows-remove="true"
             />
           </div>
         </div>
@@ -365,7 +369,6 @@ interface IDatePickerDraft {
   days_from_current: number;
   day_price_enabled: boolean;
   day_price: number;
-  calculate_unselectable_days: boolean;
   not_allowed_dates: {
     period: Array<{ start: string | null; end: string | null }>;
     all_past: boolean;
@@ -393,7 +396,7 @@ const draft = reactive<IDatePickerDraft>({
   addToSummary: true,
   day_price_enabled: false,
   day_price: 0,
-  calculate_unselectable_days: false,
+  calculateUnselectableDays: false,
   allowCurrency: false,
   calculateHidden: false,
   hidden: false,
@@ -401,7 +404,6 @@ const draft = reactive<IDatePickerDraft>({
   hasUnselectable: false,
   notAllowedWeekDays: [],
   autocloseEnabled: false,
-  calculateUnselectableDays: false,
   is_have_unselectable: false,
   not_allowed_dates: {
     period: [{ start: null, end: null }],
@@ -459,6 +461,14 @@ const normalizeWeekDays = (values: unknown): number[] => {
     .filter((value) => Number.isInteger(value) && value >= 1 && value <= 7);
 };
 
+const normalizeDaysFromCurrent = (): void => {
+  draft.days_from_current = Math.max(0, Number(draft.days_from_current) || 0);
+};
+
+const preventNumberInputWheel = (event: WheelEvent): void => {
+  event.preventDefault();
+};
+
 const syncDraftFromField = (): void => {
   const source = props.field as IField & {
     placeholder?: string;
@@ -478,7 +488,7 @@ const syncDraftFromField = (): void => {
       current?: boolean;
     };
     autoclose_enabled?: boolean;
-    calculate_unselectable_days?: boolean;
+    calculateUnselectableDays?: boolean;
     days_from_current?: number;
     required?: boolean;
     additionalClasses?: string;
@@ -508,9 +518,7 @@ const syncDraftFromField = (): void => {
   );
   draft.notAllowedWeekDays = normalizeWeekDays(source.not_allowed_week_days);
   draft.autocloseEnabled = Boolean(source.autoclose_enabled);
-  draft.calculate_unselectable_days = Boolean(
-    source.calculate_unselectable_days,
-  );
+  draft.calculateUnselectableDays = Boolean(source.calculateUnselectableDays);
   draft.is_have_unselectable = Boolean(source.is_have_unselectable);
   draft.day_price_enabled = Boolean(source.day_price_enabled);
   draft.day_price = Math.max(0, Number(source.day_price));

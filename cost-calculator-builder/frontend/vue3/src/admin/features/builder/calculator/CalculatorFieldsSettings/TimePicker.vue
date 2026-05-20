@@ -49,14 +49,16 @@
               <Input
                 label="Hours"
                 placeholder="hh"
-                v-model="draft.placeholderHours"
+                :only-digits="true"
+                v-model="placeholderHours"
               />
             </div>
             <div class="ccb-field-sidebar__col">
               <Input
                 label="Minutes"
                 placeholder="mm"
-                v-model="draft.placeholderTime"
+                :only-digits="true"
+                v-model="placeholderMinutes"
               />
             </div>
           </div>
@@ -150,7 +152,7 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, watch, ref } from "vue";
+import { computed, reactive, watch, ref } from "vue";
 import {
   Text,
   Input,
@@ -214,6 +216,36 @@ const fieldTabs = [
 ];
 
 const activeTab = ref<string>("element");
+const maxMinutes = 60;
+
+const normalizeHours = (
+  value: string | number,
+  is24HourFormat = draft.format,
+): string => {
+  const digits = String(value).replace(/\D+/g, "");
+  const maxHours = is24HourFormat ? 24 : 12;
+
+  return digits ? String(Math.min(Number(digits), maxHours)) : "";
+};
+
+const normalizeMinutes = (value: string | number): string => {
+  const digits = String(value).replace(/\D+/g, "");
+  return digits ? String(Math.min(Number(digits), maxMinutes)) : "";
+};
+
+const placeholderHours = computed({
+  get: () => draft.placeholderHours,
+  set: (value: string | number) => {
+    draft.placeholderHours = normalizeHours(value);
+  },
+});
+
+const placeholderMinutes = computed({
+  get: () => draft.placeholderTime,
+  set: (value: string | number) => {
+    draft.placeholderTime = normalizeMinutes(value);
+  },
+});
 
 useFieldWidthSync(() => props.field, draft);
 
@@ -254,9 +286,9 @@ const syncDraftFromField = (): void => {
   draft.width = clampWidth(source.width);
   draft.range =
     String(source.range ?? "0") === "1" || source.range === true ? "1" : "0";
-  draft.placeholderHours = String(source.placeholderHours || "");
-  draft.placeholderTime = String(source.placeholderTime || "");
   draft.format = Boolean(source.format);
+  draft.placeholderHours = normalizeHours(source.placeholderHours || "");
+  draft.placeholderTime = normalizeMinutes(source.placeholderTime || "");
   draft.addToSummary = Boolean(source.addToSummary);
   draft.useInterval = Boolean(source.use_interval);
   draft.minInterval = String(source.min_interval || "1h");
@@ -271,6 +303,13 @@ watch(
     suppressAutoSync(() => syncDraftFromField());
   },
   { immediate: true },
+);
+
+watch(
+  () => draft.format,
+  () => {
+    draft.placeholderHours = normalizeHours(draft.placeholderHours);
+  },
 );
 </script>
 

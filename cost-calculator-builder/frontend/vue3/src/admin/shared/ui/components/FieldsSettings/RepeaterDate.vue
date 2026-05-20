@@ -26,7 +26,7 @@
         <button
           class="ccb-fields-repeater-date__remove"
           type="button"
-          :disabled="rows.length <= minRows"
+          :disabled="isRemoveDisabled"
           :aria-label="translations.removePeriod"
           @click="removeRow(index)"
         >
@@ -70,12 +70,14 @@ const props = withDefaults(
     addButtonLabel?: string;
     minRows?: number;
     maxRows?: number;
+    clearOnMinRowsRemove?: boolean;
     name?: string;
   }>(),
   {
     addButtonLabel: "Add Period",
     minRows: 1,
     maxRows: 100,
+    clearOnMinRowsRemove: false,
     name: "",
   },
 );
@@ -89,6 +91,9 @@ const rows = ref<InternalRow[]>([]);
 const minRows = computed(() => Math.max(1, Number(props.minRows || 1)));
 const maxRows = computed(() =>
   Math.max(minRows.value, Number(props.maxRows || 100)),
+);
+const isRemoveDisabled = computed(
+  () => rows.value.length <= minRows.value && !props.clearOnMinRowsRemove,
 );
 const isInternalEmit = ref<boolean>(false);
 
@@ -166,7 +171,13 @@ const addRow = (): void => {
 };
 
 const removeRow = (index: number): void => {
-  if (rows.value.length <= minRows.value) return;
+  if (rows.value.length <= minRows.value) {
+    if (!props.clearOnMinRowsRemove || !rows.value[index]) return;
+    rows.value[index].value = null;
+    emitRows();
+    return;
+  }
+
   rows.value.splice(index, 1);
   emitRows();
 };

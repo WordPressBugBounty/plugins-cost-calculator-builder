@@ -512,9 +512,9 @@ export function createSectionField(data: ISourceField): ISectionField {
 export function createGroupField(data: ISourceField): IGroupField {
   const fieldsInstance = useFields();
   const groupElements: Map<string, Field> = new Map();
-
   const fields: ISourceField[] = data.groupElements || [];
   for (const field of fields) {
+    field.hidden = data.hidden || false;
     const createdField: Field = fieldsInstance.addField(field, 0, data.alias);
     if (createdField) {
       groupElements.set(field.alias, createdField);
@@ -529,6 +529,7 @@ export function createGroupField(data: ISourceField): IGroupField {
     collapsible: data.collapsible || false,
     icon: data.icon || "",
     showTitle: data.showTitle || false,
+    hidden: data.hidden || false,
   });
 }
 

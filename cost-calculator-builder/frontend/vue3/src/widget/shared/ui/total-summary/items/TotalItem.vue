@@ -139,6 +139,13 @@ const summaryLabel = computed(() => {
       margin-right: 8px;
     }
 
+    .name {
+      max-width: 150px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
     .value {
       margin-left: auto;
       white-space: nowrap;

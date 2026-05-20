@@ -327,10 +327,15 @@ callbackStore.add("updateDatePicker", updateValue);
 
   .dp--menu-wrapper {
     width: 100%;
+    min-width: 360px;
     left: 0 !important;
     color: var(--ccb-text-color) !important;
     max-width: 430px;
     border-radius: 4px;
+
+    @media (max-width: 480px) {
+      min-width: 200px;
+    }
   }
 
   .dp__active_date {
@@ -377,7 +382,7 @@ callbackStore.add("updateDatePicker", updateValue);
   }
 
   .dp__overlay_action {
-    background: #e4e7ea;
+    background: var(--ccb-date-picker-day);
     width: 96%;
     border-radius: 4px;
     margin: 0 auto;
@@ -419,6 +424,11 @@ callbackStore.add("updateDatePicker", updateValue);
     flex-direction: row;
     justify-content: flex-end;
     row-gap: 10px;
+
+    .dp__selection_preview {
+      padding-left: 10px;
+      color: var(--ccb-text-color);
+    }
 
     .dp__action_buttons {
       display: flex;

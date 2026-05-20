@@ -126,6 +126,12 @@ export const useFieldsStore = () => {
             ) {
               return f.displayValue;
             } else if (
+              f.fieldName === "geolocation" &&
+              "geoType" in f &&
+              f.geoType === "multiplyLocation"
+            ) {
+              return f.displayValue;
+            } else if (
               (f.fieldName === "datePicker" && f.displayValue.length > 0) ||
               (f.fieldName === "timePicker" && f.displayValue.length > 0)
             ) {
