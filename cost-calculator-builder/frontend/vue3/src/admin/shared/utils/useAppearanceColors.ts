@@ -96,6 +96,31 @@ export function useAppearanceColors() {
       `${appearanceStore.getActivePreset?.desktop?.colors?.data?.primary_color?.value || "#000000"}1D`,
   );
 
+  const buttonBordersData = computed(() => {
+    const desktop = appearanceStore.getActivePreset?.desktop as
+      | Record<string, unknown>
+      | undefined;
+    return (desktop?.borders as { data?: Record<string, any> } | undefined)
+      ?.data?.button_border?.data;
+  });
+
+  const buttonBorderRadius = computed(
+    () => `${buttonBordersData.value?.border_radius?.value ?? 12}px`,
+  );
+
+  const buttonBorderStyle = computed(
+    () => `${buttonBordersData.value?.border_type?.value ?? "solid"}`,
+  );
+
+  const buttonBorderWidth = computed(
+    () => `${buttonBordersData.value?.border_width?.value ?? 1}px`,
+  );
+
+  const buttonBorder = computed(
+    () =>
+      `${buttonBorderWidth.value} ${buttonBorderStyle.value} ${borderColor.value}`,
+  );
+
   const bordersData = computed(() => {
     const desktop = appearanceStore.getActivePreset?.desktop as
       | Record<string, unknown>
@@ -228,5 +253,9 @@ export function useAppearanceColors() {
     containerPaddingRight,
     containerPaddingBottom,
     containerPaddingLeft,
+    buttonBorderRadius,
+    buttonBorderStyle,
+    buttonBorderWidth,
+    buttonBorder,
   };
 }

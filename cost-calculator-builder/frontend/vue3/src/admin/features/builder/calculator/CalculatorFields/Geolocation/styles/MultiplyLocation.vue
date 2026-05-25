@@ -100,8 +100,14 @@ import { useTranslationsStore } from "@/widget/app/providers/stores/translations
 import { useCallbackStore } from "@/widget/app/providers/stores/callbackStore.ts";
 import { usePageBreakerStore } from "@/widget/app/providers/stores/pageBreakerStore.ts";
 import { useAppearanceColors } from "@/admin/shared/utils/useAppearanceColors";
-const { formFieldsColor, textColor, accentColor, borderWidth, borderStyle } =
-  useAppearanceColors();
+const {
+  formFieldsColor,
+  textColor,
+  accentColor,
+  buttonBorderRadius,
+  buttonBorderWidth,
+  buttonBorderStyle,
+} = useAppearanceColors();
 type Props = {
   field: IGeolocationField & {
     selectedPoint: { addressName?: string; coordinates?: any; label: string };
@@ -366,8 +372,9 @@ onMounted(() => {
     color: v-bind(accentColor);
     font-size: var(--ccb-fields-button-size);
     font-weight: var(--ccb-fields-button-weight);
-    border: v-bind(borderWidth) v-bind(borderStyle) v-bind(accentColor);
-    border-radius: var(--ccb-button-border-radius);
+    border: v-bind(buttonBorderWidth) v-bind(buttonBorderStyle)
+      v-bind(accentColor);
+    border-radius: v-bind(buttonBorderRadius);
     height: var(--ccb-field-button-height);
     padding: 0 15px 0 15px;
     cursor: pointer;

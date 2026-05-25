@@ -30,6 +30,7 @@
         @click="goBack"
       >
         {{ previousButtonLabel }}
+        <i class="ccb-icon-Arrow-Previous"></i>
       </button>
       <button
         class="ccb-page-actions__btn ccb-page-actions__btn--next"
@@ -39,6 +40,7 @@
         v-if="!isLastPage"
       >
         {{ nextButtonLabel }}
+        <i class="ccb-icon-Arrow-Previous"></i>
       </button>
     </div>
   </div>
@@ -130,6 +132,9 @@ const {
   containerShadow,
   containerBorder,
   containerBorderRadius,
+  buttonBorderRadius,
+  buttonBorderWidth,
+  buttonBorderStyle,
 } = useAppearanceColors();
 
 import { useAppearanceSpacing } from "@/admin/shared/utils/useAppearanceSpacing";
@@ -225,15 +230,22 @@ const { fieldsBtnFontSize, fieldsBtnFontWeight } = useAppearanceTypography();
     cursor: pointer;
     font-size: v-bind(fieldsBtnFontSize) !important;
     font-weight: v-bind(fieldsBtnFontWeight);
+
     line-height: normal;
-    padding: 16px 40px;
-    border-radius: 10px;
+    padding: 11px 20px;
+    border-radius: v-bind(buttonBorderRadius);
     transition: all 0.2s ease;
 
     &--back {
       background: transparent;
-      border: 1px solid v-bind(accentColor);
+      border: v-bind(buttonBorderWidth) v-bind(buttonBorderStyle)
+        v-bind(accentColor);
       color: v-bind(accentColor);
+      padding: 11px 20px;
+
+      i {
+        margin-left: 10px;
+      }
 
       &:hover:not(:disabled) {
         background: v-bind(accentColor);
@@ -255,6 +267,11 @@ const { fieldsBtnFontSize, fieldsBtnFontWeight } = useAppearanceTypography();
       background: v-bind(accentColor);
       color: v-bind(bgrColor);
       font-weight: 600;
+
+      i {
+        transform: rotate(180deg);
+        margin-left: 10px;
+      }
 
       &:hover {
         background: var(--ccb-green-bg-hover, #009a55);

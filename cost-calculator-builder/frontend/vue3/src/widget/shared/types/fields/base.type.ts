@@ -54,6 +54,7 @@ export interface IBaseField {
   fieldCurrencySettings?: CurrencyFormatOptions;
 
   width?: string;
+  rowBreak?: boolean;
 }
 
 export interface ISourceField {
@@ -206,6 +207,7 @@ export interface ISourceField {
 
   // section
   width?: string;
+  rowBreak?: boolean;
   defaultCollapsed?: boolean;
   showName?: boolean;
   fields?: ISourceField[];

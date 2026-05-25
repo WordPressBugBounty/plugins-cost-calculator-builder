@@ -519,7 +519,7 @@ const additionalClasses = computed(() => {
       margin: 0;
       border: none;
       flex: 1;
-      border-radius: var(--ccb-fields-border-radius);
+      border-radius: var(--ccb-button-border-radius);
       cursor: pointer;
       transition: 300ms ease;
       font-size: var(--ccb-fields-button-size);

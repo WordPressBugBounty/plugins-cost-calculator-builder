@@ -130,8 +130,13 @@ import { IFileUploadField } from "@/widget/shared/types/fields";
 import { useAppearanceStore } from "@/widget/app/providers/stores/appearanceStore.ts";
 import { useTranslationsStore } from "@/widget/app/providers/stores/translationsStore.ts";
 import { useAppearanceColors } from "@/admin/shared/utils/useAppearanceColors";
-const { borderColor, formFieldsColor, textColor, accentColor, containerColor } =
-  useAppearanceColors();
+const {
+  buttonBorderRadius,
+  formFieldsColor,
+  textColor,
+  accentColor,
+  containerColor,
+} = useAppearanceColors();
 
 const props = defineProps<{
   field: IFileUploadField;
@@ -392,7 +397,7 @@ const getAllowedFormats = computed(() => {
       margin: 0;
       border: none;
       flex: 1;
-      border-radius: var(--ccb-fields-border-radius);
+      border-radius: v-bind(buttonBorderRadius);
       cursor: pointer;
       transition: 300ms ease;
       font-size: var(--ccb-fields-button-size);
@@ -421,7 +426,6 @@ const getAllowedFormats = computed(() => {
     .upload-url {
       background: (v-bind(formFieldsColor));
       color: v-bind(textColor);
-      border: 1px solid v-bind(borderColor);
 
       &:hover {
         background: hsl(from v-bind(formFieldsColor) h s calc(l - 1));
@@ -449,7 +453,7 @@ const getAllowedFormats = computed(() => {
       margin: 0;
       border: none;
       flex: 1;
-      border-radius: var(--ccb-fields-border-radius);
+      border-radius: v-bind(buttonBorderRadius);
       cursor: pointer;
       transition: 300ms ease;
       font-size: var(--ccb-fields-button-size);

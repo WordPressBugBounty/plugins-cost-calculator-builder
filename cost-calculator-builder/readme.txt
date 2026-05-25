@@ -6,7 +6,7 @@ Tags: cost calculator, calculator, calculator form builder, cost estimation, shi
 Requires at least: 6.2
 Requires PHP: 8.3
 Tested up to: 7.0
-Stable tag: 4.0.4
+Stable tag: 4.0.5
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -207,6 +207,10 @@ Also, you can import the demo sample using Tools -> Import -> WordPress Import.
 Demo sample XML file included in plugin archive.
 
 == Changelog ==
+
+= 4.0.5 =
+- Enhancement: Fields now adjust automatically when you drag another field in the builder, so you can drop them next to fields of any width.
+- Fix: Border settings in Themes were not applying to some form elements, including Time Picker, File Upload, Page Navigation, Submit Order, PDF Download, Share Quote, and Geolocation fields.
 
 = 4.0.4 =
 - Update: Compatibility with WordPress 7.0

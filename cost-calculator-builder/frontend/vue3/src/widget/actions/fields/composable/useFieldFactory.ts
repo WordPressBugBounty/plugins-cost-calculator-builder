@@ -60,6 +60,7 @@ export function createField(
     fieldCurrency: data.fieldCurrency,
     useCurrency: data.allowCurrency || false,
     width: data.width || "100",
+    rowBreak: data.rowBreak === true,
   });
 }
 

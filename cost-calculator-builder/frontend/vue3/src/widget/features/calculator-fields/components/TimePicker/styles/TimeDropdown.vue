@@ -454,7 +454,7 @@ onBeforeUnmount(() => {
   &__period {
     flex: 1;
     border: 1px solid var(--ccb-fields-border-color);
-    border-radius: var(--ccb-fields-border-radius);
+    border-radius: var(--ccb-button-border-radius);
     font-size: var(--ccb-fields-button-size);
     font-weight: 700;
 
@@ -478,7 +478,7 @@ onBeforeUnmount(() => {
   &__confirm {
     min-height: 44px;
     padding: 10px 20px;
-    border-radius: var(--ccb-fields-border-radius);
+    border-radius: var(--ccb-button-border-radius);
     cursor: pointer;
     font-size: var(--ccb-fields-button-size);
     font-weight: var(--ccb-fields-button-weight);

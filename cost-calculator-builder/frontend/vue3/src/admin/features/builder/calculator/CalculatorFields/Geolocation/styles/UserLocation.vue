@@ -62,8 +62,6 @@ import { useCurrency } from "@/widget/actions/fields/composable/useCurrency.ts";
 import { useTranslationsStore } from "@/widget/app/providers/stores/translationsStore";
 import { usePageBreakerStore } from "@/widget/app/providers/stores/pageBreakerStore.ts";
 import { useAppearanceColors } from "@/admin/shared/utils/useAppearanceColors";
-const { formFieldsColor, textColor, accentColor, borderWidth, borderStyle } =
-  useAppearanceColors();
 
 type Props = {
   field: IGeolocationField;
@@ -461,6 +459,15 @@ onMounted(() => {
     initMap();
   }
 });
+
+const {
+  buttonBorderRadius,
+  buttonBorderWidth,
+  buttonBorderStyle,
+  formFieldsColor,
+  textColor,
+  accentColor,
+} = useAppearanceColors();
 </script>
 
 <style lang="scss" scoped>
@@ -546,8 +553,9 @@ onMounted(() => {
     color: v-bind(accentColor);
     font-size: var(--ccb-fields-button-size);
     font-weight: var(--ccb-fields-button-weight);
-    border: v-bind(borderWidth) v-bind(borderStyle) v-bind(accentColor);
-    border-radius: var(--ccb-button-border-radius);
+    border: v-bind(buttonBorderWidth) v-bind(buttonBorderStyle)
+      v-bind(accentColor);
+    border-radius: v-bind(buttonBorderRadius);
     height: var(--ccb-field-button-height);
     padding: 0 15px 0 15px;
     cursor: pointer;

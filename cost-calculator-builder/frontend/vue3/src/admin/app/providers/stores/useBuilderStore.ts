@@ -443,6 +443,7 @@ export const useBuilderStore = defineStore("builder_store", {
         clone._id = String(newId);
         clone.alias = original.alias.replace(/_\d+$/, "") + "_" + newId;
         clone.label = original.label + " (copy)";
+        clone.rowBreak = false;
 
         group.groupElements.splice(groupIndex + 1, 0, clone);
       } else {
@@ -453,6 +454,7 @@ export const useBuilderStore = defineStore("builder_store", {
         clone._id = String(newId);
         clone.alias = original.alias.replace(/_\d+$/, "") + "_" + newId;
         clone.label = original.label + " (copy)";
+        clone.rowBreak = false;
 
         if (
           "groupElements" in clone &&

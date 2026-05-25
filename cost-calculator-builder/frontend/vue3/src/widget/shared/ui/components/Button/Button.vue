@@ -55,9 +55,12 @@ const clickHandler = () => {
   outline: none;
   box-shadow: none;
   min-height: var(--ccb-field-button-height);
-  border-radius: var(--ccb-fields-border-radius);
   font-size: var(--ccb-fields-button-size);
   font-weight: var(--ccb-fields-button-weight);
+  border: var(--ccb-button-border) var(--ccb-button-border-style)
+    var(--ccb-accent-color);
+  border-radius: var(--ccb-button-border-radius);
+  height: var(--ccb-field-button-height);
 
   span {
     margin: 0 6px;
@@ -125,7 +128,7 @@ const clickHandler = () => {
   &.light {
     background: var(--ccb-fields-bg-color);
     color: var(--ccb-text-color);
-    border: 1px solid var(--ccb-fields-border-color);
+    border-color: var(--ccb-fields-border-color);
 
     &:hover {
       background: hsl(from var(--ccb-fields-bg-color) h s calc(l - 10));

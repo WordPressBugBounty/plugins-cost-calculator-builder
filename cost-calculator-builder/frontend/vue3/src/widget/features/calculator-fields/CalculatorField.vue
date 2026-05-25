@@ -1,17 +1,24 @@
 <template>
-  <div
-    class="ccb-field"
-    :class="['ccb_field_with_' + field.fieldName]"
-    :style="{ width: field.width ? field.width + '%' : '100%' }"
-    :data-id="field.alias"
-    :data-repeater="field.repeaterIdx"
-  >
-    <component
-      v-if="FieldComponent"
-      :is="FieldComponent"
-      :field="field"
-      :key="field.alias"
-    />
+  <div class="ccb-field-cell">
+    <div
+      v-if="field.rowBreak"
+      class="ccb-field-row-break"
+      aria-hidden="true"
+    ></div>
+    <div
+      class="ccb-field"
+      :class="['ccb_field_with_' + field.fieldName]"
+      :style="{ width: field.width ? field.width + '%' : '100%' }"
+      :data-id="field.alias"
+      :data-repeater="field.repeaterIdx"
+    >
+      <component
+        v-if="FieldComponent"
+        :is="FieldComponent"
+        :field="field"
+        :key="field.alias"
+      />
+    </div>
   </div>
 </template>
 
@@ -37,6 +44,19 @@ const FieldComponent = computed(() => {
 </script>
 
 <style lang="scss">
+.ccb-field-cell {
+  display: contents;
+}
+
+.ccb-field-row-break {
+  flex-basis: 100%;
+  width: 100%;
+  height: 0;
+  margin: calc(var(--ccb-field-spacing, 0px) * -1) 0 0 0;
+  padding: 0;
+  pointer-events: none;
+}
+
 .ccb-field {
   padding: 0 4px;
   box-sizing: border-box;

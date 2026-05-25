@@ -90,311 +90,393 @@
                 </template>
 
                 <div class="ccb-section__body" data-section-no-collapse>
-                  <VueDraggable
-                    v-model="section.fields"
-                    group="fields"
-                    :animation="200"
-                    handle=".ccb-field-item__drag-handle"
-                    ghostClass="ccb-field-item--ghost"
-                    class="ccb-section__fields"
-                    :class="{
-                      'ccb-section__fields--empty': section.fields.length === 0,
-                    }"
-                    @start="onDragStart"
-                    @end="onDragEnd"
-                  >
-                    <div
-                      v-for="field in getSectionFields(section.fields)"
-                      :key="getFieldKey(field)"
-                      class="ccb-field-item ccb-field ccb-disable-pointer-events"
-                      :class="[
-                        {
-                          'ccb-field-item--is-container':
-                            isContainerField(field),
-                          'ccb-field-item--selected': isFieldSelected(field),
-                          'ccb-field-item--resizing':
-                            resizingFieldAlias === field.alias,
-                        },
-                        `field-width-${field.width}`,
-                      ]"
-                      :data-field-type="field.type"
-                      :data-field-alias="field.alias"
-                      :style="{
-                        width: getFieldWidthStyle(field.width),
-                      }"
-                      @click.stop="selectField(field)"
-                    >
-                      <div class="ccb-field-item__controls">
-                        <button
-                          type="button"
-                          class="ccb-field-item__action"
-                          title="Duplicate field"
-                          @click.stop="duplicateField(field)"
-                        >
-                          <i class="ccb-icon-ic_duplicate"></i>
-                        </button>
-                        <button
-                          type="button"
-                          class="ccb-field-item__action ccb-field-item__action--danger"
-                          title="Delete field"
-                          @click.stop="deleteField(field)"
-                        >
-                          <i class="ccb-icon-ic_delete"></i>
-                        </button>
-                        <button
-                          type="button"
-                          class="ccb-field-item__action ccb-field-item__drag-handle"
-                          title="Drag field"
-                          @click.stop
-                        >
-                          <i class="ccb-icon-ic_drag"></i>
-                        </button>
-                      </div>
-
-                      <div
-                        v-if="!isContainerField(field) && !isTotalField(field)"
-                        class="ccb-field-item__resize-handle"
-                        @mousedown.stop="onResizeStart($event, field)"
-                      >
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                      </div>
-
-                      <!-- ── Repeater field ────────────────────── -->
-                      <template
-                        v-if="
-                          field.type === 'repeater' && isContainerField(field)
-                        "
-                      >
-                        <RepeaterComponent
-                          :field="field as unknown as IRepeaterField"
-                          :is-collapsed="containerCollapsed[getFieldId(field)]"
-                          @toggle-collapse="
-                            toggleContainerCollapse(getFieldId(field))
-                          "
-                        >
-                          <VueDraggable
-                            :modelValue="getGroupElements(field)"
-                            @update:modelValue="setGroupElements(field, $event)"
-                            :group="containerChildrenGroup"
-                            :animation="200"
-                            handle=".ccb-field-item__drag-handle"
-                            ghostClass="ccb-field-item--ghost"
-                            class="ccb-repeater-field__drop-zone"
-                            @start="onDragStart"
-                            @end="onDragEnd"
-                          >
-                            <div
-                              v-for="child in getGroupElements(field)"
-                              :key="getFieldKey(child)"
-                              class="ccb-field-item"
-                              :class="{
-                                'ccb-field-item--selected':
-                                  isFieldSelected(child),
-                                'ccb-field-item--resizing':
-                                  resizingFieldAlias === child.alias,
-                              }"
-                              :data-field-type="child.type"
-                              :data-field-alias="child.alias"
-                              :style="{
-                                width: child.width ? `${child.width}%` : '100%',
-                              }"
-                              @click.stop="selectField(child)"
-                            >
-                              <div class="ccb-field-item__controls">
-                                <button
-                                  type="button"
-                                  class="ccb-field-item__action"
-                                  title="Edit field"
-                                  @click.stop="openFieldSettings(child)"
-                                >
-                                  <i class="ccb-icon-ic_edit"></i>
-                                </button>
-                                <button
-                                  type="button"
-                                  class="ccb-field-item__action"
-                                  title="Duplicate field"
-                                  @click.stop="duplicateField(child)"
-                                >
-                                  <i class="ccb-icon-ic_duplicate"></i>
-                                </button>
-                                <button
-                                  type="button"
-                                  class="ccb-field-item__action ccb-field-item__action--danger"
-                                  title="Delete field"
-                                  @click.stop="deleteField(child)"
-                                >
-                                  <i class="ccb-icon-ic_delete"></i>
-                                </button>
-                                <button
-                                  type="button"
-                                  class="ccb-field-item__action ccb-field-item__drag-handle"
-                                  title="Drag field"
-                                  @click.stop
-                                >
-                                  <i class="ccb-icon-ic_drag"></i>
-                                </button>
-                              </div>
-
-                              <div
-                                class="ccb-field-item__resize-handle"
-                                @mousedown.stop="onResizeStart($event, child)"
-                              >
-                                <span></span>
-                                <span></span>
-                                <span></span>
-                              </div>
-
-                              <component
-                                v-if="resolveFieldComponent(child._tag)"
-                                :is="resolveFieldComponent(child._tag)"
-                                :field="child"
-                              />
-                              <div v-else class="ccb-field-item__fallback">
-                                <i v-if="child.icon" :class="child.icon"></i>
-                                <span>{{ child.label }}</span>
-                              </div>
-                            </div>
-                          </VueDraggable>
-
-                          <div
-                            v-if="getGroupElements(field).length === 0"
-                            class="ccb-repeater-field__placeholder"
-                          >
-                            Drag and drop elements here
-                          </div>
-                        </RepeaterComponent>
-                      </template>
-
-                      <!-- ── Container field (Group) ────────────── -->
-                      <template v-else-if="isContainerField(field)">
-                        <GroupComponent
-                          :field="field as unknown as IGroupField"
-                          :is-collapsed="containerCollapsed[getFieldId(field)]"
-                          @toggle-collapse="
-                            toggleContainerCollapse(getFieldId(field))
-                          "
-                        >
-                          <VueDraggable
-                            :modelValue="getGroupElements(field)"
-                            @update:modelValue="setGroupElements(field, $event)"
-                            :group="containerChildrenGroup"
-                            :animation="200"
-                            handle=".ccb-field-item__drag-handle"
-                            ghostClass="ccb-field-item--ghost"
-                            class="ccb-group__fields"
-                            :class="{
-                              'not-empty': getGroupElements(field).length > 0,
-                            }"
-                            @start="onDragStart"
-                            @end="onDragEnd"
-                          >
-                            <div
-                              v-for="child in getGroupElements(field)"
-                              :key="getFieldKey(child)"
-                              class="ccb-field-item"
-                              :class="{
-                                'ccb-field-item--selected':
-                                  isFieldSelected(child),
-                                'ccb-field-item--resizing':
-                                  resizingFieldAlias === child.alias,
-                              }"
-                              :data-field-type="child.type"
-                              :data-field-alias="child.alias"
-                              :style="{
-                                width: child.width ? `${child.width}%` : '100%',
-                              }"
-                              @click.stop="selectField(child)"
-                            >
-                              <div class="ccb-field-item__controls">
-                                <button
-                                  type="button"
-                                  class="ccb-field-item__action"
-                                  title="Edit field"
-                                  @click.stop="openFieldSettings(child)"
-                                >
-                                  <i class="ccb-icon-ic_edit"></i>
-                                </button>
-                                <button
-                                  type="button"
-                                  class="ccb-field-item__action"
-                                  title="Duplicate field"
-                                  @click.stop="duplicateField(child)"
-                                >
-                                  <i class="ccb-icon-ic_duplicate"></i>
-                                </button>
-                                <button
-                                  type="button"
-                                  class="ccb-field-item__action ccb-field-item__action--danger"
-                                  title="Delete field"
-                                  @click.stop="deleteField(child)"
-                                >
-                                  <i class="ccb-icon-ic_delete"></i>
-                                </button>
-                                <button
-                                  type="button"
-                                  class="ccb-field-item__action ccb-field-item__drag-handle"
-                                  title="Drag field"
-                                  @click.stop
-                                >
-                                  <i class="ccb-icon-ic_drag"></i>
-                                </button>
-                              </div>
-
-                              <div
-                                class="ccb-field-item__resize-handle"
-                                @mousedown.stop="onResizeStart($event, child)"
-                              >
-                                <span></span>
-                                <span></span>
-                                <span></span>
-                              </div>
-
-                              <component
-                                v-if="resolveFieldComponent(child._tag)"
-                                :is="resolveFieldComponent(child._tag)"
-                                :field="child"
-                              />
-                              <div v-else class="ccb-field-item__fallback">
-                                <i v-if="child.icon" :class="child.icon"></i>
-                                <span>{{ child.label }}</span>
-                              </div>
-                            </div>
-                          </VueDraggable>
-
-                          <div
-                            v-if="getGroupElements(field).length === 0"
-                            class="ccb-group__placeholder"
-                          >
-                            Drag and drop elements here
-                          </div>
-                        </GroupComponent>
-                      </template>
-
-                      <!-- ── Regular field ───────────────────────── -->
-                      <template v-else>
-                        <component
-                          v-if="resolveFieldComponent(field._tag)"
-                          :is="resolveFieldComponent(field._tag)"
-                          :field="field"
-                        />
-                        <div v-else class="ccb-field-item__fallback">
-                          <i v-if="field.icon" :class="field.icon"></i>
-                          <span>{{ field.label }}</span>
-                          <span class="ccb-field-item__fallback-type">{{
-                            field.type
-                          }}</span>
-                        </div>
-                      </template>
-                    </div>
-                  </VueDraggable>
-
                   <div
-                    v-if="section.fields.length === 0"
-                    class="ccb-section__placeholder"
+                    class="ccb-section__rows"
+                    :class="{
+                      'ccb-section__rows--empty': section.fields.length === 0,
+                    }"
                   >
-                    Drag and drop elements here
+                    <template
+                      v-for="(row, rowIdx) in getVisibleSectionRows(section)"
+                      :key="`row-${section._id}-${rowIdx}`"
+                    >
+                      <div class="ccb-row ccb-row--inter-zone">
+                        <VueDraggable
+                          :modelValue="getInterRowSlot(section, rowIdx)"
+                          @update:modelValue="
+                            (next) => onInterRowUpdate(section, rowIdx, next)
+                          "
+                          :group="{ name: 'fields' }"
+                          :animation="200"
+                          handle=".ccb-field-item__drag-handle"
+                          ghostClass="ccb-field-item--ghost"
+                          class="ccb-row__inter-zone-drop"
+                          @start="onDragStart"
+                          @end="onRowDragEnd(section)"
+                        />
+                      </div>
+                      <div class="ccb-row" :data-row-index="rowIdx">
+                        <VueDraggable
+                          :modelValue="row"
+                          @update:modelValue="
+                            (next) => onRowUpdate(section, rowIdx, next)
+                          "
+                          :group="rowFieldsGroup"
+                          :animation="200"
+                          handle=".ccb-field-item__drag-handle"
+                          ghostClass="ccb-field-item--ghost"
+                          class="ccb-row__fields"
+                          @start="onDragStart"
+                          @end="onRowDragEnd(section)"
+                        >
+                          <div
+                            v-for="field in getSectionFields(row)"
+                            :key="getFieldKey(field)"
+                            class="ccb-field-item ccb-field ccb-disable-pointer-events"
+                            :class="[
+                              {
+                                'ccb-field-item--is-container':
+                                  isContainerField(field),
+                                'ccb-field-item--selected':
+                                  isFieldSelected(field),
+                                'ccb-field-item--resizing':
+                                  resizingFieldAlias === field.alias,
+                              },
+                              `field-width-${field.width}`,
+                            ]"
+                            :data-field-type="field.type"
+                            :data-field-alias="field.alias"
+                            :style="{
+                              width: getFieldWidthStyle(field.width),
+                            }"
+                            @click.stop="selectField(field)"
+                          >
+                            <div class="ccb-field-item__controls">
+                              <button
+                                type="button"
+                                class="ccb-field-item__action"
+                                title="Duplicate field"
+                                @click.stop="duplicateField(field)"
+                              >
+                                <i class="ccb-icon-ic_duplicate"></i>
+                              </button>
+                              <button
+                                type="button"
+                                class="ccb-field-item__action ccb-field-item__action--danger"
+                                title="Delete field"
+                                @click.stop="deleteField(field)"
+                              >
+                                <i class="ccb-icon-ic_delete"></i>
+                              </button>
+                              <button
+                                type="button"
+                                class="ccb-field-item__action ccb-field-item__drag-handle"
+                                title="Drag field"
+                                @click.stop
+                              >
+                                <i class="ccb-icon-ic_drag"></i>
+                              </button>
+                            </div>
+
+                            <div
+                              v-if="
+                                !isContainerField(field) && !isTotalField(field)
+                              "
+                              class="ccb-field-item__resize-handle"
+                              @mousedown.stop="onResizeStart($event, field)"
+                            >
+                              <span></span>
+                              <span></span>
+                              <span></span>
+                            </div>
+
+                            <!-- ── Repeater field ────────────────── -->
+                            <template
+                              v-if="
+                                field.type === 'repeater' &&
+                                isContainerField(field)
+                              "
+                            >
+                              <RepeaterComponent
+                                :field="field as unknown as IRepeaterField"
+                                :is-collapsed="
+                                  containerCollapsed[getFieldId(field)]
+                                "
+                                @toggle-collapse="
+                                  toggleContainerCollapse(getFieldId(field))
+                                "
+                              >
+                                <VueDraggable
+                                  :modelValue="getGroupElements(field)"
+                                  @update:modelValue="
+                                    setGroupElements(field, $event)
+                                  "
+                                  :group="containerChildrenGroup"
+                                  :animation="200"
+                                  handle=".ccb-field-item__drag-handle"
+                                  ghostClass="ccb-field-item--ghost"
+                                  class="ccb-repeater-field__drop-zone"
+                                  @start="onDragStart"
+                                  @end="onDragEnd"
+                                >
+                                  <div
+                                    v-for="child in getGroupElements(field)"
+                                    :key="getFieldKey(child)"
+                                    class="ccb-field-item"
+                                    :class="{
+                                      'ccb-field-item--selected':
+                                        isFieldSelected(child),
+                                      'ccb-field-item--resizing':
+                                        resizingFieldAlias === child.alias,
+                                    }"
+                                    :data-field-type="child.type"
+                                    :data-field-alias="child.alias"
+                                    :style="{
+                                      width: child.width
+                                        ? `${child.width}%`
+                                        : '100%',
+                                    }"
+                                    @click.stop="selectField(child)"
+                                  >
+                                    <div class="ccb-field-item__controls">
+                                      <button
+                                        type="button"
+                                        class="ccb-field-item__action"
+                                        title="Edit field"
+                                        @click.stop="openFieldSettings(child)"
+                                      >
+                                        <i class="ccb-icon-ic_edit"></i>
+                                      </button>
+                                      <button
+                                        type="button"
+                                        class="ccb-field-item__action"
+                                        title="Duplicate field"
+                                        @click.stop="duplicateField(child)"
+                                      >
+                                        <i class="ccb-icon-ic_duplicate"></i>
+                                      </button>
+                                      <button
+                                        type="button"
+                                        class="ccb-field-item__action ccb-field-item__action--danger"
+                                        title="Delete field"
+                                        @click.stop="deleteField(child)"
+                                      >
+                                        <i class="ccb-icon-ic_delete"></i>
+                                      </button>
+                                      <button
+                                        type="button"
+                                        class="ccb-field-item__action ccb-field-item__drag-handle"
+                                        title="Drag field"
+                                        @click.stop
+                                      >
+                                        <i class="ccb-icon-ic_drag"></i>
+                                      </button>
+                                    </div>
+
+                                    <div
+                                      class="ccb-field-item__resize-handle"
+                                      @mousedown.stop="
+                                        onResizeStart($event, child)
+                                      "
+                                    >
+                                      <span></span>
+                                      <span></span>
+                                      <span></span>
+                                    </div>
+
+                                    <component
+                                      v-if="resolveFieldComponent(child._tag)"
+                                      :is="resolveFieldComponent(child._tag)"
+                                      :field="child"
+                                    />
+                                    <div
+                                      v-else
+                                      class="ccb-field-item__fallback"
+                                    >
+                                      <i
+                                        v-if="child.icon"
+                                        :class="child.icon"
+                                      ></i>
+                                      <span>{{ child.label }}</span>
+                                    </div>
+                                  </div>
+                                </VueDraggable>
+
+                                <div
+                                  v-if="getGroupElements(field).length === 0"
+                                  class="ccb-repeater-field__placeholder"
+                                >
+                                  Drag and drop elements here
+                                </div>
+                              </RepeaterComponent>
+                            </template>
+
+                            <!-- ── Container field (Group) ──────── -->
+                            <template v-else-if="isContainerField(field)">
+                              <GroupComponent
+                                :field="field as unknown as IGroupField"
+                                :is-collapsed="
+                                  containerCollapsed[getFieldId(field)]
+                                "
+                                @toggle-collapse="
+                                  toggleContainerCollapse(getFieldId(field))
+                                "
+                              >
+                                <VueDraggable
+                                  :modelValue="getGroupElements(field)"
+                                  @update:modelValue="
+                                    setGroupElements(field, $event)
+                                  "
+                                  :group="containerChildrenGroup"
+                                  :animation="200"
+                                  handle=".ccb-field-item__drag-handle"
+                                  ghostClass="ccb-field-item--ghost"
+                                  class="ccb-group__fields"
+                                  :class="{
+                                    'not-empty':
+                                      getGroupElements(field).length > 0,
+                                  }"
+                                  @start="onDragStart"
+                                  @end="onDragEnd"
+                                >
+                                  <div
+                                    v-for="child in getGroupElements(field)"
+                                    :key="getFieldKey(child)"
+                                    class="ccb-field-item"
+                                    :class="{
+                                      'ccb-field-item--selected':
+                                        isFieldSelected(child),
+                                      'ccb-field-item--resizing':
+                                        resizingFieldAlias === child.alias,
+                                    }"
+                                    :data-field-type="child.type"
+                                    :data-field-alias="child.alias"
+                                    :style="{
+                                      width: child.width
+                                        ? `${child.width}%`
+                                        : '100%',
+                                    }"
+                                    @click.stop="selectField(child)"
+                                  >
+                                    <div class="ccb-field-item__controls">
+                                      <button
+                                        type="button"
+                                        class="ccb-field-item__action"
+                                        title="Edit field"
+                                        @click.stop="openFieldSettings(child)"
+                                      >
+                                        <i class="ccb-icon-ic_edit"></i>
+                                      </button>
+                                      <button
+                                        type="button"
+                                        class="ccb-field-item__action"
+                                        title="Duplicate field"
+                                        @click.stop="duplicateField(child)"
+                                      >
+                                        <i class="ccb-icon-ic_duplicate"></i>
+                                      </button>
+                                      <button
+                                        type="button"
+                                        class="ccb-field-item__action ccb-field-item__action--danger"
+                                        title="Delete field"
+                                        @click.stop="deleteField(child)"
+                                      >
+                                        <i class="ccb-icon-ic_delete"></i>
+                                      </button>
+                                      <button
+                                        type="button"
+                                        class="ccb-field-item__action ccb-field-item__drag-handle"
+                                        title="Drag field"
+                                        @click.stop
+                                      >
+                                        <i class="ccb-icon-ic_drag"></i>
+                                      </button>
+                                    </div>
+
+                                    <div
+                                      class="ccb-field-item__resize-handle"
+                                      @mousedown.stop="
+                                        onResizeStart($event, child)
+                                      "
+                                    >
+                                      <span></span>
+                                      <span></span>
+                                      <span></span>
+                                    </div>
+
+                                    <component
+                                      v-if="resolveFieldComponent(child._tag)"
+                                      :is="resolveFieldComponent(child._tag)"
+                                      :field="child"
+                                    />
+                                    <div
+                                      v-else
+                                      class="ccb-field-item__fallback"
+                                    >
+                                      <i
+                                        v-if="child.icon"
+                                        :class="child.icon"
+                                      ></i>
+                                      <span>{{ child.label }}</span>
+                                    </div>
+                                  </div>
+                                </VueDraggable>
+
+                                <div
+                                  v-if="getGroupElements(field).length === 0"
+                                  class="ccb-group__placeholder"
+                                >
+                                  Drag and drop elements here
+                                </div>
+                              </GroupComponent>
+                            </template>
+
+                            <!-- ── Regular field ─────────────────── -->
+                            <template v-else>
+                              <component
+                                v-if="resolveFieldComponent(field._tag)"
+                                :is="resolveFieldComponent(field._tag)"
+                                :field="field"
+                              />
+                              <div v-else class="ccb-field-item__fallback">
+                                <i v-if="field.icon" :class="field.icon"></i>
+                                <span>{{ field.label }}</span>
+                                <span class="ccb-field-item__fallback-type">{{
+                                  field.type
+                                }}</span>
+                              </div>
+                            </template>
+                          </div>
+                        </VueDraggable>
+                      </div>
+                    </template>
+
+                    <div
+                      class="ccb-row ccb-row--new-zone"
+                      :class="{
+                        'ccb-row--new-zone-only': section.fields.length === 0,
+                      }"
+                    >
+                      <VueDraggable
+                        :modelValue="getNewRowSlot(section)"
+                        @update:modelValue="
+                          (next) => onNewRowUpdate(section, next)
+                        "
+                        :group="{ name: 'fields' }"
+                        :animation="200"
+                        handle=".ccb-field-item__drag-handle"
+                        ghostClass="ccb-field-item--ghost"
+                        class="ccb-row__new-zone-drop"
+                        @start="onDragStart"
+                        @end="onRowDragEnd(section)"
+                      />
+                      <div
+                        v-if="section.fields.length === 0"
+                        class="ccb-row__hint ccb-row__hint--new"
+                      >
+                        Drag and drop elements here
+                      </div>
+                    </div>
                   </div>
                 </div>
               </SectionComponent>
@@ -448,6 +530,7 @@
 import {
   computed,
   defineAsyncComponent,
+  nextTick,
   reactive,
   ref,
   onBeforeUnmount,
@@ -475,6 +558,13 @@ import { useAppearanceColors } from "@/admin/shared/utils/useAppearanceColors";
 import { useAppearanceSpacing } from "@/admin/shared/utils/useAppearanceSpacing";
 import { ILayout } from "@/admin/shared/types/settings.type";
 import { useAppStore } from "@/admin/app/providers/stores/useAppStore";
+import {
+  ensureSectionRows,
+  commitRowsToSection,
+  cleanupEmptyRows,
+  fitFieldAtRow,
+  isolateContainersInState,
+} from "@/admin/shared/utils/useSectionRows";
 
 const settingsStore = useSettingsStore();
 const appStore = useAppStore();
@@ -541,6 +631,145 @@ function onDragStart() {
 
 function onDragEnd() {
   builderStore.setDragging(false);
+}
+
+// ── Section rows (virtual row layer) ───────────────────────────────────
+const newRowSlots = reactive<Record<string, IField[]>>({});
+const interRowSlots = reactive<Record<string, IField[]>>({});
+
+function getVisibleSectionRows(section: ISection): IField[][] {
+  return ensureSectionRows(section);
+}
+
+function getNewRowSlot(section: ISection): IField[] {
+  const key = String(section._id ?? section.alias);
+  if (!newRowSlots[key]) newRowSlots[key] = [];
+  return newRowSlots[key];
+}
+
+function getInterRowSlot(section: ISection, beforeIndex: number): IField[] {
+  const key = `${section._id ?? section.alias}::${beforeIndex}`;
+  if (!interRowSlots[key]) interRowSlots[key] = [];
+  return interRowSlots[key];
+}
+
+function findAddedField(
+  oldFields: IField[],
+  newFields: IField[],
+): IField | undefined {
+  const oldAliases = new Set(oldFields.map((f) => f.alias));
+  return newFields.find((f) => !oldAliases.has(f.alias));
+}
+
+function onRowUpdate(
+  section: ISection,
+  rowIndex: number,
+  nextFields: IField[],
+) {
+  const rows = ensureSectionRows(section);
+  const oldFields = rows[rowIndex] || [];
+  const addedField = findAddedField(oldFields, nextFields);
+
+  rows[rowIndex] = nextFields;
+
+  if (addedField) {
+    fitFieldAtRow(
+      section,
+      rowIndex,
+      nextFields.findIndex((f) => f.alias === addedField.alias),
+    );
+
+    if (isFieldFromExternalSource(rows, addedField, rowIndex)) {
+      isolateContainersInState(section);
+    }
+  }
+
+  commitRowsToSection(section);
+}
+
+function isFieldFromExternalSource(
+  rows: IField[][],
+  field: IField,
+  rowIndex: number,
+): boolean {
+  for (let i = 0; i < rows.length; i++) {
+    if (i === rowIndex) continue;
+    if (rows[i].some((f) => f.alias === field.alias)) return false;
+  }
+  return true;
+}
+
+function onNewRowUpdate(section: ISection, nextSlot: IField[]) {
+  const key = String(section._id ?? section.alias);
+  newRowSlots[key] = nextSlot;
+  if (nextSlot.length === 0) return;
+
+  const rows = ensureSectionRows(section);
+  rows.push([...nextSlot]);
+  newRowSlots[key] = [];
+  commitRowsToSection(section);
+}
+
+function onInterRowUpdate(
+  section: ISection,
+  beforeIndex: number,
+  nextSlot: IField[],
+) {
+  const key = `${section._id ?? section.alias}::${beforeIndex}`;
+  interRowSlots[key] = nextSlot;
+  if (nextSlot.length === 0) return;
+
+  const rows = ensureSectionRows(section);
+  const movedAliases = new Set(nextSlot.map((f) => f.alias));
+
+  let anchorAlias: string | null = null;
+  for (let i = beforeIndex; i < rows.length; i++) {
+    for (const f of rows[i]) {
+      if (!movedAliases.has(f.alias)) {
+        anchorAlias = f.alias;
+        break;
+      }
+    }
+    if (anchorAlias) break;
+  }
+
+  nextTick(() => {
+    const slot = interRowSlots[key];
+    if (!slot || slot.length === 0) return;
+    const fieldsToInsert = [...slot];
+    interRowSlots[key] = [];
+
+    const currentRows = ensureSectionRows(section);
+
+    for (const field of fieldsToInsert) {
+      for (let i = 0; i < currentRows.length; i++) {
+        const idx = currentRows[i].findIndex((rf) => rf.alias === field.alias);
+        if (idx !== -1) currentRows[i].splice(idx, 1);
+      }
+    }
+
+    cleanupEmptyRows(section);
+    const cleanedRows = ensureSectionRows(section);
+
+    let insertAt = cleanedRows.length;
+    if (anchorAlias) {
+      const refIdx = cleanedRows.findIndex((r) =>
+        r.some((f) => f.alias === anchorAlias),
+      );
+      if (refIdx !== -1) insertAt = refIdx;
+    }
+
+    cleanedRows.splice(insertAt, 0, fieldsToInsert);
+    isolateContainersInState(section);
+    commitRowsToSection(section);
+  });
+}
+
+function onRowDragEnd(section: ISection) {
+  builderStore.setDragging(false);
+  cleanupEmptyRows(section);
+  isolateContainersInState(section);
+  commitRowsToSection(section);
 }
 
 // ── Container types that cannot be nested ──────────────────────────────
@@ -726,6 +955,49 @@ const containerChildrenGroup = {
   put: canAcceptInContainer,
 };
 
+// ── SortableJS group config for section rows ───────────────────────────
+// Rejects drops that would put a regular field next to a container,
+// or a container next to other fields (containers must be alone in row).
+function canAcceptInRow(
+  to: { el?: HTMLElement } | unknown,
+  _from: unknown,
+  dragEl: HTMLElement,
+): boolean {
+  const draggedType = dragEl.getAttribute("data-field-type") || "";
+  const draggedIsContainer = CONTAINER_TYPES.includes(draggedType);
+
+  const toEl =
+    to && typeof to === "object" && "el" in to
+      ? (to as { el?: HTMLElement }).el
+      : (to as HTMLElement);
+  if (!(toEl instanceof HTMLElement)) return true;
+
+  const items = Array.from(toEl.children).filter(
+    (el) =>
+      el instanceof HTMLElement &&
+      el.classList.contains("ccb-field-item") &&
+      el.getAttribute("data-field-alias") !==
+        dragEl.getAttribute("data-field-alias"),
+  );
+
+  if (items.length === 0) return true;
+
+  const rowHasContainer = items.some((el) => {
+    const type = (el as HTMLElement).getAttribute("data-field-type") || "";
+    return CONTAINER_TYPES.includes(type);
+  });
+
+  if (draggedIsContainer) return false;
+  if (rowHasContainer) return false;
+
+  return true;
+}
+
+const rowFieldsGroup = {
+  name: "fields",
+  put: canAcceptInRow,
+};
+
 // ── Container field helpers (group + repeater) ─────────────────────────
 const containerCollapsed = reactive<Record<string, boolean>>({});
 
@@ -873,10 +1145,40 @@ function clampFieldWidth(value: number): number {
   );
 }
 
+function readFieldWidthPercent(el: HTMLElement): number {
+  const inline = el.style.width;
+  const match = inline.match(/(\d+(?:\.\d+)?)\s*%/);
+  if (match) return parseFloat(match[1]);
+  return MAX_FIELD_WIDTH;
+}
+
+function getResizeMaxWidth(fieldEl: HTMLElement): number {
+  const container = fieldEl.parentElement;
+  if (!container) return MAX_FIELD_WIDTH;
+
+  if (
+    container.classList.contains("ccb-group__fields") ||
+    container.classList.contains("ccb-repeater-field__drop-zone")
+  ) {
+    return MAX_FIELD_WIDTH;
+  }
+
+  let usedWidth = 0;
+  for (const sibling of Array.from(container.children)) {
+    if (sibling === fieldEl) continue;
+    if (!(sibling instanceof HTMLElement)) continue;
+    if (!sibling.classList.contains("ccb-field-item")) continue;
+    usedWidth += readFieldWidthPercent(sibling);
+  }
+
+  return Math.max(MIN_FIELD_WIDTH, MAX_FIELD_WIDTH - usedWidth);
+}
+
 const resizingFieldAlias = ref<string | null>(null);
 const resizeStartX = ref(0);
 const resizeStartWidth = ref(100);
 const resizeContainerWidth = ref(0);
+const resizeMaxWidth = ref(MAX_FIELD_WIDTH);
 
 function onResizeStart(event: MouseEvent, field: IField) {
   event.preventDefault();
@@ -886,11 +1188,14 @@ function onResizeStart(event: MouseEvent, field: IField) {
   resizeStartX.value = event.clientX;
   resizeStartWidth.value = clampFieldWidth(Number(field.width) || 100);
 
-  const fieldEl = (event.target as HTMLElement).closest(".ccb-field-item");
+  const fieldEl = (event.target as HTMLElement).closest(
+    ".ccb-field-item",
+  ) as HTMLElement | null;
   const container = fieldEl?.parentElement;
   if (container) {
     resizeContainerWidth.value = container.offsetWidth;
   }
+  resizeMaxWidth.value = fieldEl ? getResizeMaxWidth(fieldEl) : MAX_FIELD_WIDTH;
 
   selectField(field);
 
@@ -904,7 +1209,7 @@ function onResizeMove(event: MouseEvent) {
   const deltaX = event.clientX - resizeStartX.value;
   const deltaPercent = (deltaX / resizeContainerWidth.value) * 100;
   const rawWidth = resizeStartWidth.value + deltaPercent;
-  const nextWidth = clampFieldWidth(rawWidth);
+  const nextWidth = Math.min(resizeMaxWidth.value, clampFieldWidth(rawWidth));
 
   builderStore.updateFieldWidth(resizingFieldAlias.value, nextWidth);
 }
@@ -1258,16 +1563,18 @@ const getSectionFields = computed(() => {
     min-height: 80px;
   }
 
-  &__fields {
+  &__rows {
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
+    gap: 6px;
+    width: 100%;
     border-radius: 4px;
     min-height: 68px;
-    border: none;
   }
 
-  &__fields--empty {
+  &__rows--empty {
     border: 2px dashed var(--ccb-border-normal, #e5e7eb);
+    border-radius: 8px;
   }
 
   &__placeholder {
@@ -1283,6 +1590,117 @@ const getSectionFields = computed(() => {
     font-size: 14px;
     pointer-events: none;
     user-select: none;
+  }
+}
+
+// ── Row (virtual layout layer) ─────────────────────────────────────────
+.ccb-row {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+  width: 100%;
+  min-height: 48px;
+  padding: 4px;
+  border: 1px dashed transparent;
+  border-radius: 8px;
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease;
+
+  &:hover {
+    border-color: rgba(11, 121, 208, 0.18);
+  }
+
+  &__fields {
+    display: flex;
+    flex: 1 1 auto;
+    flex-wrap: nowrap;
+    align-items: stretch;
+    width: 100%;
+    min-height: 40px;
+    gap: 0;
+  }
+
+  &__hint {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    padding: 0 8px;
+    font-size: 11px;
+    pointer-events: none;
+    user-select: none;
+
+    &--new {
+      flex: 1;
+      justify-content: center;
+      color: var(--ccb-blue-bg-normal, #0b79d0);
+      font-weight: 500;
+      opacity: 0.7;
+    }
+  }
+
+  &__new-zone-drop,
+  &__inter-zone-drop {
+    display: flex;
+    flex: 1 1 auto;
+    align-items: stretch;
+    justify-content: flex-start;
+    width: 100%;
+    min-height: inherit;
+  }
+
+  &--new-zone {
+    border-color: transparent;
+    background: transparent;
+    min-height: 12px;
+    padding: 0;
+    align-items: stretch;
+    justify-content: flex-start;
+
+    &:hover {
+      border-color: transparent;
+      background: transparent;
+    }
+  }
+
+  &--inter-zone {
+    border-color: transparent;
+    background: transparent;
+    min-height: 10px;
+    padding: 0;
+    margin: -2px 0;
+    align-items: stretch;
+    justify-content: flex-start;
+
+    &:hover {
+      border-color: transparent;
+      background: transparent;
+    }
+  }
+
+  &--new-zone-only {
+    position: relative;
+    min-height: 80px;
+    padding: 4px;
+    border-color: var(--ccb-border-normal, #e5e7eb);
+    background: transparent;
+
+    .ccb-row__new-zone-drop {
+      min-height: 72px;
+    }
+
+    .ccb-row__hint--new {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--ccb-font-comment, #9ca3af);
+      font-weight: 400;
+      opacity: 0.8;
+      pointer-events: none;
+    }
   }
 }
 

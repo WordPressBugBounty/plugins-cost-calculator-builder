@@ -6,33 +6,14 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
-import { useAppearanceStore } from "@/admin/app/providers/stores/useAppearanceStore";
+import { useAppearanceColors } from "@/admin/shared/utils/useAppearanceColors";
 import { useBuilderTranslationsStore } from "@/admin/app/providers/stores/useTranslationsStore";
 
-const appearanceStore = useAppearanceStore();
 const translationsStore = useBuilderTranslationsStore();
 const translations = computed(() => translationsStore.getTranslations);
-const textColor = computed(
-  () =>
-    appearanceStore.getActivePreset?.desktop?.colors?.data?.primary_color
-      ?.value || {},
-);
-const bgrColor = computed(
-  () =>
-    appearanceStore.getActivePreset?.desktop?.colors?.data?.secondary_color
-      ?.value || {},
-);
 
-const borderColor = computed(
-  () =>
-    `${appearanceStore.getActivePreset?.desktop?.colors?.data?.primary_color?.value || "#000000"}1A`,
-);
-
-const borderRadius = computed(() => {
-  const buttonBorderData = (appearanceStore.getActivePreset?.desktop as any)
-    ?.borders?.data?.button_border?.data;
-  return `${buttonBorderData?.border_radius?.value || 12}px`;
-});
+const { buttonBorderRadius, buttonBorder, textColor, formFieldsColor } =
+  useAppearanceColors();
 </script>
 
 <style scoped lang="scss">
@@ -41,10 +22,11 @@ const borderRadius = computed(() => {
   &__button {
     width: 100%;
     padding: 12px;
-    border-radius: v-bind(borderRadius);
     color: v-bind(textColor);
-    border: 1px solid v-bind(borderColor);
-    background-color: v-bind(bgrColor);
+    border-radius: v-bind(buttonBorderRadius);
+    color: v-bind(textColor);
+    border: v-bind(buttonBorder);
+    background-color: v-bind(formFieldsColor);
     font-size: 14px;
     font-weight: 700;
     text-align: center;

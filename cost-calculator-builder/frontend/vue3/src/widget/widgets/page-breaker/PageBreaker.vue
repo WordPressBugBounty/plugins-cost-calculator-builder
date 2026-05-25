@@ -91,6 +91,7 @@
                 icon="ccb-icon-Arrow-Previous"
                 iconPosition="before"
                 v-if="hideBackButton"
+                class="back-btn"
               ></Button>
               <Button
                 type="success"
@@ -597,6 +598,12 @@ watch(activePageIndex, () => {
       display: flex;
       justify-content: space-between;
       gap: 20px;
+
+      .back-btn {
+        border: var(--ccb-button-border) var(--ccb-button-border-style)
+          var(--ccb-accent-color);
+        border-radius: var(--ccb-button-border-radius);
+      }
 
       .next-btn {
         i {

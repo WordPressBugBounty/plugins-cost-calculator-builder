@@ -61,6 +61,7 @@ export interface IBaseField {
   sectionId: string;
   index: number;
   width: string | number;
+  rowBreak?: boolean;
   text?: string;
   _event?: string;
   additionalCss?: string;
