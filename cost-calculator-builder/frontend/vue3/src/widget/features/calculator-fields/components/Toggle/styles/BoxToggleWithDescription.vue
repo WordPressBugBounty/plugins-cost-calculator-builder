@@ -84,6 +84,13 @@ const toggleOption = (value: string) => {
     font-weight: var(--ccb-mobile-field-weight);
   }
 
+  @media (max-width: 540px) {
+    display: flex !important;
+    flex-direction: row;
+    flex-wrap: wrap;
+    column-gap: 14px !important;
+  }
+
   .ccb-toggle-item {
     display: flex;
     vertical-align: middle;
@@ -93,6 +100,12 @@ const toggleOption = (value: string) => {
     border-radius: var(--ccb-fields-border-radius);
     background: var(--ccb-fields-color);
     cursor: pointer;
+
+    @media (max-width: 540px) {
+      flex-direction: row !important;
+      align-items: center !important;
+      gap: 4px;
+    }
 
     &.active {
       border-color: var(--ccb-accent-color);

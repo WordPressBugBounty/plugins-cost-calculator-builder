@@ -113,7 +113,7 @@ const { summary } = toRefs(props);
 .ccb-summary-item {
   padding-bottom: 5px;
   display: grid;
-  grid-template-columns: 1fr auto;
+  grid-template-columns: 1fr 1fr;
   align-items: baseline;
   color: var(--ccb-text-color);
   font-size: var(--ccb-summary-text-size);
@@ -177,6 +177,7 @@ const { summary } = toRefs(props);
     min-width: 0;
     overflow-wrap: anywhere;
     word-break: break-word;
+    text-align: right;
   }
 }
 

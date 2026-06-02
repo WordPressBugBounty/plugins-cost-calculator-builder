@@ -99,6 +99,13 @@ const {
     font-weight: var(--ccb-mobile-field-weight);
   }
 
+  @media (max-width: 540px) {
+    display: flex !important;
+    flex-direction: row;
+    flex-wrap: wrap;
+    column-gap: 14px !important;
+  }
+
   .ccb-checkbox-image {
     border: 2px solid #eeeeee;
     display: flex;
@@ -111,6 +118,10 @@ const {
     padding: 0;
     margin: 0;
     box-sizing: border-box;
+
+    @media (max-width: 540px) {
+      width: calc(50% - 7px);
+    }
 
     &.selected {
       border-color: var(--ccb-accent-color);

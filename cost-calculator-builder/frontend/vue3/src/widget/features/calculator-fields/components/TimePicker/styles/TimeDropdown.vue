@@ -4,6 +4,12 @@
     class="ccb-time-dropdown"
     :class="{ 'ccb-time-dropdown--open': isOpen }"
   >
+    <div
+      v-if="isMobilePickerOverlayVisible"
+      class="ccb-time-dropdown__overlay"
+      @click="closePicker"
+    ></div>
+
     <button
       type="button"
       class="ccb-time-dropdown__input"
@@ -102,7 +108,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onBeforeUnmount, ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
 
 type TimeValue = {
   hours: number;
@@ -122,6 +128,17 @@ const emit = defineEmits<{
 const pickerRef = ref<HTMLElement | null>(null);
 const isOpen = ref(false);
 const pending = ref<TimeValue>(normalizeTime(props.modelValue));
+const isMobilePickerOverlayVisible = ref(false);
+const MOBILE_PICKER_BREAKPOINT = 540;
+let scrollPosition = 0;
+let isPageScrollLocked = false;
+const pageScrollStyles = {
+  bodyOverflow: "",
+  bodyPosition: "",
+  bodyTop: "",
+  bodyWidth: "",
+  htmlOverflow: "",
+};
 
 const hoursList = computed(() => {
   const length = props.format ? 24 : 12;
@@ -162,8 +179,10 @@ const togglePicker = () => {
   isOpen.value = !isOpen.value;
 
   if (isOpen.value) {
+    lockPageScroll();
     document.addEventListener("click", handleClickOutside);
   } else {
+    unlockPageScroll();
     document.removeEventListener("click", handleClickOutside);
   }
 };
@@ -176,7 +195,77 @@ const handleClickOutside = (event: MouseEvent) => {
 
 const closePicker = () => {
   isOpen.value = false;
+  unlockPageScroll();
   document.removeEventListener("click", handleClickOutside);
+};
+
+const lockPageScroll = () => {
+  if (
+    isPageScrollLocked ||
+    typeof window === "undefined" ||
+    typeof document === "undefined"
+  ) {
+    return;
+  }
+
+  if (!isMobilePickerViewport()) {
+    isMobilePickerOverlayVisible.value = false;
+    return;
+  }
+
+  const body = document.body;
+  const html = document.documentElement;
+
+  scrollPosition = window.scrollY || html.scrollTop || 0;
+  pageScrollStyles.bodyOverflow = body.style.overflow;
+  pageScrollStyles.bodyPosition = body.style.position;
+  pageScrollStyles.bodyTop = body.style.top;
+  pageScrollStyles.bodyWidth = body.style.width;
+  pageScrollStyles.htmlOverflow = html.style.overflow;
+
+  body.style.overflow = "hidden";
+  body.style.position = "fixed";
+  body.style.top = `-${scrollPosition}px`;
+  body.style.width = "100%";
+  html.style.overflow = "hidden";
+  isMobilePickerOverlayVisible.value = true;
+  isPageScrollLocked = true;
+};
+
+const unlockPageScroll = () => {
+  isMobilePickerOverlayVisible.value = false;
+
+  if (
+    !isPageScrollLocked ||
+    typeof window === "undefined" ||
+    typeof document === "undefined"
+  ) {
+    return;
+  }
+
+  const body = document.body;
+  const html = document.documentElement;
+
+  body.style.overflow = pageScrollStyles.bodyOverflow;
+  body.style.position = pageScrollStyles.bodyPosition;
+  body.style.top = pageScrollStyles.bodyTop;
+  body.style.width = pageScrollStyles.bodyWidth;
+  html.style.overflow = pageScrollStyles.htmlOverflow;
+  window.scrollTo(0, scrollPosition);
+  isPageScrollLocked = false;
+};
+
+const isMobilePickerViewport = () => {
+  if (typeof window === "undefined") return false;
+
+  const appContainerWidth =
+    pickerRef.value?.closest(".ccb-app-container")?.getBoundingClientRect()
+      .width || 0;
+
+  return (
+    window.innerWidth < MOBILE_PICKER_BREAKPOINT ||
+    appContainerWidth < MOBILE_PICKER_BREAKPOINT
+  );
 };
 
 const selectHour = (hour: number) => {
@@ -262,10 +351,6 @@ function clamp(value: number, min: number, max: number) {
 function pad(value: number) {
   return value.toString().padStart(2, "0");
 }
-
-onBeforeUnmount(() => {
-  document.removeEventListener("click", handleClickOutside);
-});
 </script>
 
 <style lang="scss" scoped>
@@ -317,6 +402,14 @@ onBeforeUnmount(() => {
     }
   }
 
+  &__overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.35);
+    pointer-events: auto;
+    z-index: 999998;
+  }
+
   &__chevron {
     margin-left: auto;
     color: var(--ccb-text-color);
@@ -347,9 +440,17 @@ onBeforeUnmount(() => {
     box-sizing: border-box;
     width: 320px;
 
-    @media (max-width: 480px) {
-      width: 100%;
-      min-width: 200px;
+    @media (max-width: 540px) {
+      position: fixed;
+      top: 50%;
+      right: auto;
+      bottom: auto;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: calc(100vw - 100px);
+      min-width: unset;
+      max-width: calc(100vw - 100px);
+      z-index: 999999;
     }
   }
 

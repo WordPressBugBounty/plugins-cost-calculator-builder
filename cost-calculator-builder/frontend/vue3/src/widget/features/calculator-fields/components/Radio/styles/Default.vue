@@ -77,12 +77,17 @@ const { optionValues, changeValue, getName } = useSingleOptionChildShared(
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
-    align-items: flex-start;
+    align-items: center;
     padding: 0;
     margin: 0;
     cursor: pointer;
     line-height: 1;
     width: fit-content;
+
+    @media (max-width: 540px) {
+      flex-direction: row !important;
+      align-items: center !important;
+    }
 
     input {
       cursor: pointer;
@@ -131,6 +136,11 @@ const { optionValues, changeValue, getName } = useSingleOptionChildShared(
       word-break: break-word;
       font-size: var(--ccb-fields-button-size);
     }
+  }
+
+  @media (max-width: 540px) {
+    display: flex !important;
+    gap: 10px !important;
   }
 }
 </style>

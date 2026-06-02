@@ -83,6 +83,8 @@ const handleSelect = (event: Event) => {
 
     select {
       font-size: 14px;
+      min-height: 30px;
+      line-height: 1;
       color: #001931;
       width: 100%;
       height: 100%;

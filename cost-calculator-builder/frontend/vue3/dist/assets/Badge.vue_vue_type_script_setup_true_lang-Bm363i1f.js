@@ -1,0 +1,2 @@
+import{_ as r}from"./settings.consts-ojL534b8.js";import{d as c,e as l,f as n,i as a,k as m,t as p}from"./vendor-vue-runtime-core-BlqoKYKI.js";import{a as i}from"./vendor-vue-shared-DrzsEcag.js";const f=c({__name:"Badge",props:{label:{},type:{}},setup(s){const t=s,o=l(()=>[`ccb-badge-${t.type}`]);return(e,d)=>(a(),n("div",{class:i(["ccb-badge",o.value])},[e.label?(a(),m(r,{key:0,text:e.label,size:"xs",weight:"bold"},null,8,["text"])):p("",!0)],2))}});export{f as _};
+//# sourceMappingURL=Badge.vue_vue_type_script_setup_true_lang-Bm363i1f.js.map

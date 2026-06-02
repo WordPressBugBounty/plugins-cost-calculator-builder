@@ -15,6 +15,9 @@ import { useSubmissionStore } from "@/widget/app/providers/stores/submissionStor
 import { useOrderFormStore } from "@/widget/app/providers/stores/orderFormStore.ts";
 import { useNotificationsStore } from "@/widget/app/providers/stores/notificationsStore.ts";
 import { useAppStore } from "@/widget/app/providers/stores/appStore.ts";
+import { useFieldsStore } from "@/widget/app/providers/stores/fieldsStore.ts";
+
+const fieldsStore = useFieldsStore();
 
 const appStore = useAppStore();
 
@@ -43,6 +46,10 @@ const submitForm = () => {
     return;
   }
   // END| IF demo or live site ( demonstration only )
+
+  if (!fieldsStore.checkRequiredFields()) {
+    return;
+  }
 
   const captcha = settings.getRecaptchaSettings;
   let captcha_access = true;

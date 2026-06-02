@@ -367,8 +367,18 @@ const defaultValueItems = computed(() => {
   return items;
 });
 
+const flattenOptions = (options: unknown): IOptions[] => {
+  if (!Array.isArray(options)) return [];
+
+  return options.flatMap((option) =>
+    Array.isArray(option) ? flattenOptions(option) : [option as IOptions],
+  );
+};
+
 const normalizeOptions = (options: unknown): IOptions[] => {
-  if (!Array.isArray(options) || options.length === 0) {
+  const list = flattenOptions(options);
+
+  if (list.length === 0) {
     return [
       { optionText: "Option 1", optionValue: "10" },
       { optionText: "Option 2", optionValue: "20" },
@@ -377,7 +387,7 @@ const normalizeOptions = (options: unknown): IOptions[] => {
     ];
   }
 
-  const mapped = options
+  const mapped = list
     .map((option) => {
       const source = option as IOptions;
       return {

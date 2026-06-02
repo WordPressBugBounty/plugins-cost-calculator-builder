@@ -73,6 +73,13 @@ const { optionValues, changeValue, getName } = useMultiOptionChildShared(
     font-weight: var(--ccb-mobile-field-weight);
   }
 
+  @media (max-width: 540px) {
+    display: flex !important;
+    flex-direction: row;
+    flex-wrap: wrap;
+    column-gap: 14px !important;
+  }
+
   .ccb-checkbox-wrapper {
     display: flex;
     align-items: center;
@@ -96,6 +103,12 @@ const { optionValues, changeValue, getName } = useMultiOptionChildShared(
     width: fit-content;
     padding: 0 0 0 25px;
     position: relative;
+
+    @media (max-width: 540px) {
+      flex-direction: row !important;
+      align-items: center !important;
+      gap: 4px;
+    }
 
     &:before {
       left: 0;

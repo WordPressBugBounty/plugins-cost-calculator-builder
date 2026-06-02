@@ -19,19 +19,24 @@
             label="Show this page on"
             :items="showPageOnItems"
             :modelValue="thankYouPage.type"
-            @update:modelValue="
-              (value) => updateThankYouPage({ type: value as string })
-            "
+            @update:modelValue="updateThankYouPageType"
           />
-          <Dropdown
+          <PaginatedSelect
             v-if="thankYouPage.type === 'separate_page'"
             label="Select page"
+            :items="wpPageItems"
+            :has-more="wpPagesHasMore"
+            :loading="wpPagesLoading"
+            :multiselect="false"
+            :selected-label="wpSelectedPageLabel"
             placeholder="Select page"
-            :items="[]"
-            :modelValue="thankYouPage.page_id"
-            @update:modelValue="
-              (value) => updateThankYouPage({ page_id: value as number })
-            "
+            empty-message="No pages found"
+            name="thankYouPagePageId"
+            v-model="thankYouPagePageId"
+            @search="onWpPageSearch"
+            @load-more="onWpPageLoadMore"
+            @limit-change="onWpPageLimitChange"
+            @change="onWpPageChange"
           />
           <Input
             label="Title"
@@ -154,9 +159,7 @@
             label="Show this page on"
             :items="showPageOnItems"
             :modelValue="thankYouPage.type"
-            @update:modelValue="
-              (value) => updateThankYouPage({ type: value as string })
-            "
+            @update:modelValue="updateThankYouPageType"
           />
           <Input
             label="Custom page link"
@@ -184,11 +187,19 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, ref } from "vue";
+import axios from "axios";
 import { useSettingsStore } from "@/admin/app/providers/stores/useSettingsStore";
 import { useAppStore } from "@/admin/app/providers/stores/useAppStore";
 import { IThankYouPage } from "@/admin/shared/types/settings.type";
-import { Input, Toggle, Dropdown, Textarea } from "@/admin/shared/ui/UIKit";
+import { IPaginatedSelectItem } from "@/admin/shared/types/uikit.type";
+import {
+  Input,
+  Toggle,
+  Dropdown,
+  Textarea,
+  PaginatedSelect,
+} from "@/admin/shared/ui/UIKit";
 
 const appStore = useAppStore();
 
@@ -204,6 +215,117 @@ const showPageOnItems = [
 const thankYouPage = computed<IThankYouPage>(() => {
   return settingsStore.getSettings?.thankYouPage as IThankYouPage;
 });
+
+const thankYouPagePageId = computed<number | null>({
+  get() {
+    return thankYouPage.value.page_id || null;
+  },
+  set(value) {
+    updateThankYouPage({ page_id: value || 0 });
+  },
+});
+
+interface WpPageRaw {
+  id: number;
+  title: string;
+  link: string;
+  tooltip?: string;
+}
+
+const wpPagesRaw = ref<WpPageRaw[]>([]);
+const wpPagesLoading = ref(false);
+const wpPagesHasMore = ref(false);
+const wpPageSearch = ref("");
+const wpPageLimit = ref(5);
+const wpPagePage = ref(1);
+const wpPagesFetched = ref(false);
+const wpSelectedPageLabel = ref("");
+
+const fetchWpPages = async (reset = false): Promise<void> => {
+  wpPagesLoading.value = true;
+  if (reset) {
+    wpPagePage.value = 1;
+    wpPagesRaw.value = [];
+  }
+
+  try {
+    const ajaxUrl = (window as any).ajaxurl || "/wp-admin/admin-ajax.php";
+    const response = await axios.get(ajaxUrl, {
+      params: {
+        action: "calc_get_wp_pages",
+        nonce: (window as any).ccb_nonces?.calc_load_pages || "",
+        page: wpPagePage.value,
+        per_page: wpPageLimit.value,
+        search: wpPageSearch.value,
+        page_ids: thankYouPage.value.page_id
+          ? String(thankYouPage.value.page_id)
+          : "",
+      },
+    });
+
+    if (response.data?.success) {
+      const pages: WpPageRaw[] = response.data.pages || [];
+      if (reset || wpPagePage.value === 1) {
+        wpPagesRaw.value = pages;
+      } else {
+        const existingIds = new Set(wpPagesRaw.value.map((p) => p.id));
+        const newPages = pages.filter((p) => !existingIds.has(p.id));
+        wpPagesRaw.value = [...wpPagesRaw.value, ...newPages];
+      }
+      wpPagesHasMore.value = !!response.data.has_more;
+      initWpPageLabel();
+    }
+    wpPagesFetched.value = true;
+  } catch {
+    wpPagesRaw.value = [];
+    wpPagesHasMore.value = false;
+  } finally {
+    wpPagesLoading.value = false;
+  }
+};
+
+const wpPageItems = computed((): IPaginatedSelectItem[] => {
+  if (!wpPagesFetched.value && !wpPagesLoading.value) {
+    fetchWpPages();
+  }
+  return wpPagesRaw.value.map((p) => ({
+    id: p.id,
+    label: p.tooltip || p.title,
+  }));
+});
+
+const onWpPageSearch = (query: string): void => {
+  wpPageSearch.value = query;
+  fetchWpPages(true);
+};
+
+const onWpPageLoadMore = (): void => {
+  wpPagePage.value += 1;
+  fetchWpPages();
+};
+
+const onWpPageLimitChange = (newLimit: number): void => {
+  wpPageLimit.value = newLimit;
+  fetchWpPages(true);
+};
+
+const initWpPageLabel = (): void => {
+  const found = wpPagesRaw.value.find(
+    (p) => p.id === thankYouPage.value.page_id,
+  );
+  if (found && !wpSelectedPageLabel.value) {
+    wpSelectedPageLabel.value = found.tooltip || found.title;
+  }
+};
+
+const onWpPageChange = (_name: string, value: number): void => {
+  const found = wpPagesRaw.value.find((p) => p.id === value);
+  wpSelectedPageLabel.value = found ? found.tooltip || found.title : "";
+};
+
+const updateThankYouPageType = (value: unknown): void => {
+  updateThankYouPage({ type: String(value || "") });
+};
 
 const updateThankYouPage = (partial: Partial<IThankYouPage>): void => {
   const settings = settingsStore.getSettings;

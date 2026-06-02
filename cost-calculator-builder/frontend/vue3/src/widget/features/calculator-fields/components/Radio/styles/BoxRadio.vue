@@ -60,6 +60,13 @@ const { optionValues, changeValue, getName } = useSingleOptionChildShared(
     font-weight: var(--ccb-mobile-field-weight);
   }
 
+  @media (max-width: 540px) {
+    display: flex !important;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 10px !important;
+  }
+
   label {
     margin: 0;
     padding: 12px 30px 12px 15px;
@@ -71,8 +78,14 @@ const { optionValues, changeValue, getName } = useSingleOptionChildShared(
     align-items: center;
     justify-content: flex-start;
     line-height: 1.25;
+
     .ccb-radio-label {
       word-break: break-all;
+
+      @media (max-width: 540px) {
+        word-break: normal;
+        white-space: nowrap;
+      }
     }
 
     input {

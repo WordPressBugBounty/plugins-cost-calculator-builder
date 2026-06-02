@@ -6,7 +6,7 @@ Tags: cost calculator, calculator, calculator form builder, cost estimation, shi
 Requires at least: 6.2
 Requires PHP: 8.3
 Tested up to: 7.0
-Stable tag: 4.0.5
+Stable tag: 4.0.6
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -207,6 +207,14 @@ Also, you can import the demo sample using Tools -> Import -> WordPress Import.
 Demo sample XML file included in plugin archive.
 
 == Changelog ==
+
+= 4.0.6 =
+- Fix: Pages are not displayed for selection in the Separate Page option
+- Fix: Unable to add more than 100 fields in the Dropdown element
+- Fix: Incorrect text display in elements on mobile resolutions
+- Fix: Date Picker and Time Picker elements go out of bounds on mobile resolutions [PRO]
+- Fix: Slider Scale Points and Jump between scale points settings do not appear for the Basic Slider element
+- Fix: WooCommerce Checkout ignores required fields to fill in
 
 = 4.0.5 =
 - Enhancement: Fields now adjust automatically when you drag another field in the builder, so you can drop them next to fields of any width.

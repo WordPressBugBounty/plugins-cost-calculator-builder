@@ -5,7 +5,7 @@
     </div>
     <div class="ccb-logo-text">
       <Text text="Cost Calculator" size="m" weight="bold" />
-      <Text text="Version 4.0.0" size="xs" weight="medium" />
+      <Text :text="`Version ${getVersion}`" size="xs" weight="medium" />
     </div>
   </div>
 </template>
@@ -16,6 +16,10 @@ import { Text } from "@/admin/shared/ui/UIKit";
 
 const getLogoUrl = computed(() => {
   return window.ccb_ajax_window?.plugin_url + "/frontend/dist/img/calc.svg";
+});
+
+const getVersion = computed(() => {
+  return window.ccb_ajax_window?.plugin_version || "";
 });
 </script>
 

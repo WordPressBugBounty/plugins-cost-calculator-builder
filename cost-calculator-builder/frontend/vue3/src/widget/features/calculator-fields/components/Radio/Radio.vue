@@ -444,6 +444,7 @@ const additionalClasses = computed(() => {
   }
 }
 </style>
+
 <style lang="scss" scoped>
 .ccb-radio-label {
   font-size: var(--ccb-fields-button-size) !important;

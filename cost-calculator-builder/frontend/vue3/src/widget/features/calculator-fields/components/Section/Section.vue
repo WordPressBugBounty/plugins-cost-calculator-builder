@@ -131,5 +131,8 @@ const styleComponent = computed(() => {
   .field-width-100 {
     grid-column: span 4;
   }
+
+  @media (max-width: 540px) {
+  }
 }
 </style>

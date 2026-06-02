@@ -101,6 +101,7 @@ const getMarkStyle = (point: number) => {
 };
 
 const handleClick = (point: number) => {
+  if (field.value.disabled) return;
   if (jump.value && scalePoints.value.includes(point)) {
     emit("update:modelValue", point);
   }

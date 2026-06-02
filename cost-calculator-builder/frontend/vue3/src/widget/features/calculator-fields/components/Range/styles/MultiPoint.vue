@@ -96,6 +96,7 @@ const scalePoints = computed(() => {
 });
 
 const handleClick = (point: number) => {
+  if (field.value.disabled) return;
   if (jump.value && scalePoints.value.includes(point)) {
     DinamicLabel.value = point.toString();
     emit("update:modelValue", point);

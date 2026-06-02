@@ -77,11 +77,24 @@ const { optionValues, changeValue, getName } = useMultiOptionChildShared(
     font-weight: var(--ccb-mobile-field-weight);
   }
 
+  @media (max-width: 540px) {
+    display: flex !important;
+    flex-direction: row;
+    flex-wrap: wrap;
+    column-gap: 14px !important;
+  }
+
   .ccb-toggle-item {
     display: flex;
     padding: 0;
     vertical-align: middle;
     align-items: center;
+
+    @media (max-width: 540px) {
+      flex-direction: row !important;
+      align-items: center !important;
+      gap: 4px;
+    }
 
     &__postfix {
       color: var(--ccb-toggle-label-bg);

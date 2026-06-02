@@ -189,9 +189,11 @@ function getCurrentTime() {
       border-bottom-left-radius: 0;
     }
 
-    .ccb-time-dropdown__panel {
-      left: auto;
-      right: 0;
+    @media (min-width: 541px) {
+      .ccb-time-dropdown__panel {
+        left: auto;
+        right: 0;
+      }
     }
   }
 }

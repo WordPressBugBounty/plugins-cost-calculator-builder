@@ -8,7 +8,7 @@
     <div
       class="ccb-field"
       :class="['ccb_field_with_' + field.fieldName]"
-      :style="{ width: field.width ? field.width + '%' : '100%' }"
+      :style="{ width: fieldWidth }"
       :data-id="field.alias"
       :data-repeater="field.repeaterIdx"
     >
@@ -40,6 +40,19 @@ const { field, name } = toRefs(props);
 const FieldComponent = computed(() => {
   const key: keyof IFields = name.value as keyof IFields;
   return fieldRegistry[key];
+});
+
+const fieldWidth = computed(() => {
+  const isMObile = window.innerWidth < 540;
+  if (isMObile) {
+    return "100%";
+  }
+
+  if (field.value.width) {
+    return field.value.width + "%";
+  }
+
+  return "100%";
 });
 </script>
 

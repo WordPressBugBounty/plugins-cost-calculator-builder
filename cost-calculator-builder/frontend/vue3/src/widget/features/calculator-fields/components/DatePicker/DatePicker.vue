@@ -4,9 +4,12 @@
     :class="{
       required: isRequired,
       'ccb-field-disabled': field.disabled,
+      'ccb-datePicker--overlay-visible': isMobilePickerOverlayVisible,
       [additionalClasses]: true,
     }"
   >
+    <div class="ccb-datePicker__overlay"></div>
+
     <div class="ccb-field__label">
       <RequiredHint v-if="isRequired" :text="requiredWarningText" />
       <div class="ccb-field__title">
@@ -39,6 +42,8 @@
         :format="format"
         :select-text="translationsStore.getTranslations.select"
         :cancel-text="translationsStore.getTranslations.cancel"
+        @open="handlePickerOpen"
+        @closed="unlockPageScroll"
         @update:model-value="updateValue"
       />
     </div>
@@ -55,7 +60,7 @@
 </template>
 
 <script setup lang="ts">
-import { toRefs, computed } from "vue";
+import { toRefs, computed, ref } from "vue";
 import VueDatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 
@@ -272,6 +277,90 @@ const additionalClasses = computed(() => {
   return field.value?.additionalStyles || "";
 });
 
+const MOBILE_PICKER_BREAKPOINT = 540;
+const isMobilePickerOverlayVisible = ref(false);
+let scrollPosition = 0;
+let isPageScrollLocked = false;
+const pageScrollStyles = {
+  bodyOverflow: "",
+  bodyPosition: "",
+  bodyTop: "",
+  bodyWidth: "",
+  htmlOverflow: "",
+};
+
+const handlePickerOpen = () => {
+  showMobilePickerOverlay();
+  lockPageScroll();
+};
+
+const showMobilePickerOverlay = () => {
+  if (!isMobilePickerViewport()) return;
+
+  isMobilePickerOverlayVisible.value = true;
+};
+
+const lockPageScroll = () => {
+  if (
+    isPageScrollLocked ||
+    typeof window === "undefined" ||
+    typeof document === "undefined"
+  ) {
+    return;
+  }
+
+  if (!isMobilePickerViewport()) {
+    return;
+  }
+
+  const body = document.body;
+  const html = document.documentElement;
+
+  scrollPosition = window.scrollY || html.scrollTop || 0;
+  pageScrollStyles.bodyOverflow = body.style.overflow;
+  pageScrollStyles.bodyPosition = body.style.position;
+  pageScrollStyles.bodyTop = body.style.top;
+  pageScrollStyles.bodyWidth = body.style.width;
+  pageScrollStyles.htmlOverflow = html.style.overflow;
+
+  body.style.overflow = "hidden";
+  body.style.position = "fixed";
+  body.style.top = `-${scrollPosition}px`;
+  body.style.width = "100%";
+  html.style.overflow = "hidden";
+  isMobilePickerOverlayVisible.value = true;
+  isPageScrollLocked = true;
+};
+
+const unlockPageScroll = () => {
+  isMobilePickerOverlayVisible.value = false;
+
+  if (
+    !isPageScrollLocked ||
+    typeof window === "undefined" ||
+    typeof document === "undefined"
+  ) {
+    return;
+  }
+
+  const body = document.body;
+  const html = document.documentElement;
+
+  body.style.overflow = pageScrollStyles.bodyOverflow;
+  body.style.position = pageScrollStyles.bodyPosition;
+  body.style.top = pageScrollStyles.bodyTop;
+  body.style.width = pageScrollStyles.bodyWidth;
+  html.style.overflow = pageScrollStyles.htmlOverflow;
+  window.scrollTo(0, scrollPosition);
+  isPageScrollLocked = false;
+};
+
+const isMobilePickerViewport = () => {
+  if (typeof window === "undefined") return false;
+
+  return window.innerWidth < MOBILE_PICKER_BREAKPOINT;
+};
+
 callbackStore.add("updateDatePicker", updateValue);
 </script>
 
@@ -302,6 +391,24 @@ callbackStore.add("updateDatePicker", updateValue);
 }
 
 .ccb-datePicker {
+  &__overlay {
+    position: fixed !important;
+    inset: 0 !important;
+    background: rgba(0, 0, 0, 0.45) !important;
+    opacity: 0;
+    pointer-events: none;
+    visibility: hidden;
+    z-index: 999998 !important;
+  }
+
+  &--overlay-visible {
+    .ccb-datePicker__overlay {
+      opacity: 1;
+      pointer-events: auto;
+      visibility: visible;
+    }
+  }
+
   input {
     padding: 0 var(--ccb-field-side-indent);
     padding-left: max(30px, var(--ccb-field-side-indent)) !important;
@@ -333,8 +440,17 @@ callbackStore.add("updateDatePicker", updateValue);
     max-width: 430px;
     border-radius: 4px;
 
-    @media (max-width: 480px) {
-      min-width: 200px;
+    @media (max-width: 540px) {
+      position: fixed !important;
+      top: 50% !important;
+      right: auto !important;
+      bottom: auto !important;
+      left: 50% !important;
+      transform: translate(-50%, -50%) !important;
+      width: calc(100vw - 32px);
+      min-width: unset;
+      max-width: calc(100vw - 100px);
+      z-index: 999999;
     }
   }
 
@@ -346,6 +462,10 @@ callbackStore.add("updateDatePicker", updateValue);
   .dp__arrow_top {
     border: none;
     background-color: var(--ccb-fields-bg-color);
+
+    @media (max-width: 540px) {
+      display: none !important;
+    }
   }
 
   .dp__menu {

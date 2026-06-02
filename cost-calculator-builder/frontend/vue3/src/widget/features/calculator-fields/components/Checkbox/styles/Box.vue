@@ -59,6 +59,13 @@ const { optionValues, changeValue, getName } = useMultiOptionChildShared(
     font-weight: var(--ccb-mobile-field-weight);
   }
 
+  @media (max-width: 540px) {
+    display: flex !important;
+    flex-direction: row;
+    flex-wrap: wrap;
+    column-gap: 14px !important;
+  }
+
   label {
     display: flex;
     flex-direction: row;

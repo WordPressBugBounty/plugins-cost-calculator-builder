@@ -88,6 +88,12 @@ const addOrRemove = (option: IOptions): void => {
     font-weight: var(--ccb-mobile-field-weight);
   }
 
+  @media (max-width: 540px) {
+    display: flex !important;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
   .ccb-radio-image {
     border: 2px solid var(--ccb-fields-border-color);
     display: flex;
@@ -97,6 +103,10 @@ const addOrRemove = (option: IOptions): void => {
     cursor: pointer;
     max-width: unset;
     width: 100%;
+
+    @media (max-width: 540px) {
+      width: calc(50% - 10px);
+    }
 
     &.selected {
       border-color: var(--ccb-accent-color);

@@ -178,6 +178,32 @@
                 />
               </div>
             </div>
+            <div
+              class="ccb-field-sidebar__row"
+              v-if="draft.style !== 'default' && draft.style !== 'input'"
+            >
+              <Input
+                label="Slider Scale Points"
+                placeholder="7.5,10,13.5"
+                v-model="draft.scalePoints"
+                type="number"
+                :min="0"
+                :max="100"
+                :step="0.5"
+                :controls="true"
+              />
+            </div>
+            <div
+              class="ccb-field-sidebar__row"
+              v-if="draft.style !== 'default' && draft.style !== 'input'"
+            >
+              <Toggle
+                label="Jump beetween scale points"
+                size="m"
+                weight="medium"
+                v-model="draft.jump"
+              />
+            </div>
             <div class="ccb-field-sidebar__row">
               <Toggle
                 label="Multiply by Unit Price"

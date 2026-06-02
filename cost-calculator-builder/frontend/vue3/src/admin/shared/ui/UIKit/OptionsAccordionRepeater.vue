@@ -3,7 +3,11 @@
     <transition-group
       name="options-accordion-item"
       tag="div"
-      class="ccb-options-accordion__list"
+      :class="[
+        'ccb-options-accordion__list',
+        { 'is-scrollable': rows.length > visibleRowsLimit },
+        rows.length > visibleRowsLimit ? 'ccb-custom-scrollbar' : '',
+      ]"
     >
       <div
         v-for="(row, index) in rows"
@@ -128,7 +132,7 @@
     <button
       type="button"
       class="ccb-options-accordion__add"
-      :disabled="rows.length >= maxRows"
+      :disabled="hasMaxRows && rows.length >= maxRows"
       @click="addRow"
     >
       <i class="ccb-icon-ic_plus_big"></i>
@@ -172,7 +176,6 @@ const props = withDefaults(
     showHint: true,
     showImage: false,
     minRows: 1,
-    maxRows: 100,
     name: "",
     dragLabel: "Drag option",
   },
@@ -199,9 +202,14 @@ const allowedMimes = [
 ];
 
 const minRows = computed(() => Math.max(1, Number(props.minRows || 1)));
-const maxRows = computed(() =>
-  Math.max(minRows.value, Number(props.maxRows || 100)),
-);
+const maxRows = computed(() => {
+  const limit = Number(props.maxRows);
+  return Number.isFinite(limit) && limit > 0
+    ? Math.max(minRows.value, limit)
+    : Number.POSITIVE_INFINITY;
+});
+const hasMaxRows = computed(() => Number.isFinite(maxRows.value));
+const visibleRowsLimit = 6;
 
 const createKey = (): string =>
   `${Date.now()}-${Math.random().toString(16).slice(2)}`;
@@ -228,11 +236,19 @@ const createRow = (row?: IOptions, key?: string): InternalRow => {
   };
 };
 
+const flattenOptions = (value: unknown): IOptions[] => {
+  if (!Array.isArray(value)) return [];
+
+  return value.flatMap((item) =>
+    Array.isArray(item) ? flattenOptions(item) : [item as IOptions],
+  );
+};
+
 const normalize = (
-  value: IOptions[],
+  value: unknown,
   previous: InternalRow[] = [],
 ): InternalRow[] => {
-  const list = Array.isArray(value) ? value : [];
+  const list = flattenOptions(value);
   const next = list
     .slice(0, maxRows.value)
     .map((item, index) => createRow(item, previous[index]?._key));
@@ -379,7 +395,7 @@ const openMedia = (index: number): void => {
 };
 
 const addRow = (): void => {
-  if (rows.value.length >= maxRows.value) return;
+  if (hasMaxRows.value && rows.value.length >= maxRows.value) return;
 
   const newRow = createRow();
   rows.value.push(newRow);
@@ -509,6 +525,12 @@ watch(
     display: flex;
     flex-direction: column;
     gap: 4px;
+
+    &.is-scrollable {
+      max-height: 236px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
   }
 
   &__item {

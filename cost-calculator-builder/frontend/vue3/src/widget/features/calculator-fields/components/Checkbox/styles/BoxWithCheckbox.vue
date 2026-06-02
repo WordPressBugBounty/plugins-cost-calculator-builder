@@ -63,6 +63,13 @@ const { optionValues, changeValue, getName } = useMultiOptionChildShared(
     font-weight: var(--ccb-mobile-field-weight);
   }
 
+  @media (max-width: 540px) {
+    display: flex !important;
+    flex-direction: row;
+    flex-wrap: wrap;
+    column-gap: 14px !important;
+  }
+
   label {
     display: flex;
     flex-direction: row;
@@ -77,8 +84,19 @@ const { optionValues, changeValue, getName } = useMultiOptionChildShared(
     border: 1px solid var(--ccb-fields-border-color);
     border-radius: var(--ccb-fields-border-radius);
 
+    @media (max-width: 540px) {
+      flex-direction: row !important;
+      align-items: center !important;
+      gap: 4px;
+    }
+
     .ccb-checkbox-label {
       word-break: break-word;
+
+      @media (max-width: 540px) {
+        word-break: normal;
+        white-space: nowrap;
+      }
     }
 
     &:before {

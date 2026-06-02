@@ -95,6 +95,7 @@ const scalePoints = computed(() => {
 });
 
 const handleClick = (point: number) => {
+  if (field.value.disabled) return;
   if (jump.value && scalePoints.value.includes(point)) {
     emit("update:modelValue", [realValue.value[0], point]);
   }
