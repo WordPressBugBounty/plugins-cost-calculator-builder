@@ -26,7 +26,7 @@
               'page-formulas': totalsInNavigation,
               [navigationButtonsPosition]: true,
             }"
-            v-if="enoughPages"
+            v-if="enoughPages && !appStore.getIsMobile"
           >
             <div
               class="ccb-page-navigation__formulas"

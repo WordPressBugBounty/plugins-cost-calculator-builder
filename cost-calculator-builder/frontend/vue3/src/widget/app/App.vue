@@ -14,7 +14,14 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, defineAsyncComponent, computed, inject, ref } from "vue";
+import {
+  onMounted,
+  onBeforeUnmount,
+  defineAsyncComponent,
+  computed,
+  inject,
+  ref,
+} from "vue";
 import { useAppStore } from "@/widget/app/providers/stores/appStore.ts";
 import { useAppearanceStore } from "@/widget/app/providers/stores/appearanceStore.ts";
 import { useSettingsStore } from "@/widget/app/providers/stores/settingsStore.ts";
@@ -78,7 +85,14 @@ const currentComponent = computed(() => {
     : defineAsyncComponent(() => import("@/widget/pages/calculator"));
 });
 
+const updateMobileStatus = (): void => {
+  appStore.updateMobileStatus(window.innerWidth <= 640);
+};
+
 onMounted(() => {
+  updateMobileStatus();
+  window.addEventListener("resize", updateMobileStatus);
+
   appStore.checkIfLive();
   conditionsStore.initConditions(calcData.conditions);
   settingsStore.initLang(calcData.language);
@@ -117,6 +131,10 @@ onMounted(() => {
       }, 1000);
     }, 0);
   });
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener("resize", updateMobileStatus);
 });
 </script>
 

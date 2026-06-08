@@ -1,6 +1,10 @@
 <template>
   <div>
-    <div class="ccb-pdf-invoice" v-if="showPdfButton" ref="pdfInvoiceRef">
+    <div
+      class="ccb-pdf-invoice"
+      v-if="showPdfButton && !isMobileSummaryPage"
+      ref="pdfInvoiceRef"
+    >
       <div
         class="ccb-pdf-invoice__actions"
         :class="actionsClass"
@@ -16,8 +20,85 @@
         </Button>
       </div>
     </div>
-    <teleport :to="tpID">
-      <Popup ref="popup">
+    <div
+      v-if="isMobileSummaryPage"
+      class="ccb-pdf-sendquote ccb-pdf-sendquote--mobile-summary"
+      :class="{ 'quote-success': quoteSucces }"
+    >
+      <div
+        class="ccb-pdf-sendquote__header"
+        v-if="!quoteSucces && !isMobileSummaryPage"
+      >
+        <div class="ccb-pdf-sendquote__title">
+          {{ translationsStore.getTranslations.emailQuote }}
+        </div>
+        <div class="ccb-pdf-sendquote__close" @click="hidePopup">
+          <i class="ccb-icon-close" />
+        </div>
+      </div>
+      <div class="ccb-pdf-sendquote__body" v-if="!quoteSucces">
+        <div class="ccb-pdf-sendquote__input">
+          <label class="required">{{
+            translationsStore.getTranslations.name
+          }}</label>
+          <input
+            type="text"
+            :placeholder="translationsStore.getTranslations.typeYourName"
+            v-model="quoteFields.name"
+          />
+        </div>
+        <div class="ccb-pdf-sendquote__input">
+          <label class="required">{{
+            translationsStore.getTranslations.email
+          }}</label>
+          <input
+            type="text"
+            :placeholder="translationsStore.getTranslations.typeYourEmail"
+            v-model="quoteFields.email"
+          />
+        </div>
+        <div class="ccb-pdf-sendquote__input">
+          <label>{{ translationsStore.getTranslations.message }}</label>
+          <textarea
+            :placeholder="translationsStore.getTranslations.enterMessage"
+            cols="6"
+            rows="5"
+            maxlength="400"
+            v-model="quoteFields.message"
+          ></textarea>
+        </div>
+      </div>
+      <div class="ccb-pdf-sendquote__success" v-if="quoteSucces">
+        <div class="ccb-pdf-sendquote__success-icon">
+          <i class="ccb-icon-Octicons"></i>
+        </div>
+        <div class="message">
+          {{ quoteSuccesText }}
+        </div>
+        <Button type="success" :text="quoteCloseBtnText" @click="hidePopup" />
+      </div>
+      <div class="ccb-pdf-sendquote__footer" v-if="!quoteSucces">
+        <div class="ccb-pdf-sendquote__file">
+          <i class="ccb-icon-pdf"></i>
+          <span>{{ pdfName }}.pdf</span>
+        </div>
+        <Button
+          type="success"
+          :text="sendQuoteBtnText"
+          @click="generateQuote"
+        />
+        <div class="ccb-pdf-sendquote__error" v-if="quoteErrorMessageStatus">
+          <span>
+            <i class="ccb-icon-Path-3367"></i>
+          </span>
+          <span>
+            {{ sendQuoteErrorMessage }}
+          </span>
+        </div>
+      </div>
+    </div>
+    <teleport v-else :to="tpID">
+      <Popup ref="popup" :class="popupClass">
         <div
           class="ccb-pdf-sendquote"
           :class="{ 'quote-success': quoteSucces }"
@@ -105,15 +186,7 @@
 </template>
 
 <script setup lang="ts">
-import {
-  ref,
-  computed,
-  toRefs,
-  defineProps,
-  defineExpose,
-  onMounted,
-  onBeforeUnmount,
-} from "vue";
+import { ref, computed, toRefs, onMounted, onBeforeUnmount } from "vue";
 import { useSettingsStore } from "@/widget/app/providers/stores/settingsStore";
 import { useAppStore } from "@/widget/app/providers/stores/appStore.ts";
 import { customBtoa } from "@/widget/shared/utils/custom-btoa.utils.ts";
@@ -138,14 +211,26 @@ type QuoteSettings = {
 
 type Props = {
   hideButtons?: boolean;
+  popupTeleportTarget?: string;
+  popupMode?: "default" | "mobile-summary" | "mobile-summary-page";
 };
 
 const props = defineProps<Props>();
+const emit = defineEmits(["open-mobile-quote", "close-mobile-quote"]);
 
 const { hideButtons } = toRefs(props);
 
 const tpID = computed(() => {
-  return `#ccb_app_${appStore.getCalcId}`;
+  return props.popupTeleportTarget || `#ccb_app_${appStore.getCalcId}`;
+});
+
+const popupClass = computed(() => ({
+  "ccb-pdf-sendquote-popup--mobile-summary":
+    props.popupMode === "mobile-summary",
+}));
+
+const isMobileSummaryPage = computed(() => {
+  return props.popupMode === "mobile-summary-page";
 });
 
 const quoteErrorMessageStatus = ref(false);
@@ -207,6 +292,11 @@ defineExpose({
 });
 
 const showPopup = () => {
+  if (props.popupMode === "mobile-summary") {
+    emit("open-mobile-quote");
+    return;
+  }
+
   popup.value?.showPopup();
 };
 
@@ -220,6 +310,10 @@ const hidePopup = () => {
     pdfName: "",
   };
   popup.value?.hidePopup();
+
+  if (isMobileSummaryPage.value) {
+    emit("close-mobile-quote");
+  }
 };
 
 const generateQuote = () => {
@@ -350,10 +444,14 @@ const getButtonStatus = computed(() => {
 });
 
 onMounted(() => {
+  if (isMobileSummaryPage.value) return;
+
   initListeners();
 });
 
 onBeforeUnmount(() => {
+  if (isMobileSummaryPage.value) return;
+
   window.removeEventListener("ccbDownLoadPdf", handleDownload);
   window.removeEventListener("ccbOpenModal", handleOpenModal);
 
@@ -403,6 +501,16 @@ onBeforeUnmount(() => {
   }
 }
 
+.ccb-pdf-sendquote-popup--mobile-summary.ccb-popup {
+  position: absolute;
+  z-index: 2;
+
+  .ccb-popup__overlay {
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+  }
+}
+
 .ccb-pdf-sendquote {
   display: flex;
   flex-direction: column;
@@ -419,6 +527,7 @@ onBeforeUnmount(() => {
   z-index: 999999;
   border-radius: 20px;
   background-color: var(--ccb-container-color);
+
   @media (max-width: 420px) {
     top: 50%;
     left: 50%;
@@ -429,6 +538,22 @@ onBeforeUnmount(() => {
     padding: 40px 25px;
   }
 
+  &.ccb-pdf-sendquote--mobile-summary {
+    position: static;
+    inset: auto;
+    transform: none;
+    align-items: stretch;
+    justify-content: flex-start;
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+    min-height: auto;
+    padding: 0;
+    border-radius: 0;
+    background: transparent;
+    z-index: auto;
+  }
+
   &.quote-success {
     min-height: 341px;
     padding-top: 0;
@@ -437,6 +562,12 @@ onBeforeUnmount(() => {
     button {
       width: fit-content;
     }
+  }
+
+  &.ccb-pdf-sendquote--mobile-summary.quote-success {
+    min-height: auto;
+    max-width: none;
+    padding: 0;
   }
 
   &__header {

@@ -1,0 +1,2 @@
+import{d as s,f as i,i as c,x as p}from"./vendor-vue-runtime-core-DwK6Ry68.js";import"./vendor-vue-reactivity-CheHbvBM.js";import"./vendor-vue-shared-DrzsEcag.js";const r={class:"ccb-field-preview ccb-field-preview--space"},n=s({__name:"FieldPreviewSpace",props:{field:{}},setup(o){return(t,e)=>(c(),i("div",r,e[0]||(e[0]=[p("div",{class:"ccb-field-preview__space"},null,-1)])))}});export{n as default};
+//# sourceMappingURL=FieldPreviewSpace-DoeG4MKx.js.map

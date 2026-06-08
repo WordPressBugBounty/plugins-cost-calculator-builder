@@ -1,5 +1,8 @@
 <template>
-  <div class="calc-thank-you-page-container vertical">
+  <div
+    class="calc-thank-you-page-container vertical"
+    :class="{ mobile: isMobile, 'has-back-action': showBackToCalculators }"
+  >
     <div
       class="thank-you-page"
       v-show="showThankYouPage"
@@ -13,6 +16,15 @@
         <span class="ccb-icon-close-x"></span>
       </span>
       <div class="thank-you-page-inner-container">
+        <div
+          class="thank-you-page-inner__header-mobile"
+          v-if="isMobile"
+          @click="backToCalculatorAction"
+        >
+          <div class="thank-you-page-inner__header-mobile-close">
+            <span class="ccb-icon-close-x"></span>
+          </div>
+        </div>
         <div class="thank-you-page__icon-box">
           <span class="icon-wrapper">
             <span class="icon-content">
@@ -42,7 +54,10 @@
         <div class="thank-you-page__actions">
           <div class="thank-you-page__actions-wrapper">
             <!-- back calculator -->
-            <div v-if="showBackToCalculators">
+            <div
+              class="thank-you-page__action thank-you-page__action--back"
+              v-if="showBackToCalculators"
+            >
               <Button
                 :text="getThankYouPageSettings?.backButtonText || ''"
                 @click="backToCalculatorAction"
@@ -53,7 +68,10 @@
             </div>
 
             <!-- custom button -->
-            <div v-if="getThankYouPageSettings?.customButton">
+            <div
+              class="thank-you-page__action thank-you-page__action--custom"
+              v-if="getThankYouPageSettings?.customButton"
+            >
               <a
                 :href="getThankYouPageSettings?.customButtonLink"
                 target="_blank"
@@ -65,6 +83,7 @@
 
             <!-- download PDF -->
             <div
+              class="thank-you-page__action thank-you-page__action--download"
               v-if="
                 getThankYouPageSettings?.downloadButton &&
                 getInvoiceSettings?.useInAll
@@ -79,6 +98,7 @@
 
             <!-- send PDF -->
             <div
+              class="thank-you-page__action thank-you-page__action--share"
               v-if="
                 getThankYouPageSettings?.shareButton &&
                 getInvoiceSettings?.useInAll &&
@@ -113,6 +133,10 @@ import { usePaymentAfterSubmitStore } from "@/widget/app/providers/stores/paymen
 import { useOrderFormStore } from "@/widget/app/providers/stores/orderFormStore";
 import { usePaymentStore } from "@/widget/app/providers/stores/paymentsStore";
 import { useFieldsStore } from "@/widget/app/providers/stores/fieldsStore";
+
+const isMobile = computed(() => {
+  return appStore.getIsMobile;
+});
 
 const settingsStore = useSettingsStore();
 const submissionStore = useSubmissionStore();
@@ -445,6 +469,180 @@ onMounted(() => {
               &:hover {
                 background: var(--ccb-button-light-bg-alpha);
                 border-color: var(--ccb-button-light-bg-alpha);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  &.mobile {
+    position: fixed;
+    inset: 0;
+    z-index: 999999;
+    align-items: flex-end;
+    max-width: none;
+    background: rgba(0, 0, 0, 0.24);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+
+    .thank-you-page {
+      width: 100%;
+      max-height: calc(100dvh - 72px);
+      margin-top: auto;
+      padding: 30px 20px 20px;
+      overflow: auto;
+      border: 0;
+      border-top: 1px solid rgba(0, 0, 0, 0.16);
+      border-radius: 20px 20px 0 0;
+      background: var(--ccb-container-color);
+      box-shadow: 0 0 8px rgba(0, 0, 0, 0.15);
+
+      &-close {
+        top: 30px;
+        right: 30px;
+        width: 24px;
+        height: 24px;
+        padding: 0;
+        background: var(--ccb-container-dark-color);
+
+        span {
+          font-size: 12px;
+          color: rgba(0, 0, 0, 0.8);
+        }
+      }
+
+      .thank-you-page-inner-container {
+        max-width: 360px;
+        row-gap: 0;
+      }
+
+      .thank-you-page-inner__header-mobile {
+        display: flex;
+        justify-content: flex-end;
+        width: 100%;
+        margin-bottom: 16px;
+      }
+
+      .thank-you-page-inner__header-mobile-close {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 24px;
+        height: 24px;
+        padding: 0;
+        background: var(--ccb-container-dark-color);
+        border: 0;
+        border-radius: 50%;
+        cursor: pointer;
+        color: var(--ccb-text-color);
+        font-size: 10px;
+      }
+
+      &__icon-box {
+        order: 1;
+        margin-bottom: 16px;
+
+        .icon-wrapper {
+          width: 64px;
+          height: 64px;
+          background-color: rgba(0, 143, 60, 0.08);
+
+          .icon-content {
+            width: 40px;
+            height: 40px;
+            background-color: var(--ccb-accent-color);
+
+            i {
+              font-size: 16px;
+              color: var(--ccb-fields-color);
+            }
+          }
+        }
+      }
+
+      &__title-box {
+        order: 3;
+        margin-bottom: 40px;
+        gap: 4px;
+
+        & span {
+          word-break: normal;
+        }
+
+        &-title {
+          font-size: 18px;
+          line-height: 1;
+          color: var(--ccb-text-color);
+        }
+
+        &-desc {
+          font-size: 14px;
+          line-height: 16px;
+          font-weight: 400;
+          color: var(--ccb-text-color);
+          opacity: 0.7;
+          letter-spacing: 0.2px;
+        }
+      }
+
+      &__order {
+        order: 2;
+        margin-bottom: 24px;
+        padding: 6px 24px;
+        border: 1px solid rgba(0, 0, 0, 0.16);
+
+        span {
+          column-gap: 4px;
+
+          span {
+            max-width: 130px;
+            font-size: 14px;
+            line-height: 16px;
+            font-weight: 400;
+            color: var(--ccb-text-color);
+            opacity: 0.7;
+            letter-spacing: 0.2px;
+
+            &:first-child {
+              max-width: 130px;
+            }
+          }
+        }
+      }
+
+      &__actions {
+        order: 4;
+
+        &-wrapper {
+          max-width: 360px;
+          flex-direction: column;
+          flex-wrap: nowrap;
+          gap: 8px;
+
+          .thank-you-page__action {
+            width: 100%;
+          }
+
+          .thank-you-page__action--back {
+            display: flex;
+            align-items: center;
+            height: 72px;
+            background: var(--ccb-container-color);
+            order: 1;
+          }
+
+          .thank-you-page__action--back {
+            button {
+              i {
+                display: none;
+              }
+
+              span {
+                font-size: 14px;
+                font-weight: 700;
+                color: var(--ccb-text-color);
               }
             }
           }

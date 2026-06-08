@@ -74,6 +74,7 @@ const totalSummaryStore = useTotalSummaryStore();
 const settingsStore = useSettingsStore();
 const paymentAfterSubmitStore = usePaymentAfterSubmitStore();
 const { hasPromocodes } = useDiscounts();
+
 const headerComponent = defineAsyncComponent(
   () => import("./total-summary/aliases/HeaderAlias.vue"),
 );

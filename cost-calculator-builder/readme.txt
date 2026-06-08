@@ -6,7 +6,7 @@ Tags: cost calculator, calculator, calculator form builder, cost estimation, shi
 Requires at least: 6.2
 Requires PHP: 8.3
 Tested up to: 7.0
-Stable tag: 4.0.6
+Stable tag: 4.0.7
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -207,6 +207,9 @@ Also, you can import the demo sample using Tools -> Import -> WordPress Import.
 Demo sample XML file included in plugin archive.
 
 == Changelog ==
+
+= 4.0.7 =
+- Enhancement: Total Summary now sticks to the bottom of the screen on mobile, so you no longer need to scroll down to see your totals and complete your order
 
 = 4.0.6 =
 - Fix: Pages are not displayed for selection in the Separate Page option

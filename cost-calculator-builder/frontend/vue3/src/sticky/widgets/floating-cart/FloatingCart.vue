@@ -122,6 +122,14 @@ const getBtnPosition = computed(() => {
     data.top = "50%";
     data.transform = "translateY(-50%)";
   }
+
+  if (
+    window.innerWidth <= 540 &&
+    vertical === "bottom" &&
+    appStore.getStickySettings?.showCalculator
+  ) {
+    data.bottom = "80px";
+  }
   return data;
 });
 

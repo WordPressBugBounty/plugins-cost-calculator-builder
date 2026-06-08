@@ -3,6 +3,7 @@ import { defineStore } from "pinia";
 interface IAppStore {
   appLoader: boolean;
   isThankYouPage: boolean;
+  isMobile: boolean;
   calcId: number | null;
   title: string;
   dateFormat: string;
@@ -16,6 +17,7 @@ export const useAppStore = defineStore("app_store", {
   state: (): IAppStore => ({
     appLoader: true,
     isThankYouPage: false,
+    isMobile: false,
     calcId: null,
     title: "",
     dateFormat: "",
@@ -31,6 +33,7 @@ export const useAppStore = defineStore("app_store", {
     getCalcId: (state: IAppStore): number | null => state.calcId,
     getAppLoader: (state: IAppStore): boolean => state.appLoader,
     getThankYoyPageStatus: (state: IAppStore): boolean => state.isThankYouPage,
+    getIsMobile: (state: IAppStore): boolean => state.isMobile,
     getSubmissionLoader: (state: IAppStore): boolean => state.submissionLoader,
     getIsLive: (state: IAppStore): boolean => state.isLive,
     getProStatus: (state: IAppStore): boolean => state.isProActive,
@@ -60,6 +63,10 @@ export const useAppStore = defineStore("app_store", {
     updateThankYouPageStatus(value: boolean): void {
       if (!value && this.isCustomThankYouPage) return;
       this.isThankYouPage = value;
+    },
+
+    updateMobileStatus(value: boolean): void {
+      this.isMobile = value;
     },
 
     setCustomThankYouPage(value: boolean): void {

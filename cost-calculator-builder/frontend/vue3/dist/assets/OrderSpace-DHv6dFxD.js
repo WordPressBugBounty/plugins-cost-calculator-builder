@@ -1,0 +1,2 @@
+import{d as c,f as s,i as t}from"./vendor-vue-runtime-core-DwK6Ry68.js";import{t as a,u as n}from"./vendor-vue-reactivity-CheHbvBM.js";import{a as l}from"./vendor-vue-shared-DrzsEcag.js";const u=c({__name:"OrderSpace",props:{field:{}},setup(e){const r=e,{field:o}=a(r);return(f,i)=>(t(),s("div",{class:l(["ccb-order-field ccb-order-space",{[`ccb-col-${n(o).fieldWidth}`]:!0}])},null,2))}});export{u as default};
+//# sourceMappingURL=OrderSpace-DHv6dFxD.js.map

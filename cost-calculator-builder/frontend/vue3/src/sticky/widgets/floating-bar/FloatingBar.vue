@@ -122,6 +122,14 @@ const getBannerPosition = computed(() => {
     value += $wpBanner?.height() || 0;
   }
 
+  if (
+    appStore.getStickySettings?.bannerPosition === "bottom" &&
+    window.innerWidth <= 540 &&
+    appStore.getStickySettings?.showCalculator
+  ) {
+    value = 56;
+  }
+
   return { [appStore.getStickySettings?.bannerPosition || ""]: `${value}px` };
 });
 

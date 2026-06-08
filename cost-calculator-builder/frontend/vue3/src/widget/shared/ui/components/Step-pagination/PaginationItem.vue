@@ -70,7 +70,7 @@ const getPages = computed(() => {
     };
   });
 
-  if (pageBreakerSettings?.summaryAfterLastPage) {
+  if (pageBreakerSettings?.summaryAfterLastPage && !appStore.getIsMobile) {
     const summaryTitle = translationsStore.getTranslations.summary || "Summary";
     allPages.push({
       id: allPages.length + 1,
