@@ -35,9 +35,9 @@ import RequiredHint from "@/widget/shared/ui/components/Required-hint/RequiredHi
 
 const settingStore = useSettingsStore();
 
-const termValue = computed({
-  get() {
-    return settingStore.getFormSettings?.termsAndConditions?.checkbox || false;
+const termValue = computed<boolean>({
+  get(): boolean {
+    return settingStore.getFormSettings?.termsAndConditions?.checkbox ?? false;
   },
   set(value: boolean) {
     settingStore.updateTermsValue(value);

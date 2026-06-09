@@ -17,10 +17,13 @@
         :disabled="props.disabled"
         :inputmode="getInputMode"
         :pattern="getPattern"
+        :max="max"
+        :min="min"
         :value="
           modelValue === null || modelValue === undefined ? '' : modelValue
         "
         @input="handleInputChange"
+        @blur="handleInputBlur"
         @keydown="handleKeyDown"
       />
     </label>
@@ -39,8 +42,17 @@ import { useBuilderTranslationsStore } from "@/admin/app/providers/stores/useTra
 import { translateAdminText } from "@/admin/shared/utils/translate-admin-text.utils";
 
 const props = defineProps<IInput>();
-const { name, iconLeft, iconRight, border, label, required, variant } =
-  toRefs(props);
+const {
+  name,
+  iconLeft,
+  iconRight,
+  border,
+  label,
+  required,
+  variant,
+  max,
+  min,
+} = toRefs(props);
 const modelValue = defineModel<string | number>();
 const translationsStore = useBuilderTranslationsStore();
 
@@ -76,6 +88,46 @@ const sanitizeDecimal = (value: string): string => {
 
   if (!fractionParts.length) return integerPart;
   return `${integerPart}.${fractionParts.join("")}`;
+};
+
+const hasMin = computed(() => min.value !== undefined && min.value !== null);
+const hasMax = computed(() => max.value !== undefined && max.value !== null);
+const hasNumberLimits = computed(() => hasMin.value || hasMax.value);
+
+const clampByLimits = (value: string, applyMin = false): string => {
+  if (!hasNumberLimits.value || value === "") return value;
+
+  const numericValue = Number(value);
+  if (Number.isNaN(numericValue)) return value;
+
+  if (hasMax.value && numericValue > Number(max.value)) {
+    return String(max.value);
+  }
+
+  if (applyMin && hasMin.value && numericValue < Number(min.value)) {
+    return String(min.value);
+  }
+
+  return value;
+};
+
+const normalizeInputValue = (value: string, applyMin = false): string => {
+  const sanitizedValue = props.onlyDigits
+    ? sanitizeDigits(value)
+    : props.allowDecimal
+      ? sanitizeDecimal(value)
+      : value;
+
+  return clampByLimits(sanitizedValue, applyMin);
+};
+
+const updateInputValue = (input: HTMLInputElement, value: string): void => {
+  if (input.value !== value) {
+    input.value = value;
+  }
+
+  modelValue.value = value;
+  emit("change", name.value || "", value);
 };
 
 const handleKeyDown = (event: KeyboardEvent): void => {
@@ -117,18 +169,16 @@ const handleKeyDown = (event: KeyboardEvent): void => {
 
 const handleInputChange = (event: Event) => {
   const input = event.target as HTMLInputElement;
-  const nextValue = props.onlyDigits
-    ? sanitizeDigits(input.value)
-    : props.allowDecimal
-      ? sanitizeDecimal(input.value)
-      : input.value;
+  const nextValue = normalizeInputValue(input.value);
 
-  if ((props.onlyDigits || props.allowDecimal) && input.value !== nextValue) {
-    input.value = nextValue;
-  }
+  updateInputValue(input, nextValue);
+};
 
-  modelValue.value = nextValue;
-  emit("change", name.value || "", nextValue as string | number);
+const handleInputBlur = (event: FocusEvent) => {
+  const input = event.target as HTMLInputElement;
+  const nextValue = normalizeInputValue(input.value, true);
+
+  updateInputValue(input, nextValue);
 };
 
 const translatedLabel = computed(() =>
@@ -235,6 +285,12 @@ const translatedPlaceholder = computed(() =>
     border-radius: 0;
     padding: 0px 8px 0px 16px;
     background: transparent;
+  }
+}
+
+.nowrap {
+  .ccb-input__label-text {
+    white-space: nowrap !important;
   }
 }
 </style>

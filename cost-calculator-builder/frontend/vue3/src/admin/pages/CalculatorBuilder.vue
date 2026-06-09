@@ -57,13 +57,13 @@
                 height="30px"
                 size="m"
                 :type="saveButtonType"
-                :disabled="isSaving"
+                :disabled="isSaveDisabled"
                 :onClick="handleSave"
               />
               <button
                 class="ccb-save-split-btn__caret"
                 :class="{ 'ccb-save-split-btn__caret--open': showSaveTemplate }"
-                :disabled="isSaving"
+                :disabled="isSaveDisabled"
                 @click.stop="showSaveTemplate = !showSaveTemplate"
               >
                 <i class="ccb-icon-ic_caret_down"></i>
@@ -75,6 +75,7 @@
               </ul>
             </div>
             <Button
+              v-if="!appStore.getIsBackendDemo"
               :label="translations.embed"
               height="30px"
               size="m"
@@ -238,6 +239,14 @@ const saveButtonType = computed(() => {
   return "green" as const;
 });
 
+const hasFormulaValidationErrors = computed(
+  () => builderStore.getHasFormulaValidationErrors,
+);
+
+const isSaveDisabled = computed(
+  () => isSaving.value || hasFormulaValidationErrors.value,
+);
+
 const canOpenEmbed = computed(
   () => calculatorStore.getIsSaved && !isSaving.value,
 );
@@ -248,6 +257,13 @@ const handleEmbedClick = (): void => {
 };
 
 const handleSave = async (): Promise<void> => {
+  if (isSaveDisabled.value) {
+    if (hasFormulaValidationErrors.value) {
+      toast("Please fix formula errors before saving.", { type: "error" });
+    }
+    return;
+  }
+
   isSaving.value = true;
   startSavingDots();
   await calculatorStore.saveCalculatorAdminData();
@@ -257,6 +273,13 @@ const handleSave = async (): Promise<void> => {
 };
 
 const handleSaveAsTemplate = async (): Promise<void> => {
+  if (isSaveDisabled.value) {
+    if (hasFormulaValidationErrors.value) {
+      toast("Please fix formula errors before saving.", { type: "error" });
+    }
+    return;
+  }
+
   showSaveTemplate.value = false;
   isSaving.value = true;
   startSavingDots();

@@ -18,8 +18,9 @@
             <span class="ccb-checkbox-image__label">{{
               option.optionText
             }}</span>
-            <span class="ccb-checkbox-image__price" v-if="showPrice">
-              {{ option.optionConverted }}
+            <span class="ccb-checkbox-image__price" v-if="showValueInOption">
+              Price:
+              {{ option.optionValue }}
             </span>
           </div>
         </div>
@@ -67,8 +68,8 @@ const selectedOptions = computed(() => {
   );
 });
 
-const showPrice = computed(() => {
-  return field.value.showPrice || false;
+const showValueInOption = computed(() => {
+  return field.value.show_value_in_option || false;
 });
 </script>
 
@@ -181,7 +182,7 @@ const showPrice = computed(() => {
 
     &__price {
       font-size: calc(var(--ccb-summary-text-size) - 2px);
-      color: v-bind(textColor);
+      color: var(--ccb-fields-description-color);
 
       @media only screen and (max-width: 480px) {
         font-size: calc(var(--ccb-mobile-summary-text-size) - 2px);

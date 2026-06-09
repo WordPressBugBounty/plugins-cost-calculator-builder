@@ -55,9 +55,20 @@ export const useSettingsStore = defineStore("settings_store", {
     },
     validateOrderForm(): string[] {
       const fields = this.settings?.formFields;
-      if (!fields || !fields.accessEmail) return [];
+      if (!fields) return [];
 
       const errors: string[] = [];
+      const isValidEmail = (value: string): boolean =>
+        /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
+
+      if (
+        fields.adminEmailAddress?.trim() &&
+        !isValidEmail(fields.adminEmailAddress)
+      )
+        errors.push("adminEmailAddressInvalid");
+
+      if (!fields.accessEmail) return errors;
+
       if (fields.formType === "cost-calculator" && !fields.applyFormId?.trim())
         errors.push("applyFormId");
       if (fields.formType === "contact-form" && !fields.contactFormId?.trim())
@@ -71,7 +82,6 @@ export const useSettingsStore = defineStore("settings_store", {
         fields.formType === "cost-calculator"
       )
         errors.push("adminEmailAddress");
-
       return errors;
     },
   },

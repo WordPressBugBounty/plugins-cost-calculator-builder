@@ -52,6 +52,7 @@ onMounted(() => {
   const isPro = window.ccb_ajax_window?.pro_active || false;
   const calcUrl = window.ccb_ajax_window?.plugin_url || "";
   appStore.setIsPro(isPro as boolean);
+  appStore.setIsBackendDemo(Boolean(window.ccb_ajax_window?.is_backend_demo));
   appStore.setCalcUrl(calcUrl);
   appStore.setExportLink(exportLink as string);
 });

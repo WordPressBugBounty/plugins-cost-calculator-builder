@@ -332,11 +332,19 @@ function createFormulaLinter(fields: Ref<IAvailableField[]>) {
 export interface UseFormulaEditorOptions {
   fields: Ref<IAvailableField[]>;
   onChange: (displayFormula: string) => void;
+  onDiagnosticsChange?: (diagnostics: Diagnostic[]) => void;
 }
 
 export function useFormulaEditor(options: UseFormulaEditorOptions) {
-  const { fields, onChange } = options;
+  const { fields, onChange, onDiagnosticsChange } = options;
   const editor = shallowRef<EditorView | null>(null);
+
+  function notifyDiagnostics(): void {
+    const view = editor.value;
+    if (!view || !onDiagnosticsChange) return;
+
+    onDiagnosticsChange(collectDiagnostics(view, fields.value));
+  }
 
   function initEditor(container: HTMLElement, initialDoc: string): void {
     destroyEditor();
@@ -363,6 +371,12 @@ export function useFormulaEditor(options: UseFormulaEditorOptions) {
       basicSetup,
       keymap.of(defaultKeymap),
       EditorView.lineWrapping,
+      EditorView.updateListener.of((update) => {
+        if (!update.docChanged) return;
+
+        onChange(update.state.doc.toString());
+        notifyDiagnostics();
+      }),
       ...(Array.isArray(letterPlugin) ? letterPlugin : [letterPlugin]),
       operatorPlugin,
       ifElsePlugin,
@@ -381,11 +395,13 @@ export function useFormulaEditor(options: UseFormulaEditorOptions) {
       parent: container,
       state,
     });
+    notifyDiagnostics();
 
     editor.value.dom.addEventListener("focusout", () => {
       setTimeout(() => {
         if (editor.value) {
           onChange(editor.value.state.doc.toString());
+          notifyDiagnostics();
         }
       });
     });
@@ -420,6 +436,7 @@ export function useFormulaEditor(options: UseFormulaEditorOptions) {
     });
     view.contentDOM.focus();
     onChange(view.state.doc.toString());
+    notifyDiagnostics();
   }
 
   function getDisplayFormula(): string {

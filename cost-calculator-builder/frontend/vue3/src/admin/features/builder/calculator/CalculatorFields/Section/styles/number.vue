@@ -76,7 +76,18 @@ const {
   containerPaddingBottom,
   containerPaddingLeft,
   containerBorderRadius,
+  containerBlur,
 } = useAppearanceColors();
+
+const hasContainerBackdropFilter = computed(
+  () => parseFloat(containerBlur.value) > 0,
+);
+const containerBackdropFilter = computed(
+  () => `invert(${containerBlur.value})`,
+);
+const containerSectionBackground = computed(() =>
+  hasContainerBackdropFilter.value ? "transparent" : containerColor.value,
+);
 
 const onHeaderClick = (event: MouseEvent) => {
   if (!field.value.collapsible) return;
@@ -90,9 +101,8 @@ const onHeaderClick = (event: MouseEvent) => {
 .ccb-section.number {
   padding: v-bind(containerPaddingTop) v-bind(containerPaddingRight)
     v-bind(containerPaddingBottom) v-bind(containerPaddingLeft);
-  background-color: v-bind(containerColor);
-  backdrop-filter: var(--ccb-container-invert);
-  -webkit-backdrop-filter: var(--ccb-container-invert);
+  background-color: v-bind(containerSectionBackground);
+  backdrop-filter: v-bind(containerBackdropFilter) !important;
   border-bottom: 1px solid v-bind(borderColor);
   box-shadow: v-bind(containerShadow);
   counter-increment: ccb-section;

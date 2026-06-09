@@ -100,6 +100,20 @@ type Props = {
   field: IGeolocationField;
 };
 
+type TwoPointsSelectedOptions = {
+  distance?: string;
+  twoPoints?: {
+    from?: {
+      addressName?: string;
+      coordinates?: google.maps.LatLngLiteral;
+    };
+    to?: {
+      addressName?: string;
+      coordinates?: google.maps.LatLngLiteral;
+    };
+  };
+};
+
 const props = defineProps<Props>();
 const { field } = toRefs(props);
 
@@ -148,36 +162,35 @@ const loader = new Loader({
   libraries: ["places", "geometry"],
 });
 
+const getSavedTwoPoints = () => {
+  const selectedOptions = field.value
+    .userSelectedOptions as TwoPointsSelectedOptions;
+
+  if (
+    !selectedOptions?.twoPoints?.from?.coordinates ||
+    !selectedOptions.twoPoints.to?.coordinates
+  ) {
+    return null;
+  }
+
+  return selectedOptions;
+};
+
 onMounted(() => {
-  if (field.value.displayValue) {
-    addressNames.value.from.addressName = (
-      field.value.userSelectedOptions as any
-    ).twoPoints.from.addressName;
-    addressNames.value.to.addressName = (
-      field.value.userSelectedOptions as any
-    ).twoPoints.to.addressName;
+  const selectedOptions = getSavedTwoPoints();
+
+  if (field.value.displayValue && selectedOptions) {
+    const { from, to } = selectedOptions.twoPoints!;
+
+    addressNames.value.from.addressName = from?.addressName || "";
+    addressNames.value.to.addressName = to?.addressName || "";
     setTimeout(() => {
-      addressNames.value.from.coordinates = (
-        field.value.userSelectedOptions as any
-      ).twoPoints.from.coordinates;
-      addressNames.value.to.coordinates = (
-        field.value.userSelectedOptions as any
-      ).twoPoints.to.coordinates;
-      distance.value = (field.value.userSelectedOptions as any).distance;
-      coordinates.value = (
-        field.value.userSelectedOptions as any
-      ).twoPoints.from.coordinates;
-      coordinates.value = (
-        field.value.userSelectedOptions as any
-      ).twoPoints.to.coordinates;
-      setMarker(
-        "from",
-        (field.value.userSelectedOptions as any).twoPoints.from.coordinates,
-      );
-      setMarker(
-        "to",
-        (field.value.userSelectedOptions as any).twoPoints.to.coordinates,
-      );
+      addressNames.value.from.coordinates = from!.coordinates!;
+      addressNames.value.to.coordinates = to!.coordinates!;
+      distance.value = selectedOptions.distance || "";
+      coordinates.value = to!.coordinates!;
+      setMarker("from", from!.coordinates!);
+      setMarker("to", to!.coordinates!);
       calculateAndDisplayRoute();
     }, 100);
   }

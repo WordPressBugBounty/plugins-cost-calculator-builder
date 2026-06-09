@@ -147,6 +147,7 @@ if ( ! empty( $appearance ) ) {
 		'loaderType'          => $appearance['desktop']['others']['data']['calc_preloader']['value'] ?? 0,
 		'accentColor'         => $appearance['desktop']['colors']['data']['accent_color']['value'] ?? '',
 		'svgColor'            => $appearance['desktop']['colors']['data']['svg_color']['value'] ?? '',
+		'titleHide'           => $appearance['desktop']['typography']['data']['header_hide']['value'] ?? false,
 	);
 }
 

@@ -41,10 +41,12 @@ function setNestedValue(
  * @param keyMap   - maps draft keys → field keys (supports dot-notation for
  *                   nested paths, e.g. "styles.elementColumns")
  */
-export function useAutoSyncDraft<
-  F extends object,
-  D extends Record<string, unknown>,
->(getField: () => F, draft: D, keyMap?: Record<string, string>) {
+export function useAutoSyncDraft<F extends object, D extends object>(
+  getField: () => F,
+  draft: D,
+  keyMap?: Record<string, string>,
+  serializers?: Record<string, (value: unknown, draft: D) => unknown>,
+) {
   const { isRestoring, restoredVersion } = useBuilderHistory();
   let suppressed = false;
 
@@ -64,9 +66,14 @@ export function useAutoSyncDraft<
       const field = getField() as unknown as Record<string, unknown>;
       if (!field) return;
 
-      for (const draftKey of Object.keys(newDraft)) {
+      const newDraftRecord = newDraft as Record<string, unknown>;
+
+      for (const draftKey of Object.keys(newDraftRecord)) {
         const fieldKey = keyMap?.[draftKey] ?? draftKey;
-        const serialized = JSON.stringify(newDraft[draftKey]);
+        const fieldValue =
+          serializers?.[draftKey]?.(newDraftRecord[draftKey], newDraft) ??
+          newDraftRecord[draftKey];
+        const serialized = JSON.stringify(fieldValue);
         if (JSON.stringify(getNestedValue(field, fieldKey)) !== serialized) {
           setNestedValue(field, fieldKey, JSON.parse(serialized));
         }

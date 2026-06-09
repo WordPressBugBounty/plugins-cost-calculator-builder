@@ -132,6 +132,7 @@ async function handleTotalSummary() {
   }
   if (!canLeave) return;
   builderStore.setBuilderContent("total-summary");
+  builderStore.setSelectedField(null);
 }
 
 const confirmVisible = ref(false);
@@ -199,7 +200,18 @@ const {
   containerShadow,
   containerBorder,
   containerBorderRadius,
+  containerBlur,
 } = useAppearanceColors();
+
+const hasContainerBackdropFilter = computed(
+  () => parseFloat(containerBlur.value) > 0,
+);
+const containerBackdropFilter = computed(
+  () => `invert(${containerBlur.value})`,
+);
+const containerSectionBackground = computed(() =>
+  hasContainerBackdropFilter.value ? "transparent" : containerColor.value,
+);
 
 const totalSummaryStore = useTotalSummaryStore();
 
@@ -243,12 +255,12 @@ const checkIsDisabled = computed(() => {
   flex-direction: column;
   gap: 10px;
   border: 1px solid transparent;
-  padding: 2px;
   cursor: pointer;
   transition: border-color 0.2s ease;
   position: relative;
   border-radius: 8px;
   text-transform: v-bind(summaryTextTransform);
+  border: v-bind(containerBorder);
 
   &.active {
     border: 1px solid var(--ccb-blue-bg-normal, #0b79d0);
@@ -288,12 +300,12 @@ const checkIsDisabled = computed(() => {
     align-items: center;
     justify-content: flex-start;
     gap: 10px;
-    background-color: v-bind(containerColor);
+    background-color: v-bind(containerSectionBackground);
+    backdrop-filter: v-bind(containerBackdropFilter) !important;
     color: v-bind(textColor);
     padding: var(--ccb-container-padding-top) var(--ccb-container-padding-right)
       var(--ccb-container-padding-bottom) var(--ccb-container-padding-left);
     border-radius: v-bind(containerBorderRadius);
-    border: v-bind(containerBorder);
     box-shadow: v-bind(containerShadow);
   }
 

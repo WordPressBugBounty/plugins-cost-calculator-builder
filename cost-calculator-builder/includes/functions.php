@@ -577,6 +577,10 @@ function ccb_pro_active() {
 	return ( defined( 'CCB_PRO_VERSION' ) );
 }
 
+function ccb_is_backend_demo() {
+	return defined( 'STM_COUPON_URL' );
+}
+
 function ccb_all_calculators_data() {
 	$args = array(
 		'post_type'      => 'cost-calc',

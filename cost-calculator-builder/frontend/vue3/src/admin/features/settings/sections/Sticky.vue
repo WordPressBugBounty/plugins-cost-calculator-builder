@@ -451,40 +451,46 @@ const stickyTotalsList = computed({
   },
 });
 
-const clickActionItems = ref<IDropdownOption[]>([
-  {
-    label: "Scroll to calculator",
-    value: "scroll_to",
-  },
-  {
-    label: "Open a pop-up",
-    value: "open_modal",
-  },
-  {
-    label: "Pop up order form or payments",
-    value: "pro_features",
-  },
-  {
-    label: "Download PDF",
-    value: "pdf",
-  },
-  {
-    label: "Share invoice",
-    value: "invoice",
-  },
-  {
-    label: "WooCheckout action after submit",
-    value: "woo_checkout",
-  },
-  {
-    label: "WooProduct as open modal",
-    value: "woo_product_as_modal",
-  },
-  {
-    label: "WooProduct with redirect",
-    value: "woo_product_with_redirect",
-  },
-]);
+const clickActionItems = computed<IDropdownOption[]>(() => {
+  const disableBackgroundActions = !stickyShowCalculatorInBackground.value;
+
+  return [
+    {
+      label: "Scroll to calculator",
+      value: "scroll_to",
+    },
+    {
+      label: "Open a pop-up",
+      value: "open_modal",
+    },
+    {
+      label: "Pop up order form or payments",
+      value: "pro_features",
+    },
+    {
+      label: "Download PDF",
+      value: "pdf",
+      disabled: disableBackgroundActions,
+    },
+    {
+      label: "Share invoice",
+      value: "invoice",
+      disabled: disableBackgroundActions,
+    },
+    {
+      label: "WooCheckout action after submit",
+      value: "woo_checkout",
+    },
+    {
+      label: "WooProduct as open modal",
+      value: "woo_product_as_modal",
+    },
+    {
+      label: "WooProduct with redirect",
+      value: "woo_product_with_redirect",
+    },
+  ];
+});
 
 const stickyClickAction = ref<string>(
   settingsStore.getSettings?.sticky_calc.one_click_action || "scroll_to",

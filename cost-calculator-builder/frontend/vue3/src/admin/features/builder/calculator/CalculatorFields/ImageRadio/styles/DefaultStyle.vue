@@ -20,8 +20,8 @@
         <div class="ccb-radio-image__title-box">
           <span class="ccb-radio-image__label">{{ option.optionText }}</span>
           <span class="ccb-radio-image__price" v-if="showValueInOption"
-            >{{ translationsStore.getTranslations.price }}:
-            {{ option.optionConverted }}</span
+            >{{ translationsStore.getTranslations.price || "Price" }}:
+            {{ option.optionValue }}</span
           >
         </div>
       </div>
@@ -40,7 +40,7 @@
 
 <script setup lang="ts">
 import { IOptions, ISingleOptionsField } from "@/widget/shared/types/fields";
-import { toRefs } from "vue";
+import { toRefs, computed } from "vue";
 import { useSingleOptionChildShared } from "@/widget/actions/fields/composable/useSingleOptionChildShared.ts";
 import { useTranslationsStore } from "@/widget/app/providers/stores/translationsStore";
 import { useAppearanceColors } from "@/admin/shared/utils/useAppearanceColors";
@@ -65,6 +65,10 @@ const props = defineProps<Props>();
 const { options, field } = toRefs(props);
 
 const translationsStore = useTranslationsStore();
+
+const showValueInOption = computed(() => {
+  return field.value.show_value_in_option;
+});
 
 const { optionValues, changeValue, getName, current } =
   useSingleOptionChildShared(props, emit);

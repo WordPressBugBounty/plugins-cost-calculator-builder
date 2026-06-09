@@ -445,7 +445,7 @@
               <Textarea
                 height="120px"
                 placeholder="Enter additional classes"
-                v-model="draft.additionalClasses"
+                v-model="draft.additionalStyles"
               />
             </div>
           </div>
@@ -687,7 +687,7 @@ const syncDraftFromField = () => {
     round: boolean;
     calculateHidden: boolean;
     hideMinMax: boolean;
-    additionalClasses: string;
+    additionalStyles: string;
     fieldCurrency: boolean;
     fieldCurrencySettings: {
       currency: string;
@@ -702,6 +702,8 @@ const syncDraftFromField = () => {
     badgeVariant?: string;
     badgeFormat?: string;
   };
+
+  console.log(source.additionalStyles, "additionalStyles");
 
   draft.label = String(source.label ?? defaultDraft.label);
   draft.label = String(source.label || defaultDraft.label);
@@ -747,9 +749,7 @@ const syncDraftFromField = () => {
     source.calculateHidden ?? defaultDraft.calculateHidden,
   );
   draft.hideMinMax = Boolean(source.hideMinMax ?? defaultDraft.hideMinMax);
-  draft.additionalClasses = String(
-    source.additionalClasses || defaultDraft.additionalClasses,
-  );
+  draft.additionalStyles = String(source.additionalStyles || "");
   draft.fieldCurrency = Boolean(
     source.fieldCurrency ?? defaultDraft.fieldCurrency,
   );

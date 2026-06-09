@@ -76,6 +76,20 @@
           </Notice>
         </div>
       </div>
+      <div
+        v-if="hasError('adminEmailAddressInvalid')"
+        class="ccb-settings__row"
+      >
+        <div class="ccb-settings__col" style="width: 100%">
+          <Notice type="error">
+            <Text
+              text="Main email address is not valid."
+              size="m"
+              weight="regular"
+            />
+          </Notice>
+        </div>
+      </div>
       <div class="ccb-settings__row" style="margin: 4px 0">
         <div class="ccb-settings__col" style="width: 100%">
           <div class="ccb-repeater">
@@ -854,7 +868,7 @@ const orderTermsLinkedPageTitle = ref<string>(
 );
 
 const orderRecaptchaEnabled = ref<boolean>(
-  formFields.value.terms_and_conditions.checkbox || false,
+  settingsStore.getSettings?.recaptcha?.enable || false,
 );
 
 const orderTotalFields = computed({
@@ -1015,9 +1029,20 @@ const validationTriggered = computed(
   () => settingsStore.getOrderFormValidationTriggered,
 );
 
+const isValidEmail = (value: string): boolean =>
+  /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
+
+const isAdminEmailInvalid = computed(() => {
+  const email = adminEmailAddress.value?.trim() || "";
+
+  return Boolean(email) && !isValidEmail(email);
+});
+
 const fieldErrors = computed((): Record<string, boolean> => {
   if (!validationTriggered.value || !orderFormEnabled.value) {
-    return {};
+    return {
+      adminEmailAddressInvalid: isAdminEmailInvalid.value,
+    };
   }
 
   return {
@@ -1027,6 +1052,7 @@ const fieldErrors = computed((): Record<string, boolean> => {
     submitBtnText: !submitButtonText.value?.trim(),
     emailSubject: !emailSubject.value?.trim(),
     adminEmailAddress: !adminEmailAddress.value?.trim(),
+    adminEmailAddressInvalid: isAdminEmailInvalid.value,
   };
 });
 
@@ -1138,6 +1164,12 @@ const updateProperties = (name: string, value: any): void => {
   if (name === "paymentGateways") {
     settings.formFields.paymentMethods = value as unknown as string[];
     orderPaymentGateways.value = value as unknown as string[];
+  }
+
+  if (name === "orderRecaptcha") {
+    console.log(value);
+    settings.recaptcha.enable = value as boolean;
+    orderRecaptchaEnabled.value = value as boolean;
   }
 
   settingsStore.setSettings(settings);

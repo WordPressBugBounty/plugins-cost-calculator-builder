@@ -123,6 +123,8 @@ const rawInput = ref<string>(field.value.originalValue.toString());
 const isEditing = ref<boolean>(false);
 const forceUpdateKey = ref<number>(0);
 
+console.log(field.value);
+
 const requiredWarningText = computed(() => {
   const settingStore = useSettingsStore();
   return settingStore.getWarningTexts?.requiredMsg || "";

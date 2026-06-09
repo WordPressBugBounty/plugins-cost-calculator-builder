@@ -314,7 +314,7 @@ export interface IConfirmationPage {
 
 export interface ISettings {
   general: IGeneral;
-  layout: ILayoutSettings;
+  layout: ILayout;
   currency: ICurrency;
   confirmation_page: IConfirmationPage;
   texts: IWarningTexts;

@@ -230,6 +230,14 @@ onMounted(() => {
 
   .sticky-bar-icon {
     display: flex;
+    width: 24px;
+    height: 24px;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
 
     i {
       font-size: 24px;
@@ -277,6 +285,10 @@ onMounted(() => {
     height: 40px;
     display: flex;
     align-items: center;
+
+    &:hover {
+      background: hsl(from var(--ccb-accent-color) h s calc(l - 5));
+    }
   }
 
   @media screen and (max-width: 680px) {

@@ -36,9 +36,10 @@
           >
             <div
               class="ccb-dropdown-options__item"
+              :class="{ 'ccb-dropdown-options__item--disabled': item.disabled }"
               v-for="item in items"
               :key="item.value"
-              @click="selectItem(item.value)"
+              @click="selectItem(item)"
             >
               <Text
                 :text="item.label"
@@ -130,7 +131,11 @@ const toggleDropdown = () => {
   }
 };
 
-const selectItem = (value: string | number) => {
+const selectItem = (item: { value: string | number; disabled?: boolean }) => {
+  if (item.disabled) return;
+
+  const value = item.value;
+
   emit("update:modelValue", value);
   emit("change", name.value || "", value);
 
@@ -246,6 +251,16 @@ onBeforeUnmount(() => {
 
       &:hover {
         background-color: var(--ccb-blue-bg-dull-hover);
+      }
+
+      &--disabled {
+        cursor: not-allowed;
+        opacity: 0.5;
+        pointer-events: none;
+
+        &:hover {
+          background-color: transparent;
+        }
       }
     }
   }

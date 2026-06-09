@@ -8,6 +8,7 @@ export type Page = "" | "flow" | "calculator";
 interface IAppStore {
   editMode: boolean;
   demo: boolean;
+  isBackendDemo: boolean;
   calcId: number | null;
   page: Page;
   currentPage: string;
@@ -20,6 +21,7 @@ export const useAppStore = defineStore("app_store", {
   state: (): IAppStore => ({
     editMode: false,
     demo: false,
+    isBackendDemo: false,
     calcId: null,
     page: "",
     currentPage: "",
@@ -31,6 +33,7 @@ export const useAppStore = defineStore("app_store", {
   getters: {
     getEditMode: (state: IAppStore): boolean => state.editMode,
     getDemo: (state: IAppStore): boolean => state.demo,
+    getIsBackendDemo: (state: IAppStore): boolean => state.isBackendDemo,
     getCalcId: (state: IAppStore): number | null => state.calcId,
     getPage: (state: IAppStore): Page => state.page,
     getCurrentPage: (state: IAppStore): string => state.currentPage,
@@ -45,6 +48,9 @@ export const useAppStore = defineStore("app_store", {
     },
     setDemo(demo: boolean): void {
       this.demo = demo;
+    },
+    setIsBackendDemo(isBackendDemo: boolean): void {
+      this.isBackendDemo = isBackendDemo;
     },
     setCalcId(calcId: number | null): void {
       this.calcId = calcId;

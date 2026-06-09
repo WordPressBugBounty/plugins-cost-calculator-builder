@@ -32,7 +32,7 @@ const hasToolbar = computed(() => !!slots.toolbar);
   height: 100%;
   display: flex;
   padding-top: 20px;
-  overflow-x: hidden;
+  overflow: visible;
 
   &__body {
     flex: 1 1 0;
@@ -41,6 +41,7 @@ const hasToolbar = computed(() => !!slots.toolbar);
     align-items: flex-start;
     justify-content: center;
     height: fit-content;
+    overflow: visible;
     transition: flex 0.2s linear;
   }
 

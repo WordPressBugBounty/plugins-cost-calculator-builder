@@ -179,14 +179,16 @@ const clamp = (val: number, min: number, max: number) =>
 const onSummaryPositionChange = (value: string | number): void => {
   const position = value as ILayout["summary_position"];
   const patch: Partial<ILayout> = { summary_position: position };
+  const wasBottom = layout.value.summary_position === "bottom";
 
-  if (position !== "bottom") {
-    const calcWidth = clamp(layout.value.calculator_width, 40, 60);
-    patch.calculator_width = calcWidth;
-    patch.summary_width = 100 - calcWidth;
-  } else if (position === "bottom") {
+  if (position === "bottom") {
     patch.calculator_width = 100;
     patch.summary_width = 100;
+  } else if (wasBottom) {
+    const prev = layout.value.calculator_width;
+    const calcWidth = prev > 0 && prev < 100 ? clamp(prev, 30, 70) : 60;
+    patch.calculator_width = calcWidth;
+    patch.summary_width = 100 - calcWidth;
   }
 
   updateLayout(patch);

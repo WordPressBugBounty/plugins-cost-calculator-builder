@@ -7,6 +7,17 @@
       v-model:deviceType="deviceType"
     />
     <div class="ccb-appearance-content-typography__body">
+      <div class="ccb-appearance-content-typography__field-wrap">
+        <Toggle
+          label="Hide Calculator Title"
+          size="m"
+          weight="medium"
+          :model-value="booleanFieldValue('header_hide')"
+          @update:model-value="
+            (value) => updateValue('header_hide', value ? 1 : 0)
+          "
+        />
+      </div>
       <div
         class="ccb-appearance-content-typography__pair"
         v-for="row in mainRows"
@@ -19,6 +30,10 @@
               :model-value="fieldValue(row.sizeKey)"
               variant="innerLabel"
               :label="row.label"
+              inputType="number"
+              :max="100"
+              :min="1"
+              :step="1"
               @update:model-value="
                 (value) => updateValue(row.sizeKey, Number(value))
               "
@@ -38,7 +53,6 @@
           </div>
         </div>
       </div>
-
       <div class="ccb-appearance-content-typography__pair">
         <div class="ccb-appearance-content-typography__field-wrap">
           <div class="ccb-appearance-content-typography__field">
@@ -47,6 +61,7 @@
               variant="innerLabel"
               label="Summary Text"
               :model-value="fieldValue('total_field_font_size')"
+              inputType="number"
               @update:model-value="
                 (value) => updateValue('total_field_font_size', Number(value))
               "
@@ -88,7 +103,7 @@
 import { computed } from "vue";
 import { useAppearanceStore } from "@/admin/app/providers/stores/useAppearanceStore";
 import AppearanceHeader from "./AppearanceHeader.vue";
-import { Input, Dropdown } from "@/admin/shared/ui/UIKit";
+import { Input, Dropdown, Toggle } from "@/admin/shared/ui/UIKit";
 
 const appearanceStore = useAppearanceStore();
 
@@ -161,6 +176,14 @@ function updateValue(fieldKey: string, value: unknown): void {
 
 function fieldValue(fieldKey: string): string | number {
   return fieldsMap.value[fieldKey]?.value ?? "";
+}
+
+function booleanFieldValue(fieldKey: string): boolean {
+  return toBoolean(fieldsMap.value[fieldKey]?.value);
+}
+
+function toBoolean(value: unknown): boolean {
+  return value === true || value === 1 || value === "1";
 }
 
 function numberOptions(fieldKey: string): Option[] {

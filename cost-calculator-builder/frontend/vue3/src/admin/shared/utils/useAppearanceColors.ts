@@ -54,6 +54,22 @@ export function useAppearanceColors() {
     );
   });
 
+  const containerBlur = computed(() => {
+    const container = appearanceColorsData.value?.container as
+      | AppearanceContainerColorField
+      | undefined;
+    const containerValue = container?.value as
+      | { blur?: AppearanceValueField<number | string> }
+      | undefined;
+    const blurValue =
+      container?.data?.blur?.value ??
+      container?.data?.value?.blur?.value ??
+      containerValue?.blur?.value ??
+      0;
+
+    return `${blurValue}%`;
+  });
+
   const accentColor = computed(
     () =>
       appearanceStore.getActivePreset?.desktop?.colors?.data?.accent_color
@@ -257,5 +273,6 @@ export function useAppearanceColors() {
     buttonBorderStyle,
     buttonBorderWidth,
     buttonBorder,
+    containerBlur,
   };
 }

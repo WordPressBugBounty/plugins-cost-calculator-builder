@@ -15,14 +15,12 @@
     <Transition name="fade">
       <div class="ccb-group__body" :class="{ collapsed: collapsed }">
         <div class="ccb-group__fields" ref="fields">
-          <template v-for="groupFieldMap in field.groupElements">
-            <template v-for="groupElement in getFieldsFromMap(groupFieldMap)">
-              <CalculatorField
-                :name="groupElement.fieldName"
-                :field="groupElement"
-              />
-            </template>
-          </template>
+          <CalculatorField
+            v-for="groupElement in groupFields"
+            :key="groupElement.alias"
+            :name="groupElement.fieldName"
+            :field="groupElement"
+          />
         </div>
       </div>
     </Transition>
@@ -40,10 +38,6 @@ type Props = {
 };
 
 onMounted(() => {
-  if (collapsedDefault.value) {
-    collapsed.value = true;
-  }
-
   if (accordion.value) {
     collapsed.value = true;
 
@@ -79,7 +73,7 @@ onMounted(() => {
 
 const props = defineProps<Props>();
 const { field } = toRefs(props);
-const collapsed = ref(false);
+const collapsed = ref(Boolean(field.value.collapse));
 
 const groupLabel = computed(() => {
   return field.value.label ? field.value.label : "Group";
@@ -89,6 +83,12 @@ const getFieldsFromMap = computed(() => {
   return (data: Map<string, Field>): Field[] => {
     return Array.from(data.values());
   };
+});
+
+const groupFields = computed(() => {
+  return field.value.groupElements.flatMap((groupFieldMap) =>
+    getFieldsFromMap.value(groupFieldMap),
+  );
 });
 
 const showName = computed(() => {
@@ -101,10 +101,6 @@ const collapsible = computed(() => {
 
 const accordion = computed(() => {
   return field.value.accordion;
-});
-
-const collapsedDefault = computed(() => {
-  return field.value.collapse;
 });
 
 const toggleCollapse = () => {

@@ -55,10 +55,10 @@
               </p>
             </div>
             <FormulaBuilder
-              ref="formulaBuilderRef"
               v-model="draft.costCalcFormula"
               :availableFields="availableFields"
               :fieldAlias="field.alias"
+              @validation-change="onFormulaValidationChange"
             />
           </div>
           <div class="ccb-field-sidebar__item" v-else>
@@ -228,7 +228,6 @@ const isTotalRef = computed(
 );
 const { availableFields } = useFormulaAliases(fieldAliasRef, isTotalRef);
 
-const formulaBuilderRef = ref<InstanceType<typeof FormulaBuilder> | null>(null);
 const formulaErrors = ref<string[]>([]);
 
 interface IFormulaDraft {
@@ -282,6 +281,16 @@ const fieldTabs = [
 
 const activeTab = ref<string>("element");
 
+const onFormulaValidationChange = (errors: string[]): void => {
+  formulaErrors.value = errors;
+  builderStore.setFormulaValidationErrors(props.field.alias, errors);
+};
+
+const clearFormulaValidationErrors = (): void => {
+  formulaErrors.value = [];
+  builderStore.clearFormulaValidationErrors(props.field.alias);
+};
+
 const syncDraftFromField = (): void => {
   const source = props.field as IField & {
     costCalcFormula?: string;
@@ -328,6 +337,18 @@ watch(
   () => [props.field.alias, restoredVersion.value],
   () => {
     suppressAutoSync(() => syncDraftFromField());
+    formulaErrors.value =
+      builderStore.getFormulaValidationErrors[props.field.alias] || [];
+  },
+  { immediate: true },
+);
+
+watch(
+  () => draft.formulaView,
+  (isLegacyFormulaView) => {
+    if (isLegacyFormulaView) {
+      clearFormulaValidationErrors();
+    }
   },
   { immediate: true },
 );

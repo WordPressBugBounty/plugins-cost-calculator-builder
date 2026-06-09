@@ -55,6 +55,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, watch, toRef } from "vue";
+import type { Diagnostic } from "@codemirror/lint";
 import type { IAvailableField, IToolbarItem } from "./formula.types";
 import { buildDisplayFormula, buildRuntimeFormula } from "./formulaMappings";
 import { useFormulaEditor } from "./useFormulaEditor";
@@ -65,9 +66,7 @@ const props = defineProps<{
   fieldAlias?: string;
 }>();
 
-const emit = defineEmits<{
-  "update:modelValue": [value: string];
-}>();
+const emit = defineEmits(["update:modelValue", "validation-change"]);
 
 const editorContainer = ref<HTMLElement | null>(null);
 const fieldsRef = toRef(props, "availableFields");
@@ -84,6 +83,14 @@ const {
   onChange(displayFormula: string) {
     const runtime = buildRuntimeFormula(displayFormula, props.availableFields);
     emit("update:modelValue", runtime);
+  },
+  onDiagnosticsChange(diagnostics: Diagnostic[]) {
+    emit(
+      "validation-change",
+      diagnostics
+        .filter((diagnostic) => diagnostic.severity === "error")
+        .map((diagnostic) => diagnostic.message),
+    );
   },
 });
 

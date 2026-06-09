@@ -57,19 +57,20 @@ function cBuilder_admin_enqueue() {
 			'ccb-admin-bundle',
 			'ccb_ajax_window',
 			array(
-				'ajax_url'       => admin_url( 'admin-ajax.php' ),
-				'dateFormat'     => get_option( 'date_format' ),
-				'language'       => substr( get_bloginfo( 'language' ), 0, 2 ),
-				'plugin_url'     => CALC_URL,
-				'translations'   => $translations,
-				'pro_active'     => ccb_pro_active(),
-				'plugin_version' => CALC_VERSION,
-				'site_url'       => site_url(),
-				'woo_active'     => $is_woocommerce_active,
+				'ajax_url'        => admin_url( 'admin-ajax.php' ),
+				'dateFormat'      => get_option( 'date_format' ),
+				'language'        => substr( get_bloginfo( 'language' ), 0, 2 ),
+				'plugin_url'      => CALC_URL,
+				'translations'    => $translations,
+				'pro_active'      => ccb_pro_active(),
+				'is_backend_demo' => ccb_is_backend_demo(),
+				'plugin_version'  => CALC_VERSION,
+				'site_url'        => site_url(),
+				'woo_active'      => $is_woocommerce_active,
 				'woo_install_url' => $woo_install_url,
-				'menu_items'     => \cBuilder\Classes\CCBSettingsData::get_menu_items(),
-				'current_page'   => isset( $_GET['page'] ) ? sanitize_text_field( $_GET['page'] ) : '', // phpcs:ignore WordPress.Security.NonceVerification
-				'export_link'    => esc_url( get_site_url() ) . '/wp-admin/admin-ajax.php?action=cost-calculator-custom-export-run&ccb_nonce=' . esc_attr( wp_create_nonce( 'ccb_export_nonce' ) ),
+				'menu_items'      => \cBuilder\Classes\CCBSettingsData::get_menu_items(),
+				'current_page'    => isset( $_GET['page'] ) ? sanitize_text_field( $_GET['page'] ) : '', // phpcs:ignore WordPress.Security.NonceVerification
+				'export_link'     => esc_url( get_site_url() ) . '/wp-admin/admin-ajax.php?action=cost-calculator-custom-export-run&ccb_nonce=' . esc_attr( wp_create_nonce( 'ccb_export_nonce' ) ),
 			)
 		);
 

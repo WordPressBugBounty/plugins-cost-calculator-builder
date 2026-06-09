@@ -6,6 +6,7 @@ export interface AppearanceStore {
   loaderType: "";
   accentColor: string;
   svgColor: string;
+  titleHide: boolean;
 }
 
 export const useAppearanceStore = defineStore("appearance", {
@@ -15,6 +16,7 @@ export const useAppearanceStore = defineStore("appearance", {
     accentColor: "",
     svgColor: "",
     loaderType: "",
+    titleHide: false,
   }),
 
   getters: {
@@ -26,6 +28,8 @@ export const useAppearanceStore = defineStore("appearance", {
     getAppearanceAccentColor: (state: AppearanceStore): string =>
       state.accentColor,
     getAppearanceSvgColor: (state: AppearanceStore): string => state.svgColor,
+    getAppearanceTitleHide: (state: AppearanceStore): boolean =>
+      state.titleHide,
   },
 
   actions: {
@@ -35,6 +39,7 @@ export const useAppearanceStore = defineStore("appearance", {
       this.loaderType = data.loaderType;
       this.accentColor = data.accentColor;
       this.svgColor = data.svgColor;
+      this.titleHide = data.titleHide;
     },
   },
 });

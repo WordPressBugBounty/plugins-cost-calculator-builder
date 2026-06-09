@@ -65,7 +65,7 @@ defineEmits<{
   border-left: 4px solid v-bind(containerDarkColor);
   border-radius: 8px;
   background: v-bind(containerColor);
-  overflow: hidden;
+  overflow: visible;
   color: v-bind(textColor);
 
   &__header {
@@ -121,8 +121,9 @@ defineEmits<{
   }
 
   &__body {
-    padding: 0 16px;
+    padding: 20px 16px 0;
     position: relative;
+    overflow: visible;
   }
 
   &__drop-zone {

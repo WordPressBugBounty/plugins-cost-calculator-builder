@@ -47,7 +47,7 @@ defineEmits<{
   width: 100%;
   border-radius: 8px;
   background: v-bind(containerColor);
-  overflow: hidden;
+  overflow: visible;
   color: v-bind(textColor);
 
   &__header {
@@ -94,13 +94,16 @@ defineEmits<{
 
   &__body {
     position: relative;
+    padding-top: 20px;
+    overflow: visible;
   }
 
   &__fields {
     display: flex;
     flex-wrap: wrap;
     min-height: 60px;
-    padding: 16px;
+    padding: 20px 16px 16px;
+    overflow: visible;
     border: 2px dashed v-bind(borderColor);
     border-radius: 8px;
     background: v-bind(containerColor);

@@ -15,6 +15,7 @@ export interface ISingleOptionsField extends IBaseField {
   showValueInOption: boolean;
   disableOptions: number[];
   selectValue?: string | number;
+  show_value_in_option?: boolean;
 }
 
 export interface IMultiOptionsField extends Omit<IBaseField, "displayValue"> {
@@ -32,6 +33,7 @@ export interface IMultiOptionsField extends Omit<IBaseField, "displayValue"> {
   showPrice?: boolean;
   priceValue?: string | number;
   checkedLength?: number;
+  show_value_in_option?: boolean;
 }
 
 export type FieldWithMultipleDisplayView =

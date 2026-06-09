@@ -168,6 +168,7 @@
                   label="Default Right Value"
                   placeholder="100"
                   v-model="draft.defaultRight"
+                  class="nowrap"
                 />
               </div>
               <div class="ccb-field-sidebar__col">
@@ -186,13 +187,27 @@
                   v-model="draft.unitPosition"
                 />
               </div>
-              <div class="ccb-field-sidebar__col">
+              <div
+                class="ccb-field-sidebar__col"
+                v-if="draft.style !== 'input' && draft.style !== 'default'"
+              >
                 <Input
                   label="Slider Scale Points"
                   placeholder="7.5,10,13.5"
                   v-model="draft.scalePoints"
                 />
               </div>
+            </div>
+            <div
+              class="ccb-field-sidebar__row"
+              v-if="draft.style !== 'input' && draft.style !== 'default'"
+            >
+              <Toggle
+                label="Jump beetween scale points"
+                size="m"
+                weight="medium"
+                v-model="draft.jump"
+              />
             </div>
             <div class="ccb-field-sidebar__row">
               <Toggle

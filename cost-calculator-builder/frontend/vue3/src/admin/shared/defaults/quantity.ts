@@ -74,7 +74,7 @@ export interface IQuantitySettingsDraft {
   unitPosition: IQuantityField["unitPosition"];
   unitSymbol: string;
   enabled_currency_settings: boolean;
-  additionalClasses: string;
+  additionalStyles: string;
   round: boolean;
   calculateHidden: boolean;
   separation: boolean;
@@ -116,7 +116,7 @@ export const quantitySettingsDraftDefaults = (): IQuantitySettingsDraft => {
     unitPosition: defaults.unitPosition || "right",
     unitSymbol: String(defaults.unitSymbol || ""),
     enabled_currency_settings: Boolean(defaults.enabled_currency_settings),
-    additionalClasses: String(defaults.additionalCss || ""),
+    additionalStyles: String(defaults.additionalStyles || ""),
     round: false,
     calculateHidden: Boolean(defaults.calculateHidden),
     separation: Boolean(defaults.separation),

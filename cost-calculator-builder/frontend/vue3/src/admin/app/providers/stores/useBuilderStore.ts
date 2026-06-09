@@ -33,6 +33,7 @@ interface IBuilderStore {
   currentCalculatorPage: CalculatorAdminPage;
   settingsActiveSection: string;
   selectedFieldAlias: string | null;
+  formulaValidationErrors: Record<string, string[]>;
   pageNavigationSelected: boolean;
   pageSettingsSelected: boolean;
   isDragging: boolean;
@@ -52,6 +53,7 @@ export const useBuilderStore = defineStore("builder_store", {
     currentCalculatorPage: "builder",
     settingsActiveSection: "currency",
     selectedFieldAlias: null,
+    formulaValidationErrors: {},
     pageNavigationSelected: false,
     pageSettingsSelected: false,
     isDragging: false,
@@ -78,6 +80,15 @@ export const useBuilderStore = defineStore("builder_store", {
 
     getSelectedFieldAlias: (state: IBuilderStore): string | null =>
       state.selectedFieldAlias,
+
+    getFormulaValidationErrors: (
+      state: IBuilderStore,
+    ): Record<string, string[]> => state.formulaValidationErrors,
+
+    getHasFormulaValidationErrors: (state: IBuilderStore): boolean =>
+      Object.values(state.formulaValidationErrors).some(
+        (errors) => errors.length > 0,
+      ),
 
     getPageNavigationSelected: (state: IBuilderStore): boolean =>
       state.pageNavigationSelected,
@@ -207,6 +218,7 @@ export const useBuilderStore = defineStore("builder_store", {
 
     setBuilderFields(fields: IPageBreaker[]): void {
       this.builderFields = fields;
+      this.formulaValidationErrors = {};
       if (this.builderFields.length === 0) {
         this.addPage();
       }
@@ -299,6 +311,28 @@ export const useBuilderStore = defineStore("builder_store", {
         this.pageNavigationSelected = false;
         this.pageSettingsSelected = false;
       }
+    },
+
+    setFormulaValidationErrors(alias: string, errors: string[]): void {
+      if (!alias) return;
+
+      if (errors.length) {
+        this.formulaValidationErrors = {
+          ...this.formulaValidationErrors,
+          [alias]: errors,
+        };
+        return;
+      }
+
+      this.clearFormulaValidationErrors(alias);
+    },
+
+    clearFormulaValidationErrors(alias: string): void {
+      if (!alias || !this.formulaValidationErrors[alias]) return;
+
+      const nextErrors = { ...this.formulaValidationErrors };
+      delete nextErrors[alias];
+      this.formulaValidationErrors = nextErrors;
     },
 
     setPageNavigationSelected(value: boolean): void {
@@ -493,6 +527,7 @@ export const useBuilderStore = defineStore("builder_store", {
       if (this.selectedFieldAlias === alias) {
         this.selectedFieldAlias = null;
       }
+      this.clearFormulaValidationErrors(alias);
 
       const cs = useConditionsStore();
       cs.removeByAlias(alias);

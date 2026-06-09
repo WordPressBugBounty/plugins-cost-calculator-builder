@@ -1,4 +1,8 @@
-import { Field, IQuantityField } from "@/widget/shared/types/fields";
+import {
+  Field,
+  IGeolocationField,
+  IQuantityField,
+} from "@/widget/shared/types/fields";
 import { validateEmail } from "@/widget/shared/utils/validate-email.utils";
 import { validateUrl } from "@/widget/shared/utils/validate-url.utils";
 import { useFieldsStore } from "@/widget/app/providers/stores/fieldsStore";
@@ -189,13 +193,27 @@ const timePickerFieldValidation = (field: Field): boolean => {
   );
 };
 
+type SelectedPoint = {
+  addressName?: string;
+  label?: string;
+};
+
 const geolocationFieldValidation = (field: Field): boolean => {
-  return (
-    field.required &&
-    field.fieldName === "geolocation" &&
-    "displayValue" in field &&
-    field.displayValue?.length === 0
-  );
+  if (!field.required || field.fieldName !== "geolocation") {
+    return false;
+  }
+
+  const geolocationField = field as IGeolocationField;
+
+  if (geolocationField.geoType === "multiplyLocation") {
+    const selectedPoint = geolocationField.selectedPoint as
+      | SelectedPoint
+      | undefined;
+
+    return !selectedPoint?.addressName && !selectedPoint?.label;
+  }
+
+  return "extraDisplayView" in field && field.extraDisplayView?.length === 0;
 };
 
 const applyRequiredFieldsValidation = (fields: Field[]) => {

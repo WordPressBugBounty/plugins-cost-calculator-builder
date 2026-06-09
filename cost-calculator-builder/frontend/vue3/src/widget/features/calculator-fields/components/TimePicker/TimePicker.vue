@@ -85,19 +85,6 @@ const getMinInterval = computed(() => {
   return field.value.minInterval || "1h";
 });
 
-const getDefaultValue = computed(() => {
-  const hours =
-    field.value.placeholderHours.length > 0
-      ? field.value.placeholderHours
-      : new Date().getHours();
-  const minutes =
-    field.value.placeholderTime.length > 0
-      ? field.value.placeholderTime
-      : new Date().getMinutes();
-
-  return { hours: hours, minutes: minutes, seconds: 0 };
-});
-
 const getFormat = computed(() => {
   return field.value.format || false;
 });
@@ -121,11 +108,13 @@ const selectedTime = ref<{
 } | null>(null);
 
 onMounted(() => {
-  selectedTime.value = {
-    hours: Number(getDefaultValue.value.hours),
-    minutes: Number(getDefaultValue.value.minutes),
-    seconds: 0,
-  };
+  if (field.value.placeholderHours.length > 0) {
+    selectedTime.value = {
+      hours: Number(field.value.placeholderHours),
+      minutes: Number(field.value.placeholderTime),
+      seconds: 0,
+    };
+  }
   field.value.displayValue = getDisplayValue.value;
   fieldStore.updateField(field.value.alias, field.value, true);
 });

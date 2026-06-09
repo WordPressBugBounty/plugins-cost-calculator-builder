@@ -1,7 +1,8 @@
 <template>
   <div class="ccb-field__input-wrapper">
     <VueTelInput
-      @input="onInput"
+      @input="handlePhoneInput"
+      @keydown.capture="handlePhoneKeyDown"
       mode="international"
       v-model="phone"
       :inputOptions="options"
@@ -30,12 +31,53 @@ type Props = {
 
 const props = defineProps<Props>();
 const field = ref(props.field);
-const { onInput, onCountryChanged } = useValidatedFormField(props, emit);
+const { onCountryChanged } = useValidatedFormField(props, emit);
 
 const phone = ref<string>("");
 
 const options = {
   placeholder: field.value.placeholder,
+  inputmode: "numeric",
+  pattern: "[0-9]*",
+};
+
+const sanitizePhoneValue = (value: string): string => value.replace(/\D+/g, "");
+
+const getPhoneInputValue = (payload: Event | string): string => {
+  if (payload instanceof Event) {
+    return (payload.target as HTMLInputElement)?.value || "";
+  }
+
+  return payload;
+};
+
+const handlePhoneInput = (payload: Event | string) => {
+  const nextValue = sanitizePhoneValue(getPhoneInputValue(payload));
+
+  if (phone.value !== nextValue) {
+    phone.value = nextValue;
+  }
+
+  emit("update", nextValue);
+};
+
+const handlePhoneKeyDown = (event: KeyboardEvent) => {
+  if (event.ctrlKey || event.metaKey || event.altKey) return;
+
+  const allowedKeys = [
+    "Backspace",
+    "Delete",
+    "ArrowLeft",
+    "ArrowRight",
+    "Tab",
+    "Home",
+    "End",
+  ];
+
+  if (allowedKeys.includes(event.key)) return;
+  if (/^\d$/.test(event.key)) return;
+
+  event.preventDefault();
 };
 
 const countryChanged = (args: any) => {

@@ -36,6 +36,9 @@ const dividerCss = computed(() => {
       "var(--ccb-fields-border-color)",
   };
 });
+
+import { useAppearanceColors } from "@/admin/shared/utils/useAppearanceColors";
+const { borderColor } = useAppearanceColors();
 </script>
 
 <style lang="scss">
@@ -45,6 +48,7 @@ const dividerCss = computed(() => {
 
   &__item {
     width: 100%;
+    background-color: v-bind(borderColor);
   }
 }
 

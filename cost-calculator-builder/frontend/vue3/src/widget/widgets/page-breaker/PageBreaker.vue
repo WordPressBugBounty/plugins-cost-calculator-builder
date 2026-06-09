@@ -11,6 +11,10 @@
     v-if="!hideThankYouPage"
   >
     <div class="ccb-page-breaker__content">
+      <HeaderTitle
+        :title="appStore.getCalcTitle"
+        v-if="!appearanceStore.getAppearanceTitleHide"
+      />
       <PaginationItem v-if="hidePagination && enoughPages" />
       <EditButton />
       <template v-if="isLiveDemoLayout">
@@ -131,6 +135,8 @@ import CCBPopup from "@/widget/shared/ui/components/Popup/Popup.vue";
 import { Field } from "@/widget/shared/types/fields";
 import { useAppStore } from "@/widget/app/providers/stores/appStore.ts";
 import { usePageBreakerStore } from "@/widget/app/providers/stores/pageBreakerStore.ts";
+import HeaderTitle from "@/widget/shared/ui/wrappers/components/HeaderTitle.vue";
+import { useAppearanceStore } from "@/widget/app/providers/stores/appearanceStore.ts";
 
 const appStore = useAppStore();
 const pageBreakerStore = usePageBreakerStore();
@@ -143,7 +149,7 @@ const fieldsStore = useFieldsStore();
 const settingsStore = useSettingsStore();
 const submissionStore = useSubmissionStore();
 const pageBreakerSettings = settingsStore.getPageBreakerSettings;
-
+const appearanceStore = useAppearanceStore();
 const notificationsStore = useNotificationsStore();
 const translationsStore = useTranslationsStore();
 

@@ -310,7 +310,7 @@
             <Textarea
               height="120px"
               placeholder="Enter additional classes"
-              v-model="draft.additionalClasses"
+              v-model="draft.additionalStyles"
             />
           </div>
         </div>
@@ -376,7 +376,7 @@ interface IDatePickerDraft {
   };
   required: boolean;
   autoclose_enabled: boolean;
-  additionalClasses: string;
+  additionalStyles: string;
   fieldCurrencySettings: {
     currency: string;
     currencyPosition: string;
@@ -421,7 +421,7 @@ const draft = reactive<IDatePickerDraft>({
     seperateCurrency: false,
     thousands_separator: "",
   },
-  additionalClasses: "",
+  additionalStyles: "",
 });
 
 const fieldTabs = [
@@ -538,7 +538,7 @@ const syncDraftFromField = (): void => {
   draft.days_from_current = Math.max(0, Number(source.days_from_current));
   draft.required = Boolean(source.required);
   draft.autoclose_enabled = Boolean(source.autoclose_enabled);
-  draft.additionalClasses = String(source.additionalClasses || "");
+  draft.additionalStyles = String(source.additionalStyles || "");
   draft.fieldCurrencySettings = {
     ...syncCurrencySettings(source.fieldCurrencySettings),
     seperateCurrency: Boolean(source.fieldCurrencySettings?.seperateCurrency),

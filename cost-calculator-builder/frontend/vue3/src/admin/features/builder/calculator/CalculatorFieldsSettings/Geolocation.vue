@@ -637,6 +637,9 @@ interface IDistanceCostDraft {
   costStr: string;
 }
 
+type DistanceCostSource = Partial<IGeolocationDistanceCost> &
+  Partial<IDistanceCostDraft>;
+
 interface IGeolocationDraft {
   label: string;
   fieldName: string;
@@ -699,12 +702,6 @@ const fieldTabs = [
 const activeTab = ref<string>("element");
 
 useFieldWidthSync(() => props.field, draft);
-
-const { suppressAutoSync, restoredVersion } = useAutoSyncDraft(
-  () => props.field,
-  draft,
-  { additionalClasses: "additionalStyles" },
-);
 
 const geoTypeOptions: Array<{
   value: IGeolocationDraft["geoType"];
@@ -773,13 +770,32 @@ watch(
 );
 
 const distanceCostToDraft = (
-  list: IGeolocationDistanceCost[],
+  list: DistanceCostSource[],
 ): IDistanceCostDraft[] =>
   (list || []).map((r) => ({
-    fromStr: String(r.from ?? 0),
-    toStr: String(r.to ?? 0),
-    costStr: String(r.cost ?? 0),
+    fromStr: String(r.fromStr ?? r.from ?? 0),
+    toStr: String(r.toStr ?? r.to ?? 0),
+    costStr: String(r.costStr ?? r.cost ?? 0),
   }));
+
+const distanceCostToField = (
+  list: IDistanceCostDraft[],
+): IGeolocationDistanceCost[] =>
+  (list || []).map((r) => ({
+    from: Number(r.fromStr) || 0,
+    to: Number(r.toStr) || 0,
+    cost: Number(r.costStr) || 0,
+  }));
+
+const { suppressAutoSync, restoredVersion } = useAutoSyncDraft(
+  () => props.field,
+  draft,
+  { additionalClasses: "additionalStyles" },
+  {
+    distanceCostList: (value) =>
+      distanceCostToField(value as IDistanceCostDraft[]),
+  },
+);
 
 // --- Multiple locations helpers ---
 const addLocation = (): void => {
@@ -890,7 +906,7 @@ const syncDraftFromField = (): void => {
     additionalStyles?: string;
     hidden?: boolean;
     calculateHidden?: boolean;
-    distanceCostList?: IGeolocationDistanceCost[];
+    distanceCostList?: DistanceCostSource[];
     userLocation?: string | number[];
     userAddress?: string;
     multiplyLocations?: IGeolocationMultiplyLocation[];
@@ -929,6 +945,8 @@ const syncDraftFromField = (): void => {
     cost: Number(source.lastDistanceCost?.cost || 0),
   };
   recalcFromValues();
+  source.distanceCostList = distanceCostToField(draft.distanceCostList);
+  source.lastDistanceCost = { ...draft.lastDistanceCost };
   // Ensure at least 2 locations
   while (locs.length < 2)
     locs.push({ label: "", coordinates: "", addressName: "" });
@@ -1080,6 +1098,7 @@ watch(
 
   &:hover {
     background: var(--ccb-green-bg-normal, #c8f2dc);
+    color: #fff;
   }
 
   i {

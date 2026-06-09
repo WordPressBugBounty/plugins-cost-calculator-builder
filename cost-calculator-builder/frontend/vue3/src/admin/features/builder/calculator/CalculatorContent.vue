@@ -502,6 +502,23 @@
           </div>
         </div>
         <div
+          v-if="!summaryLastPage && isSideBySide"
+          class="ccb-calculator-content__resizer"
+          :class="{ 'is-active': isSummaryResizing }"
+          @mousedown="onSummaryResizeStart"
+          @mouseenter="isResizerHovered = true"
+          @mouseleave="isResizerHovered = false"
+          @mousemove="onResizerPointerMove"
+        ></div>
+        <Teleport to="body">
+          <span
+            v-if="isSummaryResizing || isResizerHovered"
+            class="ccb-calculator-content__resizer-badge"
+            :style="{ left: `${pointerX}px`, top: `${pointerY}px` }"
+            >{{ resizeRatioLabel }}</span
+          >
+        </Teleport>
+        <div
           class="ccb-calculator-content__summary"
           :style="summaryStyle"
           v-if="!summaryLastPage"
@@ -613,6 +630,104 @@ const summaryStyle = computed(() => {
   }
   return { width: `${layoutSettings.value?.summary_width ?? 30}%` };
 });
+
+const isSideBySide = computed(() => {
+  return layoutSettings.value?.summary_position !== "bottom";
+});
+
+const MIN_CALC_WIDTH = 30;
+const MAX_CALC_WIDTH = 70;
+
+const resizeRatioLabel = computed(() => {
+  const calc = Math.round(layoutSettings.value?.calculator_width ?? 60);
+  const summary = 100 - calc;
+  const isLeft = layoutSettings.value?.summary_position === "left";
+  return isLeft ? `${summary}/${calc}` : `${calc}/${summary}`;
+});
+
+const isSummaryResizing = ref(false);
+const isResizerHovered = ref(false);
+const pointerX = ref(0);
+const pointerY = ref(0);
+let summaryResizeContainer: HTMLElement | null = null;
+
+function onResizerPointerMove(event: MouseEvent): void {
+  pointerX.value = event.clientX;
+  pointerY.value = event.clientY;
+}
+
+function updateCalculatorWidth(calcWidth: number): void {
+  const settings = settingsStore.getSettings;
+  if (!settings) return;
+
+  const clamped = Math.round(
+    Math.min(MAX_CALC_WIDTH, Math.max(MIN_CALC_WIDTH, calcWidth)),
+  );
+
+  settingsStore.setSettings({
+    ...settings,
+    layout: {
+      ...settings.layout,
+      calculator_width: clamped,
+      summary_width: 100 - clamped,
+    },
+  });
+}
+
+function onSummaryResizeStart(event: MouseEvent): void {
+  event.preventDefault();
+  event.stopPropagation();
+
+  summaryResizeContainer = (event.currentTarget as HTMLElement).closest(
+    ".ccb-calculator-content__bottom",
+  ) as HTMLElement | null;
+
+  if (!summaryResizeContainer) return;
+
+  isSummaryResizing.value = true;
+  document.body.style.userSelect = "none";
+  document.body.style.cursor = "col-resize";
+
+  document.addEventListener("mousemove", onSummaryResizeMove);
+  document.addEventListener("mouseup", onSummaryResizeEnd);
+}
+
+function onSummaryResizeMove(event: MouseEvent): void {
+  if (!isSummaryResizing.value || !summaryResizeContainer) return;
+
+  const rect = summaryResizeContainer.getBoundingClientRect();
+  if (rect.width <= 0) return;
+
+  const isLeft = layoutSettings.value?.summary_position === "left";
+  const offset = isLeft
+    ? rect.right - event.clientX
+    : event.clientX - rect.left;
+
+  const clamped = Math.round(
+    Math.min(
+      MAX_CALC_WIDTH,
+      Math.max(MIN_CALC_WIDTH, (offset / rect.width) * 100),
+    ),
+  );
+
+  updateCalculatorWidth(clamped);
+
+  const splitterX = isLeft
+    ? rect.right - (clamped / 100) * rect.width
+    : rect.left + (clamped / 100) * rect.width;
+
+  pointerX.value = splitterX;
+  pointerY.value = Math.min(rect.bottom, Math.max(rect.top, event.clientY));
+}
+
+function onSummaryResizeEnd(): void {
+  isSummaryResizing.value = false;
+  summaryResizeContainer = null;
+  document.body.style.userSelect = "";
+  document.body.style.cursor = "";
+  document.removeEventListener("mousemove", onSummaryResizeMove);
+  document.removeEventListener("mouseup", onSummaryResizeEnd);
+}
 
 function getFieldWidthStyle(width: IField["width"]): string {
   const numericWidth = Number(width);
@@ -1096,6 +1211,7 @@ function removeSection(pageIndex: number, sectionIndex: number) {
 function editPage() {
   builderStore.setSelectedField(null);
   builderStore.setPageSettingsSelected(true);
+  builderStore.setBuilderContent("calculator");
   builderStore.setSidebarContent("builder");
 }
 
@@ -1223,6 +1339,10 @@ function onResizeEnd() {
 onBeforeUnmount(() => {
   document.removeEventListener("mousemove", onResizeMove);
   document.removeEventListener("mouseup", onResizeEnd);
+  document.removeEventListener("mousemove", onSummaryResizeMove);
+  document.removeEventListener("mouseup", onSummaryResizeEnd);
+  document.body.style.userSelect = "";
+  document.body.style.cursor = "";
 });
 
 const {
@@ -1315,7 +1435,7 @@ const getSectionFields = computed(() => {
   flex-direction: column;
   gap: 16px;
   max-height: calc(100vh - 200px);
-  padding: 10px;
+  padding: 20px 12px 10px;
   max-width: v-bind(calculatorWidth);
   margin-left: auto;
   margin-right: auto;
@@ -1346,10 +1466,11 @@ const getSectionFields = computed(() => {
   &__bottom {
     width: 100%;
     display: flex;
-    gap: 16px;
+    gap: 12px;
     margin-top: auto;
     flex-shrink: 0;
     position: relative;
+    overflow: visible;
 
     &--summary-left {
       flex-direction: row-reverse;
@@ -1370,9 +1491,69 @@ const getSectionFields = computed(() => {
 
   &__summary {
     min-width: 0;
+    overflow: visible;
     margin: var(--ccb-container-margin-top, 0)
       var(--ccb-container-margin-right, 0) var(--ccb-container-margin-bottom, 0)
       var(--ccb-container-margin-left, 0);
+  }
+
+  &__resizer {
+    position: relative;
+    flex: 0 0 8px;
+    align-self: stretch;
+    min-height: 80px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    cursor: col-resize;
+    user-select: none;
+    touch-action: none;
+    color: rgba(0, 0, 0, 0.08);
+
+    &::before {
+      content: "";
+      position: absolute;
+      top: 8px;
+      bottom: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 1px;
+      background-image: linear-gradient(
+        to bottom,
+        currentColor 0,
+        currentColor 4px,
+        transparent 4px,
+        transparent 8px
+      );
+      background-size: 1px 8px;
+      background-repeat: repeat-y;
+      transition: color 0.15s ease;
+    }
+
+    &:hover,
+    &.is-active {
+      color: var(--ccb-blue-bg-normal, #007ac6);
+    }
+  }
+
+  &__resizer-badge {
+    position: fixed;
+    z-index: 9999;
+    transform: translate(-50%, calc(-100% - 16px));
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 28px;
+    padding: 0 8px;
+    border-radius: 99px;
+    background: rgba(0, 0, 0, 0.8);
+    box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.1);
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1;
+    white-space: nowrap;
+    pointer-events: none;
   }
 
   &__sections {
@@ -1453,12 +1634,15 @@ const getSectionFields = computed(() => {
 
 // ── Page wrapper ───────────────────────────────────────────────────────
 .ccb-page-wrapper {
+  overflow: visible;
+
   &--bordered {
     border: 1px solid var(--ccb-blue-bg-normal, #007ac6);
     border-radius: 16px;
     box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.1);
-    padding: 24px;
+    padding: 28px 24px 24px;
     margin-top: 8px;
+    overflow: visible;
   }
 
   &__controls {
@@ -1504,6 +1688,10 @@ const getSectionFields = computed(() => {
   transition: border-color 0.15s ease;
   margin: v-bind(containerMarginTop) v-bind(containerMarginRight)
     v-bind(containerMarginBottom) v-bind(containerMarginLeft);
+
+  &:hover {
+    border-color: var(--ccb-blue-bg-normal, #0b79d0) !important;
+  }
 
   &--selected {
     border-color: var(--ccb-blue-bg-normal, #0b79d0) !important;
@@ -1561,6 +1749,7 @@ const getSectionFields = computed(() => {
   &__body {
     position: relative;
     min-height: 80px;
+    overflow: visible;
   }
 
   &__rows {
@@ -1570,10 +1759,11 @@ const getSectionFields = computed(() => {
     width: 100%;
     border-radius: 4px;
     min-height: 68px;
+    overflow: visible;
   }
 
   &__rows--empty {
-    border: 2px dashed var(--ccb-border-normal, #e5e7eb);
+    border: 2px dashed v-bind(borderColor);
     border-radius: 8px;
   }
 
@@ -1602,6 +1792,7 @@ const getSectionFields = computed(() => {
   width: 100%;
   min-height: 48px;
   padding: 4px;
+  overflow: visible;
   border: 1px dashed transparent;
   border-radius: 8px;
   transition:
@@ -1620,6 +1811,7 @@ const getSectionFields = computed(() => {
     width: 100%;
     min-height: 40px;
     gap: 0;
+    overflow: visible;
   }
 
   &__hint {
@@ -1634,7 +1826,7 @@ const getSectionFields = computed(() => {
     &--new {
       flex: 1;
       justify-content: center;
-      color: var(--ccb-blue-bg-normal, #0b79d0);
+      color: v-bind(textColor);
       font-weight: 500;
       opacity: 0.7;
     }
@@ -1683,7 +1875,7 @@ const getSectionFields = computed(() => {
     position: relative;
     min-height: 80px;
     padding: 4px;
-    border-color: var(--ccb-border-normal, #e5e7eb);
+    border-color: v-bind(borderColor);
     background: transparent;
 
     .ccb-row__new-zone-drop {
@@ -1696,7 +1888,7 @@ const getSectionFields = computed(() => {
       display: flex;
       align-items: center;
       justify-content: center;
-      color: var(--ccb-font-comment, #9ca3af);
+      color: v-bind(textColor);
       font-weight: 400;
       opacity: 0.8;
       pointer-events: none;
@@ -1714,6 +1906,8 @@ const getSectionFields = computed(() => {
   border: 2px solid transparent;
   border-radius: 12px;
   padding: 8px;
+  overflow: visible;
+  container-type: inline-size;
 
   &:hover,
   &--selected {
@@ -1817,6 +2011,7 @@ const getSectionFields = computed(() => {
     position: absolute;
     top: -17px;
     right: 12px;
+    left: auto;
     display: inline-flex;
     align-items: center;
     gap: 4px;
@@ -1827,7 +2022,17 @@ const getSectionFields = computed(() => {
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.15s ease;
-    z-index: 10;
+    z-index: 20;
+    white-space: nowrap;
+  }
+
+  // Narrow fields: center the toolbar so it stays inside the field bounds.
+  @container (max-width: 220px) {
+    &__controls {
+      right: auto;
+      left: 50%;
+      transform: translateX(-50%);
+    }
   }
 
   &__action {

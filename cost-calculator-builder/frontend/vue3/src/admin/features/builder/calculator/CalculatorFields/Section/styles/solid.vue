@@ -94,7 +94,18 @@ const {
   containerBorderRadius,
   containerShadow,
   containerBorder,
+  containerBlur,
 } = useAppearanceColors();
+
+const hasContainerBackdropFilter = computed(
+  () => parseFloat(containerBlur.value) > 0,
+);
+const containerBackdropFilter = computed(
+  () => `invert(${containerBlur.value})`,
+);
+const containerSectionBackground = computed(() =>
+  hasContainerBackdropFilter.value ? "transparent" : containerColor.value,
+);
 </script>
 
 <style lang="scss" scoped>
@@ -102,9 +113,8 @@ const {
   box-shadow: v-bind(containerShadow);
   border-radius: v-bind(containerBorderRadius);
   border: v-bind(containerBorder);
-  background-color: v-bind(containerColor);
-  backdrop-filter: var(--ccb-container-invert);
-  -webkit-backdrop-filter: var(--ccb-container-invert);
+  background-color: v-bind(containerSectionBackground);
+  backdrop-filter: v-bind(containerBackdropFilter) !important;
 
   &.collapsed {
     .ccb-section__header {

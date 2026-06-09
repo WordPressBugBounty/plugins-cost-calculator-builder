@@ -85,6 +85,8 @@ export interface IInput {
   inputType?: string;
   onlyDigits?: boolean;
   allowDecimal?: boolean;
+  max?: number;
+  min?: number;
 }
 
 export interface ITextarea {
@@ -141,6 +143,7 @@ export interface IRadio {
 export interface IDropdownOption {
   label: string;
   value: string | number;
+  disabled?: boolean;
 }
 
 export interface IDropdown {

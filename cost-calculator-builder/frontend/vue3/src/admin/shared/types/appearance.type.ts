@@ -32,10 +32,17 @@ export interface AppearanceSpacingData {
 }
 
 export interface AppearanceContainerColorField {
-  value?: { color?: string };
+  value?: {
+    color?: string;
+    blur?: { value?: number | string };
+  };
   data?: {
     color?: { value?: string };
-    value?: { color?: string };
+    blur?: { value?: number | string };
+    value?: {
+      color?: string;
+      blur?: { value?: number | string };
+    };
   };
 }
 

@@ -44,6 +44,7 @@ const changeStyle = (style: string) => {
     loaderType: appearanceStore.loaderType,
     accentColor: appearanceStore.accentColor,
     svgColor: appearanceStore.svgColor,
+    titleHide: appearanceStore.titleHide,
   });
 };
 </script>
