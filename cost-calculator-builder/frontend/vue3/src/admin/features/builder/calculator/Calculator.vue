@@ -6,40 +6,73 @@
         <CalculatorContent />
       </div>
     </template>
+    <template #toolbar>
+      <SidebarCollapseToolbar />
+    </template>
     <template #sidebar>
-      <div class="ccb-calculator-sidebar-wrapper">
-        <div class="ccb-calculator-sidebar-tabs">
-          <div
-            v-for="tab in sidebarTabs"
-            :key="tab.id"
-            class="ccb-calculator-sidebar-tabs__item"
-            :class="{ 'is-active': activeSidebar === tab.id }"
-            @click="setSidebarContent(tab.id)"
-          >
-            <i :class="tab.icon"></i>
-            <span>{{ tab.label }}</span>
-          </div>
+      <Transition name="sidebar-mode-switch" mode="out-in">
+        <div
+          v-if="isTotalSummaryMode"
+          key="summary-sidebar"
+          class="ccb-sidebar-mode-wrapper"
+        >
+          <TotalSummarySidebar />
         </div>
-        <Transition name="sidebar-switch" mode="out-in">
-          <component :is="activeSidebarComponent" :key="activeSidebar" />
-        </Transition>
-      </div>
+        <div
+          v-else
+          key="calculator-sidebar"
+          class="ccb-sidebar-mode-wrapper ccb-calculator-sidebar-wrapper"
+        >
+          <div class="ccb-calculator-sidebar-tabs">
+            <div
+              v-for="tab in sidebarTabs"
+              :key="tab.id"
+              class="ccb-calculator-sidebar-tabs__item"
+              :class="{ 'is-active': activeSidebar === tab.id }"
+              @click="setSidebarContent(tab.id)"
+            >
+              <i :class="tab.icon"></i>
+              <span>{{ tab.label }}</span>
+            </div>
+          </div>
+          <Transition name="sidebar-switch" mode="out-in">
+            <component :is="activeSidebarComponent" :key="activeSidebar" />
+          </Transition>
+        </div>
+      </Transition>
     </template>
   </BuilderContainer>
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, onMounted, onBeforeUnmount } from "vue";
 import BuilderContainer from "@/admin/shared/ui/components/Builder/BuilderContainer.vue";
 import BuilderNavigation from "@/admin/features/builder/common/BuilderNavigation.vue";
+import SidebarCollapseToolbar from "@/admin/features/builder/common/SidebarCollapseToolbar.vue";
 import CalculatorContent from "./CalculatorContent.vue";
 import CalculatorSidebar from "./CalculatorSidebar.vue";
 import LayoutSidebar from "./LayoutSidebar.vue";
 import ThemesSidebar from "./ThemesSidebar.vue";
+import TotalSummarySidebar from "@/admin/features/builder/total-summary/TotalSummarySidebar.vue";
 import { useBuilderStore } from "@/admin/app/providers/stores/useBuilderStore";
 import type { builderSidebarContentType } from "@/admin/shared/types/builder.type";
 
 const builderStore = useBuilderStore();
+
+function onWindowClick(e: MouseEvent) {
+  if (!builderStore.getSelectedFieldAlias) return;
+  const target = e.target as HTMLElement;
+  if (
+    target.closest(".ccb-field-item") ||
+    target.closest(".ccb-section--selected") ||
+    target.closest(".ccb-builder-container__sidebar")
+  )
+    return;
+  builderStore.setSelectedField(null);
+}
+
+onMounted(() => window.addEventListener("click", onWindowClick));
+onBeforeUnmount(() => window.removeEventListener("click", onWindowClick));
 
 const sidebarTabs = [
   { id: "builder" as const, label: "Fields", icon: "ccb-icon-ic_elements" },
@@ -49,6 +82,9 @@ const sidebarTabs = [
 
 const activeSidebar = computed(
   () => builderStore.getBuilderContent.sidebarContent,
+);
+const isTotalSummaryMode = computed(
+  () => builderStore.getBuilderContent.content === "total-summary",
 );
 
 const setSidebarContent = (tab: builderSidebarContentType) => {
@@ -87,6 +123,10 @@ const activeSidebarComponent = computed(() => {
   padding: 16px;
   border-radius: 16px;
   background: var(--ccb-bgr-sidebar);
+}
+
+.ccb-sidebar-mode-wrapper {
+  width: 100%;
 }
 
 .ccb-calculator-sidebar-tabs {
@@ -155,5 +195,22 @@ const activeSidebarComponent = computed(() => {
 .sidebar-switch-leave-to {
   opacity: 0;
   transform: translateX(-10px);
+}
+
+.sidebar-mode-switch-enter-active,
+.sidebar-mode-switch-leave-active {
+  transition:
+    opacity 0.22s ease,
+    transform 0.22s ease;
+}
+
+.sidebar-mode-switch-enter-from {
+  opacity: 0;
+  transform: translateX(12px);
+}
+
+.sidebar-mode-switch-leave-to {
+  opacity: 0;
+  transform: translateX(-12px);
 }
 </style>

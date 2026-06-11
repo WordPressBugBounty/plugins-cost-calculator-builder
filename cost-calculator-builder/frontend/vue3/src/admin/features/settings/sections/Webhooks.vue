@@ -22,7 +22,7 @@
             name="enableSendForms"
             @change="updateProperties"
             v-model="enableSendForms"
-            label="When user submits Order form"
+            label="When user submits Contact form"
           />
         </div>
       </div>
@@ -71,13 +71,13 @@
             </div>
             <div class="ccb-webhooks-info__content">
               <Text
-                text="When user submits Order form"
+                text="When user submits Contact form"
                 size="m"
                 weight="bold"
               />
               <span
                 >This webhook will be available after you
-                <span style="font-weight: bold">enable</span> Order Form.
+                <span style="font-weight: bold">enable</span> Contact Form.
                 <a
                   href="https://docs.stylemixthemes.com/cost-calculator-builder/cost-calculator-settings/calculator-settings/webhooks#when-contact-form-submitted"
                   target="_blank"

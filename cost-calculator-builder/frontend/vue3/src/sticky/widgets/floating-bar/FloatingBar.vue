@@ -3,6 +3,7 @@
     class="sticky-calculator-banner"
     :style="getBannerPosition"
     :class="classList"
+    v-if="!showInMobile"
   >
     <div class="sticky-calculator-banner--container ccb-desktop">
       <div class="sticky-calculator-banner--left">
@@ -131,6 +132,10 @@ const getBannerPosition = computed(() => {
   }
 
   return { [appStore.getStickySettings?.bannerPosition || ""]: `${value}px` };
+});
+
+const showInMobile = computed(() => {
+  return window.innerWidth <= 640 && appStore.getStickySettings?.showCalculator;
 });
 
 onMounted(() => {

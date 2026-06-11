@@ -68,81 +68,91 @@
       @click="cancelEditFormName"
     ></div>
 
-    <div
-      class="ccb-order-form-content__body"
-      ref="fieldListRef"
-      :class="{
-        'ccb-order-form-content__body--drag-empty':
-          dragOverIndex !== null && !fields.length,
-      }"
-      @dragenter="onBodyDragEnter"
-      @dragleave="onBodyDragLeave"
-      @dragover.prevent
-      @drop="onRawFieldDrop"
-    >
-      <VueDraggable
-        :modelValue="fields"
-        @update:modelValue="onFieldsReorder"
-        :animation="200"
-        handle=".ccb-order-form-field__handle"
-        ghostClass="ccb-order-form-field--ghost"
-        class="ccb-order-form-content__list"
-      >
-        <div
-          class="ccb-order-form-field"
-          :class="{
-            'ccb-order-form-field--selected': isSelected(field),
-            'ccb-order-form-field--drop-after': dragOverIndex === index,
-            'ccb-order-form-field--resizing':
-              resizingFieldId ===
-              (field.id !== undefined ? field.id : field.tempId),
-          }"
-          :style="{ gridColumn: 'span ' + (field.field_width || 12) }"
-          v-for="(field, index) in fields"
-          :key="field.id || field.tempId"
-          @click="selectField(field)"
-          @dragenter.stop="onFieldDragEnter(index, $event)"
-          @dragover.prevent
-          @drop.stop="onRawFieldDropAfter(index, $event)"
-        >
-          <component :is="getPreviewComponent(field.type)" :field="field" />
-          <div class="ccb-order-form-field__toolbar">
-            <div class="ccb-order-form-field__handle">
-              <i class="ccb-icon-ic_drag"></i>
-            </div>
-            <div class="ccb-order-form-field__actions">
-              <i
-                class="ccb-icon-ic_duplicate"
-                @click.stop="duplicateField(field)"
-              ></i>
-              <i
-                class="ccb-icon-ic_delete"
-                @click.stop="deleteField(field)"
-              ></i>
-            </div>
-          </div>
-          <div
-            class="ccb-order-form-field__resize-handle"
-            @mousedown.stop="onResizeStart($event, field)"
-          >
-            <span></span>
-            <span></span>
-            <span></span>
-          </div>
-        </div>
-      </VueDraggable>
-      <div class="ccb-order-form-content__empty" v-if="!fields.length">
-        <Text
-          text="Add fields from the sidebar to begin."
-          size="m"
-          weight="regular"
-        />
+    <div class="ccb-order-form-content__context">
+      <OrderFormTotalSummaryStub />
+
+      <div class="ccb-order-form-content__divider">
+        <span class="ccb-order-form-content__divider-badge">
+          Contact form — you edit this
+        </span>
       </div>
 
-      <div class="ccb-order-form-content__submit" v-if="fields.length">
-        <button class="ccb-order-form-content__submit-btn" disabled>
-          Submit
-        </button>
+      <div
+        class="ccb-order-form-content__body"
+        ref="fieldListRef"
+        :class="{
+          'ccb-order-form-content__body--drag-empty':
+            dragOverIndex !== null && !fields.length,
+        }"
+        @dragenter="onBodyDragEnter"
+        @dragleave="onBodyDragLeave"
+        @dragover.prevent
+        @drop="onRawFieldDrop"
+      >
+        <VueDraggable
+          :modelValue="fields"
+          @update:modelValue="onFieldsReorder"
+          :animation="200"
+          handle=".ccb-order-form-field__handle"
+          ghostClass="ccb-order-form-field--ghost"
+          class="ccb-order-form-content__list"
+        >
+          <div
+            class="ccb-order-form-field"
+            :class="{
+              'ccb-order-form-field--selected': isSelected(field),
+              'ccb-order-form-field--drop-after': dragOverIndex === index,
+              'ccb-order-form-field--resizing':
+                resizingFieldId ===
+                (field.id !== undefined ? field.id : field.tempId),
+            }"
+            :style="{ gridColumn: 'span ' + (field.field_width || 12) }"
+            v-for="(field, index) in fields"
+            :key="field.id || field.tempId"
+            @click="selectField(field)"
+            @dragenter.stop="onFieldDragEnter(index, $event)"
+            @dragover.prevent
+            @drop.stop="onRawFieldDropAfter(index, $event)"
+          >
+            <component :is="getPreviewComponent(field.type)" :field="field" />
+            <div class="ccb-order-form-field__toolbar">
+              <div class="ccb-order-form-field__actions">
+                <i
+                  class="ccb-icon-ic_duplicate"
+                  @click.stop="duplicateField(field)"
+                ></i>
+                <i
+                  class="ccb-icon-ic_delete"
+                  @click.stop="deleteField(field)"
+                ></i>
+                <div class="ccb-order-form-field__handle">
+                  <i class="ccb-icon-ic_drag"></i>
+                </div>
+              </div>
+            </div>
+            <div
+              class="ccb-order-form-field__resize-handle"
+              @mousedown.stop="onResizeStart($event, field)"
+            >
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+          </div>
+        </VueDraggable>
+        <div class="ccb-order-form-content__empty" v-if="!fields.length">
+          <Text
+            text="Add fields from the sidebar to begin."
+            size="m"
+            weight="regular"
+          />
+        </div>
+
+        <div class="ccb-order-form-content__submit" v-if="fields.length">
+          <button class="ccb-order-form-content__submit-btn" disabled>
+            Submit
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -155,6 +165,7 @@ import { VueDraggable } from "vue-draggable-plus";
 import { Button, Text } from "@/admin/shared/ui/UIKit";
 import { useOrderFormContent } from "@/admin/features/builder/order-form/composables/useOrderFormContent";
 import { useAppearanceColors } from "@/admin/shared/utils/useAppearanceColors";
+import OrderFormTotalSummaryStub from "./components/OrderFormTotalSummaryStub.vue";
 
 const fieldPreviews: Record<string, Component> = {
   name: defineAsyncComponent(() => import("./components/FieldPreviewName.vue")),
@@ -238,11 +249,13 @@ const {
   height: calc(100vh - 200px);
   border-radius: 16px;
   overflow-y: auto;
-  padding: 0px 24px 24px;
+  padding: 0 24px 24px;
   display: flex;
   flex-direction: column;
   gap: 20px;
   position: relative;
+  max-width: 700px;
+  margin: 0 auto;
 
   &__header {
     width: 100%;
@@ -313,13 +326,56 @@ const {
     background: transparent;
   }
 
-  &__body {
+  &__context {
     flex: 1;
+    display: flex;
+    flex-direction: column;
     border-radius: 16px;
     background: v-bind(containerColor);
-    padding: 24px;
-    padding-top: 40px;
+  }
+
+  &__divider {
     position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 24px;
+
+    &::before {
+      content: "";
+      position: absolute;
+      left: 24px;
+      right: 24px;
+      top: 50%;
+      height: 0;
+      border-top: 1px dashed var(--ccb-green-bg-normal, #008f3c);
+    }
+
+    &-badge {
+      position: relative;
+      z-index: 1;
+      padding: 4px 12px;
+      border-radius: 99px;
+      background: var(--ccb-green-bg-normal, #008f3c);
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+  }
+
+  &__body {
+    flex: 1;
+    padding: 10px;
+    position: relative;
+    -webkit-border-radius: 12px;
+    -moz-border-radius: 12px;
+    border-radius: 12px;
+    margin: 24px;
+    margin-top: 16px;
+    background: var(--ccb-green-bg-dull-normal, #008f3c);
 
     &--drag-empty {
       .ccb-order-form-content__empty {
@@ -347,18 +403,26 @@ const {
   }
 
   &__submit {
-    padding: 8px 16px;
+    padding: 8px 10px;
+    width: 100%;
 
     &-btn {
       background: var(--ccb-green-bg-normal, #008f3c);
       color: rgba(255, 255, 255, 0.8);
       border: none;
-      border-radius: 99px;
+      border-radius: 4px;
+      outline: none !important;
+      box-shadow: none !important;
+      font-size: 14px;
+      font-weight: 700;
+      transition: background-color 200ms linear;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+      padding: 10px 20px;
+      width: 100%;
       height: 40px;
-      width: 120px;
-      font-size: 16px;
-      font-weight: 500;
-      cursor: default;
     }
   }
 }
@@ -392,8 +456,6 @@ const {
     font-size: 16px;
     display: flex;
     align-items: center;
-    width: 16px;
-    height: 16px;
   }
 
   &__actions {

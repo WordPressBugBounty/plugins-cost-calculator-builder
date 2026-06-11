@@ -207,6 +207,7 @@ const {
 
       @media only screen and (max-width: 480px) {
         font-size: calc(var(--ccb-mobile-summary-text-size) - 2px);
+        width: 70%;
       }
     }
 

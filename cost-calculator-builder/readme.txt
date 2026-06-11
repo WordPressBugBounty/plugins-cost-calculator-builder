@@ -6,7 +6,7 @@ Tags: cost calculator, calculator, calculator form builder, cost estimation, shi
 Requires at least: 6.2
 Requires PHP: 8.3
 Tested up to: 7.0
-Stable tag: 4.0.8
+Stable tag: 4.0.9
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -207,6 +207,14 @@ Also, you can import the demo sample using Tools -> Import -> WordPress Import.
 Demo sample XML file included in plugin archive.
 
 == Changelog ==
+
+= 4.0.9 =
+- Enhancement: Smoother transition between the builder and Total Summary sections
+- Fix: Clicking on empty space closes element settings
+- Fix: Text and icons are misaligned on mobile devices in elements and Total Summary
+- Fix: Elements twitch during transitions on mobile devices
+- Fix: Total Summary is always present even when the calculator is not visible on mobile devices
+- Fix: Total Summary does not open when clicking on the widget itself on mobile devices
 
 = 4.0.8 =
 - Enhancement: You can now resize the Total Summary section directly in the builder by dragging, instead of adjusting width manually in layout settings

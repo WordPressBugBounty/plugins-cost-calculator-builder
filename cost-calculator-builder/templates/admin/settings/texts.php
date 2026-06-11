@@ -48,7 +48,7 @@
 			<div class="container">
 				<div class="row">
 					<div class="col">
-					<span class="ccb-tab-title"><?php esc_html_e( 'Error messages in Order Forms', 'cost-calculator-builder' ); ?></span>
+					<span class="ccb-tab-title"><?php esc_html_e( 'Error messages in Contact Forms', 'cost-calculator-builder' ); ?></span>
 					</div>
 				</div>
 				<div class="ccb-single-pro-feature" style="max-width:400px; margin-top: 15px;">
@@ -71,7 +71,7 @@
 			<div class="container">
 				<div class="row">
 					<div class="col">
-					<span class="ccb-tab-title"><?php esc_html_e( 'Error messages in Order Forms', 'cost-calculator-builder' ); ?></span>
+					<span class="ccb-tab-title"><?php esc_html_e( 'Error messages in Contact Forms', 'cost-calculator-builder' ); ?></span>
 					</div>
 				</div>
 				<div class="row ccb-p-t-15">

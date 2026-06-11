@@ -21,7 +21,7 @@
     <SettingsBlock>
       <div class="ccb-settings__row">
         <div class="ccb-settings__col">
-          <Text text="Error messages in Order Forms" size="m" weight="bold" />
+          <Text text="Error messages in Contact Forms" size="m" weight="bold" />
         </div>
       </div>
       <div class="ccb-settings__row">

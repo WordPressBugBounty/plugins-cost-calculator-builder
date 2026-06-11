@@ -55,7 +55,7 @@ const sidebarItems = ref([
         slug: "warning-messages",
       },
       {
-        label: "Order Form",
+        label: "Contact Form",
         icon: "ccb-icon-ic_order_form",
         slug: "order-form",
       },

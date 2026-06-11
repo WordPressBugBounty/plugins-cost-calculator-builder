@@ -3,13 +3,13 @@
     <SettingsBlock v-if="!orderFormEnabled">
       <div class="ccb-settings__row">
         <div class="ccb-settings__col">
-          <Text text="Order Form for Payments" size="m" weight="bold" />
+          <Text text="Contact Form for Payments" size="m" weight="bold" />
           <div
             class="ccb-settings__description ccb-text-s ccb-regular"
             style="padding-left: px"
           >
-            If the Order Form is disabled, this form will be used. You can edit
-            the form anytime in the
+            If the Contact Form is disabled, this form will be used. You can
+            edit the form anytime in the
             <a @click.stop="openFormManager">Form Manager</a>
           </div>
         </div>

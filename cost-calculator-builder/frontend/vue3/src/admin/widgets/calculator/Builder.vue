@@ -1,7 +1,7 @@
 <template>
   <div class="ccb-calculator-page-container">
     <Transition name="fade" mode="out-in">
-      <component :is="activeModule" :key="builderContent.content" />
+      <component :is="activeModule" :key="moduleKey" />
     </Transition>
   </div>
 </template>
@@ -13,24 +13,37 @@ import { useBuilderStore } from "@/admin/app/providers/stores/useBuilderStore";
 const builderStore = useBuilderStore();
 const builderContent = builderStore.getBuilderContent;
 
+const CalculatorModule = defineAsyncComponent(
+  () => import("@/admin/features/builder/calculator/Calculator.vue"),
+);
+const OrderFormModule = defineAsyncComponent(
+  () => import("@/admin/features/builder/order-form/OrderForm.vue"),
+);
+const ConfirmationModule = defineAsyncComponent(
+  () => import("@/admin/features/builder/confirmation/Confirmation.vue"),
+);
+
+const moduleKey = computed(() => {
+  if (
+    builderContent.content === "calculator" ||
+    builderContent.content === "total-summary"
+  ) {
+    return "calculator";
+  }
+
+  return builderContent.content;
+});
+
 const activeModule = computed(() => {
   switch (builderContent.content) {
     case "calculator":
-      return defineAsyncComponent(
-        () => import("@/admin/features/builder/calculator/Calculator.vue"),
-      );
+      return CalculatorModule;
     case "total-summary":
-      return defineAsyncComponent(
-        () => import("@/admin/features/builder/total-summary/TotalSummary.vue"),
-      );
+      return CalculatorModule;
     case "order-form":
-      return defineAsyncComponent(
-        () => import("@/admin/features/builder/order-form/OrderForm.vue"),
-      );
+      return OrderFormModule;
     case "confirmation":
-      return defineAsyncComponent(
-        () => import("@/admin/features/builder/confirmation/Confirmation.vue"),
-      );
+      return ConfirmationModule;
     default:
       return null;
   }

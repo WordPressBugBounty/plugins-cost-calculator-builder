@@ -1,14 +1,14 @@
 <div class="ccb-tab-container">
 	<?php if ( ! defined( 'CCB_PRO' ) ) : ?>
 		<?php
-			$title          = __( 'Custom Order Form', 'cost-calculator-builder' );
+			$title          = __( 'Custom Contact Form', 'cost-calculator-builder' );
 			$pro_title      = __( 'Available in PRO version', 'cost-calculator-builder' );
 			$paragraph_list = array(
 				__(
-					'Order form for the calculator helps you collect and process customer orders. Add fields for contact information, shipping addresses, reward cards, and biometric data. Choose custom elements like text area, dropdown, radio button and more. You can adjust the length and layout and change the appearance of the fields.',
+					'Contact form for the calculator helps you collect and process customer orders. Add fields for contact information, shipping addresses, reward cards, and biometric data. Choose custom elements like text area, dropdown, radio button and more. You can adjust the length and layout and change the appearance of the fields.',
 					'cost-calculator-builder'
 				),
-				__( 'Create a custom order form that perfectly fits your business needs.', 'cost-calculator-builder' ),
+				__( 'Create a custom contact form that perfectly fits your business needs.', 'cost-calculator-builder' ),
 			);
 			$img_list       = array(
 				esc_url( CALC_URL . '/frontend/dist/img/pro-features/order-form-3.webp' ),

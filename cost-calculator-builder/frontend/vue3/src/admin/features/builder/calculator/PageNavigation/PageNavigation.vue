@@ -107,6 +107,9 @@ const pageNavigationComponent = computed(() => {
 });
 
 function onChangePage(index: number) {
+  if (builderStore.getBuilderContent.content === "total-summary") {
+    return;
+  }
   builderStore.setActivePage(index);
 }
 

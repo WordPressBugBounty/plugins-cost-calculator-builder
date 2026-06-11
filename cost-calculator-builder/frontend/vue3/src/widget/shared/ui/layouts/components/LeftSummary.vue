@@ -13,6 +13,7 @@
       :id="getStickyId"
     >
       <TotalSummary
+        v-if="!isMobile"
         :summaries="
           fieldsStore.getSummaryList.filter(
             (summary) =>
@@ -24,6 +25,19 @@
         :show-summary="formDisplaySummaryStatus"
         :form-title="settingsStore.getFormSettings?.summaryDisplay?.formTitle"
         :show-notifications="showNotifications"
+        :notification-type="notificationsStore.notificationType"
+        :notification-message="notificationsStore.message"
+        :show-woo-redirect-cart="showWooRedirectCart"
+      />
+      <MobileTotalSummary
+        v-if="isMobile"
+        :summaries="
+          fieldsStore.getSummaryList.filter((summary) => !summary.hidden)
+        "
+        :totals="fieldsStore.getTotalsList.filter((summary) => !summary.hidden)"
+        :show-summary="formDisplaySummaryStatus"
+        :form-title="settingsStore.getFormSettings?.summaryDisplay?.formTitle"
+        :show-notifications="notificationsStore.notificationStatus"
         :notification-type="notificationsStore.notificationType"
         :notification-message="notificationsStore.message"
         :show-woo-redirect-cart="showWooRedirectCart"
@@ -71,6 +85,24 @@
             :id="getStickyId"
           >
             <TotalSummary
+              v-if="!isMobile"
+              :summaries="
+                fieldsStore.getSummaryList.filter((summary) => !summary.hidden)
+              "
+              :totals="
+                fieldsStore.getTotalsList.filter((summary) => !summary.hidden)
+              "
+              :show-summary="formDisplaySummaryStatus"
+              :form-title="
+                settingsStore.getFormSettings?.summaryDisplay?.formTitle
+              "
+              :show-notifications="notificationsStore.notificationStatus"
+              :notification-type="notificationsStore.notificationType"
+              :notification-message="notificationsStore.message"
+              :show-woo-redirect-cart="showWooRedirectCart"
+            />
+            <MobileTotalSummary
+              v-else
               :summaries="
                 fieldsStore.getSummaryList.filter((summary) => !summary.hidden)
               "
@@ -106,6 +138,7 @@ import { useSettingsStore } from "@/widget/app/providers/stores/settingsStore.ts
 import { Field } from "@/widget/shared/types/fields";
 import { useAppearanceStore } from "@/widget/app/providers/stores/appearanceStore";
 import { useAppStore } from "@/widget/app/providers/stores/appStore.ts";
+import MobileTotalSummary from "@/widget/shared/ui/wrappers/components/MobileTotalSummary.vue";
 
 const notificationsStore = useNotificationsStore();
 
@@ -121,6 +154,10 @@ const showNotifications = computed((): boolean => {
       !settingsStore.hasThankYouPage) &&
     !getWooStayOnPage.value
   );
+});
+
+const isMobile = computed(() => {
+  return appStore.getIsMobile;
 });
 
 const enoughPages = computed(() => {
@@ -217,7 +254,11 @@ const formDisplaySummaryStatus = computed(() => {
 });
 
 const summaryLastPage = computed(() => {
-  return enoughPages.value && pageBreakerSettings?.summaryAfterLastPage;
+  return (
+    enoughPages.value &&
+    pageBreakerSettings?.summaryAfterLastPage &&
+    !isMobile.value
+  );
 });
 
 const getStickyId = computed(() => {

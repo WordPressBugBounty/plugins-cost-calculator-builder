@@ -156,6 +156,7 @@ const paymentsStatus = computed(() => {
     background: #f7f8fb;
     border: 1px solid #eaeaea;
     border-radius: 6px;
+    box-sizing: border-box;
     .ccb-payments__title {
       font-size: 12px;
       font-weight: 700;

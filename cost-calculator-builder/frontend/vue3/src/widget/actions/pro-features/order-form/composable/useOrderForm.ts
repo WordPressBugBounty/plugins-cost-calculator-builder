@@ -146,7 +146,7 @@ function validateOrderFormSettings(): boolean {
       status: true,
       type: "error",
       message: "Error: Missing Settings!",
-      description: `Please fill in all necessary fields in the settings to complete your <span style="font-weight: 700">Order Form</span> <a href="${link}" target="_blank">setup</a> in "${appStore.getCalcTitle}"`,
+      description: `Please fill in all necessary fields in the settings to complete your <span style="font-weight: 700">Contact Form</span> <a href="${link}" target="_blank">setup</a> in "${appStore.getCalcTitle}"`,
     });
 
     return true;

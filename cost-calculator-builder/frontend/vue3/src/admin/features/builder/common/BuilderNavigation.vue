@@ -51,7 +51,7 @@
         @click="handleOrderForm"
         :class="{ active: activeContent === 'order-form' }"
       >
-        <Text text="Order Form" size="s" weight="medium" />
+        <Text text="Contact Form" size="s" weight="medium" />
       </div>
       <div
         class="ccb-builder-navigation-list-item"
@@ -85,13 +85,11 @@ import { Text, ConfirmDialog, Badge } from "@/admin/shared/ui/UIKit";
 import { useCalculatorStore } from "@/admin/app/providers/stores/useCalculatorStore";
 import type { builderContentType } from "@/admin/shared/types/builder.type";
 import { useAppStore } from "@/admin/app/providers/stores/useAppStore";
-import { useSettingsStore } from "@/admin/app/providers/stores/useSettingsStore";
 
 const builderStore = useBuilderStore();
 const orderFormStore = useOrderFormStore();
 const calculatorStore = useCalculatorStore();
 const appStore = useAppStore();
-const settingsStore = useSettingsStore();
 
 const activeContent = computed(() => {
   return builderStore.getBuilderContent.content;
@@ -137,10 +135,6 @@ async function handleTotalSummary() {
   builderStore.setBuilderContent("total-summary");
   builderStore.setSelectedField(null);
   builderStore.setPageNavigationSelected(false);
-
-  if (settingsStore.getSettings?.page_break?.summary_after_last_page) {
-    builderStore.setActivePage(builderStore.getBuilderFields.length);
-  }
 }
 
 function handleOrderForm() {

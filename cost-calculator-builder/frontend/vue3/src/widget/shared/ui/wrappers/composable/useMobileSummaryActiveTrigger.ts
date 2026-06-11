@@ -78,7 +78,18 @@ const pickActiveCalcId = (): string | null => {
   const widgets = getCalculatorWidgets();
 
   if (widgets.length <= 1) {
-    return widgets[0]?.getAttribute("data-calc-id") ?? null;
+    const widget = widgets[0];
+    if (!widget) {
+      return null;
+    }
+
+    const ratioAttr = widget.getAttribute(VISIBILITY_ATTR);
+    if (ratioAttr === null) {
+      return widget.getAttribute("data-calc-id");
+    }
+
+    const ratio = Number.parseFloat(ratioAttr);
+    return ratio > 0 ? widget.getAttribute("data-calc-id") : null;
   }
 
   let winner: string | null = null;
@@ -158,7 +169,6 @@ export const useMobileSummaryActiveTrigger = (
   const isInStickyModal = ref(false);
 
   let observer: IntersectionObserver | null = null;
-  let hasMultipleCalculators = false;
   let stickyModalElement: HTMLElement | null = null;
 
   const updateStickyModalState = (): void => {
@@ -174,11 +184,7 @@ export const useMobileSummaryActiveTrigger = (
   const syncTriggerVisibility = (activeCalcId: string | null): void => {
     updateStickyModalState();
 
-    if (
-      isSummaryOpen.value ||
-      !hasMultipleCalculators ||
-      isInStickyModal.value
-    ) {
+    if (isSummaryOpen.value || isInStickyModal.value) {
       isTriggerActive.value = true;
       return;
     }
@@ -242,12 +248,6 @@ export const useMobileSummaryActiveTrigger = (
 
     if (isStickyModalOpen(calcId.value)) {
       isTriggerActive.value = true;
-    }
-
-    hasMultipleCalculators = getCalculatorWidgets().length > 1;
-    if (!hasMultipleCalculators) {
-      isTriggerActive.value = true;
-      return;
     }
 
     observer = new IntersectionObserver(

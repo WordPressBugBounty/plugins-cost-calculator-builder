@@ -4,6 +4,7 @@
     :style="getBtnPosition"
     @click.prevent="clickAction"
     :class="classList"
+    v-if="!showInMobile"
   >
     <div
       class="sticky-calculator-btn--icon is-image"
@@ -50,6 +51,10 @@ const {
 
 const appStore = useAppStore();
 const translationsStore = useTranslationsStore();
+
+const showInMobile = computed(() => {
+  return window.innerWidth <= 640 && appStore.getStickySettings?.showCalculator;
+});
 
 const getBtnPosition = computed(() => {
   const positions: string[] =

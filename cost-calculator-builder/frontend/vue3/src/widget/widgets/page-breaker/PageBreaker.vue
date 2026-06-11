@@ -510,7 +510,7 @@ watch(activePageIndex, () => {
   .ccb-fields-block {
     width: var(--ccb-calculator-width);
 
-    @media (max-width: 540px) {
+    @media (max-width: 640px) {
       width: 100%;
     }
   }
@@ -529,7 +529,7 @@ watch(activePageIndex, () => {
     width: var(--ccb-summary-width);
     box-sizing: border-box;
 
-    @media (max-width: 540px) {
+    @media (max-width: 640px) {
       width: 100%;
     }
 
@@ -537,6 +537,10 @@ watch(activePageIndex, () => {
       position: sticky;
       top: 40px;
       height: fit-content;
+
+      @media (max-width: 640px) {
+        position: relative;
+      }
     }
   }
 

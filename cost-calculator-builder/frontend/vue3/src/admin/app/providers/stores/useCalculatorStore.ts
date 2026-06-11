@@ -122,7 +122,7 @@ export const useCalculatorStore = defineStore("calculator_store", {
       if (orderFormErrors.length > 0) {
         settingsStore.triggerOrderFormValidation();
         builderStore.setSettingsActiveSection("order-form");
-        toast("Please fill in all required Order Form fields.", {
+        toast("Please fill in all required Contact Form fields.", {
           type: "error",
         });
         this.setRequestLoader(false);

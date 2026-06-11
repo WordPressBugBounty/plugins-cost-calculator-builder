@@ -703,8 +703,6 @@ const syncDraftFromField = () => {
     badgeFormat?: string;
   };
 
-  console.log(source.additionalStyles, "additionalStyles");
-
   draft.label = String(source.label ?? defaultDraft.label);
   draft.label = String(source.label || defaultDraft.label);
   draft.placeholder = String(source.placeholder || defaultDraft.placeholder);

@@ -336,7 +336,7 @@ onMounted(() => {
   @media (max-width: 820px) {
     .ccb-location-modal__sidebar {
       width: 32%;
-      padding: 25px 17px;
+      padding: 15px 17px;
     }
 
     .ccb-location-modal__body {

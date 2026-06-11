@@ -95,11 +95,29 @@ const summaryLabel = computed(() => {
   &__item {
     display: flex;
     justify-content: space-between;
+    align-items: start;
+    gap: 10px;
+
+    .ccb-total-row__name {
+      width: 60%;
+    }
 
     .ccb-total-row__value {
+      width: 40%;
+    }
+    .ccb-total-row__value {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
+      justify-content: flex-end;
+      flex-wrap: wrap;
       gap: 5px;
+      min-width: 0;
+      text-align: right;
+
+      > span {
+        word-break: break-all;
+        width: auto;
+      }
 
       .discount {
         font-size: 0.8em;
@@ -110,8 +128,16 @@ const summaryLabel = computed(() => {
 
     .ccb-total-row__name {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
+      flex-wrap: wrap;
       gap: 5px;
+      min-width: 0;
+      word-break: break-word;
+
+      > span {
+        min-width: 0;
+        word-break: break-word;
+      }
 
       .discount {
         font-size: 10px !important;

@@ -24,7 +24,7 @@
         <div class="ccb-settings__col">
           <Text text="Order Notification Email" size="m" weight="bold" />
           <Text
-            text="Set up email notifications for incoming orders. Works across Order Form submissions and Payment Methods."
+            text="Set up email notifications for incoming orders. Works across Contact Form submissions and Payment Methods."
             size="m"
             weight="regular"
             class="ccb-settings__description"
@@ -152,7 +152,7 @@
           <Toggle
             v-model="orderFormEnabled"
             name="accessEmail"
-            label="Enable Order Form"
+            label="Enable Contact Form"
             @change="updateProperties"
           />
         </div>
@@ -162,7 +162,7 @@
           style="display: flex; justify-content: flex-end"
         >
           <Button
-            label="Order Form Manager"
+            label="Contact Form Manager"
             size="m"
             type="green-ghost"
             iconRight="ccb-icon-ic_next"
@@ -1167,7 +1167,6 @@ const updateProperties = (name: string, value: any): void => {
   }
 
   if (name === "orderRecaptcha") {
-    console.log(value);
     settings.recaptcha.enable = value as boolean;
     orderRecaptchaEnabled.value = value as boolean;
   }

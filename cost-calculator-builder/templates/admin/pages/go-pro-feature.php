@@ -117,7 +117,7 @@ $featuresCCB = array(
 		'pro'     => true,
 	),
 	array(
-		'feature' => 'Order Form',
+		'feature' => 'Contact Form',
 		'free'    => false,
 		'pro'     => true,
 	),

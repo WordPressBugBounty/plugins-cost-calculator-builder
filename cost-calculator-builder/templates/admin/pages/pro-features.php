@@ -26,8 +26,8 @@ $features = array(
 		'link'        => 'https://docs.stylemixthemes.com/cost-calculator-builder/pro-plugin-features/discounts',
 	),
 	array(
-		'title'       => __( 'Order form', 'cost-calculator-builder' ),
-		'description' => __( 'Create order forms in your calculator. They can get more information about your clients by filling in the form.', 'cost-calculator-builder' ),
+		'title'       => __( 'Contact form', 'cost-calculator-builder' ),
+		'description' => __( 'Create contact forms in your calculator. They can get more information about your clients by filling in the form.', 'cost-calculator-builder' ),
 		'icon'        => 'ccb-icon-order-detail',
 		'link'        => 'https://docs.stylemixthemes.com/cost-calculator-builder/pro-plugin-features/send-form',
 	),

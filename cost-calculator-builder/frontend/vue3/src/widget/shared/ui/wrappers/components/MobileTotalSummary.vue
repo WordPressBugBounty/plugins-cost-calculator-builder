@@ -8,6 +8,7 @@
         'ccb-mobile-summary__trigger--in-sticky-modal': isInStickyModal,
       }"
       :style="triggerZIndexStyle"
+      @click="!enoughPages === true && openSummary()"
     >
       <div class="ccb-mobile-summary-content">
         <div class="ccb-mobile-summary-content__total">
@@ -79,7 +80,9 @@
               >
                 <i class="ccb-icon-Arrow-Previous"></i>
               </div>
-              <h3>{{ activeSummaryTitle }}</h3>
+              <div class="ccb-mobile-summary__header-title">
+                {{ activeSummaryTitle }}
+              </div>
               <button
                 class="ccb-mobile-summary__close"
                 type="button"
@@ -99,36 +102,52 @@
                 >
                   <div class="ccb-mobile-summary__body">
                     <div
-                      v-for="section in contentSectionBlocks"
-                      :key="section.id"
-                      style="
-                        display: contents;
-                        display: flex;
-                        flex-direction: column;
-                        gap: 20px;
-                      "
+                      v-if="!isPageContentReady"
+                      class="ccb-mobile-summary__content-loader"
                     >
-                      <div
-                        v-for="item in section.items"
-                        :key="item.id"
-                        style="display: contents"
-                      >
-                        <component
-                          :is="getComponentByAlias(item.alias)"
-                          v-bind="getItemProps(item.alias)"
-                          v-on="getItemEvents(item.alias)"
-                          @toggle-details="toggleDetailsVisibility"
-                          :item="item"
-                        />
-                      </div>
+                      <Loader type="submit" />
                     </div>
+                    <template v-else>
+                      <div
+                        v-for="section in contentSectionBlocks"
+                        :key="section.id"
+                        style="
+                          display: contents;
+                          display: flex;
+                          flex-direction: column;
+                          gap: 20px;
+                        "
+                      >
+                        <div
+                          v-for="item in section.items"
+                          :key="item.id"
+                          style="display: contents"
+                        >
+                          <component
+                            :is="getComponentByAlias(item.alias)"
+                            v-bind="getItemProps(item.alias)"
+                            v-on="getItemEvents(item.alias)"
+                            @toggle-details="toggleDetailsVisibility"
+                            :item="item"
+                          />
+                        </div>
+                      </div>
+                    </template>
                   </div>
 
-                  <div class="ccb-mobile-summary__footer">
+                  <div
+                    v-if="isPageContentReady"
+                    class="ccb-mobile-summary__footer"
+                  >
                     <div
                       v-for="section in footerSectionBlocks"
                       :key="section.id"
                       style="display: contents"
+                      class="ccb-mobile-summary__footer-sections"
+                      :class="{
+                        'ccb-mobile-summary__footer-sections--hidden':
+                          !isMakeOrderButtonVisible,
+                      }"
                     >
                       <div
                         v-for="item in section.items"
@@ -149,6 +168,7 @@
                     <button
                       class="ccb-button success"
                       style="width: 100%"
+                      v-if="isMakeOrderButtonVisible"
                       @click="nextPage"
                     >
                       Make Order
@@ -163,23 +183,31 @@
                 >
                   <div class="ccb-mobile-summary__body">
                     <div
-                      v-for="section in secondPageSectionBlocks"
-                      :key="section.id"
-                      style="display: contents"
+                      v-if="!isPageContentReady"
+                      class="ccb-mobile-summary__content-loader"
                     >
+                      <Loader type="submit" />
+                    </div>
+                    <template v-else>
                       <div
-                        v-for="item in section.items"
-                        :key="item.id"
+                        v-for="section in secondPageSectionBlocks"
+                        :key="section.id"
                         style="display: contents"
                       >
-                        <component
-                          :is="getComponentByAlias(item.alias)"
-                          v-bind="getItemProps(item.alias)"
-                          v-on="getItemEvents(item.alias)"
-                          :item="item"
-                        />
+                        <div
+                          v-for="item in section.items"
+                          :key="item.id"
+                          style="display: contents"
+                        >
+                          <component
+                            :is="getComponentByAlias(item.alias)"
+                            v-bind="getItemProps(item.alias)"
+                            v-on="getItemEvents(item.alias)"
+                            :item="item"
+                          />
+                        </div>
                       </div>
-                    </div>
+                    </template>
                   </div>
                 </div>
 
@@ -188,8 +216,15 @@
                   key="quote"
                   class="ccb-mobile-summary__page"
                 >
-                  <div class="ccb-mobile-summary__body">
+                  <div class="ccb-mobile-summary__body is-quote-page">
+                    <div
+                      v-if="!isPageContentReady"
+                      class="ccb-mobile-summary__content-loader"
+                    >
+                      <Loader type="submit" />
+                    </div>
                     <component
+                      v-else
                       :is="quotePageComponent"
                       popup-mode="mobile-summary-page"
                       @close-mobile-quote="previousPage"
@@ -206,7 +241,8 @@
 </template>
 
 <script setup lang="ts">
-import { computed, defineAsyncComponent, ref, watch } from "vue";
+import { computed, defineAsyncComponent, onMounted, ref, watch } from "vue";
+import Loader from "@/widget/shared/ui/components/Loader/Loader.vue";
 import { useMobileSummaryActiveTrigger } from "@/widget/shared/ui/wrappers/composable/useMobileSummaryActiveTrigger.ts";
 import { useTotalSummaryStore } from "@/widget/app/providers/stores/totalSummaryStore.ts";
 import { Field } from "@/widget/shared/types/fields";
@@ -268,6 +304,7 @@ const pageBreakerStore = usePageBreakerStore();
 const pageBreakerSettings = settingsStore.getPageBreakerSettings;
 const pageHistory: number[] = [];
 let isBodyScrollLocked = false;
+
 let mainWidgetWithHiddenClass: HTMLElement | null = null;
 const bodyScrollLockState = {
   scrollY: 0,
@@ -276,6 +313,10 @@ const bodyScrollLockState = {
   top: "",
   width: "",
 };
+
+const isMakeOrderButtonVisible = computed(() => {
+  return secondPageSectionBlocks.value.length > 0;
+});
 
 const currency = computed(() => {
   return settingsStore.getCurrencySettings as ICurrency;
@@ -521,38 +562,61 @@ const previousPage = () => {
   previousPageTarget.value = 0;
 };
 
-const headerComponent = defineAsyncComponent(
-  () => import("./total-summary/aliases/HeaderAlias.vue"),
-);
-const detailsComponent = defineAsyncComponent(
-  () => import("./total-summary/aliases/DetailsAlias.vue"),
-);
-const totalComponent = defineAsyncComponent(
-  () => import("./total-summary/aliases/TotalAlias.vue"),
-);
-const couponsComponent = defineAsyncComponent(
-  () => import("./total-summary/aliases/CouponsAlias.vue"),
-);
-const paymentsComponent = defineAsyncComponent(
-  () => import("./total-summary/aliases/PaymentsAlias.vue"),
-);
+const aliasChunkLoaders = {
+  total_summary: () => import("./total-summary/aliases/HeaderAlias.vue"),
+  details: () => import("./total-summary/aliases/DetailsAlias.vue"),
+  total: () => import("./total-summary/aliases/TotalAlias.vue"),
+  coupons: () => import("./total-summary/aliases/CouponsAlias.vue"),
+  payments: () => import("./total-summary/aliases/PaymentsAlias.vue"),
+  purchase_button: () =>
+    import("./total-summary/aliases/PurchaseButtonAlias.vue"),
+  pdf_button: () => import("./total-summary/aliases/PdfButtonAlias.vue"),
+  share_button: () => import("./total-summary/aliases/ShareButtonAlias.vue"),
+  woo_redirect: () => import("./total-summary/aliases/WooRedirectAlias.vue"),
+  notifications: () => import("./total-summary/aliases/NotificationsAlias.vue"),
+  quote: () => import("../../../../features/pdf-invoice/send-quote"),
+} as const;
+
+type AliasChunkKey = keyof typeof aliasChunkLoaders;
+
+const nestedChunkLoaders: Partial<
+  Record<AliasChunkKey, Array<() => Promise<unknown>>>
+> = {
+  details: [
+    () => import("@/widget/shared/ui/total-summary/lists/SummaryList.vue"),
+    () => import("@/widget/shared/ui/total-summary/items/SummaryItem.vue"),
+    () => import("@/widget/shared/ui/total-summary/items/RepeaterItem.vue"),
+    () => import("@/widget/shared/ui/total-summary/items/GroupItem.vue"),
+  ],
+  total: [
+    () => import("@/widget/shared/ui/total-summary/lists/TotalsList.vue"),
+    () => import("@/widget/shared/ui/total-summary/items/TotalItem.vue"),
+  ],
+  coupons: [() => import("@/widget/features/discounts/components")],
+  purchase_button: [() => import("@/widget/features/submission/order-form")],
+  payments: [
+    () => import("@/widget/features/submission/payments/PaymentList.vue"),
+  ],
+};
+
+const headerComponent = defineAsyncComponent(aliasChunkLoaders.total_summary);
+const detailsComponent = defineAsyncComponent(aliasChunkLoaders.details);
+const totalComponent = defineAsyncComponent(aliasChunkLoaders.total);
+const couponsComponent = defineAsyncComponent(aliasChunkLoaders.coupons);
+const paymentsComponent = defineAsyncComponent(aliasChunkLoaders.payments);
 const purchaseButtonComponent = defineAsyncComponent(
-  () => import("./total-summary/aliases/PurchaseButtonAlias.vue"),
+  aliasChunkLoaders.purchase_button,
 );
-const pdfButtonComponent = defineAsyncComponent(
-  () => import("./total-summary/aliases/PdfButtonAlias.vue"),
-);
+const pdfButtonComponent = defineAsyncComponent(aliasChunkLoaders.pdf_button);
 const shareButtonComponent = defineAsyncComponent(
-  () => import("./total-summary/aliases/ShareButtonAlias.vue"),
+  aliasChunkLoaders.share_button,
 );
-const quotePageComponent = defineAsyncComponent(
-  () => import("../../../../features/pdf-invoice/send-quote"),
-);
+const quotePageComponent = defineAsyncComponent(aliasChunkLoaders.quote);
 const wooRedirectComponent = defineAsyncComponent(
-  () => import("./total-summary/aliases/WooRedirectAlias.vue"),
+  aliasChunkLoaders.woo_redirect,
 );
 const notificationsComponent = defineAsyncComponent(
-  () => import("./total-summary/aliases/NotificationsAlias.vue"),
+  aliasChunkLoaders.notifications,
 );
 
 const getTotalValue = (total: Field): number => {
@@ -847,6 +911,17 @@ const fallbackItems = [
   { id: "summary_item_woo_redirect", alias: "woo_redirect" },
 ];
 
+const getPaymentsStatus = computed(() => {
+  return (
+    settingsStore.getPaymentGateway?.cards.cardPayments.stripe.enable ||
+    settingsStore.getPaymentGateway?.cards.cardPayments.razorpay.enable ||
+    settingsStore.getPaymentGateway?.paypal.enable ||
+    settingsStore.getPaymentGateway?.cashPayment.enable ||
+    settingsStore.getWooCheckoutSettings?.enable ||
+    false
+  );
+});
+
 const isItemVisible = (alias: string): boolean => {
   if (alias === "total_summary") return true;
 
@@ -884,7 +959,12 @@ const isItemVisible = (alias: string): boolean => {
     if (paymentAfterSubmitStore.isPaymentAfterSubmit) {
       return paymentAfterSubmitStore.getSubmit;
     }
-    return true;
+
+    if (getPaymentsStatus.value) {
+      return true;
+    }
+
+    return false;
   }
 
   if (alias === "purchase_button") {
@@ -1001,13 +1081,7 @@ const visibleSectionBlocks = computed<SectionBlock[]>(() => {
     .filter((section) => section.items.length > 0);
 });
 
-const contentAliases = [
-  "details",
-  "coupons",
-  "notifications",
-  "total",
-  "total_summary",
-];
+const contentAliases = ["details", "coupons", "notifications", "total"];
 
 const footerAliases = ["share_button", "pdf_button"];
 
@@ -1043,6 +1117,89 @@ const footerSectionBlocks = computed<SectionBlock[]>(() => {
     }))
     .filter((section) => section.items.length > 0);
 });
+
+const isPageContentReady = ref(true);
+const preloadedPages = new Set<number>();
+let pageContentLoadToken = 0;
+
+const getVisibleAliasesForPage = (page: number): string[] => {
+  if (page === 2) {
+    return ["quote"];
+  }
+
+  const blocks =
+    page === 0
+      ? [...contentSectionBlocks.value, ...footerSectionBlocks.value]
+      : secondPageSectionBlocks.value;
+
+  return [
+    ...new Set(
+      blocks.flatMap((section) => section.items.map((item) => item.alias)),
+    ),
+  ];
+};
+
+const preloadPageChunks = async (page: number): Promise<void> => {
+  const loaders: Array<() => Promise<unknown>> = [];
+
+  for (const alias of getVisibleAliasesForPage(page)) {
+    if (!(alias in aliasChunkLoaders)) {
+      continue;
+    }
+
+    const aliasKey = alias as AliasChunkKey;
+    loaders.push(aliasChunkLoaders[aliasKey]);
+
+    const nestedLoaders = nestedChunkLoaders[aliasKey];
+    if (nestedLoaders?.length) {
+      loaders.push(...nestedLoaders);
+    }
+  }
+
+  if (!loaders.length) {
+    return;
+  }
+
+  await Promise.all(loaders.map((loader) => loader()));
+};
+
+const ensurePageContentReady = async (page: number) => {
+  if (preloadedPages.has(page)) {
+    isPageContentReady.value = true;
+    return;
+  }
+
+  const loadToken = ++pageContentLoadToken;
+  isPageContentReady.value = false;
+
+  try {
+    await preloadPageChunks(page);
+
+    if (loadToken !== pageContentLoadToken) {
+      return;
+    }
+
+    preloadedPages.add(page);
+    isPageContentReady.value = true;
+  } catch {
+    if (loadToken !== pageContentLoadToken) {
+      return;
+    }
+
+    isPageContentReady.value = true;
+  }
+};
+
+watch([isSummaryOpen, activePage], ([isOpen, page]) => {
+  if (isOpen) {
+    void ensurePageContentReady(page);
+  }
+});
+
+onMounted(() => {
+  void preloadPageChunks(0).then(() => preloadedPages.add(0));
+  void preloadPageChunks(1).then(() => preloadedPages.add(1));
+});
 </script>
 
 <style scoped lang="scss">
@@ -1054,17 +1211,25 @@ const footerSectionBlocks = computed<SectionBlock[]>(() => {
     left: 0px;
     right: 0px;
     bottom: 0px;
-    z-index: 999;
+    z-index: 9999;
     width: auto;
+    transform: translateY(0);
+    visibility: visible;
     transition:
-      opacity 0.15s ease,
-      visibility 0.15s ease;
+      transform 0.3s cubic-bezier(0.32, 0.72, 0, 1),
+      opacity 0.3s ease,
+      visibility 0s linear 0s;
 
     &--inactive {
       visibility: hidden;
       opacity: 0;
+      transform: translateY(100%);
       pointer-events: none;
-      z-index: 998;
+      z-index: 9998;
+      transition:
+        transform 0.3s cubic-bezier(0.32, 0.72, 0, 1),
+        opacity 0.3s ease,
+        visibility 0s linear 0.3s;
     }
 
     &--in-sticky-modal {
@@ -1229,8 +1394,9 @@ const footerSectionBlocks = computed<SectionBlock[]>(() => {
     justify-content: flex-start;
     gap: 16px;
     margin-bottom: 18px;
+    font-family: inherit;
 
-    h3 {
+    .ccb-mobile-summary__header-title {
       margin: 0;
       font-size: 20px;
       line-height: 1.3;
@@ -1262,9 +1428,21 @@ const footerSectionBlocks = computed<SectionBlock[]>(() => {
     -ms-overflow-style: none;
     scrollbar-width: none;
 
+    &.is-quote-page {
+      max-height: min(700px, calc(100dvh - 212px));
+    }
+
     &::-webkit-scrollbar {
       display: none;
     }
+  }
+
+  &__content-loader {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 180px;
+    width: 100%;
   }
 
   &__footer {
@@ -1316,6 +1494,17 @@ const footerSectionBlocks = computed<SectionBlock[]>(() => {
   &__sheet :deep(.ccb-total-row__value) {
     font-size: 24px;
     font-weight: 700;
+  }
+
+  &__footer-sections--hidden {
+    .ccb-mobile-summary__footer-item {
+      width: 50%;
+    }
+
+    .ccb-mobile-summary__footer-item
+      :deep(.ccb-pdf-invoice__actions .ccb-button) {
+      width: 100%;
+    }
   }
 
   &__footer-item {

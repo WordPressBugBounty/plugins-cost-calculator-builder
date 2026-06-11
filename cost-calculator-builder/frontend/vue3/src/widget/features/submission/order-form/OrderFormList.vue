@@ -617,6 +617,10 @@ onMounted(() => {
       right: -20px;
       bottom: -12px;
       z-index: 0;
+
+      @media (max-width: 640px) {
+        display: none;
+      }
     }
     .is-pro {
       display: block;

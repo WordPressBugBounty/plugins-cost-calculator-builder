@@ -464,7 +464,7 @@ const clickActionItems = computed<IDropdownOption[]>(() => {
       value: "open_modal",
     },
     {
-      label: "Pop up order form or payments",
+      label: "Pop up contact form or payments",
       value: "pro_features",
     },
     {

@@ -1,8 +1,8 @@
 <template>
   <div class="ccb-settings-section">
     <ProBanner
-      title="Order Form"
-      description="Turn anonymous visitors into paying clients. Build custom order forms that collect contact details and process orders right from the calculator"
+      title="Contact Form"
+      description="Turn anonymous visitors into paying clients. Build custom contact forms that collect contact details and process orders right from the calculator"
       :image="imageUrl"
       :documentationLink="documentationLink"
       :upgradeLink="upgradeLink"
