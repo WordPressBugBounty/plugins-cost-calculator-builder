@@ -6,7 +6,7 @@ Tags: cost calculator, calculator, calculator form builder, cost estimation, shi
 Requires at least: 6.2
 Requires PHP: 8.3
 Tested up to: 7.0
-Stable tag: 4.0.9
+Stable tag: 4.0.10
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -207,6 +207,10 @@ Also, you can import the demo sample using Tools -> Import -> WordPress Import.
 Demo sample XML file included in plugin archive.
 
 == Changelog ==
+
+= 4.0.10 =
+- Fix: Upload image button is not working for Image Radio, Image Checkbox, Image Dropdown elements
+- Fix: Payment fields are not clickable after choosing option in Required element
 
 = 4.0.9 =
 - Enhancement: Smoother transition between the builder and Total Summary sections

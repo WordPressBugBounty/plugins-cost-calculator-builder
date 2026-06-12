@@ -1,5 +1,5 @@
 <template>
-  <div class="ccb-payment">
+  <div class="ccb-payment" @click="handleClick">
     <label>
       <div class="ccb-payment-header">
         <div class="ccb-payment-header__label">
@@ -30,6 +30,7 @@ import { useSinglePayment } from "@/widget/actions/pro-features/payments/composa
 import { useSettingsStore } from "@/widget/app/providers/stores/settingsStore";
 import { useTranslationsStore } from "@/widget/app/providers/stores/translationsStore";
 import { computed, toRefs } from "vue";
+import { useFieldsStore } from "@/widget/app/providers/stores/fieldsStore";
 
 const props = defineProps<{
   name: string;
@@ -39,7 +40,7 @@ const { name } = toRefs(props);
 const { paymentType } = useSinglePayment();
 const translationsStore = useTranslationsStore();
 const settingsStore = useSettingsStore();
-
+const fieldsStore = useFieldsStore();
 const cashPaymentType = computed(() => {
   return settingsStore.getPaymentGateway?.cashPayment?.type;
 });
@@ -50,6 +51,12 @@ const cashPaymentLabel = computed(() => {
     translationsStore.getTranslations.cash
   );
 });
+
+const handleClick = (event: MouseEvent) => {
+  if (!fieldsStore.checkRequiredFields()) {
+    event.preventDefault();
+  }
+};
 </script>
 
 <style lang="scss"></style>

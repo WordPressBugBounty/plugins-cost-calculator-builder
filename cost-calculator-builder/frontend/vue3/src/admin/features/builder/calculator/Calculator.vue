@@ -62,13 +62,10 @@ const builderStore = useBuilderStore();
 function onWindowClick(e: MouseEvent) {
   if (!builderStore.getSelectedFieldAlias) return;
   const target = e.target as HTMLElement;
-  if (
-    target.closest(".ccb-field-item") ||
-    target.closest(".ccb-section--selected") ||
-    target.closest(".ccb-builder-container__sidebar")
-  )
-    return;
-  builderStore.setSelectedField(null);
+  console.log(target.classList);
+  if (target.classList.contains("ccb-calculator-module__body")) {
+    builderStore.setSelectedField(null);
+  }
 }
 
 onMounted(() => window.addEventListener("click", onWindowClick));

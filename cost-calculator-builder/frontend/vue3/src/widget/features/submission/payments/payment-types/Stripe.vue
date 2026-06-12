@@ -1,5 +1,5 @@
 <template>
-  <div class="ccb-payment">
+  <div class="ccb-payment" @click="handleClick">
     <label>
       <div class="ccb-payment-header">
         <div class="ccb-payment-header__label">
@@ -33,7 +33,7 @@ import { useSinglePayment } from "@/widget/actions/pro-features/payments/composa
 import { useSettingsStore } from "@/widget/app/providers/stores/settingsStore.ts";
 import { usePaymentStore } from "@/widget/app/providers/stores/paymentsStore.ts";
 import type { StripeElements } from "@stripe/stripe-js";
-
+import { useFieldsStore } from "@/widget/app/providers/stores/fieldsStore";
 const props = defineProps<{
   name: string;
 }>();
@@ -43,7 +43,7 @@ const paymentStore = usePaymentStore();
 const settingsStore = useSettingsStore();
 const { paymentType } = useSinglePayment();
 const stripeLoaded = ref<boolean>(false);
-
+const fieldsStore = useFieldsStore();
 const cardComponent = ref<HTMLElement | null>(null);
 const stripeElements = ref<StripeElements | null>(null);
 
@@ -60,6 +60,12 @@ onMounted(async () => {
     paymentStore.setCardComponent(card);
   }
 });
+
+const handleClick = (event: MouseEvent) => {
+  if (!fieldsStore.checkRequiredFields()) {
+    event.preventDefault();
+  }
+};
 </script>
 
 <style lang="scss" scoped>

@@ -1,5 +1,5 @@
 <template>
-  <div class="ccb-payment">
+  <div class="ccb-payment" @click="handleClick">
     <label>
       <div class="ccb-payment-header">
         <div class="ccb-payment-header__label">
@@ -34,13 +34,20 @@
 import paypalImg from "@/images/payments/paypal.webp";
 import { useSinglePayment } from "@/widget/actions/pro-features/payments/composable/useSinglePayment.ts";
 import { toRefs } from "vue";
-
+import { useFieldsStore } from "@/widget/app/providers/stores/fieldsStore";
 const { paymentType } = useSinglePayment();
+const fieldsStore = useFieldsStore();
 
 const props = defineProps<{
   name: string;
 }>();
 const { name } = toRefs(props);
+
+const handleClick = (event: MouseEvent) => {
+  if (!fieldsStore.checkRequiredFields()) {
+    event.preventDefault();
+  }
+};
 </script>
 
 <style lang="scss"></style>
