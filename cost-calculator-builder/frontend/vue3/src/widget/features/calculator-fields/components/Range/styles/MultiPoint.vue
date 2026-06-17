@@ -211,6 +211,12 @@ watch(realValue, (val) => {
     top: 13px;
     left: 0;
 
+    @media (max-width: 640px) {
+      top: 14px;
+      width: 103%;
+      left: -3px;
+    }
+
     &-item {
       display: flex;
       flex-direction: column;
@@ -280,6 +286,12 @@ watch(realValue, (val) => {
     &.tick-passed {
       background: var(--ccb-accent-color) !important;
     }
+
+    @media (max-width: 640px) {
+      height: 10px;
+      width: 10px;
+      margin: 0 auto 3px;
+    }
   }
 
   .slider-origin {
@@ -298,6 +310,10 @@ watch(realValue, (val) => {
   .slider-horizontal {
     height: 4px !important;
     border-radius: 10px;
+
+    @media (max-width: 640px) {
+      height: 6px !important;
+    }
   }
 
   .slider-tooltip {

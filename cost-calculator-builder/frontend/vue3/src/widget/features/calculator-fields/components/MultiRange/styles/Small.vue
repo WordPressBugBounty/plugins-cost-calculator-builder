@@ -222,6 +222,10 @@ watch(realValue, (val) => {
   }
   .slider-horizontal {
     height: 2px !important;
+
+    @media (max-width: 640px) {
+      height: 6px !important;
+    }
   }
 
   .custom-marks {
@@ -251,6 +255,12 @@ watch(realValue, (val) => {
     height: 8px;
     background: var(--ccb-fields-bg-color);
     margin: 0 auto 4px;
+
+    @media (max-width: 640px) {
+      height: 12px;
+      width: 3px;
+      margin: 0 auto;
+    }
 
     &.tick-passed {
       background: var(--ccb-accent-color) !important;
@@ -291,6 +301,13 @@ watch(realValue, (val) => {
       cursor: pointer;
       box-shadow: none !important;
       margin-left: 3px;
+
+      @media (max-width: 640px) {
+        border-left: 8px solid transparent;
+        border-right: 8px solid transparent;
+        border-bottom: 10px solid var(--ccb-accent-color);
+        margin-left: 0px;
+      }
 
       &:focus {
         outline: none;

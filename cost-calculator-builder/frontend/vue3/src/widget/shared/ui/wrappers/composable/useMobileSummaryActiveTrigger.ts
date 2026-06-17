@@ -5,6 +5,8 @@ const CENTER_DIST_ATTR = "data-ccb-mobile-summary-center-dist";
 const ACTIVE_EVENT = "ccb-mobile-summary-active-calc";
 const STICKY_MODAL_Z_INDEX = 1060;
 
+const INACTIVE_EARLY_OFFSET_PX = 350;
+
 const isElementVisible = (element: HTMLElement): boolean => {
   return (
     !element.classList.contains("ccb-calc-hidden") &&
@@ -265,7 +267,10 @@ export const useMobileSummaryActiveTrigger = (
 
         scheduleRecalculate();
       },
-      { threshold: [0, 0.25, 0.5, 0.75, 1] },
+      {
+        threshold: [0, 0.25, 0.5, 0.75, 1],
+        rootMargin: `-${INACTIVE_EARLY_OFFSET_PX}px 0px -${INACTIVE_EARLY_OFFSET_PX}px 0px`,
+      },
     );
 
     observer.observe(root);

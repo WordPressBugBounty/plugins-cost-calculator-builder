@@ -129,6 +129,10 @@ const showTitle = computed(() => field.value.showName);
     border-radius: var(--ccb-container-border-radius)
       var(--ccb-container-border-radius) 0 0;
 
+    @media (max-width: 640px) {
+      padding: 10px;
+    }
+
     .ccb-section__header-left {
       display: flex;
       align-items: center;
@@ -153,6 +157,10 @@ const showTitle = computed(() => field.value.showName);
   }
   .ccb-section__content {
     padding: 20px;
+
+    @media (max-width: 640px) {
+      padding: 10px;
+    }
   }
   .ccb-section__actions {
     cursor: pointer;

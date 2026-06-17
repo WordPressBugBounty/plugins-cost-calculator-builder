@@ -162,6 +162,10 @@ watch(realValue, (val) => {
   padding: 10px 0 25px 0 !important;
   position: relative;
 
+  @media (max-width: 640px) {
+    padding: 11px 0 35px 0 !important;
+  }
+
   &.jump {
     .custom-marks {
       z-index: 2;
@@ -193,6 +197,12 @@ watch(realValue, (val) => {
     position: absolute;
     top: 18px;
     left: 0;
+
+    @media (max-width: 640px) {
+      top: 19px;
+      width: 103%;
+      left: -3px;
+    }
 
     &-item {
       display: flex;
@@ -289,6 +299,12 @@ watch(realValue, (val) => {
     border-radius: 50%;
     background: color-mix(in srgb, var(--ccb-container-color), black 10%);
     margin: 0 auto 4px;
+
+    @media (max-width: 640px) {
+      height: 10px;
+      width: 10px;
+      margin: 0 auto 3px;
+    }
 
     &.tick-passed {
       background: var(--ccb-accent-color) !important;

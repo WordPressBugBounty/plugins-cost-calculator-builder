@@ -76,6 +76,10 @@ const getFormatValue = (num: number): string => {
     top: 20px;
     left: -3px;
 
+    @media (max-width: 640px) {
+      top: 44px;
+    }
+
     &-item {
       display: flex;
       flex-direction: column;
@@ -109,6 +113,18 @@ const getFormatValue = (num: number): string => {
       font-weight: 500;
       line-height: 100%;
       pointer-events: none;
+    }
+  }
+
+  @media (max-width: 640px) {
+    --slider-handle-width: 28px;
+    --slider-handle-height: 28px;
+    --slider-height: 12px;
+
+    .slider-target {
+      padding: 16px 0;
+      margin: -16px 0;
+      box-sizing: content-box;
     }
   }
 }

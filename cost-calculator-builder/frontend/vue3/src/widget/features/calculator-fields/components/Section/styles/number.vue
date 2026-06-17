@@ -99,6 +99,10 @@ const showTitle = computed(() => field.value.showName);
   margin: var(--ccb-container-margin-top) var(--ccb-container-margin-right)
     var(--ccb-container-margin-bottom) var(--ccb-container-margin-left);
 
+  @media (max-width: 640px) {
+    padding: 10px;
+  }
+
   .ccb-section__header-left {
     position: relative;
     padding-left: 40px;

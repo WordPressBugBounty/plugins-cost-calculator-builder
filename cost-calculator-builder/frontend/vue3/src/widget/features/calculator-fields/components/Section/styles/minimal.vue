@@ -95,6 +95,10 @@ const showTitle = computed(() => field.value.showName);
     var(--ccb-container-margin-bottom) var(--ccb-container-margin-left);
   border-radius: var(--ccb-container-border-radius);
 
+  @media (max-width: 640px) {
+    padding: 10px;
+  }
+
   &.collapsed {
     border-color: var(--ccb-container-border-color);
     .ccb-section__header {

@@ -61,6 +61,7 @@ const getFormatValue = (num: number): string => {
 <style lang="scss">
 .ccb-default-range-field {
   position: relative;
+
   .slider-min-max {
     display: flex;
     width: 102%;
@@ -69,6 +70,10 @@ const getFormatValue = (num: number): string => {
     position: absolute;
     top: -3px;
     left: -3px;
+
+    @media (max-width: 640px) {
+      top: 20px;
+    }
 
     &-item {
       display: flex;
@@ -104,6 +109,18 @@ const getFormatValue = (num: number): string => {
       line-height: 100%;
       padding-top: 22px;
       pointer-events: none;
+    }
+  }
+
+  @media (max-width: 640px) {
+    --slider-handle-width: 28px;
+    --slider-handle-height: 28px;
+    --slider-height: 12px;
+
+    .slider-target {
+      padding: 16px 0;
+      margin: -16px 0;
+      box-sizing: content-box;
     }
   }
 }
