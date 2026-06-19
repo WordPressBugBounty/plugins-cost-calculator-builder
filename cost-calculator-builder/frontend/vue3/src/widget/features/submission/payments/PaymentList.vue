@@ -75,16 +75,14 @@ const getPayments = computed(() => {
   if (paymentGateway) {
     if (
       paymentGateway.cards?.cardPayments?.stripe?.enable &&
-      paymentGateway.cards?.cardPayments?.stripe?.publishKey?.length &&
-      paymentGateway.cards?.cardPayments?.stripe?.secretKey?.length
+      paymentGateway.cards?.cardPayments?.stripe?.publishKey?.length
     ) {
       payments.push("stripe");
     }
 
     if (
       paymentGateway.cards?.cardPayments?.razorpay?.enable &&
-      paymentGateway.cards?.cardPayments?.razorpay?.keyId?.length &&
-      paymentGateway.cards?.cardPayments?.razorpay?.secretKey?.length
+      paymentGateway.cards?.cardPayments?.razorpay?.keyId?.length
     ) {
       payments.push("razorpay");
     }

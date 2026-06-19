@@ -163,7 +163,7 @@ export const useSubmissionStore = () => {
                           paymentStore?.stripeInstance
                         ) {
                           paymentStore.stripeInstance
-                            .handleCardAction(settingsStore.getStripeSecretKey)
+                            .handleCardAction(response.clientSecret || "")
                             .then(
                               async (
                                 card_action_result: any,

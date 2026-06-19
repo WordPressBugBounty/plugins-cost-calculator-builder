@@ -675,6 +675,23 @@ function sanitize_without_tag_clean( $json_string ) {
 }
 
 /**
+ * Remove payment gateway secrets from settings before exposing them to the frontend.
+ *
+ * @param array $settings Calculator settings array.
+ * @return array
+ */
+function ccb_strip_frontend_payment_secrets( array $settings ): array {
+	unset( $settings['stripe']['secretKey'] );
+	unset( $settings['paypal']['paypal_email'] );
+	unset( $settings['paypal']['client_secret'] );
+	unset( $settings['payment_gateway']['cards']['card_payments']['stripe']['secretKey'] );
+	unset( $settings['payment_gateway']['cards']['card_payments']['razorpay']['secretKey'] );
+	unset( $settings['payment_gateway']['paypal']['client_secret'] );
+
+	return $settings;
+}
+
+/**
  * @param $settings
  * @param $general_settings
  * @return array
@@ -749,9 +766,11 @@ function ccb_sync_settings_from_general_settings( $settings, $general_settings, 
 	}
 
 	if ( $render ) {
-		unset( $settings['stripe']['secretKey'] );
+		$settings = ccb_strip_frontend_payment_secrets( $settings );
 		unset( $general_settings['stripe']['secretKey'] );
-		unset( $settings['paypal']['paypal_email'] );
+		unset( $general_settings['payment_gateway']['cards']['card_payments']['stripe']['secretKey'] );
+		unset( $general_settings['payment_gateway']['cards']['card_payments']['razorpay']['secretKey'] );
+		unset( $general_settings['payment_gateway']['paypal']['client_secret'] );
 		unset( $general_settings['paypal']['paypal_email'] );
 	}
 

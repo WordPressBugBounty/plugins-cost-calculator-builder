@@ -52,13 +52,11 @@ if ( isset( $settings['sendFormFields'] ) ) {
 }
 
 if ( ! empty( $general_settings['payment_gateway']['cards']['use_in_all'] ) && ! empty( $general_settings['payment_gateway']['cards']['card_payments']['razorpay']['enable'] ) ) {
-	$settings['payment_gateway']['cards']['card_payments']['razorpay']['keyId']     = $general_settings['payment_gateway']['cards']['card_payments']['razorpay']['keyId'];
-	$settings['payment_gateway']['cards']['card_payments']['razorpay']['secretKey'] = $general_settings['payment_gateway']['cards']['card_payments']['razorpay']['secretKey'];
+	$settings['payment_gateway']['cards']['card_payments']['razorpay']['keyId'] = $general_settings['payment_gateway']['cards']['card_payments']['razorpay']['keyId'];
 }
 
 if ( ! empty( $general_settings['payment_gateway']['cards']['use_in_all'] ) && ! empty( $general_settings['payment_gateway']['cards']['card_payments']['stripe']['enable'] ) ) {
 	$settings['payment_gateway']['cards']['card_payments']['stripe']['publishKey'] = $general_settings['payment_gateway']['cards']['card_payments']['stripe']['publishKey'];
-	$settings['payment_gateway']['cards']['card_payments']['stripe']['secretKey']  = $general_settings['payment_gateway']['cards']['card_payments']['stripe']['secretKey'];
 }
 
 if ( ! empty( $general_settings['payment_gateway']['cash_payment']['use_in_all'] ) ) {
@@ -71,8 +69,7 @@ if ( ! empty( $general_settings['payment_gateway']['paypal']['use_in_all'] ) ) {
 	$settings['payment_gateway']['paypal']['currency_code']    = $general_settings['payment_gateway']['paypal']['currency_code'] ? $general_settings['payment_gateway']['paypal']['currency_code'] : $settings['payment_gateway']['paypal']['currency_code'];
 	$settings['payment_gateway']['paypal']['paypal_mode']      = $general_settings['payment_gateway']['paypal']['paypal_mode'] ? $general_settings['payment_gateway']['paypal']['paypal_mode'] : $settings['payment_gateway']['paypal']['paypal_mode'];
 	$settings['payment_gateway']['paypal']['paypal_email']     = $general_settings['payment_gateway']['paypal']['paypal_email'] ? $general_settings['payment_gateway']['paypal']['paypal_email'] : $settings['payment_gateway']['paypal']['paypal_email'];
-	$settings['payment_gateway']['paypal']['client_id']        = $general_settings['payment_gateway']['paypal']['client_id'] ? $general_settings['payment_gateway']['paypal']['client_id'] : $settings['payment_gateway']['paypal']['client_id'];
-	$settings['payment_gateway']['paypal']['client_secret']    = $general_settings['payment_gateway']['paypal']['client_secret'] ? $general_settings['payment_gateway']['paypal']['client_secret'] : $settings['payment_gateway']['paypal']['client_secret'];
+	$settings['payment_gateway']['paypal']['client_id'] = $general_settings['payment_gateway']['paypal']['client_id'] ? $general_settings['payment_gateway']['paypal']['client_id'] : $settings['payment_gateway']['paypal']['client_id'];
 }
 
 if ( ! empty( $settings['formFields']['body'] ) ) {
@@ -278,6 +275,8 @@ if ( ( isset( $general_settings['payment_gateway']['cards']['twoCheckout'] ) && 
 if ( ( isset( $general_settings['payment_gateway']['cards']['razorpay'] ) && ! empty( $general_settings['payment_gateway']['cards']['card_payments']['use_in_all'] ) ) || ( isset( $settings['payment_gateway']['cards']['card_payments'] ) && ! empty( $settings['payment_gateway']['cards']['card_payments']['razorpay']['enable'] ) ) ) {
 	wp_enqueue_script( 'calc-razorpay', 'https://checkout.razorpay.com/v1/checkout.js', null, null ); // phpcs:ignore
 }
+
+$data['settings'] = ccb_strip_frontend_payment_secrets( $data['settings'] );
 
 wp_localize_script( 'calc-builder-main-js', 'calc_data_' . $calc_id, $data );
 ?>

@@ -20,12 +20,7 @@ export const usePaymentStore = defineStore("payment_store", () => {
   const initializeStripe = async (
     stripeData: StripeData | null,
   ): Promise<void> => {
-    if (
-      !stripeInstance.value &&
-      stripeData?.enable &&
-      stripeData?.publishKey &&
-      stripeData?.secretKey
-    ) {
+    if (!stripeInstance.value && stripeData?.enable && stripeData?.publishKey) {
       try {
         const { loadStripe } = await import("@stripe/stripe-js");
         stripeInstance.value = await loadStripe(stripeData.publishKey);

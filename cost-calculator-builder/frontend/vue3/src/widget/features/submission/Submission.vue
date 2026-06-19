@@ -162,13 +162,13 @@ const isCashPaymentEnabled = computed((): boolean => {
 const isStripeEnabled = computed((): boolean => {
   const paymentsSettings = settings.paymentGateway;
   const stripe = paymentsSettings?.cards?.cardPayments?.stripe;
-  return !!(stripe?.enable && stripe?.secretKey && stripe?.secretKey);
+  return !!(stripe?.enable && stripe?.publishKey);
 });
 
 const isRazorpayEnabled = computed((): boolean => {
   const paymentsSettings = settings.paymentGateway;
   const razorpay = paymentsSettings?.cards?.cardPayments?.razorpay;
-  return !!(razorpay?.enable && razorpay?.keyId && razorpay?.secretKey);
+  return !!(razorpay?.enable && razorpay?.keyId);
 });
 
 const paymentsStatus = computed((): boolean => {
