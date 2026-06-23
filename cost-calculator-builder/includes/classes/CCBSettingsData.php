@@ -110,6 +110,8 @@ class CCBSettingsData {
 		return array(
 			'sticky'                            => $sticky,
 			'zero_values_for_orders_pdf_emails' => $hide_empty_for_orders_pdf_emails,
+			'mobile_mode'                       => false,
+			'mini_widget_formulas'              => array(),
 			'arrangement_sections'              => array(
 				array(
 					'id'      => 'summary_section_1',
@@ -926,6 +928,8 @@ class CCBSettingsData {
 			}
 		}
 
-		return $sections;
+		$total_summary['arrangement_sections'] = $sections;
+
+		return $total_summary;
 	}
 }

@@ -10,6 +10,20 @@
           size="m"
           weight="medium"
         />
+        <Toggle
+          v-model="mobileMode"
+          label="Mobile Mode"
+          size="m"
+          weight="medium"
+        />
+        <MultiSelect
+          :items="totalFields"
+          v-model="miniWidgetFormulas"
+          label="Mini Widget Formulas"
+          size="m"
+          weight="medium"
+          :maxItemsSelected="3"
+        />
       </div>
 
       <div class="ccb-total-summary-sidebar__block">
@@ -227,6 +241,7 @@ import { useBuilderStore } from "@/admin/app/providers/stores/useBuilderStore";
 import { useTotalSummaryStore } from "@/admin/app/providers/stores/useTotalSummaryStore";
 import { useSettingsStore } from "@/admin/app/providers/stores/useSettingsStore";
 import { useDiscountsStore } from "@/admin/app/providers/stores/useDiscountsStore";
+import { useCommonSettings } from "@/admin/features/settings/sections/composables/useCommonSettings";
 
 import type {
   ITotalSummaryItem,
@@ -240,6 +255,7 @@ import {
   Text,
   Toggle,
   Checkbox,
+  MultiSelect,
 } from "@/admin/shared/ui/UIKit";
 
 const settingsStore = useSettingsStore();
@@ -292,11 +308,29 @@ const totalSummary = computed({
   },
 });
 
+const { totalFields } = useCommonSettings();
+
 const sticky = computed<boolean>({
   get: () => Boolean(totalSummary.value?.sticky),
   set: (value) => {
     if (!totalSummary.value) return;
     totalSummary.value.sticky = value;
+  },
+});
+
+const miniWidgetFormulas = computed<string[]>({
+  get: () => totalSummary.value?.mini_widget_formulas || [],
+  set: (value) => {
+    if (!totalSummary.value) return;
+    totalSummary.value.mini_widget_formulas = value;
+  },
+});
+
+const mobileMode = computed<boolean>({
+  get: () => Boolean(totalSummary.value?.mobile_mode),
+  set: (value) => {
+    if (!totalSummary.value) return;
+    totalSummary.value.mobile_mode = value;
   },
 });
 

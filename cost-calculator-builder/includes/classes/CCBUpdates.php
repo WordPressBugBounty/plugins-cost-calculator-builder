@@ -151,6 +151,9 @@ class CCBUpdates {
 			'ccb_v4_patch',
 			'ccb_sync_calc_settings',
 		),
+		'4.0.13' => array(
+			'ccb_add_total_summary_mobile_mode',
+		),
 	);
 
 	public static function init() {

@@ -200,6 +200,7 @@ export interface IMultiSelect {
   placeholder?: string;
   className?: string;
   maxItemsShown?: number;
+  maxItemsSelected?: number;
 }
 
 export interface IMultiSelectOption {

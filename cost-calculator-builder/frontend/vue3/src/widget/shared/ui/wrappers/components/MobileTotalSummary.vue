@@ -12,12 +12,15 @@
     >
       <div class="ccb-mobile-summary-content">
         <div class="ccb-mobile-summary-content__total">
-          <span class="ccb-mobile-summary-content__total-label"
-            >{{ currencySymbol }} {{ totalAmount }}
+          <span
+            class="ccb-mobile-summary-content__total-label"
+            v-for="total in miniWidgetTotals"
+            :key="total.alias"
+          >
+            {{ total.label }} {{ total.displayValue }}
           </span>
           <span class="ccb-mobile-summary-content__total-description">
-            <i class="ccb-icon-ic_check"></i>
-            {{ selectedItemsText }}
+            <i class="ccb-icon-info"></i>{{ selectedItemsText }}
           </span>
         </div>
         <div class="ccb-mobile-summary-content__actions" v-if="!enoughPages">
@@ -257,7 +260,6 @@ import { useFieldsStore } from "@/widget/app/providers/stores/fieldsStore.ts";
 import { useOrderFormStore } from "@/widget/app/providers/stores/orderFormStore.ts";
 import { usePaymentStore } from "@/widget/app/providers/stores/paymentsStore.ts";
 import { usePageBreakerStore } from "@/widget/app/providers/stores/pageBreakerStore.ts";
-import { ICurrency } from "@/widget/shared/types/settings/settings.type";
 
 type Props = {
   summaries?: Field[];
@@ -318,10 +320,6 @@ const isMakeOrderButtonVisible = computed(() => {
   return secondPageSectionBlocks.value.length > 0;
 });
 
-const currency = computed(() => {
-  return settingsStore.getCurrencySettings as ICurrency;
-});
-
 const teleportTarget = computed(() => {
   return `#ccb_app_${appStore.getCalcId}`;
 });
@@ -343,6 +341,16 @@ const normalizeNumber = (value: unknown): number => {
   return Number.isNaN(numeric) ? 0 : numeric;
 };
 
+const miniWidgetFormulas = computed(() => {
+  return totalSummaryStore.getTotalSummary?.miniWidgetFormulas || [];
+});
+
+const miniWidgetTotals = computed(() => {
+  return props.totals?.filter(
+    (total) => miniWidgetFormulas.value.includes(total.alias) || !total.alias,
+  );
+});
+
 const getSelectedOptionValues = (field: Field): string[] => {
   if (!("selectedOption" in field)) {
     return [];
@@ -359,10 +367,6 @@ const getSelectedOptionValues = (field: Field): string[] => {
     ? [normalizeValue(selectedOption.optionValue)]
     : [];
 };
-
-const currencySymbol = computed(() => {
-  return currency.value.currency || "";
-});
 
 const initialFieldSignatures = ref(new Map<string, string>());
 
@@ -618,106 +622,6 @@ const wooRedirectComponent = defineAsyncComponent(
 const notificationsComponent = defineAsyncComponent(
   aliasChunkLoaders.notifications,
 );
-
-const getTotalValue = (total: Field): number => {
-  const totalData = total as Field & { originalValue?: number | string };
-  return Number(totalData.originalValue ?? totalData.value ?? 0);
-};
-
-const contactFormEnabled = computed(() => {
-  return settingsStore.getFormSettings?.accessEmail;
-});
-
-const getFormulaAlias = (formula: string | { alias?: string }): string => {
-  return typeof formula === "string" ? formula : (formula.alias ?? "");
-};
-
-const contactFormFormulasAliases = computed((): string[] => {
-  return (
-    settingsStore.getFormSettings?.formulas
-      ?.map(getFormulaAlias)
-      .filter(Boolean) ?? []
-  );
-});
-
-const isPaymentsEnabled = computed(() => {
-  return (
-    settingsStore.getPaymentGateway?.cards.cardPayments.stripe.enable ||
-    settingsStore.getPaymentGateway?.cards.cardPayments.razorpay.enable ||
-    settingsStore.getPaymentGateway?.paypal.enable ||
-    settingsStore.getPaymentGateway?.cashPayment.enable ||
-    false
-  );
-});
-
-const isWooCheckoutEnabled = computed(() => {
-  return settingsStore.getWooCheckoutSettings?.enable;
-});
-
-const wooCommerceFormulasAliases = computed((): string[] => {
-  return (
-    settingsStore.getWooCheckoutSettings?.formulas
-      ?.map(getFormulaAlias)
-      .filter(Boolean) ?? []
-  );
-});
-
-const paymentsFormulasAliases = computed((): string[] => {
-  return (
-    settingsStore.paymentGateway?.formulas
-      ?.map(getFormulaAlias)
-      .filter(Boolean) ?? []
-  );
-});
-
-const hasTotalAlias = (total: Field): boolean => {
-  return Object.hasOwn(total, "alias") && Boolean(total.alias);
-};
-
-const totalAmount = computed(() => {
-  if (props.totals?.length === 1 && !hasTotalAlias(props.totals[0])) {
-    const [total] = props.totals;
-    return getTotalValue(total);
-  }
-
-  if (contactFormEnabled.value) {
-    return (props.totals ?? [])
-      .filter((total) => {
-        return contactFormFormulasAliases.value.includes(total.alias);
-      })
-      .reduce((sum, total) => {
-        return sum + getTotalValue(total);
-      }, 0);
-  }
-
-  if (isPaymentsEnabled.value) {
-    return (props.totals ?? [])
-      .filter((total) => {
-        return paymentsFormulasAliases.value.includes(total.alias);
-      })
-      .reduce((sum, total) => {
-        return sum + getTotalValue(total);
-      }, 0);
-  }
-
-  if (isWooCheckoutEnabled.value) {
-    return (props.totals ?? [])
-      .filter((total) => {
-        return wooCommerceFormulasAliases.value.includes(total.alias);
-      })
-      .reduce((sum, total) => {
-        return sum + getTotalValue(total);
-      }, 0);
-  }
-
-  return (props.totals ?? [])
-    .filter((total) => {
-      return paymentsFormulasAliases.value.includes(total.alias);
-    })
-    .reduce((sum, total) => {
-      return sum + getTotalValue(total);
-    }, 0);
-});
 
 const getItemProps = (alias: string): Record<string, unknown> => {
   if (alias === "total_summary") {
@@ -1347,7 +1251,8 @@ onMounted(() => {
       width: 100%;
 
       .ccb-mobile-summary-content__total-label {
-        font-size: 16px;
+        line-height: 1.2;
+        font-size: 12px;
         font-weight: 700;
         color: var(--ccb-text-color);
       }
@@ -1359,7 +1264,6 @@ onMounted(() => {
 
         i {
           color: var(--ccb-accent-color);
-          margin-right: 4px;
         }
       }
     }
@@ -1516,6 +1420,11 @@ onMounted(() => {
     max-height: min(700px, calc(100dvh - 305px));
     -ms-overflow-style: none;
     scrollbar-width: none;
+
+    .ccb-woo-product {
+      box-sizing: border-box;
+      margin-top: 10px;
+    }
 
     &.is-quote-page {
       max-height: min(700px, calc(100dvh - 212px));

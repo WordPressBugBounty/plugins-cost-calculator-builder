@@ -13,7 +13,7 @@
       :id="getStickyId"
     >
       <TotalSummary
-        v-if="!isMobile"
+        v-if="!isMobile || !mobileMode"
         :summaries="
           fieldsStore.getSummaryList.filter(
             (summary) =>
@@ -30,7 +30,7 @@
         :show-woo-redirect-cart="showWooRedirectCart"
       />
       <MobileTotalSummary
-        v-if="isMobile"
+        v-if="isMobile && mobileMode"
         :summaries="
           fieldsStore.getSummaryList.filter((summary) => !summary.hidden)
         "
@@ -85,7 +85,7 @@
             :id="getStickyId"
           >
             <TotalSummary
-              v-if="!isMobile"
+              v-if="!isMobile || !mobileMode"
               :summaries="
                 fieldsStore.getSummaryList.filter((summary) => !summary.hidden)
               "
@@ -139,6 +139,7 @@ import { Field } from "@/widget/shared/types/fields";
 import { useAppearanceStore } from "@/widget/app/providers/stores/appearanceStore";
 import { useAppStore } from "@/widget/app/providers/stores/appStore.ts";
 import MobileTotalSummary from "@/widget/shared/ui/wrappers/components/MobileTotalSummary.vue";
+import { useTotalSummaryStore } from "@/widget/app/providers/stores/totalSummaryStore.ts";
 
 const notificationsStore = useNotificationsStore();
 
@@ -146,6 +147,7 @@ const fieldsStore = useFieldsStore();
 const settingsStore = useSettingsStore();
 const appearanceStore = useAppearanceStore();
 const appStore = useAppStore();
+const totalSummaryStore = useTotalSummaryStore();
 
 const showNotifications = computed((): boolean => {
   return (
@@ -158,6 +160,10 @@ const showNotifications = computed((): boolean => {
 
 const isMobile = computed(() => {
   return appStore.getIsMobile;
+});
+
+const mobileMode = computed(() => {
+  return totalSummaryStore.getTotalSummary?.mobileMode || false;
 });
 
 const enoughPages = computed(() => {

@@ -303,6 +303,8 @@ export interface ITotalSummarySettings {
   sticky: boolean;
   zero_values_for_orders_pdf_emails: boolean;
   arrangement_sections: ITotalSummarySection[];
+  mini_widget_formulas: string[];
+  mobile_mode: boolean;
 }
 
 export interface IConfirmationPage {

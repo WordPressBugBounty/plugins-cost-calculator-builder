@@ -31,6 +31,8 @@ export interface ITotalSummarySection {
 }
 
 export interface ITotalSummarySettings {
+  mobileMode?: boolean;
+  miniWidgetFormulas?: string[];
   sticky?: boolean;
   zero_values_for_orders_pdf_emails?: boolean;
   zeroValuesForOrdersPdfEmails?: boolean;

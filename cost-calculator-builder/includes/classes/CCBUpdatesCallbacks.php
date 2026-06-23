@@ -1927,4 +1927,19 @@ class CCBUpdatesCallbacks {
 			update_post_meta( $calc_id, 'stm-total-summary', apply_filters( 'stm_ccb_sanitize_array', $total_summary ) );
 		}
 	}
+
+	public static function ccb_add_total_summary_mobile_mode() {
+		$calculators = self::get_calculators();
+		foreach ( $calculators as $calculator ) {
+			$calc_id = intval( $calculator->ID );
+			$meta    = get_post_meta( $calc_id, 'stm-total-summary', true );
+
+			if ( ! isset( $meta['mobile_mode'] ) && ! isset( $meta['mini_widget_formulas'] ) ) {
+				$meta['mobile_mode']          = false;
+				$meta['mini_widget_formulas'] = array();
+			}
+
+			update_post_meta( $calc_id, 'stm-total-summary', apply_filters( 'stm_ccb_sanitize_array', $meta ) );
+		}
+	}
 }

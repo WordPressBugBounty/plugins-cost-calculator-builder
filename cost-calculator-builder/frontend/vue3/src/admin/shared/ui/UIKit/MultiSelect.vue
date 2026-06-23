@@ -41,9 +41,7 @@
               type="button"
               class="ccb-total-multiselect-chip__remove"
               @click="remove(getItemValue(chip))"
-            >
-              ×
-            </button>
+            ></button>
           </div>
         </template>
         <template v-else>
@@ -73,6 +71,11 @@
               v-for="opt in checkboxOptions"
               :key="String(opt.value)"
               class="ccb-total-multiselect-option"
+              :class="{
+                'ccb-total-multiselect-option--disabled': isOptionDisabled(
+                  opt.value,
+                ),
+              }"
               @click.stop
               @mousedown.stop
             >
@@ -80,6 +83,7 @@
                 type="checkbox"
                 class="ccb-total-multiselect-option__input"
                 :checked="isChecked(opt.value)"
+                :disabled="isOptionDisabled(opt.value)"
                 @change="onOptionChange($event, opt.value)"
               />
               <span class="ccb-total-multiselect-option__box">
@@ -125,6 +129,7 @@ const {
   name,
   className,
   maxItemsShown,
+  maxItemsSelected,
 } = toRefs(props);
 const translationsStore = useBuilderTranslationsStore();
 
@@ -186,11 +191,35 @@ const isChecked = (value: string | number) => {
   return selectedAliases.value.some((x) => x === value);
 };
 
+const isMaxSelected = computed(() => {
+  if (typeof maxItemsSelected.value === "undefined") {
+    return false;
+  }
+  return selectedAliases.value.length >= maxItemsSelected.value;
+});
+
+const isOptionDisabled = (value: string | number) => {
+  if (typeof maxItemsSelected.value === "undefined") {
+    return false;
+  }
+  if (isChecked(value)) {
+    return false;
+  }
+  return isMaxSelected.value;
+};
+
 const onOptionChange = (e: Event, value: string | number) => {
-  const checked = (e.target as HTMLInputElement).checked;
+  const target = e.target as HTMLInputElement;
+  const checked = target.checked;
   if (checked) {
-    if (!isChecked(value))
-      selectedAliases.value = [...selectedAliases.value, value];
+    if (isChecked(value)) {
+      return;
+    }
+    if (isMaxSelected.value) {
+      target.checked = false;
+      return;
+    }
+    selectedAliases.value = [...selectedAliases.value, value];
   } else {
     selectedAliases.value = selectedAliases.value.filter((x) => x !== value);
   }
@@ -202,9 +231,16 @@ watch(
   (value) => {
     const next = Array.isArray(value) ? value : [];
     const allowed = new Set((items.value || []).map((i) => i.alias || i.value));
-    selectedAliases.value = next.filter((a) => allowed.has(a)) as Array<
-      string | number
-    >;
+    let filtered = next.filter((a) => allowed.has(a)) as Array<string | number>;
+
+    if (
+      typeof maxItemsSelected.value !== "undefined" &&
+      filtered.length > maxItemsSelected.value
+    ) {
+      filtered = filtered.slice(0, maxItemsSelected.value);
+    }
+
+    selectedAliases.value = filtered;
   },
   { immediate: true, deep: true },
 );
@@ -319,6 +355,15 @@ watch(
 
   &:hover {
     background-color: var(--ccb-blue-bg-dull-hover);
+  }
+
+  &--disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+
+    &:hover {
+      background-color: transparent;
+    }
   }
 
   &__input {
