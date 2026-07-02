@@ -30,7 +30,7 @@
               'page-formulas': totalsInNavigation,
               [navigationButtonsPosition]: true,
             }"
-            v-if="enoughPages && !appStore.getIsMobile"
+            v-if="enoughPages && (!appStore.getIsMobile || !mobileMode)"
           >
             <div
               class="ccb-page-navigation__formulas"
@@ -137,6 +137,7 @@ import { useAppStore } from "@/widget/app/providers/stores/appStore.ts";
 import { usePageBreakerStore } from "@/widget/app/providers/stores/pageBreakerStore.ts";
 import HeaderTitle from "@/widget/shared/ui/wrappers/components/HeaderTitle.vue";
 import { useAppearanceStore } from "@/widget/app/providers/stores/appearanceStore.ts";
+import { useTotalSummaryStore } from "@/widget/app/providers/stores/totalSummaryStore.ts";
 
 const appStore = useAppStore();
 const pageBreakerStore = usePageBreakerStore();
@@ -152,6 +153,11 @@ const pageBreakerSettings = settingsStore.getPageBreakerSettings;
 const appearanceStore = useAppearanceStore();
 const notificationsStore = useNotificationsStore();
 const translationsStore = useTranslationsStore();
+const totalSummaryStore = useTotalSummaryStore();
+
+const mobileMode = computed(() => {
+  return totalSummaryStore.getTotalSummary?.mobileMode || false;
+});
 
 const isLiveDemoLayout = computed(() => {
   return false;
@@ -440,7 +446,6 @@ watch(activePageIndex, () => {
     border-radius: 8px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
     color: var(--ccb-text-color);
-    min-width: 490px;
 
     &__header {
       display: flex;

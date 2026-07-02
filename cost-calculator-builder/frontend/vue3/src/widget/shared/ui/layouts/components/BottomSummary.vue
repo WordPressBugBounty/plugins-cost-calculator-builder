@@ -56,25 +56,23 @@
               :notification-message="notificationsStore.message"
               :show-woo-redirect-cart="showWooRedirectCart"
             />
-            <MobileTotalSummary
-              v-else
-              :summaries="
-                fieldsStore.getSummaryList.filter((summary) => !summary.hidden)
-              "
-              :totals="
-                fieldsStore.getTotalsList.filter((summary) => !summary.hidden)
-              "
-              :show-summary="formDisplaySummaryStatus"
-              :form-title="
-                settingsStore.getFormSettings?.summaryDisplay?.formTitle
-              "
-              :show-notifications="notificationsStore.notificationStatus"
-              :notification-type="notificationsStore.notificationType"
-              :notification-message="notificationsStore.message"
-              :show-woo-redirect-cart="showWooRedirectCart"
-            />
           </Wrapper>
         </template>
+        <MobileTotalSummary
+          v-if="isMobile && mobileMode"
+          :summaries="
+            fieldsStore.getSummaryList.filter((summary) => !summary.hidden)
+          "
+          :totals="
+            fieldsStore.getTotalsList.filter((summary) => !summary.hidden)
+          "
+          :show-summary="formDisplaySummaryStatus"
+          :form-title="settingsStore.getFormSettings?.summaryDisplay?.formTitle"
+          :show-notifications="notificationsStore.notificationStatus"
+          :notification-type="notificationsStore.notificationType"
+          :notification-message="notificationsStore.message"
+          :show-woo-redirect-cart="showWooRedirectCart"
+        />
       </Grid>
       <slot />
     </Wrapper>
@@ -86,23 +84,6 @@
     >
       <TotalSummary
         v-if="!isMobile || !mobileMode"
-        :summaries="
-          fieldsStore.getSummaryList.filter(
-            (summary) =>
-              !summary.hidden &&
-              activePageFieldsAliases.includes(summary.alias),
-          )
-        "
-        :totals="fieldsStore.getTotalsList.filter((summary) => !summary.hidden)"
-        :show-summary="formDisplaySummaryStatus"
-        :form-title="settingsStore.getFormSettings?.summaryDisplay?.formTitle"
-        :show-notifications="showNotifications"
-        :notification-type="notificationsStore.notificationType"
-        :notification-message="notificationsStore.message"
-        :show-woo-redirect-cart="showWooRedirectCart"
-      />
-      <MobileTotalSummary
-        v-if="isMobile && mobileMode"
         :summaries="
           fieldsStore.getSummaryList.filter(
             (summary) =>

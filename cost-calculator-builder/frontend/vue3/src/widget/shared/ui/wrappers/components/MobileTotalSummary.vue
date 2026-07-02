@@ -12,13 +12,12 @@
     >
       <div class="ccb-mobile-summary-content">
         <div class="ccb-mobile-summary-content__total">
-          <span
-            class="ccb-mobile-summary-content__total-label"
+          <TotalSummaryItem
+            :item-type="'total'"
+            :summary="total"
             v-for="total in miniWidgetTotals"
             :key="total.alias"
-          >
-            {{ total.label }} {{ total.displayValue }}
-          </span>
+          />
           <span class="ccb-mobile-summary-content__total-description">
             <i class="ccb-icon-info"></i>{{ selectedItemsText }}
           </span>
@@ -260,6 +259,7 @@ import { useFieldsStore } from "@/widget/app/providers/stores/fieldsStore.ts";
 import { useOrderFormStore } from "@/widget/app/providers/stores/orderFormStore.ts";
 import { usePaymentStore } from "@/widget/app/providers/stores/paymentsStore.ts";
 import { usePageBreakerStore } from "@/widget/app/providers/stores/pageBreakerStore.ts";
+import TotalSummaryItem from "@/widget/shared/ui/total-summary/TotalSummaryItem.vue";
 
 type Props = {
   summaries?: Field[];
@@ -1195,7 +1195,7 @@ onMounted(() => {
 });
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
 .ccb-mobile-summary {
   width: 100%;
 
@@ -1241,14 +1241,85 @@ onMounted(() => {
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 10px;
       width: 100%;
+      min-width: 0;
     }
 
     .ccb-mobile-summary-content__total {
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
-      width: 100%;
+      justify-content: center;
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+
+      .ccb-total-row {
+        min-width: 0;
+      }
+
+      .ccb-total-row__discount,
+      .ccb-total-row__description {
+        display: none;
+      }
+
+      .ccb-total-row__item {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        min-width: 0;
+
+        .ccb-total-row__name {
+          display: flex;
+          flex-wrap: nowrap;
+          align-items: center;
+          gap: 4px;
+          flex: 1 1 auto;
+          min-width: 0;
+          width: auto;
+          font-size: 12px;
+          word-break: normal;
+
+          > span:first-child {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            min-width: 0;
+          }
+
+          .discount {
+            flex-shrink: 0;
+            white-space: nowrap;
+          }
+        }
+
+        .ccb-total-row__value {
+          display: flex;
+          flex-wrap: nowrap;
+          align-items: center;
+          justify-content: flex-end;
+          gap: 4px;
+          flex: 0 0 auto;
+          min-width: 0;
+          width: auto;
+          font-size: 12px;
+          text-align: right;
+          white-space: nowrap;
+
+          > span {
+            word-break: normal;
+            width: auto;
+            white-space: nowrap;
+          }
+
+          .discount {
+            font-size: 10px;
+          }
+        }
+      }
 
       .ccb-mobile-summary-content__total-label {
         line-height: 1.2;
@@ -1258,6 +1329,9 @@ onMounted(() => {
       }
 
       .ccb-mobile-summary-content__total-description {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
         font-size: 10px;
         font-weight: 400;
         color: var(--ccb-fields-description-color);
@@ -1271,16 +1345,17 @@ onMounted(() => {
     .ccb-mobile-summary-content__actions {
       display: flex;
       align-items: center;
+      flex-shrink: 0;
       gap: 8px;
 
       .ccb-mobile-summary-content__action {
-        font-size: 14px;
+        font-size: 13px;
         font-weight: 500;
         color: var(--ccb-fields-color);
         background: var(--ccb-accent-color);
         border: 0;
         border-radius: 4px;
-        padding: 10px 18px;
+        padding: 10px 14px;
         white-space: nowrap;
         height: 40px;
 
@@ -1450,46 +1525,46 @@ onMounted(() => {
     margin-top: 10px;
   }
 
-  &__sheet :deep(.ccb-summary-list__titles) {
+  &__sheet .ccb-summary-list__titles {
     padding: 5px 10px;
     border-radius: 4px;
   }
 
-  &__sheet :deep(.ccb-summary-list__wrapper) {
+  &__sheet .ccb-summary-list__wrapper {
     gap: 0;
     padding-top: 0;
   }
 
-  &__sheet :deep(.ccb-summary-item) {
+  &__sheet .ccb-summary-item {
     padding: 10px 0;
     gap: 12px;
   }
 
-  &__sheet :deep(.ccb-summary-item__value),
-  &__sheet :deep(.ccb-summary-item__values) {
+  &__sheet .ccb-summary-item__value,
+  &__sheet .ccb-summary-item__values {
     text-align: right;
   }
 
-  &__sheet :deep(.ccb-summary-item__title .description) {
+  &__sheet .ccb-summary-item__title .description {
     color: var(--ccb-summary-description-color);
     opacity: 0.75;
   }
 
-  &__sheet :deep(.ccb-totals-list) {
+  &__sheet .ccb-totals-list {
     width: 100%;
     padding-bottom: 14px;
     border-bottom: 0;
   }
 
-  &__sheet :deep(.ccb-total-row__item) {
+  &__sheet .ccb-total-row__item {
     align-items: center;
   }
 
-  &__sheet :deep(.ccb-total-row__name) {
+  &__sheet .ccb-total-row__name {
     font-size: 20px;
   }
 
-  &__sheet :deep(.ccb-total-row__value) {
+  &__sheet .ccb-total-row__value {
     font-size: 24px;
     font-weight: 700;
   }
@@ -1499,8 +1574,7 @@ onMounted(() => {
       width: 50%;
     }
 
-    .ccb-mobile-summary__footer-item
-      :deep(.ccb-pdf-invoice__actions .ccb-button) {
+    .ccb-mobile-summary__footer-item .ccb-pdf-invoice__actions .ccb-button {
       width: 100%;
     }
   }
@@ -1524,16 +1598,16 @@ onMounted(() => {
     min-width: 0;
   }
 
-  &__sheet :deep(.ccb-total-summary-action) {
+  &__sheet .ccb-total-summary-action {
     width: auto !important;
   }
 
-  &__sheet :deep(.ccb-pdf-invoice__actions),
-  &__sheet :deep(.ccb-order-form__submit) {
+  &__sheet .ccb-pdf-invoice__actions,
+  &__sheet .ccb-order-form__submit {
     width: 100%;
   }
 
-  &__sheet :deep(.ccb-pdf-invoice__actions .ccb-button) {
+  &__sheet .ccb-pdf-invoice__actions .ccb-button {
     width: 56px;
     min-width: 56px;
     padding: 0;
@@ -1545,28 +1619,28 @@ onMounted(() => {
     }
   }
 
-  &__footer-item--share_button :deep(.ccb-button)::before,
-  &__footer-item--pdf_button :deep(.ccb-button)::before {
+  &__footer-item--share_button .ccb-button::before,
+  &__footer-item--pdf_button .ccb-button::before {
     font-family: "ccb-fonts";
     color: var(--ccb-text-color);
     font-size: 22px;
     font-weight: 400;
   }
 
-  &__footer-item--share_button :deep(.ccb-button)::before {
+  &__footer-item--share_button .ccb-button::before {
     content: "\eac5";
   }
 
-  &__footer-item--pdf_button :deep(.ccb-button)::before {
+  &__footer-item--pdf_button .ccb-button::before {
     content: "\eac6";
   }
 
-  &__sheet :deep(.ccb-order-form) {
+  &__sheet .ccb-order-form {
     flex: 1;
     width: auto !important;
   }
 
-  &__sheet :deep(.ccb-order-form .ccb-button) {
+  &__sheet .ccb-order-form .ccb-button {
     width: 100%;
   }
 }
