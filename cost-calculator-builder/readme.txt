@@ -4,9 +4,9 @@ Contributors: Stylemix
 Donate link: https://stylemixthemes.com
 Tags: cost calculator, calculator, calculator form builder, cost estimation, shipping calculator, taxi fare calculator, price calculator, tax calculation, cost, calc, cost calc, calc builder
 Requires at least: 6.2
-Requires PHP: 8.3
+Requires PHP: 7.4
 Tested up to: 7.0
-Stable tag: 4.0.14
+Stable tag: 4.0.15
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -207,6 +207,9 @@ Also, you can import the demo sample using Tools -> Import -> WordPress Import.
 Demo sample XML file included in plugin archive.
 
 == Changelog ==
+
+= 4.0.15 =
+- Fix: Minor bugfixes.
 
 = 4.0.14 =
 - Fix: Page Pagination was not appearing when Mobile Mode was enabled
