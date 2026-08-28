@@ -108,7 +108,7 @@ class CCBOrderController {
 		}
 
 		/**  sanitize POST data  */
-		$data = CCBCleanHelper::cleanData( (array) json_decode( stripslashes( $data ) ) );
+		$data = CCBCleanHelper::cleanData( (array) json_decode( $data ) );
 
 		self::validate( $data );
 
@@ -453,7 +453,7 @@ class CCBOrderController {
 			}
 		}
 
-		$data     = (array) json_decode( stripslashes( $data ), true );
+		$data     = (array) json_decode( $data, true );
 		$order_id = $data['orderId'] ?? null;
 
 		if ( isset( $data['calcTotals'] ) ) {
