@@ -55,7 +55,9 @@
         <div class="actions-buttons">
           <button
             class="btn export-btn"
-            style="opacity: 0.4; pointer-events: none"
+            :class="{ 'is-disabled': isExportDisabled }"
+            :disabled="isExportDisabled"
+            @click="exportOrders"
           >
             <i class="ccb-icon-Path-34581"></i>
           </button>
@@ -430,6 +432,8 @@ import { debounce } from "@/common/shared/utils/useDebounce";
 import { ICalculatorFields } from "@/orders/shared/types/orders.type";
 import { currencyConvertor } from "@/orders/shared/utils/useCurrencyConvertor";
 import { useOrdersTranslationsStore } from "@/orders/app/providers/stores/useTranslations";
+import { fetchOrdersData } from "@/orders/shared/api/fetchOrders";
+import { IFetchOrdersResponse } from "@/orders/shared/types/api/response.type";
 import VueDatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 
@@ -438,6 +442,7 @@ const ordersStore = useOrdersStore();
 const showMoreStatuses = ref<boolean>(false);
 const selectedOrderIds = ref<number[]>([]);
 const isSelectAll = ref<boolean>(false);
+const isExporting = ref<boolean>(false);
 
 const showStatusList = ref<Record<number, boolean>>({});
 const toggleMultiStatusList = ref<boolean>(false);
@@ -488,6 +493,9 @@ const getTotal = computed(() => {
     localStorage.setItem("orders_current_page", "1");
   }
   return ordersStore.getTotal;
+});
+const isExportDisabled = computed(() => {
+  return isExporting.value || getTotal.value === 0;
 });
 
 const tableSettings = computed(() => {
@@ -809,6 +817,88 @@ const formatCurrency = computed(() => {
     });
   };
 });
+
+const createCsvValue = (value: string | number) => {
+  const stringValue = String(value ?? "");
+  const escapedValue = stringValue.replace(/"/g, '""');
+  return `"${escapedValue}"`;
+};
+
+const getCsvHeaders = () => {
+  return [
+    "Order ID",
+    "Name",
+    "Email",
+    "Date",
+    "Calculator",
+    "Payment",
+    "Status",
+    "Amount",
+  ];
+};
+
+const buildCsvContent = (orders: IOrders[]) => {
+  const headers = getCsvHeaders().map(createCsvValue).join(",");
+  const rows = orders.map((order) => {
+    return [
+      order.order_id,
+      order.client_name,
+      order.client_email,
+      order.created_at,
+      order.calc_title,
+      order.payment_type_label,
+      order.payment_status,
+      formatCurrency.value(order),
+    ]
+      .map(createCsvValue)
+      .join(",");
+  });
+
+  return [headers, ...rows].join("\n");
+};
+
+const triggerCsvDownload = (csvContent: string) => {
+  const blob = new Blob(["\uFEFF" + csvContent], {
+    type: "text/csv;charset=utf-8;",
+  });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  const datePart = new Date().toISOString().slice(0, 10);
+  link.setAttribute("href", url);
+  link.setAttribute("download", `orders-${datePart}.csv`);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+};
+
+const exportOrders = async () => {
+  if (isExportDisabled.value) {
+    return;
+  }
+
+  isExporting.value = true;
+  try {
+    const response = await fetchOrdersData<IFetchOrdersResponse>({
+      action: "ccb_orders_list",
+      nonce: window?.ccb_nonces?.ccb_orders_list || "",
+      limit: Math.max(getTotal.value, 10),
+      page: 1,
+      params: ordersStore.getParams,
+    });
+
+    if (!response?.success || !response?.data?.orders?.length) {
+      return;
+    }
+
+    const csvContent = buildCsvContent(response.data.orders);
+    triggerCsvDownload(csvContent);
+  } catch (error) {
+    console.error("Orders export failed", error);
+  } finally {
+    isExporting.value = false;
+  }
+};
 </script>
 
 <style scoped lang="scss">
@@ -1202,6 +1292,11 @@ input.header-input[type="number"] {
       background: #e1e5ee;
     }
   }
+}
+
+.export-btn.is-disabled {
+  opacity: 0.4;
+  pointer-events: none;
 }
 
 .sort-by {

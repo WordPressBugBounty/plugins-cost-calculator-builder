@@ -1085,6 +1085,11 @@ const updateProperties = (name: string, value: any): void => {
     selectedContactForm.value = value as string;
   }
 
+  if (name === "body") {
+    settings.formFields.body = value as string;
+    contactFormBody.value = value as string;
+  }
+
   if (name === "openModalBtnText") {
     settings.formFields.openModalBtnText = value as string;
     openButtonText.value = value as string;

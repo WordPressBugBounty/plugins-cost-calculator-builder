@@ -6,7 +6,7 @@ Tags: cost calculator, calculator, calculator form builder, cost estimation, shi
 Requires at least: 6.2
 Requires PHP: 7.4
 Tested up to: 7.0
-Stable tag: 4.0.16
+Stable tag: 4.0.17
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -207,6 +207,11 @@ Also, you can import the demo sample using Tools -> Import -> WordPress Import.
 Demo sample XML file included in plugin archive.
 
 == Changelog ==
+= 4.0.17 =
+- Fix: Fixed an issue where Contact Form 7 content was not saved and reverted to the previously saved version after clicking Save.
+- Fix: Fixed an issue where WPML did not recognize calculator fields with dynamic text.
+- Fix: Fixed an issue where the country code dropdown in the Validated Form Phone field did not open when the field was near the bottom of the browser window.
+- Fix: Fixed an issue where orders could not be downloaded because the export button was disabled.
 
 = 4.0.16 =
 - Fix: Fixed an issue where newline characters entered in textarea fields were displayed incorrectly in the cart and emails.

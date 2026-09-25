@@ -151,6 +151,7 @@ onMounted(() => {
   .vti__dropdown-list {
     z-index: 1000;
     top: 42px;
+    bottom: auto;
     box-sizing: border-box;
     left: 0;
     right: 0;
@@ -165,6 +166,12 @@ onMounted(() => {
         border-bottom: none;
       }
     }
+  }
+
+  /* Keep country list visible inside scrollable containers. */
+  .vti__dropdown-list.above {
+    top: 42px;
+    bottom: auto;
   }
 }
 </style>

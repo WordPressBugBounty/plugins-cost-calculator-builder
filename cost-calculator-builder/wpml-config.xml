@@ -22,10 +22,141 @@
                 <key name="label" />
                 <key name="description" />
                 <key name="placeholder" />
+                <key name="placeholderHours" />
+                <key name="placeholderTime" />
                 <key name="sign" />
+                <key name="text" />
+                <key name="htmlContent" />
+                <key name="badgeText" />
+                <key name="unitSymbol" />
+                <key name="addButtonLabel" />
+                <key name="removeButtonLabel" />
+                <key name="previousBtnLabel" />
+                <key name="nextBtnLabel" />
                 <key name="options">
                     <key name="*">
                         <key name="optionText" />
+                        <key name="optionHint" />
+                    </key>
+                </key>
+                <key name="fields">
+                    <key name="*">
+                        <key name="label" />
+                        <key name="description" />
+                        <key name="placeholder" />
+                        <key name="placeholderHours" />
+                        <key name="placeholderTime" />
+                        <key name="sign" />
+                        <key name="text" />
+                        <key name="htmlContent" />
+                        <key name="badgeText" />
+                        <key name="unitSymbol" />
+                        <key name="addButtonLabel" />
+                        <key name="removeButtonLabel" />
+                        <key name="previousBtnLabel" />
+                        <key name="nextBtnLabel" />
+                        <key name="options">
+                            <key name="*">
+                                <key name="optionText" />
+                                <key name="optionHint" />
+                            </key>
+                        </key>
+                        <key name="groupElements">
+                            <key name="*">
+                                <key name="label" />
+                                <key name="description" />
+                                <key name="placeholder" />
+                                <key name="placeholderHours" />
+                                <key name="placeholderTime" />
+                                <key name="sign" />
+                                <key name="text" />
+                                <key name="htmlContent" />
+                                <key name="badgeText" />
+                                <key name="unitSymbol" />
+                                <key name="addButtonLabel" />
+                                <key name="removeButtonLabel" />
+                                <key name="previousBtnLabel" />
+                                <key name="nextBtnLabel" />
+                                <key name="options">
+                                    <key name="*">
+                                        <key name="optionText" />
+                                        <key name="optionHint" />
+                                    </key>
+                                </key>
+                            </key>
+                        </key>
+                    </key>
+                </key>
+                <key name="groupElements">
+                    <key name="*">
+                        <key name="label" />
+                        <key name="description" />
+                        <key name="placeholder" />
+                        <key name="placeholderHours" />
+                        <key name="placeholderTime" />
+                        <key name="sign" />
+                        <key name="text" />
+                        <key name="htmlContent" />
+                        <key name="badgeText" />
+                        <key name="unitSymbol" />
+                        <key name="addButtonLabel" />
+                        <key name="removeButtonLabel" />
+                        <key name="previousBtnLabel" />
+                        <key name="nextBtnLabel" />
+                        <key name="options">
+                            <key name="*">
+                                <key name="optionText" />
+                                <key name="optionHint" />
+                            </key>
+                        </key>
+                        <key name="fields">
+                            <key name="*">
+                                <key name="label" />
+                                <key name="description" />
+                                <key name="placeholder" />
+                                <key name="placeholderHours" />
+                                <key name="placeholderTime" />
+                                <key name="sign" />
+                                <key name="text" />
+                                <key name="htmlContent" />
+                                <key name="badgeText" />
+                                <key name="unitSymbol" />
+                                <key name="addButtonLabel" />
+                                <key name="removeButtonLabel" />
+                                <key name="previousBtnLabel" />
+                                <key name="nextBtnLabel" />
+                                <key name="options">
+                                    <key name="*">
+                                        <key name="optionText" />
+                                        <key name="optionHint" />
+                                    </key>
+                                </key>
+                                <key name="groupElements">
+                                    <key name="*">
+                                        <key name="label" />
+                                        <key name="description" />
+                                        <key name="placeholder" />
+                                        <key name="placeholderHours" />
+                                        <key name="placeholderTime" />
+                                        <key name="sign" />
+                                        <key name="text" />
+                                        <key name="htmlContent" />
+                                        <key name="badgeText" />
+                                        <key name="unitSymbol" />
+                                        <key name="addButtonLabel" />
+                                        <key name="removeButtonLabel" />
+                                        <key name="previousBtnLabel" />
+                                        <key name="nextBtnLabel" />
+                                        <key name="options">
+                                            <key name="*">
+                                                <key name="optionText" />
+                                                <key name="optionHint" />
+                                            </key>
+                                        </key>
+                                    </key>
+                                </key>
+                            </key>
+                        </key>
                     </key>
                 </key>
             </key>
