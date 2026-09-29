@@ -52,6 +52,7 @@
         :class="{ active: activeContent === 'order-form' }"
       >
         <Text text="Contact Form" size="s" weight="medium" />
+        <Badge v-if="!appStore.getIsPro" label="PRO" :type="'blue'" />
       </div>
       <div
         class="ccb-builder-navigation-list-item"
@@ -59,6 +60,7 @@
         :class="{ active: activeContent === 'confirmation' }"
       >
         <Text text="Confirmation" size="s" weight="medium" />
+        <Badge v-if="!appStore.getIsPro" label="PRO" :type="'blue'" />
       </div>
     </div>
 

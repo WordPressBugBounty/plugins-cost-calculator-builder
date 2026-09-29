@@ -1,10 +1,21 @@
 <template>
   <div
     class="ccb-template-card"
-    :class="{ 'ccb-template-card--locked': isProTemplate && !isProActive }"
+    :class="{
+      'ccb-template-card--locked': isProTemplate && !isProActive,
+      'ccb-template-card--with-badges': !isProActive,
+    }"
     role="button"
     tabindex="0"
   >
+    <div
+      v-if="showBadge"
+      class="ccb-template-card__badge"
+      :class="`ccb-template-card__badge--${template.type}`"
+    >
+      <i v-if="isProTemplate" class="ccb-icon-Lock-filled"></i>
+      <span>{{ template.type }}</span>
+    </div>
     <div class="ccb-template-card__main">
       <div
         class="ccb-template-card__icon"
@@ -91,6 +102,11 @@ const flowStore = useFlowStore();
 
 const isProActive = computed(() => flowStore.getProActive);
 const isProTemplate = computed(() => template.value.type === "pro");
+const isFreeTemplate = computed(() => template.value.type === "free");
+
+const showBadge = computed(
+  () => !isProActive.value && (isProTemplate.value || isFreeTemplate.value),
+);
 
 const isFavorite = computed(() => {
   return (templateId: number) => {
@@ -168,9 +184,43 @@ const useTemplate = () => {
     }
   }
 
+  &--with-badges {
+    .ccb-template-card__main {
+      margin: 15px 0;
+    }
+  }
+
   &--locked {
     .ccb-template-card__main {
       opacity: 0.92;
+    }
+  }
+
+  &__badge {
+    position: absolute;
+    top: -1px;
+    right: -1px;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    column-gap: 3px;
+    height: 22px;
+    padding: 0 8px;
+    border-radius: 0 10px 0 10px;
+    background-color: #f47424;
+    color: #ffffff;
+    font-size: 10px;
+    font-weight: 500;
+    text-transform: capitalize;
+
+    i {
+      font-size: 10px;
+    }
+
+    &--free {
+      background-color: #e5ffd9;
+      color: #1ab163;
     }
   }
 

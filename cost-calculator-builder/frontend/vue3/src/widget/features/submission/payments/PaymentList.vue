@@ -87,7 +87,12 @@ const getPayments = computed(() => {
       payments.push("razorpay");
     }
 
-    if (paymentGateway.paypal?.enable && paymentGateway.paypal.paypalEmail) {
+    const paypal = paymentGateway.paypal;
+    const isPaypalRest = paypal?.integrationType === "rest";
+    const canUsePaypal =
+      !!paypal?.enable && (isPaypalRest ? !!paypal?.clientId : true);
+
+    if (canUsePaypal) {
       payments.push("paypal");
     }
 

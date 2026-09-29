@@ -589,17 +589,59 @@ watch(activePageIndex, () => {
 
     &.page-formulas {
       justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+
+      .ccb-page-navigation__formulas {
+        flex: 1 1 auto;
+        min-width: 0;
+      }
 
       .ccb-page-navigation__actions {
         width: fit-content;
+        flex-shrink: 0;
       }
     }
 
+    // Shared grid: the name column takes the width of the longest name,
+    // so all values start on the same line.
     .ccb-page-navigation__totals {
+      display: grid;
+      grid-template-columns: max-content max-content;
+      column-gap: 12px;
+
+      .ccb-total-row {
+        grid-column: 1 / -1;
+        display: grid;
+        grid-template-columns: subgrid;
+
+        > * {
+          grid-column: 1 / -1;
+        }
+      }
+
       .ccb-total-row__item {
-        gap: 12px;
+        display: grid;
+        grid-template-columns: subgrid;
+        gap: 15px;
         font-size: 13px;
         font-weight: 800;
+
+        .ccb-total-row__name,
+        .ccb-total-row__value {
+          width: auto;
+          min-width: 55px;
+        }
+
+        .ccb-total-row__value {
+          justify-content: flex-start;
+          text-align: left;
+
+          > span {
+            white-space: nowrap;
+            word-break: normal;
+          }
+        }
       }
     }
 

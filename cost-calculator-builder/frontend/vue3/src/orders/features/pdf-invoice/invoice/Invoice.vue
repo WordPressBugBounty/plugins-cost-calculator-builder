@@ -33,6 +33,7 @@ import { useOrdersStore } from "@/orders/app/providers/stores/orders";
 // @ts-ignore: jsPDF is used indirectly
 import jsPDF from "jspdf";
 import { IPdfSettings } from "@/widget/shared/types/settings";
+import { openPdfPreview } from "@/common/shared/utils/open-pdf-preview";
 const emit = defineEmits(["generate-quote"]);
 
 interface Vue3Html2pdf {
@@ -103,11 +104,7 @@ const beforeDownload = async ({
       .set(conf)
       .output("blob")
       .then((pdfBlob: Blob) => {
-        const blobUrl = URL.createObjectURL(pdfBlob);
-        window.open(blobUrl);
-        setTimeout(() => {
-          URL.revokeObjectURL(blobUrl);
-        }, 1000);
+        openPdfPreview(pdfBlob, pdfName.value);
       });
   } else {
     await html2pdf()

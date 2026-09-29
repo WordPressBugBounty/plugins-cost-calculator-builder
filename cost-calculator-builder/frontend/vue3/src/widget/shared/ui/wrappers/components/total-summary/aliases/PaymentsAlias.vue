@@ -82,7 +82,7 @@ const getMakePaymentText = computed((): string => {
   const makePayment =
     translationsStore.getTranslations.makePayment || "Make Payment";
   if (paymentStore.paymentType === "woocommerce") {
-    return "Add to cart";
+    return translationsStore.getTranslations.addToCart || "Add to cart";
   }
   return makePayment;
 });

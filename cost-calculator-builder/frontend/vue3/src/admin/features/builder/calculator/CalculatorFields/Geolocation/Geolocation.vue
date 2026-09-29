@@ -18,7 +18,7 @@
     </div>
 
     <div
-      v-if="field.descriptionPosition === 'before'"
+      v-if="descriptionPosition === 'before'"
       class="ccb-field__descriptions ccb-before"
     >
       <div v-if="field.description" class="ccb-field__description">
@@ -32,7 +32,7 @@
     </div>
 
     <div
-      v-if="field.descriptionPosition === 'after'"
+      v-if="descriptionPosition === 'after'"
       class="ccb-field__descriptions ccb-after"
     >
       <div v-if="field.description" class="ccb-field__description">
@@ -43,9 +43,12 @@
 </template>
 
 <script setup lang="ts">
+import { useAppearanceSpacing } from "@/admin/shared/utils/useAppearanceSpacing";
 import { toRefs, computed, defineAsyncComponent } from "vue";
 import { IGeolocationField } from "@/admin/shared/types/fields.type";
 import { useAppearanceColors } from "@/admin/shared/utils/useAppearanceColors";
+
+const { descriptionPosition } = useAppearanceSpacing();
 const { borderColor, formFieldsColor, textColor, accentColor, containerColor } =
   useAppearanceColors();
 const props = defineProps<{

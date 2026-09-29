@@ -21,7 +21,7 @@
           <span class="ccb-radio-image__label">{{ option.optionText }}</span>
           <span class="ccb-radio-image__price" v-if="showValueInOption"
             >{{ translationsStore.getTranslations.price || "Price" }}:
-            {{ option.optionValue }}</span
+            {{ formatOptionPrice(option.optionValue, field) }}</span
           >
         </div>
       </div>
@@ -44,6 +44,7 @@ import { toRefs, computed } from "vue";
 import { useSingleOptionChildShared } from "@/widget/actions/fields/composable/useSingleOptionChildShared.ts";
 import { useTranslationsStore } from "@/widget/app/providers/stores/translationsStore";
 import { useAppearanceColors } from "@/admin/shared/utils/useAppearanceColors";
+import { useFieldCurrency } from "@/admin/shared/utils/useFieldCurrency";
 import placeholderImg from "@/images/placeholder.png";
 
 const { borderColor, formFieldsColor, accentColor } = useAppearanceColors();
@@ -65,6 +66,7 @@ const props = defineProps<Props>();
 const { options, field } = toRefs(props);
 
 const translationsStore = useTranslationsStore();
+const { formatOptionPrice } = useFieldCurrency();
 
 const showValueInOption = computed(() => {
   return field.value.show_value_in_option;

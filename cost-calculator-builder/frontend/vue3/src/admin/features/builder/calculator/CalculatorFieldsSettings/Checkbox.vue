@@ -544,30 +544,15 @@ const normalizeOptions = (options: unknown): ICheckboxOption[] => {
     ];
   }
 
-  const mapped = options
-    .map((option) => {
-      const source = option as IOptions;
-      return {
-        optionText: String(source.optionText || "").trim(),
-        optionValue: String(source.optionValue || "").trim(),
-        optionHint: String(source.optionHint || "").trim(),
-      };
-    })
-    .filter(
-      (option) =>
-        option.optionText.length > 0 ||
-        option.optionValue.length > 0 ||
-        option.optionHint.length > 0,
-    );
-
-  return mapped.length
-    ? mapped
-    : [
-        { optionText: "Option 1", optionValue: "10", optionHint: "" },
-        { optionText: "Option 2", optionValue: "20", optionHint: "" },
-        { optionText: "Option 3", optionValue: "30", optionHint: "" },
-        { optionText: "Option 4", optionValue: "40", optionHint: "" },
-      ];
+  // Keep empty options so the sidebar mirrors field.options and they can be removed
+  return options.map((option) => {
+    const source = option as IOptions;
+    return {
+      optionText: String(source.optionText || "").trim(),
+      optionValue: String(source.optionValue || "").trim(),
+      optionHint: String(source.optionHint || "").trim(),
+    };
+  });
 };
 
 const updateToggle = (key: string): void => {

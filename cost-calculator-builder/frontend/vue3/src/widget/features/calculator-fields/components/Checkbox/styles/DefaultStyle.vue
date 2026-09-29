@@ -1,7 +1,7 @@
 <template>
   <div class="ccb-default-checkbox ccb-checkbox-grid">
     <template v-for="(option, idx) in field.options" :key="option.optionValue">
-      <div class="ccb-checkbox-wrapper">
+      <div class="ccb-checkbox-wrapper" v-if="option.optionText">
         <label
           :for="getName + '_' + idx + '_' + generateId"
           :class="{

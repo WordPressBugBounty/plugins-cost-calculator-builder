@@ -18,6 +18,15 @@
       </div>
     </div>
 
+    <div
+      v-if="descriptionPosition === 'before'"
+      class="ccb-field__descriptions ccb-before"
+    >
+      <div v-if="field.description" class="ccb-field__description">
+        {{ field.description }}
+      </div>
+    </div>
+
     <div class="ccb-field__input-wrapper">
       <component
         :is="currentComponents"
@@ -29,7 +38,10 @@
       ></component>
     </div>
 
-    <div class="ccb-field__descriptions ccb-after">
+    <div
+      v-if="descriptionPosition === 'after'"
+      class="ccb-field__descriptions ccb-after"
+    >
       <div v-if="field.description" class="ccb-field__description">
         {{ field.description }}
       </div>
@@ -38,8 +50,11 @@
 </template>
 
 <script setup lang="ts">
+import { useAppearanceSpacing } from "@/admin/shared/utils/useAppearanceSpacing";
 import { toRefs, computed, defineAsyncComponent } from "vue";
 import { IImageRadioField } from "@/widget/shared/types/fields";
+
+const { descriptionPosition } = useAppearanceSpacing();
 
 const DefaultStyle = defineAsyncComponent(
   () => import("./styles/DefaultStyle.vue"),

@@ -18,7 +18,7 @@
       </div>
     </div>
     <div
-      v-if="appearanceStore.descriptionPosition === 'before'"
+      v-if="descriptionPosition === 'before'"
       class="ccb-field__descriptions ccb-before"
     >
       <div v-if="field.description" class="ccb-field__description">
@@ -38,7 +38,7 @@
       />
     </div>
     <div
-      v-if="appearanceStore.descriptionPosition === 'after'"
+      v-if="descriptionPosition === 'after'"
       class="ccb-field__descriptions ccb-after"
     >
       <div v-if="field.description" class="ccb-field__description">
@@ -51,7 +51,7 @@
 <script setup lang="ts">
 import { toRefs, computed, defineAsyncComponent, ref, onMounted } from "vue";
 import { ITimePickerField } from "@/widget/shared/types/fields";
-import { useAppearanceStore } from "@/widget/app/providers/stores/appearanceStore.ts";
+import { useAppearanceSpacing } from "@/admin/shared/utils/useAppearanceSpacing";
 import ProBadge from "@/widget/shared/ui/components/Pro-badge/ProBadge.vue";
 import { useAppearanceColors } from "@/admin/shared/utils/useAppearanceColors";
 const { borderColor, formFieldsColor, textColor, accentColor } =
@@ -62,7 +62,7 @@ const props = defineProps<{
 }>();
 const { field } = toRefs(props);
 
-const appearanceStore = useAppearanceStore();
+const { descriptionPosition } = useAppearanceSpacing();
 
 const getRangeType = computed(() => {
   return typeof field.value.range === "string"

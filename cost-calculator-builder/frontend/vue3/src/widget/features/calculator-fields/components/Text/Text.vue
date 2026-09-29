@@ -129,7 +129,6 @@ const additionalClasses = computed(() => {
     min-height: var(--ccb-field-button-height);
 
     @media only screen and (max-width: 480px) {
-      padding: 0 var(--ccb-mobile-field-side-indent);
       min-height: var(--ccb-mobile-field-button-height);
     }
   }
@@ -139,6 +138,14 @@ const additionalClasses = computed(() => {
   &.ccb-text-field {
     .ccb-field__input-wrapper {
       display: flex;
+
+      textarea {
+        padding: var(--ccb-field-side-indent);
+
+        @media only screen and (max-width: 480px) {
+          padding: var(--ccb-mobile-field-side-indent);
+        }
+      }
     }
   }
 }

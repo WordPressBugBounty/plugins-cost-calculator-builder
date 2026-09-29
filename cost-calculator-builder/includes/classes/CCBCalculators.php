@@ -396,7 +396,7 @@ class CCBCalculators {
 			'formula'    => get_post_meta( $calc_id, 'stm-formula', true ),
 			'settings'   => $settings,
 			'builder'    => get_post_meta( $calc_id, 'stm-fields', true ),
-			'conditions' => get_post_meta( $calc_id, 'stm-conditions', true ),
+			'conditions' => ccb_get_calc_conditions_for_save( $calc_id ),
 			'preset_idx' => get_post_meta( $calc_id, 'ccb_calc_preset_idx', true ),
 		);
 	}
@@ -1213,7 +1213,7 @@ class CCBCalculators {
 
 		if ( ! is_null( $template_id ) ) {
 			$calc_id  = get_post_meta( $template_id, 'calc_id', true );
-			$category = get_post_meta( $template_id, 'category', true );
+			$category = get_post_meta( $calc_id, 'category', true );
 			$data     = self::duplicate_target_calc( $calc_id, false );
 
 			if ( 'custom_templates' !== $category ) {

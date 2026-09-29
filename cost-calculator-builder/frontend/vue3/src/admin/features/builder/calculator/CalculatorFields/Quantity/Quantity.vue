@@ -18,6 +18,18 @@
       </div>
     </div>
 
+    <div
+      v-if="descriptionPosition === 'before'"
+      class="ccb-field__descriptions ccb-before"
+    >
+      <div v-if="!field.hideMinMax" class="ccb-field__description">
+        Min: {{ field.min }} - Max: {{ field.max }}
+      </div>
+      <div v-if="field.description" class="ccb-field__description">
+        {{ field.description }}
+      </div>
+    </div>
+
     <component
       :is="getStyleComponent"
       :field="field"
@@ -27,7 +39,10 @@
       :key="forceUpdateKey"
     />
 
-    <div class="ccb-field__descriptions ccb-after">
+    <div
+      v-if="descriptionPosition === 'after'"
+      class="ccb-field__descriptions ccb-after"
+    >
       <div v-if="!field.hideMinMax" class="ccb-field__description">
         Min: {{ field.min }} - Max: {{ field.max }}
       </div>
@@ -39,7 +54,10 @@
 </template>
 
 <script setup lang="ts">
+import { useAppearanceSpacing } from "@/admin/shared/utils/useAppearanceSpacing";
 import { computed, defineAsyncComponent, toRefs } from "vue";
+
+const { descriptionPosition } = useAppearanceSpacing();
 
 const props = defineProps<{
   field: any;

@@ -28,6 +28,15 @@
           >
             {{ formatCurrencyValue(detail.optionsTotal, detail) }}
           </span>
+          <span
+            v-else-if="
+              detail.summaryView === 'show_label_not_calculable' ||
+              detail.summaryView === 'show_label_calculable'
+            "
+            class="ccb-details__value ccb-details__value--bold"
+          >
+            {{ detail.options[0]?.label }}
+          </span>
         </div>
 
         <template v-if="detail.summaryView === 'show_value'">
@@ -40,21 +49,6 @@
             <span class="ccb-details__value">{{
               formatCurrencyValue(option.value, detail)
             }}</span>
-          </div>
-        </template>
-
-        <template
-          v-else-if="
-            detail.summaryView === 'show_label_not_calculable' ||
-            detail.summaryView === 'show_label_calculable'
-          "
-        >
-          <div
-            class="ccb-summary-details__row ccb-summary-details__row--child"
-            v-for="(option, idx) in detail.options.slice(0, 1)"
-            :key="`${detail.alias}_opt_${idx}`"
-          >
-            <span class="ccb-details__label">{{ option.label }}</span>
           </div>
         </template>
       </div>
@@ -74,7 +68,6 @@ import { computed } from "vue";
 import { useAppearanceStore } from "@/admin/app/providers/stores/useAppearanceStore";
 import { useBuilderTranslationsStore } from "@/admin/app/providers/stores/useTranslationsStore";
 import { useBuilderStore } from "@/admin/app/providers/stores/useBuilderStore";
-import { useSettingsStore } from "@/admin/app/providers/stores/useSettingsStore";
 import { useAppStore } from "@/admin/app/providers/stores/useAppStore";
 import type {
   IField,
@@ -83,16 +76,9 @@ import type {
   IOptions,
   SummaryView,
 } from "@/admin/shared/types/fields.type";
-import type { ICurrency } from "@/admin/shared/types/settings.type";
+import { useFieldCurrency } from "@/admin/shared/utils/useFieldCurrency";
+import { currencyConvertor } from "@/orders/shared/utils/useCurrencyConvertor";
 import { useAppearanceTypography } from "@/admin/shared/utils/useAppearanceTypography";
-
-interface CurrencyConfig {
-  currency: string;
-  numAfterInteger: number;
-  decimalSeparator: string;
-  thousandsSeparator: string;
-  currencyPosition: string;
-}
 
 interface DetailOption {
   label: string;
@@ -120,7 +106,7 @@ defineProps<{
 const appearanceStore = useAppearanceStore();
 const translationsStore = useBuilderTranslationsStore();
 const builderStore = useBuilderStore();
-const settingsStore = useSettingsStore();
+const { resolveCurrencyConfig } = useFieldCurrency();
 const appStore = useAppStore();
 const {
   summaryHeaderFontSize,
@@ -143,82 +129,9 @@ function getFieldValue(field: IField): number {
   return 0;
 }
 
-function getCurrencyConfigFromSettings(
-  settingsCurrency: ICurrency,
-): CurrencyConfig {
-  return {
-    currency: settingsCurrency.currency || "$",
-    numAfterInteger: settingsCurrency.num_after_integer ?? 2,
-    decimalSeparator: settingsCurrency.decimal_separator || ".",
-    thousandsSeparator: settingsCurrency.thousands_separator || ",",
-    currencyPosition: settingsCurrency.currencyPosition || "left",
-  };
-}
-
-function getCurrencyConfigFromField(
-  fcs: IFieldCurrencySettings,
-): CurrencyConfig {
-  return {
-    currency: fcs.currency || "$",
-    numAfterInteger: fcs.num_after_integer ?? 2,
-    decimalSeparator: fcs.decimal_separator || ".",
-    thousandsSeparator: fcs.thousands_separator || ",",
-    currencyPosition: fcs.currencyPosition || "left",
-  };
-}
-
-function resolveCurrencyConfig(detail: DetailItem): CurrencyConfig | null {
-  if (detail.fieldCurrency && detail.fieldCurrencySettings) {
-    return getCurrencyConfigFromField(detail.fieldCurrencySettings);
-  }
-
-  if (detail.allowCurrency) {
-    const settingsCurrency = settingsStore.getSettings?.currency;
-    if (settingsCurrency) {
-      return getCurrencyConfigFromSettings(settingsCurrency);
-    }
-  }
-
-  return null;
-}
-
-function applyThousandsSeparator(intPart: string, sep: string): string {
-  return intPart.replace(/\B(?=(\d{3})+(?!\d))/g, sep);
-}
-
-function positionCurrency(
-  formatted: string,
-  symbol: string,
-  position: string,
-): string {
-  switch (position) {
-    case "right":
-      return `${formatted}${symbol}`;
-    case "left_with_space":
-      return `${symbol} ${formatted}`;
-    case "right_with_space":
-      return `${formatted} ${symbol}`;
-    default:
-      return `${symbol}${formatted}`;
-  }
-}
-
-function formatWithCurrency(value: number, config: CurrencyConfig): string {
-  const fixed = Number(value).toFixed(config.numAfterInteger);
-  const [intPart, decPart] = fixed.split(".");
-  const intFormatted = applyThousandsSeparator(
-    intPart,
-    config.thousandsSeparator,
-  );
-  const formatted = decPart
-    ? intFormatted + config.decimalSeparator + decPart
-    : intFormatted;
-  return positionCurrency(formatted, config.currency, config.currencyPosition);
-}
-
 function formatCurrencyValue(value: number, detail: DetailItem): string {
   const config = resolveCurrencyConfig(detail);
-  if (config) return formatWithCurrency(value, config);
+  if (config) return currencyConvertor(value, config);
 
   if (detail.type === "text-area") {
     return "Some text";

@@ -1,0 +1,2 @@
+function d(n,a){const{currency:e="",currencyPosition:o="left_with_space",numAfterInteger:r=2,thousandsSeparator:s=",",decimalSeparator:i="."}=a,u=n.toFixed(r),[$,f]=u.split("."),c=$.replace(/\B(?=(\d{3})+(?!\d))/g,s),t=r>0?`${c}${i}${f}`:c;switch(o){case"left_with_space":return`${e||""} ${t}`;case"right_with_space":return`${t} ${e||""}`;case"left":return`${e||""}${t}`;case"right":return`${t}${e||""}`}return t}export{d as c};
+//# sourceMappingURL=useCurrencyConvertor-DlhO1pa_.js.map

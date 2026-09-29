@@ -19,8 +19,8 @@
               option.optionText
             }}</span>
             <span class="ccb-checkbox-image__price" v-if="showValueInOption">
-              Price:
-              {{ option.optionValue }}
+              {{ translationsStore.getTranslations.price || "Price" }}:
+              {{ formatOptionPrice(option.optionValue, field) }}
             </span>
           </div>
         </div>
@@ -42,6 +42,8 @@
 import { toRefs, computed } from "vue";
 import { IMultiOptionsField } from "@/widget/shared/types/fields";
 import { useAppearanceColors } from "@/admin/shared/utils/useAppearanceColors";
+import { useFieldCurrency } from "@/admin/shared/utils/useFieldCurrency";
+import { useTranslationsStore } from "@/widget/app/providers/stores/translationsStore";
 import placeholderImg from "@/images/placeholder.png";
 const { borderColor, formFieldsColor, textColor, accentColor } =
   useAppearanceColors();
@@ -52,6 +54,9 @@ type Props = {
 
 const props = defineProps<Props>();
 const { field } = toRefs(props);
+
+const translationsStore = useTranslationsStore();
+const { formatOptionPrice } = useFieldCurrency();
 
 const generateId = computed(() => {
   return Math.random().toString(36).substring(2, 15);

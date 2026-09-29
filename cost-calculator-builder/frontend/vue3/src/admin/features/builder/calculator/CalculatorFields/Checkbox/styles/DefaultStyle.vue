@@ -1,13 +1,12 @@
 <template>
   <div class="ccb-default-checkbox">
     <template v-for="(option, idx) in field.options" :key="option.optionValue">
-      <div class="ccb-checkbox-wrapper">
+      <div class="ccb-checkbox-wrapper" v-if="option.optionText">
         <label
           :for="getName + '_' + idx + '_' + generateId"
           :class="{
             'ccb-option-disabled': field.disableOptions.includes(idx),
           }"
-          v-if="option.optionText"
         >
           <input
             :id="getName + '_' + idx + '_' + generateId"

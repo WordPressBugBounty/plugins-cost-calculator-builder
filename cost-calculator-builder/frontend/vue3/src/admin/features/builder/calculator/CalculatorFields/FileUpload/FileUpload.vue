@@ -26,7 +26,7 @@
     </div>
 
     <div
-      v-if="appearanceStore.getAppearanceDescriptionPosition === 'before'"
+      v-if="descriptionPosition === 'before'"
       class="ccb-field__descriptions ccb-before"
     >
       <div v-if="field.description" class="ccb-field__description">
@@ -105,7 +105,7 @@
     </div>
 
     <div
-      v-if="appearanceStore.getAppearanceDescriptionPosition === 'after'"
+      v-if="descriptionPosition === 'after'"
       class="ccb-field__descriptions ccb-after"
     >
       <div v-if="field.description" class="ccb-field__description">
@@ -127,7 +127,7 @@
 <script setup lang="ts">
 import { computed, toRefs, ref } from "vue";
 import { IFileUploadField } from "@/widget/shared/types/fields";
-import { useAppearanceStore } from "@/widget/app/providers/stores/appearanceStore.ts";
+import { useAppearanceSpacing } from "@/admin/shared/utils/useAppearanceSpacing";
 import { useTranslationsStore } from "@/widget/app/providers/stores/translationsStore.ts";
 import { useAppearanceColors } from "@/admin/shared/utils/useAppearanceColors";
 const {
@@ -143,7 +143,7 @@ const props = defineProps<{
 }>();
 const { field } = toRefs(props);
 
-const appearanceStore = useAppearanceStore();
+const { descriptionPosition } = useAppearanceSpacing();
 const translationsStore = useTranslationsStore();
 const fileElement = ref<HTMLDivElement | null>(null);
 const uploadedFiles = ref<File[]>([]);

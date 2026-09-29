@@ -21,7 +21,7 @@
     </div>
 
     <div
-      v-if="appearanceStore.getAppearanceDescriptionPosition === 'before'"
+      v-if="descriptionPosition === 'before'"
       class="ccb-field__descriptions ccb-before"
     >
       <div v-if="field.description" class="ccb-field__description">
@@ -38,7 +38,7 @@
     </div>
 
     <div
-      v-if="appearanceStore.getAppearanceDescriptionPosition === 'after'"
+      v-if="descriptionPosition === 'after'"
       class="ccb-field__descriptions ccb-after"
     >
       <div v-if="field.description" class="ccb-field__description">
@@ -50,7 +50,7 @@
 
 <script setup lang="ts">
 import { toRefs, computed, defineAsyncComponent } from "vue";
-import { useAppearanceStore } from "@/widget/app/providers/stores/appearanceStore.ts";
+import { useAppearanceSpacing } from "@/admin/shared/utils/useAppearanceSpacing";
 import ProBadge from "@/widget/shared/ui/components/Pro-badge/ProBadge.vue";
 import { IImageCheckboxField } from "@/widget/shared/types/fields";
 
@@ -70,7 +70,7 @@ const isRequired = computed(() => {
   return field.value.required || false;
 });
 
-const appearanceStore = useAppearanceStore();
+const { descriptionPosition } = useAppearanceSpacing();
 
 const currentComponents = computed(() => {
   const style = field.value.styles?.style || "default";

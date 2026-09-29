@@ -18,7 +18,7 @@
     </div>
 
     <div
-      v-if="appearanceStore.getAppearanceDescriptionPosition === 'before'"
+      v-if="descriptionPosition === 'before'"
       class="ccb-field__descriptions ccb-before"
     >
       <div v-if="field.description" class="ccb-field__description">
@@ -36,7 +36,7 @@
     </div>
 
     <div
-      v-if="appearanceStore.getAppearanceDescriptionPosition === 'after'"
+      v-if="descriptionPosition === 'after'"
       class="ccb-field__descriptions ccb-after"
     >
       <div v-if="field.description" class="ccb-field__description">
@@ -48,7 +48,7 @@
 
 <script setup lang="ts">
 import { toRefs, computed, defineAsyncComponent, ref } from "vue";
-import { useAppearanceStore } from "@/widget/app/providers/stores/appearanceStore.ts";
+import { useAppearanceSpacing } from "@/admin/shared/utils/useAppearanceSpacing";
 import { useFieldsStore } from "@/widget/app/providers/stores/fieldsStore.ts";
 import { validateEmail } from "@/widget/shared/utils/validate-email.utils";
 import { validateUrl } from "@/widget/shared/utils/validate-url.utils";
@@ -61,7 +61,7 @@ const { field } = toRefs(props);
 
 const requiredType = ref<string>("");
 
-const appearanceStore = useAppearanceStore();
+const { descriptionPosition } = useAppearanceSpacing();
 const fieldStore = useFieldsStore();
 
 const currentComponents = computed(() => {

@@ -63,6 +63,10 @@ export function useAppearanceSpacing() {
     px(spacingData.value?.field_spacing?.value, "20px"),
   );
 
+  const descriptionPosition = computed(
+    () => spacingData.value?.description_position?.value || "after",
+  );
+
   const summarySpacing = computed(() => {
     const raw = Number(spacingData.value?.field_spacing?.value ?? 20);
     return `${raw / 2}px`;
@@ -106,6 +110,7 @@ export function useAppearanceSpacing() {
   );
 
   return {
+    descriptionPosition,
     fieldSideIndent,
     fieldSpacing,
     fieldButtonHeight,

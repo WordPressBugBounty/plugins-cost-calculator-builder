@@ -20,7 +20,7 @@
     </div>
 
     <div
-      v-if="appearanceStore.getAppearanceDescriptionPosition === 'before'"
+      v-if="descriptionPosition === 'before'"
       class="ccb-field__descriptions ccb-before"
     >
       <div v-if="field.description" class="ccb-field__description">
@@ -69,7 +69,7 @@
     </div>
 
     <div
-      v-if="appearanceStore.getAppearanceDescriptionPosition === 'after'"
+      v-if="descriptionPosition === 'after'"
       class="ccb-field__descriptions ccb-after"
     >
       <div v-if="field.description" class="ccb-field__description">
@@ -84,7 +84,7 @@ import { toRefs, ref, computed } from "vue";
 import { IOptions, IDropdownField } from "@/widget/shared/types/fields";
 import { useFieldsStore } from "@/widget/app/providers/stores/fieldsStore.ts";
 import { useSingleField } from "@/widget/actions/fields/composable/useSingleField.ts";
-import { useAppearanceStore } from "@/widget/app/providers/stores/appearanceStore.ts";
+import { useAppearanceSpacing } from "@/admin/shared/utils/useAppearanceSpacing";
 import { useConditionsStore } from "@/widget/app/providers/stores/conditionsStore.ts";
 import RequiredHint from "@/widget/shared/ui/components/Required-hint/RequiredHint.vue";
 import { useTranslationsStore } from "@/widget/app/providers/stores/translationsStore";
@@ -100,7 +100,7 @@ const options = field.value.options;
 
 const fieldStore = useFieldsStore();
 const singleFieldInstance = useSingleField();
-const appearanceStore = useAppearanceStore();
+const { descriptionPosition } = useAppearanceSpacing();
 const conditionsStore = useConditionsStore();
 const translationsStore = useTranslationsStore();
 const pageBreakerStore = usePageBreakerStore();

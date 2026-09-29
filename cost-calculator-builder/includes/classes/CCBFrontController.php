@@ -343,20 +343,17 @@ class CCBFrontController {
 				)
 			);
 
-			if ( isset( $general_settings['ai'] ) ) {
-				unset( $general_settings['ai'] );
-			}
-
+			// General settings are not printed: the widget reads only ajax_url from ajax_window and gets
+			// its settings from the scrubbed calc_data_<ID> payload (Maps key, owner addresses, secrets stay server-side).
 			wp_localize_script(
 				'calc-builder-main-js',
 				'ajax_window',
 				array(
-					'ajax_url'         => admin_url( 'admin-ajax.php' ),
-					'language'         => $language,
-					'pro_active'       => ccb_pro_active(),
-					'the_id'           => get_the_ID(),
-					'general_settings' => $general_settings,
-					'plugin_url'       => CALC_URL,
+					'ajax_url'   => admin_url( 'admin-ajax.php' ),
+					'language'   => $language,
+					'pro_active' => ccb_pro_active(),
+					'the_id'     => get_the_ID(),
+					'plugin_url' => CALC_URL,
 				)
 			);
 

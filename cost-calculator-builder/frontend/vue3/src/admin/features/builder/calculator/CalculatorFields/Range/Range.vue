@@ -27,11 +27,23 @@
       </div>
     </div>
 
+    <div
+      v-if="descriptionPosition === 'before'"
+      class="ccb-field__descriptions ccb-before"
+    >
+      <div v-if="field.description" class="ccb-field__description">
+        {{ field.description }}
+      </div>
+    </div>
+
     <div class="ccb-field-input__wrapper">
       <component :is="currentComponents" :field="field" />
     </div>
 
-    <div class="ccb-field__descriptions ccb-after">
+    <div
+      v-if="descriptionPosition === 'after'"
+      class="ccb-field__descriptions ccb-after"
+    >
       <div v-if="field.description" class="ccb-field__description">
         {{ field.description }}
       </div>
@@ -40,6 +52,7 @@
 </template>
 
 <script setup lang="ts">
+import { useAppearanceSpacing } from "@/admin/shared/utils/useAppearanceSpacing";
 import { toRefs, computed, defineAsyncComponent } from "vue";
 import { IRangeField } from "@/widget/shared/types/fields";
 import { useAppearanceStore } from "@/admin/app/providers/stores/useAppearanceStore";
@@ -57,6 +70,8 @@ const props = defineProps<{
 const { field } = toRefs(props);
 
 import "@vueform/slider/themes/default.css";
+
+const { descriptionPosition } = useAppearanceSpacing();
 
 const getSignValue = computed(() => {
   return field.value.sign || "";

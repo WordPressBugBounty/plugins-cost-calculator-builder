@@ -16,8 +16,10 @@ import { useOrderFormStore } from "@/widget/app/providers/stores/orderFormStore.
 import { useNotificationsStore } from "@/widget/app/providers/stores/notificationsStore.ts";
 import { useAppStore } from "@/widget/app/providers/stores/appStore.ts";
 import { useFieldsStore } from "@/widget/app/providers/stores/fieldsStore.ts";
+import { useTranslationsStore } from "@/widget/app/providers/stores/translationsStore";
 
 const fieldsStore = useFieldsStore();
+const translationsStore = useTranslationsStore();
 
 const appStore = useAppStore();
 
@@ -33,7 +35,7 @@ const isLive = computed(() => {
 });
 
 const getSubmitOrderText = computed((): string => {
-  return "Add to cart";
+  return translationsStore.getTranslations.addToCart || "Add to cart";
 });
 
 const submitForm = () => {

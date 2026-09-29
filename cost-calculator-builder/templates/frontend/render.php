@@ -65,11 +65,13 @@ if ( ! empty( $general_settings['payment_gateway']['cash_payment']['use_in_all']
 }
 
 if ( ! empty( $general_settings['payment_gateway']['paypal']['use_in_all'] ) ) {
-	$settings['payment_gateway']['paypal']['integration_type'] = $general_settings['payment_gateway']['paypal']['integration_type'] ? $general_settings['payment_gateway']['paypal']['integration_type'] : $settings['payment_gateway']['paypal']['integration_type'];
-	$settings['payment_gateway']['paypal']['currency_code']    = $general_settings['payment_gateway']['paypal']['currency_code'] ? $general_settings['payment_gateway']['paypal']['currency_code'] : $settings['payment_gateway']['paypal']['currency_code'];
-	$settings['payment_gateway']['paypal']['paypal_mode']      = $general_settings['payment_gateway']['paypal']['paypal_mode'] ? $general_settings['payment_gateway']['paypal']['paypal_mode'] : $settings['payment_gateway']['paypal']['paypal_mode'];
-	$settings['payment_gateway']['paypal']['paypal_email']     = $general_settings['payment_gateway']['paypal']['paypal_email'] ? $general_settings['payment_gateway']['paypal']['paypal_email'] : $settings['payment_gateway']['paypal']['paypal_email'];
-	$settings['payment_gateway']['paypal']['client_id'] = $general_settings['payment_gateway']['paypal']['client_id'] ? $general_settings['payment_gateway']['paypal']['client_id'] : $settings['payment_gateway']['paypal']['client_id'];
+	$global_paypal   = $general_settings['payment_gateway']['paypal'] ?? array();
+	$current_paypal  = $settings['payment_gateway']['paypal'] ?? array();
+	$settings['payment_gateway']['paypal']['integration_type'] = ! empty( $global_paypal['integration_type'] ) ? $global_paypal['integration_type'] : ( $current_paypal['integration_type'] ?? '' );
+	$settings['payment_gateway']['paypal']['currency_code']    = ! empty( $global_paypal['currency_code'] ) ? $global_paypal['currency_code'] : ( $current_paypal['currency_code'] ?? 'USD' );
+	$settings['payment_gateway']['paypal']['paypal_mode']      = ! empty( $global_paypal['paypal_mode'] ) ? $global_paypal['paypal_mode'] : ( $current_paypal['paypal_mode'] ?? 'sandbox' );
+	$settings['payment_gateway']['paypal']['paypal_email']     = $global_paypal['paypal_email'] ?? ( $current_paypal['paypal_email'] ?? '' );
+	$settings['payment_gateway']['paypal']['client_id']        = ! empty( $global_paypal['client_id'] ) ? $global_paypal['client_id'] : ( $current_paypal['client_id'] ?? '' );
 }
 
 if ( ! empty( $settings['formFields']['body'] ) ) {
@@ -166,7 +168,7 @@ if ( '' !== $form_id ) {
 	);
 }
 
-$geolocation = isset( $general_settings['geolocation'] ) ? $general_settings['geolocation'] : array();
+$geolocation = ccb_frontend_geolocation_settings( $general_settings, $fields );
 
 if ( isset( $general_settings['invoice'] ) ) {
 	$settings['invoice'] = array(

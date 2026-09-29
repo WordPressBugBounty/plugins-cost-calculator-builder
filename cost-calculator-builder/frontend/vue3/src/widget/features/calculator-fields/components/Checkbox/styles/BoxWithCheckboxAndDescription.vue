@@ -2,6 +2,7 @@
   <div class="ccb-box-with-checkbox-and-description ccb-checkbox-grid">
     <template v-for="(option, idx) in field.options">
       <label
+        v-if="option.optionText"
         :for="getName + '_' + idx + '_' + generateId"
         :class="{
           'ccb-option-disabled': field.disableOptions.includes(idx),

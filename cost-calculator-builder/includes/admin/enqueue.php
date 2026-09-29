@@ -37,6 +37,10 @@ function cBuilder_admin_enqueue() {
 	if ( isset( $_GET['page'] ) && ( $_GET['page'] === 'cost_calculator_builder' || $_GET['page'] === 'cost_calculator_templates' || $_GET['page'] === 'cost_calculator_builder_whats_new' ) ) { //phpcs:ignore
 		wp_enqueue_media();
 
+		if ( $_GET['page'] === 'cost_calculator_builder' && \cBuilder\Classes\CCBBuilderAdminMenu::show_welcome_ccb_page() && ! defined( 'CCB_PRO_VERSION' ) ) { //phpcs:ignore
+			wp_enqueue_script( 'cbb-admin-welcome-js', CALC_URL . '/frontend/dist/welcome.js', array( 'jquery' ), CALC_VERSION );
+		}
+
 		Vite\enqueue_asset(
 			CALC_PATH . '/frontend/vue3/dist',
 			'src/admin/main.ts',

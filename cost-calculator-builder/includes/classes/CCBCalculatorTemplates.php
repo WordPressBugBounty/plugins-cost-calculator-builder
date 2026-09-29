@@ -56,16 +56,32 @@ class CCBCalculatorTemplates {
 			$calc_id = sanitize_text_field( $data['calc_id'] );
 
 			if ( ! empty( $title ) && ! empty( $calc_id ) ) {
+				$template_id = self::get_post_id_by_meta_key_and_value( 'source_calc_id', $calc_id );
+				if ( empty( $template_id ) ) {
+					$template_id = self::get_post_id_by_meta_key_and_value( 'calc_id', $calc_id );
+				}
+
+				$snapshot_id = self::create_calc_snapshot( $calc_id );
+
+				if ( empty( $snapshot_id ) ) {
+					wp_send_json( $result );
+				}
+
+				if ( ! empty( $template_id ) ) {
+					self::delete_template_calc( $template_id );
+				}
+
 				$temp_data = array(
-					'template_id' => self::get_post_id_by_meta_key_and_value( 'calc_id', $calc_id ),
-					'calc_id'     => $calc_id,
-					'title'       => $title,
-					'type'        => 'default',
-					'category'    => 'custom_templates',
-					'description' => '',
-					'icon'        => '',
-					'link'        => '',
-					'info'        => '',
+					'template_id'    => $template_id,
+					'calc_id'        => $snapshot_id,
+					'source_calc_id' => $calc_id,
+					'title'          => $title,
+					'type'           => 'default',
+					'category'       => 'custom_templates',
+					'description'    => '',
+					'icon'           => '',
+					'link'           => '',
+					'info'           => '',
 				);
 				self::create_or_update_template( $temp_data );
 
@@ -90,6 +106,9 @@ class CCBCalculatorTemplates {
 		}
 
 		update_post_meta( $id, 'calc_id', apply_filters( 'calc_id', $data['calc_id'] ) );
+		if ( ! empty( $data['source_calc_id'] ) ) {
+			update_post_meta( $id, 'source_calc_id', $data['source_calc_id'] );
+		}
 		update_post_meta( $data['calc_id'], 'plugin_type', $data['type'] );
 		update_post_meta( $data['calc_id'], 'icon', $data['icon'] );
 		update_post_meta( $data['calc_id'], 'category', $data['category'] );
@@ -97,6 +116,64 @@ class CCBCalculatorTemplates {
 		update_post_meta( $data['calc_id'], 'description', $data['description'] );
 		update_post_meta( $data['calc_id'], 'calc_link', $data['link'] );
 		update_post_meta( $data['calc_id'], 'info', $data['info'] );
+	}
+
+	/**
+	 * Copy calculator into a separate draft, so the template does not depend on the source calculator
+	 */
+	public static function create_calc_snapshot( $calc_id ) {
+		$data           = CCBCalculators::duplicate_target_calc( $calc_id, false );
+		$data['status'] = 'draft';
+
+		if ( empty( $data['id'] ) || ! ccb_update_calc_values( $data ) ) {
+			return null;
+		}
+
+		return $data['id'];
+	}
+
+	/**
+	 * Delete calculator stored in template. Published calculators are never deleted,
+	 * old custom templates pointed directly to the user's calculator
+	 */
+	public static function delete_template_calc( $template_id ) {
+		$calc_id = (int) get_post_meta( $template_id, 'calc_id', true );
+		if ( empty( $calc_id ) || 'publish' === get_post_status( $calc_id ) ) {
+			return;
+		}
+
+		wp_delete_post( $calc_id, true );
+		clearMetaData( $calc_id );
+		ccb_update_woocommerce_calcs( $calc_id, true );
+	}
+
+	/**
+	 * Before deleting a calculator, move old custom templates that point to it onto their own copy
+	 */
+	public static function detach_templates_from_calc( $calc_id ) {
+		$template_ids = get_posts(
+			array(
+				'meta_key'    => 'calc_id',
+				'meta_value'  => $calc_id,
+				'post_type'   => self::CALC_TEMPLATES_POST_TYPE,
+				'fields'      => 'ids',
+				'numberposts' => -1,
+			)
+		);
+
+		foreach ( $template_ids as $template_id ) {
+			$snapshot_id = self::create_calc_snapshot( $calc_id );
+			if ( empty( $snapshot_id ) ) {
+				continue;
+			}
+
+			foreach ( array( 'plugin_type', 'icon', 'category', 'title', 'description', 'calc_link', 'info' ) as $meta_key ) {
+				update_post_meta( $snapshot_id, $meta_key, get_post_meta( $calc_id, $meta_key, true ) );
+			}
+
+			update_post_meta( $template_id, 'calc_id', $snapshot_id );
+			update_post_meta( $template_id, 'source_calc_id', $calc_id );
+		}
 	}
 
 	public static function calc_get_all_templates() {
@@ -143,14 +220,10 @@ class CCBCalculatorTemplates {
 
 		if ( isset( $_GET['template_id'] ) ) {
 			$template_id = (int) sanitize_text_field( $_GET['template_id'] );
-			$calc_id     = (int) get_post_meta( $template_id, 'calc_id', true );
 
+			self::delete_template_calc( $template_id );
 			wp_delete_post( $template_id );
 			clearTemplatesMetaData( $template_id );
-
-			wp_delete_post( $calc_id );
-			clearMetaData( $calc_id );
-			ccb_update_woocommerce_calcs( $calc_id, true );
 
 			$result['success']   = true;
 			$result['templates'] = self::calc_templates_list();
@@ -285,6 +358,11 @@ class CCBCalculatorTemplates {
 			foreach ( $resources->get_posts() as $post ) {
 				$id          = $post->ID;
 				$calc_id     = get_post_meta( $id, 'calc_id', true );
+
+				if ( empty( $calc_id ) || ! get_post( $calc_id ) ) {
+					continue;
+				}
+
 				$title       = get_post_meta( $calc_id, 'title', true );
 				$type        = get_post_meta( $calc_id, 'plugin_type', true );
 				$category    = get_post_meta( $calc_id, 'category', true );

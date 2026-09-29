@@ -6,8 +6,10 @@
       aria-hidden="true"
     ></div>
     <div
-      class="ccb-field"
-      :class="['ccb_field_with_' + field.fieldName]"
+      :class="[
+        { 'ccb-field': field.fieldName !== 'section' },
+        'ccb_field_with_' + field.fieldName,
+      ]"
       :style="{ width: fieldWidth }"
       :data-id="field.alias"
       :data-repeater="field.repeaterIdx"

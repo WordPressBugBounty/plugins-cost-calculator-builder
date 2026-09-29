@@ -17,7 +17,7 @@
     </div>
 
     <div
-      v-if="appearanceStore.getAppearanceDescriptionPosition === 'before'"
+      v-if="descriptionPosition === 'before'"
       class="ccb-field__descriptions ccb-before"
     >
       <div v-if="field.description" class="ccb-field__description">
@@ -34,7 +34,7 @@
     </div>
 
     <div
-      v-if="appearanceStore.getAppearanceDescriptionPosition === 'after'"
+      v-if="descriptionPosition === 'after'"
       class="ccb-field__descriptions ccb-after"
     >
       <div v-if="field.description" class="ccb-field__description">
@@ -48,7 +48,7 @@
 import { toRefs, computed, ref } from "vue";
 import { ITextField } from "@/widget/shared/types/fields";
 import { useFieldsStore } from "@/widget/app/providers/stores/fieldsStore.ts";
-import { useAppearanceStore } from "@/widget/app/providers/stores/appearanceStore.ts";
+import { useAppearanceSpacing } from "@/admin/shared/utils/useAppearanceSpacing";
 import { useAppearanceColors } from "@/admin/shared/utils/useAppearanceColors";
 
 const props = defineProps<{
@@ -57,7 +57,7 @@ const props = defineProps<{
 const { field } = toRefs(props);
 
 const fieldStore = useFieldsStore();
-const appearanceStore = useAppearanceStore();
+const { descriptionPosition } = useAppearanceSpacing();
 
 const requitedType = ref<string>("required");
 

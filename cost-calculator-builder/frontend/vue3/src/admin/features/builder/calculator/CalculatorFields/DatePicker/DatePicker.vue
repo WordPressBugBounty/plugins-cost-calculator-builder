@@ -17,7 +17,7 @@
     </div>
 
     <div
-      v-if="appearanceStore.descriptionPosition === 'before'"
+      v-if="descriptionPosition === 'before'"
       class="ccb-field__descriptions ccb-before"
     >
       <div v-if="field.description" class="ccb-field__description">
@@ -40,7 +40,7 @@
     </div>
 
     <div
-      v-if="appearanceStore.descriptionPosition === 'after'"
+      v-if="descriptionPosition === 'after'"
       class="ccb-field__descriptions ccb-after"
     >
       <div v-if="field.description" class="ccb-field__description">
@@ -55,7 +55,7 @@ import { toRefs, computed } from "vue";
 import VueDatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 
-import { useAppearanceStore } from "@/widget/app/providers/stores/appearanceStore.ts";
+import { useAppearanceSpacing } from "@/admin/shared/utils/useAppearanceSpacing";
 import { IDatePickerField } from "@/widget/shared/types/fields";
 import { useTranslationsStore } from "@/widget/app/providers/stores/translationsStore.ts";
 import { useSettingsStore } from "@/widget/app/providers/stores/settingsStore.ts";
@@ -71,7 +71,7 @@ const selectedDate = computed(() => {
   return field.value.selectedDate || new Date();
 });
 
-const appearanceStore = useAppearanceStore();
+const { descriptionPosition } = useAppearanceSpacing();
 const translationsStore = useTranslationsStore();
 const settingStore = useSettingsStore();
 

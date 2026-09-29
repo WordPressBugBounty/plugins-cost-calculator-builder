@@ -149,7 +149,7 @@ class CCBCalculatorsHandler {
 
 		if ( ! is_null( $template_id ) ) {
 			$calc_id  = get_post_meta( $template_id, 'calc_id', true );
-			$category = get_post_meta( $template_id, 'category', true );
+			$category = get_post_meta( $calc_id, 'category', true );
 			$data     = CCBCalculators::duplicate_target_calc( $calc_id, false );
 
 			if ( 'custom_templates' !== $category ) {
@@ -226,6 +226,7 @@ class CCBCalculatorsHandler {
 			);
 
 			foreach ( $ids as $id ) {
+				CCBCalculatorTemplates::detach_templates_from_calc( $id );
 				wp_delete_post( $id );
 				clearMetaData( $id );
 				ccb_update_woocommerce_calcs( $id, true );
@@ -275,7 +276,7 @@ class CCBCalculatorsHandler {
 					'formula'    => get_post_meta( $id, 'stm-formula', true ),
 					'settings'   => CCBSettingsData::get_calc_single_settings( $id ),
 					'builder'    => get_post_meta( $id, 'stm-fields', true ),
-					'conditions' => get_post_meta( $id, 'stm-conditions', true ),
+					'conditions' => ccb_get_calc_conditions_for_save( $id ),
 					'appearance' => get_post_meta( $id, 'ccb-appearance', true ),
 					'preset_idx' => get_post_meta( $id, 'ccb_calc_preset_idx', true ),
 				);

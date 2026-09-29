@@ -59,7 +59,7 @@ const getMakePaymentText = computed((): string => {
   const makePayment =
     translationsStore.getTranslations.makePayment || "Make Payment";
   if (getPaymentType.value === "woocommerce") {
-    return "Add to cart";
+    return translationsStore.getTranslations.addToCart || "Add to cart";
   } else {
     return makePayment;
   }
@@ -149,9 +149,9 @@ const paymentAfterSubmitClickAction = () => {
 
 const isPaypalEnabled = computed((): boolean => {
   const paymentsSettings = settings.paymentGateway;
-  return !!(
-    paymentsSettings?.paypal?.enable && paymentsSettings?.paypal?.paypalEmail
-  );
+  const paypal = paymentsSettings?.paypal;
+  const isPaypalRest = paypal?.integrationType === "rest";
+  return !!(paypal?.enable && (isPaypalRest ? paypal?.clientId : true));
 });
 
 const isCashPaymentEnabled = computed((): boolean => {

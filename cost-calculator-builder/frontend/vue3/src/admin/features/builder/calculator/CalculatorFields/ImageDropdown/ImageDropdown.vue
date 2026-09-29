@@ -19,7 +19,7 @@
     </div>
 
     <div
-      v-if="appearanceStore.getAppearanceDescriptionPosition === 'before'"
+      v-if="descriptionPosition === 'before'"
       class="ccb-field__descriptions ccb-before"
     >
       <div v-if="field.description" class="ccb-field__description">
@@ -80,7 +80,7 @@
     </div>
 
     <div
-      v-if="appearanceStore.getAppearanceDescriptionPosition === 'after'"
+      v-if="descriptionPosition === 'after'"
       class="ccb-field__descriptions ccb-after"
     >
       <div v-if="field.description" class="ccb-field__description">
@@ -93,7 +93,7 @@
 <script setup lang="ts">
 import { toRefs, ref, computed } from "vue";
 import defaultImg from "@/images/static/close.png";
-import { useAppearanceStore } from "@/widget/app/providers/stores/appearanceStore.ts";
+import { useAppearanceSpacing } from "@/admin/shared/utils/useAppearanceSpacing";
 import { IImageDropdownField } from "@/widget/shared/types/fields";
 import ProBadge from "@/widget/shared/ui/components/Pro-badge/ProBadge.vue";
 import { useTranslationsStore } from "@/widget/app/providers/stores/translationsStore";
@@ -104,7 +104,7 @@ const props = defineProps<{
 }>();
 const { field } = toRefs(props);
 
-const appearanceStore = useAppearanceStore();
+const { descriptionPosition } = useAppearanceSpacing();
 const translationsStore = useTranslationsStore();
 
 const isBodyVisible = ref<boolean>(false);

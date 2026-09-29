@@ -102,6 +102,7 @@ import ProBadge from "@/widget/shared/ui/components/Pro-badge/ProBadge.vue";
 import Loader from "@/widget/shared/ui/components/Loader/Loader.vue";
 import { IRecaptcha } from "@/widget/shared/types/settings/settings.type";
 import { useNotificationsStore } from "@/widget/app/providers/stores/notificationsStore.ts";
+import { useTranslationsStore } from "@/widget/app/providers/stores/translationsStore";
 
 type Props = {
   payment?: boolean;
@@ -122,6 +123,7 @@ const appStore = useAppStore();
 const myCf7Root = ref<HTMLElement | null>(null);
 const allowContactForm = ref<boolean>(false);
 const fieldsStore = useFieldsStore();
+const translationsStore = useTranslationsStore();
 
 const orderOpenStatus = computed((): boolean => {
   return !orderFormStore.getNextButtonStatus;
@@ -144,7 +146,7 @@ const getSubmitOrderText = computed((): string => {
   const summaryDisplay = settings.getFormSettings?.summaryDisplay;
 
   if (getPaymentType.value === "woocommerce") {
-    return "Add to cart";
+    return translationsStore.getTranslations.addToCart || "Add to cart";
   }
 
   if (
@@ -442,7 +444,7 @@ const initContactFormActions = () => {
 
 const initRecaptcha = () => {
   const captcha = settings.getRecaptchaSettings;
-  if (captcha?.enable && captcha?.siteKey && captcha?.secretKey) {
+  if (captcha?.enable && captcha?.siteKey) {
     renderCaptchaFunc(captcha);
     renderCaptchaScript(captcha);
   }

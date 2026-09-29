@@ -136,6 +136,23 @@ function ccb_update_calc_old_values( $data ) {
 	return false;
 }
 
+/**
+ * Stored conditions use nodes_v4/links_v4 keys, while ccb_update_calc_new_values expects nodes/links
+ *
+ * @param $calc_id
+ * @return array
+ */
+function ccb_get_calc_conditions_for_save( $calc_id ) {
+	$conditions = get_post_meta( $calc_id, 'stm-conditions', true );
+	$conditions = is_array( $conditions ) ? $conditions : array();
+
+	return array(
+		'nodes'  => $conditions['nodes_v4'] ?? $conditions['nodes'] ?? array(),
+		'links'  => $conditions['links_v4'] ?? $conditions['links'] ?? array(),
+		'spaces' => $conditions['spaces'] ?? array(),
+	);
+}
+
 function ccb_update_calc_values( $data ) {
 	$status = 'publish';
 	if ( isset( $data['status'] ) ) {
@@ -680,15 +697,163 @@ function sanitize_without_tag_clean( $json_string ) {
  * @param array $settings Calculator settings array.
  * @return array
  */
+function ccb_unset_by_path( array &$data, array $path ): void {
+	$cursor = &$data;
+	$last   = count( $path ) - 1;
+
+	foreach ( $path as $idx => $segment ) {
+		if ( ! is_array( $cursor ) || ! array_key_exists( $segment, $cursor ) ) {
+			return;
+		}
+
+		if ( $idx === $last ) {
+			unset( $cursor[ $segment ] );
+			return;
+		}
+
+		$cursor = &$cursor[ $segment ];
+	}
+}
+
+/**
+ * Replace a nested array value by path, no-op when path does not exist.
+ *
+ * @param array        $data  Source array.
+ * @param array        $path  Nested key path.
+ * @param string|array $value Replacement value.
+ * @return void
+ */
+function ccb_replace_by_path( array &$data, array $path, $value ): void {
+	$cursor = &$data;
+	$last   = count( $path ) - 1;
+
+	foreach ( $path as $idx => $segment ) {
+		if ( ! is_array( $cursor ) || ! array_key_exists( $segment, $cursor ) ) {
+			return;
+		}
+
+		if ( $idx === $last ) {
+			$cursor[ $segment ] = $value;
+			return;
+		}
+
+		$cursor = &$cursor[ $segment ];
+	}
+}
+
+/**
+ * Strip secrets and sensitive fields from calculator settings in frontend payload.
+ *
+ * @param array $settings Calculator settings array.
+ * @return array
+ */
 function ccb_strip_frontend_payment_secrets( array $settings ): array {
-	unset( $settings['stripe']['secretKey'] );
-	unset( $settings['paypal']['paypal_email'] );
-	unset( $settings['paypal']['client_secret'] );
-	unset( $settings['payment_gateway']['cards']['card_payments']['stripe']['secretKey'] );
-	unset( $settings['payment_gateway']['cards']['card_payments']['razorpay']['secretKey'] );
-	unset( $settings['payment_gateway']['paypal']['client_secret'] );
+	$paths = array(
+		array( 'stripe', 'secretKey' ),
+		array( 'paypal', 'client_secret' ),
+		array( 'payment_gateway', 'cards', 'card_payments', 'stripe', 'secretKey' ),
+		array( 'payment_gateway', 'cards', 'card_payments', 'razorpay', 'secretKey' ),
+		array( 'payment_gateway', 'paypal', 'client_secret' ),
+		// Webhook URLs and signing secrets are used only server-side.
+		array( 'webhooks' ),
+		array( 'recaptcha', 'v2', 'secretKey' ),
+		array( 'recaptcha', 'v3', 'secretKey' ),
+		array( 'recaptcha_v3', 'secretKey' ),
+		array( 'formFields', 'adminEmailAddress' ),
+		array( 'geolocation', 'secret_key' ),
+	);
+
+	foreach ( $paths as $path ) {
+		ccb_unset_by_path( $settings, $path );
+	}
+
+	// Keep legacy frontend checks functional without exposing real merchant email.
+	ccb_replace_by_path( $settings, array( 'paypal', 'paypal_email' ), '__ccb_paypal_configured__' );
+	ccb_replace_by_path( $settings, array( 'payment_gateway', 'paypal', 'paypal_email' ), '__ccb_paypal_configured__' );
 
 	return $settings;
+}
+
+/**
+ * Strip secrets and sensitive fields from global settings in frontend payload.
+ *
+ * @param array $general_settings Global calculator settings.
+ * @return array
+ */
+function ccb_strip_frontend_general_settings_secrets( array $general_settings ): array {
+	$paths = array(
+		array( 'stripe', 'secretKey' ),
+		array( 'payment_gateway', 'cards', 'card_payments', 'stripe', 'secretKey' ),
+		array( 'payment_gateway', 'cards', 'card_payments', 'razorpay', 'secretKey' ),
+		array( 'payment_gateway', 'paypal', 'client_secret' ),
+		array( 'recaptcha', 'v2', 'secretKey' ),
+		array( 'recaptcha', 'v3', 'secretKey' ),
+		array( 'form_fields', 'adminEmailAddress' ),
+		array( 'webhooks' ),
+		array( 'geolocation', 'secret_key' ),
+	);
+
+	foreach ( $paths as $path ) {
+		ccb_unset_by_path( $general_settings, $path );
+	}
+
+	// Keep legacy frontend checks functional without exposing real merchant email.
+	ccb_replace_by_path( $general_settings, array( 'paypal', 'paypal_email' ), '__ccb_paypal_configured__' );
+	ccb_replace_by_path( $general_settings, array( 'payment_gateway', 'paypal', 'paypal_email' ), '__ccb_paypal_configured__' );
+
+	return $general_settings;
+}
+
+/**
+ * Check whether calculator fields contain a Geolocation field (fields may be nested in groups / page breakers).
+ *
+ * @param mixed $fields Calculator fields.
+ * @return bool
+ */
+function ccb_fields_have_geolocation( $fields ): bool {
+	if ( ! is_array( $fields ) ) {
+		return false;
+	}
+
+	foreach ( $fields as $field ) {
+		if ( ! is_array( $field ) ) {
+			continue;
+		}
+
+		$tag   = isset( $field['_tag'] ) ? (string) $field['_tag'] : '';
+		$alias = isset( $field['alias'] ) ? (string) $field['alias'] : '';
+		if ( 'cost-geolocation' === $tag || 0 === strpos( $alias, 'geolocation_field_id' ) ) {
+			return true;
+		}
+
+		foreach ( $field as $value ) {
+			if ( is_array( $value ) && ccb_fields_have_geolocation( $value ) ) {
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
+
+/**
+ * Geolocation settings for the frontend payload.
+ * The Google Maps JavaScript API needs the browser key to load the map, so it is published
+ * only for calculators that actually render a Geolocation field.
+ *
+ * @param array $general_settings Global calculator settings.
+ * @param mixed $fields           Calculator fields.
+ * @return array
+ */
+function ccb_frontend_geolocation_settings( array $general_settings, $fields ): array {
+	$geolocation = isset( $general_settings['geolocation'] ) && is_array( $general_settings['geolocation'] ) ? $general_settings['geolocation'] : array();
+	unset( $geolocation['secret_key'] );
+
+	if ( ! ccb_fields_have_geolocation( $fields ) ) {
+		unset( $geolocation['public_key'] );
+	}
+
+	return $geolocation;
 }
 
 /**
@@ -767,11 +932,7 @@ function ccb_sync_settings_from_general_settings( $settings, $general_settings, 
 
 	if ( $render ) {
 		$settings = ccb_strip_frontend_payment_secrets( $settings );
-		unset( $general_settings['stripe']['secretKey'] );
-		unset( $general_settings['payment_gateway']['cards']['card_payments']['stripe']['secretKey'] );
-		unset( $general_settings['payment_gateway']['cards']['card_payments']['razorpay']['secretKey'] );
-		unset( $general_settings['payment_gateway']['paypal']['client_secret'] );
-		unset( $general_settings['paypal']['paypal_email'] );
+		$general_settings = ccb_strip_frontend_general_settings_secrets( $general_settings );
 	}
 
 	return array(

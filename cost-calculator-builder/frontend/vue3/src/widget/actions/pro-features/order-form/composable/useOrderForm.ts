@@ -136,10 +136,9 @@ function validateOrderFormSettings(): boolean {
 
   settingsStore.setTermsAndConditionsTrigger(false);
 
-  const adminEmailAddress = settingsStore.getFormSettings?.adminEmailAddress;
   const emailSubject = settingsStore.getFormSettings?.emailSubject;
 
-  if (!adminEmailAddress || !emailSubject) {
+  if (!emailSubject) {
     const link =
       "https://docs.stylemixthemes.com/cost-calculator-builder/pro-plugin-features/send-form";
     notificationsStore.updateNotifications({
