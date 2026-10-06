@@ -6,7 +6,7 @@ Tags: cost calculator, calculator, calculator form builder, cost estimation, shi
 Requires at least: 6.2
 Requires PHP: 7.4
 Tested up to: 7.0
-Stable tag: 4.0.18
+Stable tag: 4.0.19
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -207,6 +207,9 @@ Also, you can import the demo sample using Tools -> Import -> WordPress Import.
 Demo sample XML file included in plugin archive.
 
 == Changelog ==
+= 4.0.19 =
+- Fix: Fixed an issue where the preloader loaded endlessly after Stripe 3D Secure authentication.
+
 = 4.0.18 =
 - Fix: Fixed an issue where numbers in the Summary moved to a new line when Summary After Last Page was enabled with a higher number of decimals.
 - Fix: Fixed an issue where the "Choose File" and "Add to cart" strings could not be translated using Loco Translate.

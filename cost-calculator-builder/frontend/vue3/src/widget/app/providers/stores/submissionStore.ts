@@ -94,8 +94,7 @@ export const useSubmissionStore = () => {
           return;
         }
 
-        const { createOrder, makePayment, razorpayPaymentReceived } =
-          useOrder();
+        const { createOrder, razorpayPaymentReceived } = useOrder();
 
         notificationsStore.resetNotifications();
 
@@ -163,48 +162,38 @@ export const useSubmissionStore = () => {
                           paymentStore?.stripeInstance
                         ) {
                           paymentStore.stripeInstance
-                            .handleCardAction(response.clientSecret || "")
-                            .then(
-                              async (
-                                card_action_result: any,
-                              ): Promise<void> => {
-                                if (card_action_result.error) {
-                                  appStore.setSubmissionLoader(false);
-                                  notificationsStore.updateNotifications({
-                                    status: true,
-                                    type: "error",
-                                    message: "Your card was not authenticated!",
-                                  });
-                                } else if (
-                                  card_action_result.paymentIntent.status ===
-                                  "requires_confirmation"
-                                ) {
-                                  paymentStore.setPaymentMethodId("");
-                                  paymentStore.setPaymentIntentId(
-                                    response.paymentIntentId || "",
-                                  );
-
-                                  makePayment(
-                                    "stripe",
-                                    Number(response.orderId || 0),
-                                  ).then((intent: OrdersResponse) => {
-                                    if (intent.success) {
-                                      stripeClientSecret =
-                                        intent.clientSecret || "";
-                                    } else {
-                                      appStore.setSubmissionLoader(false);
-                                      notificationsStore.updateNotifications({
-                                        status: true,
-                                        type: intent.success
-                                          ? "finish"
-                                          : "error",
-                                        message: intent.message,
-                                      });
-                                    }
-                                  });
-                                }
-                              },
-                            );
+                            .confirmCardPayment(response.clientSecret || "")
+                            .then((card_action_result: any): void => {
+                              appStore.setSubmissionLoader(false);
+                              if (
+                                card_action_result.error ||
+                                !["succeeded", "requires_capture"].includes(
+                                  card_action_result.paymentIntent?.status,
+                                )
+                              ) {
+                                notificationsStore.updateNotifications({
+                                  status: true,
+                                  type: "error",
+                                  message:
+                                    card_action_result.error?.message ||
+                                    "Your card was not authenticated!",
+                                });
+                              } else {
+                                notificationsStore.updateNotifications({
+                                  status: true,
+                                  type: "finish",
+                                  message: "Your order has been placed",
+                                });
+                              }
+                            })
+                            .catch((err: any): void => {
+                              appStore.setSubmissionLoader(false);
+                              notificationsStore.updateNotifications({
+                                status: true,
+                                type: "error",
+                                message: err?.message || "Payment failed",
+                              });
+                            });
                         } else {
                           stripeClientSecret =
                             response.clientSecret ||
