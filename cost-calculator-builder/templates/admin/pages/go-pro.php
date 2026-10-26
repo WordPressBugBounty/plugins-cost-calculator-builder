@@ -94,10 +94,9 @@ function get_freemius_info() {
 $freemius_info = get_freemius_info();
 
 
-$start_date   = new DateTime( '2026-06-22 00:00:00' );
-$end_date     = new DateTime( '2026-06-28 23:59:00' );
+$start_date   = new DateTime( '2026-10-27 00:00:00' );
+$end_date     = new DateTime( '2026-11-02 23:59:00' );
 $current_time = new DateTime();
-
 
 $is_promotion = $current_time >= $start_date && $current_time < $end_date;
 
@@ -137,7 +136,7 @@ if ( array_key_exists( 'from', $params_array ) && ! empty( $params_array['from']
 							<?php echo esc_html( nl2br( $freemius_info['info']->short_description ) ); ?>
 						<?php endif; ?>
 						<?php if ( $freemius_info['info']->url ) : ?>
-							<a href="<?php echo esc_html( $freemius_info['info']->url . '?utm_source=wpadmin&utm_medium=gopro&utm_campaign=2025' ); ?>">
+							<a href="<?php echo esc_html( $freemius_info['info']->url . '?utm_source=wpadmin&utm_medium=gopro&utm_campaign=2026' ); ?>">
 								<?php esc_html_e( 'Learn more.', 'cost-calculator-builder' ); ?>
 							</a>
 						<?php endif; ?>
@@ -146,7 +145,7 @@ if ( array_key_exists( 'from', $params_array ) && ! empty( $params_array['from']
 			</div>
 			<?php if ( $is_promotion ) : ?>
 				<div class="stm-discount">
-					<a href="https://stylemixthemes.com/cost-calculator-plugin/pricing/?utm_source=wpadmin&utm_medium=push&utm_campaign=costcalculator&utm_content=gopro&utm_term=summersale26&plugin_coupon=MIDSUMMER26" target="_blank"></a>
+					<a href="https://stylemixthemes.com/cost-calculator-plugin/pricing/?utm_source=wpadmin&utm_medium=push&utm_campaign=costcalculator&utm_content=gopro&utm_term=summersale26&plugin_coupon=TREAT26" target="_blank"></a>
 				</div>
 			<?php endif; ?>
 			<?php if ( isset( $freemius_info['plan'] ) ) : ?>
@@ -216,7 +215,7 @@ if ( array_key_exists( 'from', $params_array ) && ! empty( $params_array['from']
 									}
 
 									if ( $is_promotion ) {
-										$get_now_link .= '&plugin_coupon=MIDSUMMER26';
+										$get_now_link .= '&plugin_coupon=TREAT26';
 									}
 									?>
 									<a href="<?php echo esc_url( $get_now_link ); ?>" class="stm_plan__btn stm_plan__btn--buy" data-checkout-url="<?php echo esc_url( $data_url ); ?>" target="_blank">
